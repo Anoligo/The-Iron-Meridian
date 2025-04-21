@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The Armoury - Guild NPCs</title>
-  <style>
+<style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: #1c1c1c;
@@ -16,7 +16,7 @@
       text-align: center;
       color: #ffc107;
     }
-    .npc {
+   .npc {
       background-color: #2a2a2a;
       border-radius: 8px;
       padding: 15px;
@@ -30,9 +30,17 @@
     .npc ul {
       padding-left: 20px;
     }
-    .emoji {
-      font-size: 1.5em;
-      margin-right: 8px;
+    .npc-image {
+      flex: 0 0 150px;
+    }
+    .npc-image img {
+      width: 150px;
+      height: auto;
+      border-radius: 8px;
+      border: 2px solid #444;
+    }
+    .npc-content {
+      flex: 1;
     }
   </style>
 </head>
@@ -55,18 +63,37 @@
 
   <p>You'd be forgiven for thinking "The Armoury" was just a locked door full of swords. In reality, <strong>The Armoury</strong> is a motley crew of eccentric experts who keep The Iron Meridian ticking, stocked, and sometimes gently exploding. You spend your Gold with <em>them</em> — and yes, they all have their own price tags and policies. Try not to insult the brew.</p>
 
-  <div class="npc">
-    <h2><span class="emoji">🛡️</span> Quartermaster Branna "The Barterhound" Korrick</h2>
-    <p>A grizzled veteran of a dozen wars and twice as many barroom brawls, Branna runs the core supply hub. She's got a ledger thicker than a troll's skull and a memory like a steel trap. "You break it, you bought it. You bleed on it, you're buying me a drink." That's her motto.</p>
-    <ul>
-      <li><strong>Sells:</strong> Standard weapons, armor, and adventuring gear.</li>
-      <li><strong>Services:</strong> Equipment repairs, bulk purchases, and trade-in evaluations.</li>
-      <li><strong>Training:</strong> Improvised combat tactics and bartering skills.</li>
-    </ul>
+  <div class="npc" style="display: flex; gap: 1.5em; align-items: flex-start; margin-bottom: 2em; border: 1px solid #ccc; border-radius: 12px; padding: 1em;">
+  <!-- Profile Image -->
+  <div class="npc-image" style="flex: 0 0 150px;">
+	<img src="images/branna-korrick.png" alt="Branna Korrick" style="width: 150px; height: auto; border-radius: 8px; border: 2px solid #444;">
   </div>
 
-  <div class="npc">
-    <h2><span class="emoji">🧙</span> Archivist Solen Telvair</h2>
+  <!-- NPC Content -->
+  <div class="npc-content">
+	<h2>Quartermaster Branna "The Barterhound" Korrick</h2>
+	<p>
+	  A grizzled veteran of a dozen wars and twice as many barroom brawls, Branna runs the core supply hub. 
+	  She's got a ledger thicker than a troll's skull and a memory like a steel trap. 
+	  <em>"You break it, you bought it. You bleed on it, you're buying me a drink."</em> That's her motto.
+	</p>
+	<ul>
+	  <li><strong>Sells:</strong> Standard weapons, armor, and adventuring gear.</li>
+	  <li><strong>Services:</strong> Equipment repairs, bulk purchases, and trade-in evaluations.</li>
+	  <li><strong>Training:</strong> Improvised combat tactics and bartering skills.</li>
+	</ul>
+  </div>
+</div>
+
+<div class="npc" style="display: flex; gap: 1.5em; align-items: flex-start; margin-bottom: 2em; border: 1px solid #ccc; border-radius: 12px; padding: 1em;">
+  <!-- Profile Image -->
+  <div class="npc-image" style="flex: 0 0 150px;">
+	<img src="images/solen-telvair.png" alt="Archivist Solen Telvair" style="width: 150px; height: auto; border-radius: 8px; border: 2px solid #444;">
+  </div>
+  
+  <!-- NPC Content -->
+  <div class="npc-content">
+    <h2>Archivist Solen Telvair</h2>
     <p>The walking encyclopedia of all known magical gear, curses, and enchantments. Probably *is* part ghost. Smells like ink and destiny. "Knowledge is power. And sometimes, power is in that drawer you never open."</p>
     <ul>
       <li><strong>Sells:</strong> Scrolls, spellbooks, and minor enchanted trinkets.</li>
@@ -74,9 +101,17 @@
       <li><strong>Training:</strong> Arcane theory and deciphering ancient texts.</li>
     </ul>
   </div>
-
-  <div class="npc">
-    <h2><span class="emoji">🩻</span> Instructor Yari Thorne</h2>
+</div>
+  
+<div class="npc" style="display: flex; gap: 1.5em; align-items: flex-start; margin-bottom: 2em; border: 1px solid #ccc; border-radius: 12px; padding: 1em;">
+  <!-- Profile Image -->
+  <div class="npc-image" style="flex: 0 0 150px;">
+	<img src="images/yari-thorne.png" alt="Instructor Yari Thorne" style="width: 150px; height: auto; border-radius: 8px; border: 2px solid #444;">
+  </div>
+  
+  <!-- NPC Content -->
+  <div class="npc-content">
+    <h2>Instructor Yari Thorne</h2>
     <p>A no-nonsense half-orc combat instructor who teaches survival through blunt trauma and motivational shouting. "Those who train, maintain. Those who don't... feed trolls."</p>
     <ul>
       <li><strong>Sells:</strong> None—training is earned, not bought.</li>
@@ -84,9 +119,17 @@
       <li><strong>Training:</strong> Weapon mastery, battlefield tactics, and mental resilience.</li>
     </ul>
   </div>
+</div>
 
-  <div class="npc">
-    <h2><span class="emoji">🧪</span> Brewmaster Duvik "The Fizz" Lorran</h2>
+<div class="npc" style="display: flex; gap: 1.5em; align-items: flex-start; margin-bottom: 2em; border: 1px solid #ccc; border-radius: 12px; padding: 1em;">
+  <!-- Profile Image -->
+  <div class="npc-image" style="flex: 0 0 150px;">
+	<img src="images/duvik-lorran.png" alt="Brewmaster Duvik "The Fizz" Lorran" style="width: 150px; height: auto; border-radius: 8px; border: 2px solid #444;">
+  </div>
+  
+  <!-- NPC Content -->
+  <div class="npc-content">
+    <h2>Brewmaster Duvik "The Fizz" Lorran</h2>
     <p>Half alchemist, half mixologist, all chaos. Brews potions that probably work. Ignore the fizzing. Names his concoctions things like “Oops-All-Mana.”</p>
     <ul>
       <li><strong>Sells:</strong> Potions, alchemical reagents, and experimental elixirs.</li>
@@ -94,9 +137,17 @@
       <li><strong>Training:</strong> Beginner alchemy and safe(ish) handling of volatile substances.</li>
     </ul>
   </div>
+</div>
 
-  <div class="npc">
-    <h2><span class="emoji">🪶</span> Madame Thistledown</h2>
+<div class="npc" style="display: flex; gap: 1.5em; align-items: flex-start; margin-bottom: 2em; border: 1px solid #ccc; border-radius: 12px; padding: 1em;">
+  <!-- Profile Image -->
+  <div class="npc-image" style="flex: 0 0 150px;">
+	<img src="images/madame-thistledown.png" alt="Madame Thistledown" style="width: 150px; height: auto; border-radius: 8px; border: 2px solid #444;">
+  </div>
+  
+  <!-- NPC Content -->
+  <div class="npc-content">
+    <h2>Madame Thistledown</h2>
     <p>An elven enchantress with flair for the dramatic, and possibly a few extra lives. Deals exclusively in the curious, the cursed, and the fashionably deadly.</p>
     <ul>
       <li><strong>Sells:</strong> Rare and exotic curiosities.</li>
@@ -104,9 +155,17 @@
       <li><strong>Training:</strong> None—but he might share secrets if persuaded.</li>
     </ul>
   </div>
+</div>
 
-  <div class="npc">
-    <h2><span class="emoji">✨</span> Alric of the Shimmering Eye</h2>
+ <div class="npc" style="display: flex; gap: 1.5em; align-items: flex-start; margin-bottom: 2em; border: 1px solid #ccc; border-radius: 12px; padding: 1em;">
+  <!-- Profile Image -->
+  <div class="npc-image" style="flex: 0 0 150px;">
+	<img src="images/alric.png" alt="Alric of the Shimmering Eye" style="width: 150px; height: auto; border-radius: 8px; border: 2px solid #444;">
+  </div>
+  
+  <!-- NPC Content -->
+  <div class="npc-content">
+    <h2>Alric of the Shimmering Eye</h2>
     <p>A flair-for-the-dramatic illusionist who believes every adventurer deserves a little sparkle. His enchantments come with flair — and sometimes sequins. Half-price glamour if you say "bedazzle me."</p>
     <ul>
       <li><strong>Sells:</strong> Enchanted clothing and accessories,</li>
@@ -114,9 +173,17 @@
       <li><strong>Training:</strong> Illusion magic and the art of theatrical misdirection.</li>
     </ul>
   </div>
+</div>
 
-  <div class="npc">
-    <h2><span class="emoji">🔧</span> Tink-Tonk the Cogsmith</h2>
+<div class="npc" style="display: flex; gap: 1.5em; align-items: flex-start; margin-bottom: 2em; border: 1px solid #ccc; border-radius: 12px; padding: 1em;">
+  <!-- Profile Image -->
+  <div class="npc-image" style="flex: 0 0 150px;">
+	<img src="images/tink-tonk.png" alt="Tink-Tonk the Cogsmith" style="width: 150px; height: auto; border-radius: 8px; border: 2px solid #444;">
+  </div>
+  
+  <!-- NPC Content -->
+  <div class="npc-content">
+    <h2>Tink-Tonk the Cogsmith</h2>
     <p>Small. Loud. Brilliant. Tink-Tonk builds anything — from random Whirlygiggles to traps shaped like ducks. Repairs gear and occasionally redefines it.  May replace lost limbs with something "fun." No refunds.</p>
     <ul>
       <li><strong>Sells:</strong> Mechanical gadgets and tinkered tools.</li>
@@ -124,9 +191,17 @@
       <li><strong>Training:</strong> Basic engineering principles (with frequent disclaimers).</li>
     </ul>
   </div>
+</div>
 
-  <div class="npc">
-    <h2><span class="emoji">🃏</span> Kex "The Whisperdealer" Veyne</h2>
+<div class="npc" style="display: flex; gap: 1.5em; align-items: flex-start; margin-bottom: 2em; border: 1px solid #ccc; border-radius: 12px; padding: 1em;">
+  <!-- Profile Image -->
+  <div class="npc-image" style="flex: 0 0 150px;">
+	<img src="images/kex-veyne.png" alt="Kex "The Whisperdealer" Veyne" style="width: 150px; height: auto; border-radius: 8px; border: 2px solid #444;">
+  </div>
+  
+  <!-- NPC Content -->
+  <div class="npc-content">
+    <h2>Kex "The Whisperdealer" Veyne</h2>
     <p>A shadow-draped halfling with a permanent smirk, Kex always seems to know exactly what you're looking for—sometimes before you do.</p>
     <ul>
       <li><strong>Sells:</strong> Stealth gear and subterfuge supplies.</li>
@@ -134,9 +209,17 @@
       <li><strong>Training:</strong> Lockpicking, sleight of hand, and urban survival.</li>
     </ul>
   </div>
+</div>
 
-  <div class="npc">
-    <h2><span class="emoji">💎</span> Zalara Gemvein</h2>
+<div class="npc" style="display: flex; gap: 1.5em; align-items: flex-start; margin-bottom: 2em; border: 1px solid #ccc; border-radius: 12px; padding: 1em;">
+  <!-- Profile Image -->
+  <div class="npc-image" style="flex: 0 0 150px;">
+	<img src="images/zalara-gemvein.png" alt="Zalara Gemvein" style="width: 150px; height: auto; border-radius: 8px; border: 2px solid #444;">
+  </div>
+  
+  <!-- NPC Content -->
+  <div class="npc-content">
+    <h2>Zalara Gemvein</h2>
     <p>Dwarven elegance meets arcane eccentricity. Zalara wears half a museum and smells faintly of ozone and crushed velvet.</p>
     <ul>
       <li><strong>Sells:</strong> Jewelry, art, and rare collectibles.</li>
@@ -144,7 +227,7 @@
       <li><strong>Training:</strong> The subtle art of persuasion in elite circles.</li>
     </ul>
   </div>
-
+</div>
 
 <div class="section">
   <h2>🏋️ Training Options</h2>
