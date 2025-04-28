@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iron Meridian Loot Appraisal</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background-color: #f5f5f5;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .receipt {
+            background-color: #fff;
+            border: 3px double #000;
+            padding: 25px;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #000;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            font-size: 24px;
+            margin: 5px 0;
+            letter-spacing: 1px;
+        }
+        
+        .subtitle {
+            font-style: italic;
+            margin-top: 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        th, td {
+            padding: 8px 12px;
+            text-align: left;
+            border-bottom: 1px dashed #999;
+            vertical-align: top;
+        }
+        
+        th {
+            background-color: #eee;
+            font-weight: bold;
+        }
+        
+        .refused {
+            color: #d00;
+            font-weight: bold;
+        }
+        
+        .notes {
+            font-size: 0.9em;
+            color: #555;
+            font-style: italic;
+        }
+        
+        .total {
+            font-size: 1.2em;
+            font-weight: bold;
+            text-align: right;
+            margin: 20px 0;
+            padding-top: 10px;
+            border-top: 2px solid #000;
+        }
+        
+        .terms {
+            font-size: 0.8em;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 20px 0;
+            background-color: #f9f9f9;
+        }
+        
+        .signature {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .stamp {
+            border: 2px solid #d00;
+            padding: 5px 10px;
+            display: inline-block;
+            transform: rotate(5deg);
+            font-weight: bold;
+            background-color: #fff;
+        }
+        
+        .footer {
+            font-size: 0.7em;
+            text-align: center;
+            margin-top: 30px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <div class="receipt">
+        <div class="header">
+            <h1>IRON MERIDIAN</h1>
+            <p class="subtitle">Official Loot Appraisal Receipt</p>
+            <p>"Turning Your Trash Into Our Treasure Since 2050 AD"</p>
+        </div>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Description</th>
+                    <th>Value</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Cooking Pot Helm</td>
+                    <td>-1 AC, +2 vs chefs</td>
+                    <td>20 gp</td>
+                    <td class="notes">"Violates 3 health codes but makes chefs cry = priceless"</td>
+                </tr>
+                <tr>
+                    <td>Goblin Crossbow</td>
+                    <td>Includes fork-bolt</td>
+                    <td>2 gp</td>
+                    <td class="notes">"Range: 30ft or until the rubber band snaps"</td>
+                </tr>
+                <tr>
+                    <td>Crownie's Crown</td>
+                    <td>"The roots will grow" inscription</td>
+                    <td class="refused">REFUSED</td>
+                    <td class="notes">Archivist's note: "No magical aura detected... yet that inscription troubles my sleep. Keep this one close, adventurers. Roots don't grow where nothing is buried."</td>
+                </tr>
+                <tr>
+                    <td>"Velvet" Cloak</td>
+                    <td>+1 CHA vs goblins</td>
+                    <td>30 gp</td>
+                    <td class="notes">"Stolen theater drape (ACT 2 SCENE 3 still visible)"</td>
+                </tr>
+                <tr>
+                    <td>Pot of Spider Climb</td>
+                    <td>10min ceiling walking</td>
+                    <td>12 gp</td>
+                    <td class="notes">"May contain real spider legs (decorative... probably)"</td>
+                </tr>
+                <tr>
+                    <td>Boots of Rootmarch</td>
+                    <td>+10ft speed, vine trails</td>
+                    <td>80 gp</td>
+                    <td class="notes">"Uncursing fee included - Now only 10% chance of photosynthesis"</td>
+                </tr>
+                <tr>
+                    <td>Tanglefoot Bags (x3)</td>
+                    <td>Standard issue</td>
+                    <td>9 gp (3gp ea)</td>
+                    <td class="notes">"Expiration date scratched off - fun surprise inside!"</td>
+                </tr>
+                <tr>
+                    <td>Serrated Cleaver</td>
+                    <td>1d6+bleed, pickle-scented</td>
+                    <td>5 gp</td>
+                    <td class="notes">"Goblin health inspector approved* (*=there is no health inspector)"</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="total">
+            TOTAL OFFERED: 158 gp<br>
+            <small>(Paid in 157gp 4sp 7cp - we ran out of coppers)</small>
+        </div>
+        
+        <div class="terms">
+            <p><strong>Terms & Conditions:</strong></p>
+            <p>☑️ All sales final (even if it curses you later)<br>
+            ☑️ 15% restocking fee if we resell to original owner<br>
+            ☑️ By signing, you agree the Guild owns your firstborn if items were stolen</p>
+            
+            <div class="signature">
+                <div>
+                    <p>Sign Here: _________________________</p>
+                </div>
+                <div>
+                    <p class="stamp">Branna "The Barterhound" Korrick</p>
+                    <small>(Smudged ale stain counts as signature)</small>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>"Proud member of the Mercantile & Questionable Acquisitions Guild"</p>
+            <p><em>Reverse side contains 200 words of goblin legalese including the phrase "thou shalt not covet thy neighbor's turnips"</em></p>
+        </div>
+    </div>
+</body>
+</html>
