@@ -80,148 +80,143 @@
   <script>
 const missionData = [
   {
-    name: "There's Goblins in My Turnips!",
-    type: "Combat",
-    rank: "Bronze",
-    length: "Short",
-    reward: "5,000g + Minor Loot + Maybe a Pie",
-    location: "Ashminster Road (Near Old Tom's Farm)",
-    objective: "Clear out goblins who’ve apparently moved into the fields again.",
-    steps: [
-      "Find Old Tom (he’s loud, you’ll hear him).",
-      "Check out the field or what’s left of it.",
-      "Deal with whatever is squatting in the crops.",
-      "Try not to trample the carrots."
-    ],
-    extra: "Old Tom swears they were ‘wearing little hats this time.’"
-  },
-  {
-    name: "The Glowing Cow of Bramblebrook",
-    type: "Investigation",
-    rank: "Bronze",
-    length: "Short",
-    reward: "4,500g + Butter + ???",
-    location: "Bramblebrook (West Hill)",
-    objective: "Something’s up with Farmer Nill’s prized dairy cow. Possibly magical.",
-    steps: [
+    "name": "The Glowing Cow of Bramblebrook",
+    "type": "Investigation",
+    "rank": "Bronze",
+    "length": "Short",
+    "reward": "90g + Butter + ???",
+    "location": "Bramblebrook (West Hill)",
+    "objective": "Investigate the unnatural glow around Farmer Nill’s prized dairy cow.",
+    "steps": [
       "Visit Bramblebrook and meet the cow.",
       "Try not to spook it. Or drink the glowing milk.",
       "Figure out what’s causing the glow.",
-      "Fix it. Or make it worse (not officially advised)."
+      "Fix it. Or weaponize it (not recommended)."
     ],
-    extra: "Nill insists the cow speaks fluent Elvish now."
+    "extra": "Nill insists the cow now speaks fluent Elvish. Fluently. Badly."
   },
   {
-    name: "The Lost Artifact of Eldarath",
-    type: "Retrieval",
-    rank: "Silver",
-    length: "Medium",
-    reward: "22,000g + Unique Magical Item",
-    location: "Ruins of Eldarath",
-    objective: "Recover a sealed artifact from an unclaimed ruin. Clearance granted.",
-    steps: [
-      "Travel to the ruins site.",
-      "Investigate structural stability and relic location.",
-      "Avoid tampering with unsecured glyphs.",
-      "Return the artifact to Guild custody."
+    "name": "Tending the Fallen",
+    "type": "Diplomatic",
+    "rank": "Bronze",
+    "length": "Short",
+    "reward": "80g + Pale Paladin Reputation",
+    "location": "Pale Paladins' Stronghold",
+    "objective": "Assist with sacred ceremonies honoring fallen warriors.",
+    "steps": [
+      "Attend the memorial service in proper attire.",
+      "Support rites, assist with logistics.",
+      "Maintain utmost respect. No ghost jokes.",
+      "Help uphold ancient traditions."
     ],
-    extra: "All parties entering must sign a relic contamination waiver."
+    "extra": "Strictly no touching the holy relics. Seriously."
   },
   {
-    name: "Tending the Fallen",
-    type: "Diplomatic",
-    rank: "Bronze",
-    length: "Short",
-    reward: "4,500g + Pale Paladin Reputation",
-    location: "Pale Paladins' Stronghold",
-    objective: "Help with ceremonial duties during the memorial for fallen warriors.",
-    steps: [
-      "Attend the service in proper attire.",
-      "Assist with rites and logistics.",
-      "Be respectful. No jokes about ghosts.",
-      "Honor the fallen."
+    "name": "The Mad Sorcerer’s Last Trick",
+    "type": "Investigation/Combat",
+    "rank": "Gold",
+    "length": "Long",
+    "reward": "2000g + Possibly Sentient Magical Trinket",
+    "location": "Dismal Forest",
+    "objective": "Investigate rising magical anomalies and neutralize the source.",
+    "steps": [
+      "Enter the anomalous zone (bring wards).",
+      "Track arcane signatures across fractured terrain.",
+      "Engage or negotiate with the anomaly.",
+      "Report back. Preferably alive."
     ],
-    extra: "Request permission before touching sacred relics. Or anything."
+    "extra": "Expect weird time distortions. And trees that argue."
   },
   {
-    name: "The Mad Sorcerer’s Last Trick",
-    type: "Investigation/Combat",
-    rank: "Gold",
-    length: "Long",
-    reward: "55,000g + Magical Trinket (possibly sentient)",
-    location: "Dismal Forest",
-    objective: "Investigate rising magical disturbances and handle the source.",
-    steps: [
-      "Enter the anomaly zone with proper wards.",
-      "Track arcane signatures.",
-      "Engage with the source (if possible).",
-      "Report back on findings. Or don’t, if you disappear."
+    "name": "Demon Portal Shutdown",
+    "type": "Combat/Exploration",
+    "rank": "Gold",
+    "length": "Long",
+    "reward": "4000g + Demon-Slaying Relic",
+    "location": "Shadowlands Rift",
+    "objective": "Disable a growing portal breach before full demonic incursion.",
+    "steps": [
+      "Secure access through the corrupted terrain.",
+      "Identify keystone wards and weaknesses.",
+      "Execute shutdown protocol (or brute-force it).",
+      "Escape before implosion. Fast."
     ],
-    extra: "Expect non-linear terrain. And conversations."
+    "extra": "Containment Authority suggests NOT poking it."
   },
   {
-    name: "Siege of the Citadel",
-    type: "Combat/Defense",
-    rank: "Platinum",
-    length: "Very Long",
-    reward: "120,000g + Faction Boon + Citadel Lease Option",
-    location: "Citadel of the Shadow Baroness",
-    objective: "Occupy and defend an abandoned fortress from encroaching factions.",
-    steps: [
-      "Secure initial entry and claim the citadel.",
-      "Fortify key points and assess magical defenses.",
-      "Hold against coordinated assaults.",
-      "Confirm strategic value for Guild use."
+    "name": "Eyes in the Shadows",
+    "type": "Stealth/Covert",
+    "rank": "Silver",
+    "length": "Medium",
+    "reward": "2000g + Faction Intel",
+    "location": "Dismal Blades Hideout",
+    "objective": "Infiltrate the rogue faction's base and gather intelligence.",
+    "steps": [
+      "Gain access unnoticed.",
+      "Collect vital leadership movement data.",
+      "Optional: Sabotage quietly.",
+      "Return before they notice anything missing."
     ],
-    extra: "Option to establish long-term presence. Renovation not included."
+    "extra": "Fake mustaches recommended but not provided."
   },
   {
-    name: "Demon Portal Shutdown",
-    type: "Combat/Exploration",
-    rank: "Gold",
-    length: "Long",
-    reward: "50,000g + Demon-slaying Relic",
-    location: "Shadowlands Rift",
-    objective: "Disable a breach point before it grows unstable.",
-    steps: [
-      "Secure approach path through corrupted terrain.",
-      "Identify portal structure and key wards.",
-      "Execute shutdown sequence or brute-force it.",
-      "Evacuate once done. Fast."
+    "name": "Guild Priority: Cluster Echo",
+    "type": "Investigation",
+    "rank": "Bronze/Silver",
+    "length": "Medium",
+    "reward": "1500g + Special Access to Archives",
+    "location": "Ashminster Wilds, Site 3",
+    "objective": "Investigate ruins or installations tied to 'Subject Cluster #3.'",
+    "steps": [
+      "Review translated sigil fragments at The Armoury.",
+      "Travel to Ashminster Wilds and locate Site 3 markers.",
+      "Secure the area and investigate structures or glyphs.",
+      "Recover any surviving artefacts or documents."
     ],
-    extra: "This mission is authorized by the Portal Containment Authority."
+    "extra": "Archivist Solen warns: sigils may still trigger latent enchantments."
   },
   {
-    name: "Eyes in the Shadows",
-    type: "Stealth/Covert",
-    rank: "Silver",
-    length: "Medium",
-    reward: "20,000g + Faction Intel",
-    location: "Dismal Blades Hideout",
-    objective: "Gather intel on internal activities and leadership movements.",
-    steps: [
-      "Gain access without alerting hostiles.",
-      "Collect data from key locations.",
-      "Optional: Disrupt supply lines covertly.",
-      "Return with intel intact."
+    "name": "New Rumor: The River's Red",
+    "type": "Exploration/Survival",
+    "rank": "Bronze",
+    "length": "Short",
+    "reward": "600g + Hazard Pay",
+    "location": "Lower Redwater River",
+    "objective": "Investigate why the river near Redwater turned unnaturally crimson.",
+    "steps": [
+      "Travel to the Lower Redwater Banks.",
+      "Collect water samples.",
+      "Search for signs of magical or biological contamination.",
+      "Avoid drinking the water unless you're into spontaneous mutations."
     ],
-    extra: "Some faces might recognize you. Wear something sneaky."
+    "extra": "Locals swear they heard 'singing' from the riverbed at night."
   },
   {
-    name: "The Pie Witch of Duskhollow",
-    type: "Investigation/Social",
-    rank: "Bronze",
-    length: "Short",
-    reward: "5,000g + Mystery Pie + Something Unexpected",
-    location: "Duskhollow",
-    objective: "Villagers claim the pies are too good to be natural. They might be right.",
-    steps: [
-      "Taste the pies (optional, but encouraged).",
-      "Investigate suspicious baking activity.",
-      "Confront the ‘witch’ if necessary.",
-      "Try not to eat more pie during step three."
+    "name": "Expired: Siege of the Citadel",
+    "type": "Expired",
+    "rank": "Platinum",
+    "length": "Very Long",
+    "reward": "N/A",
+    "location": "Citadel of the Shadow Baroness",
+    "objective": "Opportunity closed. Other factions secured the location.",
+    "steps": [],
+    "extra": "Guild notes: Fortress fallen to rival hands. Assessment pending."
+  },
+  {
+    "name": "The Pie Witch of Duskhollow",
+    "type": "Investigation/Social",
+    "rank": "Bronze",
+    "length": "Short",
+    "reward": "150g + Mystery Pie + ???",
+    "location": "Duskhollow",
+    "objective": "Villagers suspect supernatural pastry practices. Investigate subtly.",
+    "steps": [
+      "Taste the pies (highly encouraged).",
+      "Investigate the baker's workshop and methods.",
+      "Confront the 'Pie Witch' if warranted.",
+      "Survive the 'aftermath.'"
     ],
-    extra: "Locals insist she hasn’t aged in 40 years. Or ever."
+    "extra": "Past investigators returned... wider. And suspiciously content."
   }
 ];
 
