@@ -40,9 +40,7 @@
     }
   </style>
 </head>
-
 <body>
-<!-- Navigation Bar -->
 <nav style="background-color: #1f1f1f; padding: 1em; border-bottom: 2px solid #444;">
   <ul style="display: flex; justify-content: center; list-style: none; margin: 0; padding: 0;">
     <li style="margin: 0 1em;">
@@ -75,12 +73,12 @@
       <th>Description</th>
       <th>Price (Buy)</th>
       <th>Price (Rent)</th>
+      <th>Qty</th>
       <th>Currently Rented</th>
     </tr>
   </thead>
   <tbody id="itemTable">
-    <!-- Items will populate here -->
-  </tbody>
+    </tbody>
 </table>
 
 <div class="note">
@@ -89,129 +87,142 @@
 
 <script>
   const items = [
-  {
-    "name": "Cooking Pot Helm",
-    "type": "Armour",
-    "description": "–1 to AC (bulky, poorly fitted). +2 item bonus to Intimidation checks against creatures with the Chef archetype or culinary professions.",
-    "price": "20 gp",
-    "consumable": false,
-    "rented": "No"
-  },
-  {
-    "name": "The ''Velvet' Cloak",
-    "type": "Robes",
-    "description": "+1 item bonus to CHA checks/skills vs. goblins (they mistake it for 'real king stuff').",
-    "price": "30 gp",
-    "consumable": false,
-    "rented": "No"
-  },
-  {
-    "name": "Boots of Rootmarch",
-    "type": "Boots",
-    "description": "+10 ft. status bonus to Speed (stacks with other speed bonuses). Ignore difficult terrain from natural undergrowth, roots, or vines.Subtle Root Trails: Leaves no traceable vines (purely cosmetic leafy footprints that fade after 1 minute).  'Rootstride' ◆◆ (1/day) – Gain a +20 ft. status bonus to Speed for 1 minute. Leaves temporary flowering vines in your path (harmless, but pretty).",
-    "price": "160 gp",
-    "consumable": false,
-    "rented": "No"
-  },
-  {
-    "name": "Potion of Healing (Minor)",
-    "type": "Consumable",
-    "description": "Restores 1d8 Hit Points. A lifesaver in a small glass bottle.",
-    "price": "4 gp",
-    "consumable": true,
-    "rented": "No"
-  },
-  {
-    "name": "Potion of Spider Climb (Lesser)",
-    "type": "Consumable",
-    "description": "Upon drinking, the user gains a +1 item bonus to Athletics checks made to Climb. The user can climb on sheer surfaces and ceilings without needing a climb Speed (as the spider climb spell).Hands and feet secrete a thin, sticky residue (harmless but mildly embarrassing).",
-    "price": "12 gp",
-    "consumable": true,
-    "rented": "No"
-  },
-  {
-    "name": "Scroll of Grease (1st level)",
-    "type": "Scroll",
-    "description": "Creates a slippery surface that trips enemies. Hilarity ensues.",
-    "price": "3 gp",
-    "consumable": true,
-    "rented": "No"
-  },
-  {
-    "name": "Scroll of Magic Missile (1st level)",
-    "type": "Scroll",
-    "description": "Auto-hit magical darts of force. Never miss a target again!",
-    "price": "3 gp",
-    "consumable": true,
-    "rented": "No"
-  },
-  {
-    "name": "Alchemist's Fire (Lesser)",
-    "type": "Alchemical",
-    "description": "A bomb that sets things — and enemies — delightfully ablaze.",
-    "price": "3 gp",
-    "consumable": true,
-    "rented": "No"
-  },
-  {
-    "name": "Tanglefoot Bag (Lesser)",
-    "type": "Alchemical",
-    "description": "Glue enemies to the floor. Tactically hilarious.",
-    "price": "3 gp",
-    "consumable": true,
-    "rented": "No"
-  },
-  {
-    "name": "Goggles of Night",
-    "type": "Wondrous Item",
-    "description": "Grant darkvision up to 60 feet for those born without it.",
-    "price": "55 gp",
-    "consumable": false,
-    "rented": "No"
-  },
-  {
-    "name": "Bracers of Armor +1",
-    "type": "Magical Armor",
-    "description": "Magically protective bracers for those who prefer robes over mail.",
-    "price": "160 gp",
-    "consumable": false,
-    "rented": "No"
-  },
-  {
-    "name": "Weapon Potency Rune (+1)",
-    "type": "Rune",
-    "description": "Makes a weapon strike harder and more accurately.",
-    "price": "35 gp",
-    "consumable": false,
-    "rented": "No"
-  },
-  {
-    "name": "Armor Potency Rune (+1)",
-    "type": "Rune",
-    "description": "Reinforces armor to better absorb damage.",
-    "price": "35 gp",
-    "consumable": false,
-    "rented": "No"
-  },
-  {
-    "name": "Feather Token (Ladder)",
-    "type": "Consumable Magic",
-    "description": "Summons a ladder when you least expect it (or most need it).",
-    "price": "8 gp",
-    "consumable": true,
-    "rented": "No"
-  },
-  {
-    "name": "Battlefield Bandolier",
-    "type": "Wondrous Item",
-    "description": "Carry potions, bombs, and small gear for quick access.",
-    "price": "5 gp",
-    "consumable": false,
-    "rented": "No"
-  }
-]
-
-;
+    {
+      "name": "Cooking Pot Helm",
+      "type": "Armour",
+      "description": "–1 to AC (bulky, poorly fitted). +2 item bonus to Intimidation checks against creatures with the Chef archetype or culinary professions.",
+      "price": "20 gp",
+      "consumable": false,
+      "rented": "No",
+      "quantity": "-"
+    },
+    {
+      "name": "The ''Velvet' Cloak",
+      "type": "Robes",
+      "description": "+1 item bonus to CHA checks/skills vs. goblins (they mistake it for 'real king stuff').",
+      "price": "30 gp",
+      "consumable": false,
+      "rented": "No",
+      "quantity": "-"
+    },
+    {
+      "name": "Boots of Rootmarch",
+      "type": "Boots",
+      "description": "+10 ft. status bonus to Speed (stacks with other speed bonuses). Ignore difficult terrain from natural undergrowth, roots, or vines.Subtle Root Trails: Leaves no traceable vines (purely cosmetic leafy footprints that fade after 1 minute).  'Rootstride' ◆◆ (1/day) – Gain a +20 ft. status bonus to Speed for 1 minute. Leaves temporary flowering vines in your path (harmless, but pretty).",
+      "price": "160 gp",
+      "consumable": false,
+      "rented": "No",
+      "quantity": "-"
+    },
+    {
+      "name": "Potion of Healing (Minor)",
+      "type": "Consumable",
+      "description": "Restores 1d8 Hit Points. A lifesaver in a small glass bottle.",
+      "price": "4 gp",
+      "consumable": true,
+      "rented": "No",
+      "quantity": 5
+    },
+    {
+      "name": "Potion of Spider Climb (Lesser)",
+      "type": "Consumable",
+      "description": "Upon drinking, the user gains a +1 item bonus to Athletics checks made to Climb. The user can climb on sheer surfaces and ceilings without needing a climb Speed (as the spider climb spell).Hands and feet secrete a thin, sticky residue (harmless but mildly embarrassing).",
+      "price": "12 gp",
+      "consumable": true,
+      "rented": "No",
+      "quantity": 1
+    },
+    {
+      "name": "Scroll of Grease (1st level)",
+      "type": "Scroll",
+      "description": "Creates a slippery surface that trips enemies. Hilarity ensues.",
+      "price": "3 gp",
+      "consumable": true,
+      "rented": "No",
+      "quantity": 5
+    },
+    {
+      "name": "Scroll of Magic Missile (1st level)",
+      "type": "Scroll",
+      "description": "Auto-hit magical darts of force. Never miss a target again!",
+      "price": "3 gp",
+      "consumable": true,
+      "rented": "No",
+      "quantity": 2
+    },
+    {
+      "name": "Alchemist's Fire (Lesser)",
+      "type": "Alchemical",
+      "description": "A bomb that sets things — and enemies — delightfully ablaze.",
+      "price": "3 gp",
+      "consumable": true,
+      "rented": "No",
+      "quantity": 4
+    },
+    {
+      "name": "Tanglefoot Bag (Lesser)",
+      "type": "Alchemical",
+      "description": "Glue enemies to the floor. Tactically hilarious.",
+      "price": "3 gp",
+      "consumable": true,
+      "rented": "No",
+      "quantity": 3
+    },
+    {
+      "name": "Goggles of Night",
+      "type": "Wondrous Item",
+      "description": "Grant darkvision up to 60 feet for those born without it.",
+      "price": "55 gp",
+      "consumable": false,
+      "rented": "No",
+      "quantity": "-"
+    },
+    {
+      "name": "Bracers of Armor +1",
+      "type": "Magical Armor",
+      "description": "Magically protective bracers for those who prefer robes over mail.",
+      "price": "160 gp",
+      "consumable": false,
+      "rented": "No",
+      "quantity": "-"
+    },
+    {
+      "name": "Weapon Potency Rune (+1)",
+      "type": "Rune",
+      "description": "Makes a weapon strike harder and more accurately.",
+      "price": "35 gp",
+      "consumable": false,
+      "rented": "No",
+      "quantity": "-"
+    },
+    {
+      "name": "Armor Potency Rune (+1)",
+      "type": "Rune",
+      "description": "Reinforces armor to better absorb damage.",
+      "price": "35 gp",
+      "consumable": false,
+      "rented": "No",
+      "quantity": "-"
+    },
+    {
+      "name": "Feather Token (Ladder)",
+      "type": "Consumable Magic",
+      "description": "Summons a ladder when you least expect it (or most need it).",
+      "price": "8 gp",
+      "consumable": true,
+      "rented": "No",
+      "quantity": 2
+    },
+    {
+      "name": "Battlefield Bandolier",
+      "type": "Wondrous Item",
+      "description": "Carry potions, bombs, and small gear for quick access.",
+      "price": "5 gp",
+      "consumable": false,
+      "rented": "No",
+      "quantity": "-"
+    }
+  ];
 
   function populateTable() {
     const table = document.getElementById("itemTable");
@@ -223,14 +234,14 @@
         <td>${item.description}</td>
         <td>${item.price}</td>
         <td>
-  ${item.consumable ? "-" : (() => {
-    const [amount, currency] = item.price.split(' ');
-    const numericAmount = parseFloat(amount);
-    const rent = Math.ceil(numericAmount * 0.2);
-    return rent + " " + currency;
-  })()}
-</td>
-
+          ${item.consumable ? "-" : (() => {
+            const [amount, currency] = item.price.split(' ');
+            const numericAmount = parseFloat(amount);
+            const rent = Math.ceil(numericAmount * 0.2);
+            return rent + " " + currency;
+          })()}
+        </td>
+        <td>${item.quantity}</td>
         <td>${item.rented}</td>
       `;
       table.appendChild(row);
