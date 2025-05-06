@@ -86,35 +86,21 @@
   <script>
 const missionData = [
   {
-  "name": "Expired: The Glowing Cow of Bramblebrook",
-  "type": "Expired",
-  "rank": "Bronze",
-  "length": "Short",
-  "reward": "None (someone else got the butter...)",
-  "location": "Bramblebrook (West Hill)",
-  "objective": "The Guild regrets to inform you that Farmer Nill's cow was bought by a passing bard, who is now using it in his traveling opera troupe. Don't ask.",
-  "steps": [
-    "Move on. The cow has.",
-    "Maybe track down the bard later if you're curious (or bored)."
-  ],
-  "extra": "Nill now claims the barn itself whispers sonnets. May or may not be related."
-},
-{
-  "name": "Mossfang Hollow",
-  "type": "Exploration / Combat",
-  "rank": "Bronze",
-  "length": "Short-Medium",
-  "reward": "150g + Natural Curios + Minor Magical Trinket",
-  "location": "Mossfang Hollow (Near Bramblebrook Woods)",
-  "objective": "Investigate reports of aggressive plant life and strange, flickering lights deep within the old woods.",
-  "steps": [
-    "Travel to Mossfang Hollow through Bramblebrook Woods.",
-    "Navigate the shifting paths and avoid (or fight) the twisted plants.",
-    "Find the source of the unnatural growth.",
-    "Eliminate the threat — or harvest something useful if possible."
-  ],
-  "extra": "Locals say travelers vanish into the moss and don’t come back. Also, a giant raccoon was seen wearing a crown of ivy. Could be important. Probably isn’t."
-},
+    "name": "Mossfang Hollow",
+    "type": "Exploration / Combat",
+    "rank": "Bronze",
+    "length": "Short-Medium",
+    "reward": "150g + Natural Curios + Minor Magical Trinket",
+    "location": "Mossfang Hollow (Near Bramblebrook Woods)",
+    "objective": "Investigate reports of aggressive plant life and strange, flickering lights deep within the old woods.",
+    "steps": [
+      "Travel to Mossfang Hollow through Bramblebrook Woods.",
+      "Explore the affected region and observe any unusual phenomena.",
+      "Identify the source of the disturbance.",
+      "Resolve the threat and return with findings."
+    ],
+    "extra": "Locals say travelers vanish into the moss and don’t come back. Also, a giant raccoon was seen wearing a crown of ivy. Could be important. Probably isn’t."
+  },
   {
     "name": "Tending the Fallen",
     "type": "Diplomatic",
@@ -125,9 +111,9 @@ const missionData = [
     "objective": "Assist with sacred ceremonies honoring fallen warriors.",
     "steps": [
       "Attend the memorial service in proper attire.",
-      "Support rites, assist with logistics.",
-      "Maintain utmost respect. No ghost jokes.",
-      "Help uphold ancient traditions."
+      "Assist with ceremonial duties and preparations.",
+      "Support the needs of temple staff with dignity and respect.",
+      "Help maintain order and ensure the rites proceed smoothly."
     ],
     "extra": "Strictly no touching the holy relics. Seriously."
   },
@@ -140,10 +126,10 @@ const missionData = [
     "location": "Dismal Forest",
     "objective": "Investigate rising magical anomalies and neutralize the source.",
     "steps": [
-      "Enter the anomalous zone (bring wards).",
-      "Track arcane signatures across fractured terrain.",
-      "Engage or negotiate with the anomaly.",
-      "Report back. Preferably alive."
+      "Enter the anomalous zone (bring protective measures).",
+      "Track evidence of magical instability.",
+      "Determine the cause and stop it, if possible.",
+      "Return with a report and any recovered artifacts."
     ],
     "extra": "Expect weird time distortions. And trees that argue."
   },
@@ -156,10 +142,10 @@ const missionData = [
     "location": "Shadowlands Rift",
     "objective": "Disable a growing portal breach before full demonic incursion.",
     "steps": [
-      "Secure access through the corrupted terrain.",
-      "Identify keystone wards and weaknesses.",
-      "Execute shutdown protocol (or brute-force it).",
-      "Escape before implosion. Fast."
+      "Secure safe passage through hostile terrain.",
+      "Examine the portal and its surroundings.",
+      "Shut down the breach by any viable means.",
+      "Evacuate quickly if the area destabilizes."
     ],
     "extra": "Containment Authority suggests NOT poking it."
   },
@@ -172,10 +158,10 @@ const missionData = [
     "location": "Dismal Blades Hideout",
     "objective": "Infiltrate the rogue faction's base and gather intelligence.",
     "steps": [
-      "Gain access unnoticed.",
-      "Collect vital leadership movement data.",
-      "Optional: Sabotage quietly.",
-      "Return before they notice anything missing."
+      "Gain access without being detected.",
+      "Locate and record key information.",
+      "Optional: Sabotage or plant misinformation.",
+      "Leave no trace and return safely."
     ],
     "extra": "Fake mustaches recommended but not provided."
   },
@@ -188,96 +174,103 @@ const missionData = [
     "location": "Ashminster Wilds, Site 3",
     "objective": "Investigate ruins or installations tied to 'Subject Cluster #3.'",
     "steps": [
-      "Review translated sigil fragments at The Armoury.",
-      "Travel to Ashminster Wilds and locate Site 3 markers.",
-      "Secure the area and investigate structures or glyphs.",
-      "Recover any surviving artefacts or documents."
+      "Review notes and translations at The Armoury.",
+      "Travel to Site 3 and secure the surrounding area.",
+      "Document and examine any structural anomalies or symbols.",
+      "Recover any intact records or relics."
     ],
     "extra": "Archivist Solen warns: sigils may still trigger latent enchantments."
   },
   {
-    "name": "New Rumor: The River's Red",
-    "type": "Exploration/Survival",
+    "name": "The Emberdeep Cellar",
+    "type": "Exploration / Combat / Puzzle",
     "rank": "Bronze",
-    "length": "Short",
-    "reward": "600g + Hazard Pay",
-    "location": "Lower Redwater River",
-    "objective": "Investigate why the river near Redwater turned unnaturally crimson.",
+    "length": "Short-Medium",
+    "reward": "120g + Relic Dust + Scroll Fragment",
+    "location": "Abandoned Cellar under Emberdeep Tavern",
+    "objective": "Explore the sealed subcellar recently discovered beneath Emberdeep’s old tavern.",
     "steps": [
-      "Travel to the Lower Redwater Banks.",
-      "Collect water samples.",
-      "Search for signs of magical or biological contamination.",
-      "Avoid drinking the water unless you're into spontaneous mutations."
+      "Access the cellar through the compromised foundation.",
+      "Explore and document the interior layout and contents.",
+      "Deal with any hazards or opposition encountered.",
+      "Secure any suspicious objects or magical remnants."
     ],
-    "extra": "Locals swear they heard 'singing' from the riverbed at night."
+    "extra": "The barkeep swears the casks started whispering. Again."
   },
   {
-    "name": "Expired: Siege of the Citadel",
-    "type": "Expired",
-    "rank": "Platinum",
-    "length": "Very Long",
-    "reward": "N/A",
-    "location": "Citadel of the Shadow Baroness",
-    "objective": "Opportunity closed. Other factions secured the location.",
-    "steps": [],
-    "extra": "Guild notes: Fortress fallen to rival hands. Assessment pending."
+    "name": "Shrine of the Hollow Watcher",
+    "type": "Exploration / Combat / Religious",
+    "rank": "Bronze",
+    "length": "Medium",
+    "reward": "200g + Blessing of the Hollow + Relic Token",
+    "location": "Shrine Cavern off Duskspine Ridge",
+    "objective": "Investigate the reawakening of an ancient shrine buried within a cliffside cave.",
+    "steps": [
+      "Descend safely into the shrine caverns.",
+      "Survey the ancient site and take notes.",
+      "Respond to any anomalies, disturbances, or guardian presence.",
+      "Complete the mission with reverence."
+    ],
+    "extra": "Local miners say they hear whispering prayers echoing from the ridge at night."
   },
   {
-    "name": "The Pie Witch of Duskhollow",
+    "name": "The Pie Witch of Duskhollow (Expired)",
     "type": "Investigation/Social",
     "rank": "Bronze",
     "length": "Short",
-    "reward": "150g + Mystery Pie + ???",
+    "reward": "Expired - No longer active",
     "location": "Duskhollow",
-    "objective": "Villagers suspect supernatural pastry practices. Investigate subtly.",
+    "objective": "This mission has been withdrawn from the board. Reports suggest the pie situation resolved itself... or everyone just stopped complaining.",
     "steps": [
-      "Taste the pies (highly encouraged).",
-      "Investigate the baker's workshop and methods.",
-      "Confront the 'Pie Witch' if warranted.",
-      "Survive the 'aftermath.'"
+      "Formerly involved cautious social inquiry and observation.",
+      "Assignment expired due to unresolved pastry-based anomalies.",
+      "Locals now host a weekly Pie Appreciation Society.",
+      "Guild suspects mild enchantment. Or exceptional baking skills."
     ],
-    "extra": "Past investigators returned... wider. And suspiciously content."
+    "extra": "Further investigation not advised. Or necessary. Probably."
   }
 ];
+document.addEventListener('DOMContentLoaded', function () {
+  const tableBody = document.getElementById('mission-table-body');
 
+  missionData.forEach(mission => {
+    // Create main row
+    const row = document.createElement('tr');
 
+    row.innerHTML = `
+      <td><strong>${mission.name}</strong></td>
+      <td>${mission.type}</td>
+      <td>${mission.rank}</td>
+      <td>${mission.length}</td>
+      <td>${mission.reward}</td>
+    `;
 
-    document.addEventListener('DOMContentLoaded', function () {
-      const tableBody = document.getElementById('mission-table-body');
+    tableBody.appendChild(row);
 
-      missionData.forEach(mission => {
-        // Create table row
-        const row = document.createElement('tr');
+    // Create full-width details row
+    const detailsRow = document.createElement('tr');
+    const detailsCell = document.createElement('td');
+    detailsCell.colSpan = 5;
 
-        const tdName = document.createElement('td');
-        tdName.innerHTML = `<strong>${mission.name}</strong>`;
+    const detail = document.createElement('details');
+    const summary = document.createElement('summary');
+    summary.textContent = `View Details`;
+    detail.appendChild(summary);
 
-        const detail = document.createElement('details');
-        const summary = document.createElement('summary');
-        summary.textContent = `View Details`;
-        detail.appendChild(summary);
+    const detailContent = `
+      <p><strong>Location:</strong> ${mission.location}</p>
+      <p><strong>Objective:</strong> ${mission.objective}</p>
+      ${mission.steps ? `<ol>${mission.steps.map(step => `<li>${step}</li>`).join('')}</ol>` : ''}
+      ${mission.extra ? `<p><em>${mission.extra}</em></p>` : ''}
+    `;
 
-        const detailContent = `
-          <p><strong>Location:</strong> ${mission.location}</p>
-          <p><strong>Objective:</strong> ${mission.objective}</p>
-          ${mission.steps ? `<ol>${mission.steps.map(step => `<li>${step}</li>`).join('')}</ol>` : ''}
-          ${mission.extra ? `<p>${mission.extra}</p>` : ''}
-        `;
+    detail.innerHTML += detailContent;
+    detailsCell.appendChild(detail);
+    detailsRow.appendChild(detailsCell);
+    tableBody.appendChild(detailsRow);
+  });
+});
 
-        detail.innerHTML += detailContent;
-        tdName.appendChild(detail);
-        row.appendChild(tdName);
-
-        row.innerHTML += `
-          <td>${mission.type}</td>
-          <td>${mission.rank}</td>
-          <td>${mission.length}</td>
-          <td>${mission.reward}</td>
-        `;
-
-        tableBody.appendChild(row);
-      });
-    });
   </script>
 </body>
 </html>
