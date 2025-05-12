@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pathfinder 2e Encounter Manager</title>
+  <script src="https://unpkg.com/vue@3"></script>
+  <style>
+    body {
+      background-color: #111;
+      color: #ddd;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 1em;
+    }
+    h2, h3 {
+      color: #f5ba42;
+    }
+    input, select, button, textarea {
+      background-color: #222;
+      color: #eee;
+      border: 1px solid #555;
+      padding: 0.5em;
+      margin: 0.2em;
+      border-radius: 4px;
+    }
+    button:hover {
+      background-color: #333;
+    }
+    .active {
+      background-color: #2a2f33;
+      font-weight: bold;
+    }
+    .delayed-list {
+      margin-top: 1em;
+      border-top: 1px dashed #555;
+      padding-top: 1em;
+    }
+    .stat-block {
+    background-color: #222;
+    padding: 1em;
+    border: 1px solid #555;
+    margin-top: 1em;
+  }
+  .stat-block pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      border: 1px solid #444;
+      padding: 0.5em;
+      text-align: left;
+    }
+    .dead {
+      color: #777;
+      text-decoration: line-through;
+    }
+    .color-dot {
+      display: inline-block;
+      width: 1em;
+      height: 1em;
+      border-radius: 50%;
+      margin-right: 0.5em;
+    }
+    .next-turn-btn {
+      margin-top: 1em;
+      padding: 1em 2em;
+      font-size: 1.2em;
+      background-color: #f5ba42;
+      color: #111;
+      border: none;
+      cursor: pointer;
+      border-radius: 6px;
+    }
+    .next-turn-btn:hover {
+      background-color: #e5a832;
+    }
+    details.import-export {
+      background-color: #1b1b1b;
+      border: 1px solid #333;
+      padding: 1em;
+      margin-top: 2em;
+      border-radius: 8px;
+    }
+    details.import-export summary {
+      cursor: pointer;
+      font-size: 1.1em;
+      color: #f5ba42;
+      padding: 0.5em 0;
+    }
+    .import-export textarea {
+      width: 100%;
+      height: 10em;
+    }
+  </style>
+</head>
+<body>
+<div id="app">
+  <h2>Initiative Tracker</h2>
+
+  <form @submit.prevent="addEntity">
+    <select v-model="newType">
+      <option>Player</option>
+      <option>Monster</option>
+    </select>
+    <input v-model="newName" placeholder="Name" required>
+    <input v-if="newType === 'Player'" v-model.number="newInitiative" placeholder="Initiative" type="number">
+    <select v-if="newType === 'Monster'" v-model="newColor">
+      <option value="red">Red</option>
+      <option value="blue">Blue</option>
+      <option value="yellow">Yellow</option>
+      <option value="green">Green</option>
+    </select>
+    <input v-if="newType === 'Monster'" v-model.number="newHP" type="number" placeholder="HP">
+    <textarea v-if="newType === 'Monster'" v-model="newStatBlock" placeholder="Stat Block"></textarea>
+    <button type="submit">Add</button>
+  </form>
+
+  <button v-if="!combatStarted && entities.length" @click="startCombat" class="next-turn-btn">Start Combat</button>
+  <button v-if="combatStarted" @click="nextTurn" class="next-turn-btn">Next Turn</button>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Initiative</th>
+        <th>Name</th>
+        <th>Type</th>
+        <th>HP</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="(e, i) in displayOrder" :key="e.id" :class="{ active: i === turnIndex, dead: e.hp !== undefined && e.hp <= 0 }">
+        <td>{{ e.initiative }}</td>
+        <td>
+          <span class="color-dot" :style="{ backgroundColor: e.color || 'transparent' }"></span>
+          {{ e.name }}
+        </td>
+        <td>{{ e.type }}</td>
+        <td>
+          <template v-if="e.type === 'Monster'">
+            <input v-model.number="e.hp" type="number" style="width: 4em;">
+          </template>
+          <template v-else>
+            &mdash;
+          </template>
+        </td>
+        <td>
+          <button v-if="combatStarted && displayOrder[turnIndex]?.id === e.id" @click="delayTurn(e.id)">Delay</button>
+          <button v-if="!combatStarted" @click="removeEntity(e.id)">Remove</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="stat-block" v-if="currentMonster">
+    <h3>Current Monster Stat Block: {{ currentMonster.name }}</h3>
+    <pre>{{ currentMonster.statBlock }}</pre>
+  </div>
+
+  <div class="delayed-list" v-if="delayedEntities.length">
+    <h3>Delayed</h3>
+    <ul>
+      <li v-for="e in delayedEntities" :key="e.id">
+        {{ e.name }} ({{ e.type }})
+        <button @click="resumeTurn(e.id)">Jump In</button>
+      </li>
+    </ul>
+  </div>
+
+  <details class="import-export">
+    <summary><strong>Encounter Import/Export Options</strong></summary>
+    <textarea readonly :value="exportJSON()"></textarea>
+    <div>
+      <button @click="copyExport">Copy to Clipboard</button>
+      <button @click="downloadJSON">Download JSON</button>
+    </div>
+    <div style="margin-top: 1em">
+      <input type="file" @change="uploadJSON($event)">
+    </div>
+    <textarea v-model="importBlob" placeholder="Or paste JSON here..."></textarea>
+    <button @click="importJSON">Load Encounter</button>
+  </details>
+</div>
+
+<script>
+const { createApp } = Vue;
+
+createApp({
+  data() {
+    return {
+      entities: [],
+      delayedEntities: [],
+      newName: '',
+      newInitiative: null,
+      newHP: null,
+      newStatBlock: '',
+      newColor: 'red',
+      newType: 'Player',
+      turnIndex: 0,
+      importBlob: '',
+      combatStarted: false
+    };
+  },
+  computed: {
+    displayOrder() {
+      if (!this.combatStarted) {
+        return [...this.entities]
+          .filter(e => e.hp === undefined || e.hp > 0)
+          .sort((a, b) => b.initiative - a.initiative || a.order - b.order);
+      }
+      return this.entities.filter(e => e.hp === undefined || e.hp > 0);
+    },
+    currentMonster() {
+      const current = this.displayOrder[this.turnIndex];
+      return current && current.type === 'Monster' ? current : null;
+    }
+  },
+  methods: {
+    generateInitiative() {
+      return Math.floor(Math.random() * 20) + 6;
+    },
+    addEntity() {
+      const initiative = this.newType === 'Monster' && (this.newInitiative === null || this.newInitiative === '')
+        ? this.generateInitiative()
+        : this.newInitiative;
+
+      this.entities.push({
+        id: Date.now() + Math.random(),
+        name: this.newName,
+        initiative,
+        type: this.newType,
+        order: this.entities.length,
+        hp: this.newType === 'Monster' ? this.newHP : undefined,
+        statBlock: this.newType === 'Monster' ? this.newStatBlock : '',
+        color: this.newType === 'Monster' ? this.newColor : ''
+      });
+
+      this.newName = '';
+      this.newInitiative = null;
+      this.newHP = null;
+      this.newStatBlock = '';
+      this.newColor = 'red';
+    },
+    startCombat() {
+      this.entities.sort((a, b) => b.initiative - a.initiative || a.order - b.order);
+      this.combatStarted = true;
+      this.turnIndex = 0;
+    },
+    nextTurn() {
+      if (!this.displayOrder.length) return;
+      this.turnIndex = (this.turnIndex + 1) % this.displayOrder.length;
+    },
+    delayTurn(id) {
+      const index = this.entities.findIndex(e => e.id === id);
+      if (index !== -1) {
+        const [delayed] = this.entities.splice(index, 1);
+        this.delayedEntities.push(delayed);
+        if (this.turnIndex >= this.entities.length) {
+          this.turnIndex = 0;
+        }
+      }
+    },
+    resumeTurn(id) {
+      const index = this.delayedEntities.findIndex(e => e.id === id);
+      if (index !== -1) {
+        const [entity] = this.delayedEntities.splice(index, 1);
+        const activeId = this.displayOrder[this.turnIndex]?.id;
+        const insertIndex = this.entities.findIndex(e => e.id === activeId);
+        this.entities.splice(insertIndex, 0, entity);
+        this.turnIndex = insertIndex;
+      }
+    },
+    removeEntity(id) {
+      this.entities = this.entities.filter(e => e.id !== id);
+      this.delayedEntities = this.delayedEntities.filter(e => e.id !== id);
+      if (this.turnIndex >= this.entities.length) this.turnIndex = 0;
+    },
+    exportJSON() {
+      return JSON.stringify({
+        active: this.entities,
+        delayed: this.delayedEntities
+      }, null, 2);
+    },
+    copyExport() {
+      navigator.clipboard.writeText(this.exportJSON()).then(() => alert('Copied to clipboard!'));
+    },
+    downloadJSON() {
+      const blob = new Blob([this.exportJSON()], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'encounter.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    },
+    uploadJSON(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.importBlob = e.target.result;
+      };
+      reader.readAsText(file);
+    },
+    importJSON() {
+      try {
+        const data = JSON.parse(this.importBlob);
+        this.entities = (data.active || []).map(e => {
+          if (e.type === 'Monster') {
+            e.initiative = this.generateInitiative();
+          }
+          return e;
+        });
+        this.delayedEntities = data.delayed || [];
+        this.turnIndex = 0;
+        this.combatStarted = false;
+      } catch (e) {
+        alert('Invalid JSON');
+      }
+    }
+  }
+}).mount('#app');
+</script>
+</body>
+</html>
