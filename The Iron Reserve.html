@@ -2,64 +2,98 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>The Iron Reserve - Guild Inventory</title>
+  <title>The Iron Reserve – Guild Inventory</title>
+
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+
   <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #1c1c1c;
-      color: #f5f5f5;
-      margin: 0;
-      padding: 20px;
+    :root{
+      --bg-dark:#1c1c1c;
+      --bg-card:#2a2a2a;
+      --text:#f5f5f5;
+      --accent:#ffc107;
+      --accent-light:#ffd966;
+      --radius:8px;
     }
-    h1 {
-      text-align: center;
-      color: #ffc107;
+
+    /* -------- base -------- */
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{
+      font-family:'Segoe UI',Tahoma,Verdana,sans-serif;
+      background:var(--bg-dark);color:var(--text);
+      padding:20px;          /* keep original 20 px */
     }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 20px;
+
+    /* ========== NAVIGATION (shared) ========== */
+    .site-header{
+      display:flex;align-items:center;gap:.75rem;
+      background:#1f1f1f;border-bottom:2px solid #444;
+      margin:-20px -20px 1.6rem;      /* offset body padding */
+      padding:.8rem 1rem;position:relative;
     }
-    th, td {
-      padding: 12px;
-      border-bottom: 1px solid #333;
-      text-align: left;
-      vertical-align: top;
+    .logo{font-weight:700;color:var(--accent);font-size:1.1rem;white-space:nowrap;}
+
+    .nav-toggle{display:none;}                 /* hidden checkbox */
+    .hamburger{
+      font-size:1.4rem;color:#fff;cursor:pointer;
+      margin-left:auto;user-select:none;display:block;
     }
-    th {
-      background-color: #333;
-      color: #ffc107;
+    .site-nav{
+      display:none;flex-direction:column;gap:.75rem;
+      position:absolute;left:0;right:0;top:100%;
+      background:#1f1f1f;border-top:2px solid #444;padding:1rem;
     }
-    tr:nth-child(even) {
-      background-color: #2a2a2a;
+    .site-nav a{color:#fff;text-decoration:none;font-weight:600;white-space:nowrap;}
+    .site-nav a:hover{color:var(--accent);}
+    /* toggle */
+    .nav-toggle:checked + .hamburger + .site-nav{display:flex;}
+
+    /* desktop layout */
+    @media(min-width:620px){
+      body{padding:32px;}                           /* scale up */
+      .site-header{margin:-32px -32px 2rem;padding:1rem 1.25rem;}
+      .hamburger{display:none;}
+      .site-nav{
+        display:flex !important;position:static;
+        flex-direction:row;gap:1.25rem;margin-left:auto;
+        background:transparent;border:none;padding:0;
+      }
     }
-    .note {
-      font-size: 0.9em;
-      color: #aaa;
-      margin-top: 10px;
+
+    /* -------- page styles -------- */
+    h1{
+      text-align:center;color:var(--accent);margin:0 0 .9rem;
+      font-size:clamp(1.5rem,5vw,2.2rem);
     }
+    table{
+      width:100%;border-collapse:collapse;margin-bottom:20px;
+    }
+    th,td{
+      padding:12px;border-bottom:1px solid #333;text-align:left;vertical-align:top;
+    }
+    th{background:#333;color:var(--accent);}
+    tr:nth-child(even){background:var(--bg-card);}
+    .note{font-size:.9em;color:#aaa;margin-top:10px;}
   </style>
 </head>
+
 <body>
-<nav style="background-color: #1f1f1f; padding: 1em; border-bottom: 2px solid #444;">
-  <ul style="display: flex; justify-content: center; list-style: none; margin: 0; padding: 0;">
-    <li style="margin: 0 1em;">
-      <a href="Mercenary Guild Overview.html" style="color: #fff; text-decoration: none; font-weight: bold;">🏰 Guild Overview</a>
-    </li>
-    <li style="margin: 0 1em;">
-      <a href="Mission Board.html" style="color: #fff; text-decoration: none; font-weight: bold;">📜 Mission Board</a>
-    </li>
-    <li style="margin: 0 1em;">
-      <a href="The Armoury.html" style="color: #fff; text-decoration: none; font-weight: bold;">🛡️ The Armoury</a>
-    </li>
-    <li style="margin: 0 1em;">
-      <a href="Mission Reports.html" style="color: #fff; text-decoration: none; font-weight: bold;">📝 Mission Reports</a>
-    </li>
-    <li style="margin: 0 1em;">
-      <a href="The Iron Reserve.html" style="color: #fff; text-decoration: none; font-weight: bold;">🏺 The Iron Reserve</a>
-    </li>
-  </ul>
-</nav>
+<!-- ========= HEADER & NAV ========= -->
+<header class="site-header">
+  <div class="logo">Iron Meridian</div>
+
+  <input type="checkbox" id="nav-toggle" class="nav-toggle">
+  <label for="nav-toggle" class="hamburger">&#9776;</label>
+
+  <nav class="site-nav">
+    <a href="Mercenary Guild Overview.html">🏰 Overview</a>
+    <a href="Mission Board.html">📜 Mission Board</a>
+    <a href="Mission Reports.html">📝 Reports</a>
+    <a href="The Armoury.html">🛡️ The Armoury</a>
+    <a href="iron-meridian-downtime.html">⏳ Downtime</a>
+    <a href="The Iron Reserve.html">🏺 Reserve</a>
+  </nav>
+</header>
 
 <h1>🏺 The Iron Reserve</h1>
 
@@ -71,18 +105,17 @@
       <th>Item Name</th>
       <th>Type</th>
       <th>Description</th>
-      <th>Price (Buy)</th>
-      <th>Price (Rent)</th>
+      <th>Price&nbsp;(Buy)</th>
+      <th>Price&nbsp;(Rent)</th>
       <th>Qty</th>
       <th>Currently Rented</th>
     </tr>
   </thead>
-  <tbody id="itemTable">
-    </tbody>
+  <tbody id="itemTable"></tbody>
 </table>
 
 <div class="note">
-  <strong>Note:</strong> Rental price is 20% of the listed cost for non-consumable items. Consumables (like potions) must be bought outright.
+  <strong>Note:</strong> Rental price is 20 % of the listed cost for non-consumable items. Consumables (like potions) must be bought outright.
 </div>
 
 <script>
@@ -234,32 +267,24 @@
 ]
 ;
 
-  function populateTable() {
-    const table = document.getElementById("itemTable");
-    items.forEach(item => {
-      const row = document.createElement("tr");
-      row.innerHTML = `
-        <td>${item.name}</td>
-        <td>${item.type}</td>
-        <td>${item.description}</td>
-        <td>${item.price}</td>
-        <td>
-          ${item.consumable ? "-" : (() => {
-            const [amount, currency] = item.price.split(' ');
-            const numericAmount = parseFloat(amount);
-            const rent = Math.ceil(numericAmount * 0.2);
-            return rent + " " + currency;
-          })()}
-        </td>
-        <td>${item.quantity}</td>
-        <td>${item.rented}</td>
-      `;
-      table.appendChild(row);
-    });
-  }
 
-  populateTable();
+function populateTable(){
+  const tb=document.getElementById('itemTable');
+  items.forEach(it=>{
+    const r=document.createElement('tr');
+    r.innerHTML=`
+      <td>${it.name}</td>
+      <td>${it.type}</td>
+      <td>${it.description}</td>
+      <td>${it.price}</td>
+      <td>${it.consumable?'-':(()=>{const[n,c]=it.price.split(' ');return Math.ceil(+n*0.2)+' '+c;})()}</td>
+      <td>${it.quantity}</td>
+      <td>${it.rented}</td>`;
+    tb.appendChild(r);
+  });
+}
+populateTable();
 </script>
-
 </body>
 </html>
+

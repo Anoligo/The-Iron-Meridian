@@ -22,20 +22,55 @@
     --expired-bg:#3b2424;    --expired-border:#7f3f3f;
   }
 
-  /* base */
+  /* ---------- base ---------- */
   *{box-sizing:border-box;margin:0;padding:0;}
-  body{font-family:'Segoe UI',Tahoma,Verdana,sans-serif;
-       background:var(--bg-dark);color:var(--text-light);padding:20px;}
+  body{
+    font-family:'Segoe UI',Tahoma,Verdana,sans-serif;
+    background:var(--bg-dark);color:var(--text-light);
+    padding:20px;                      /* keeps original spacing */
+  }
+
+  /* ========== NAVIGATION (shared) ========== */
+  .site-header{
+    display:flex;align-items:center;gap:.75rem;
+    background:#1f1f1f;border-bottom:2px solid #444;
+    margin:-20px -20px 1.5rem;         /* offset body padding */
+    padding:.75rem 1rem;position:relative;
+  }
+  .logo{font-weight:700;color:var(--accent);font-size:1.1rem;}
+
+  .nav-toggle{display:none;}           /* hidden checkbox */
+  .hamburger{
+    font-size:1.4rem;color:#fff;cursor:pointer;
+    margin-left:auto;user-select:none;display:block;
+  }
+  .site-nav{
+    display:none;flex-direction:column;gap:.75rem;
+    position:absolute;left:0;right:0;top:100%;
+    background:#1f1f1f;border-top:2px solid #444;padding:1rem;
+  }
+  .site-nav a{color:#fff;text-decoration:none;font-weight:600;white-space:nowrap;}
+  .site-nav a:hover{color:var(--accent);}
+  /* show menu when checked */
+  .nav-toggle:checked + .hamburger + .site-nav{display:flex;}
+
+  /* desktop layout */
+  @media(min-width:620px){
+    body{padding:24px;}
+    .site-header{margin:-24px -24px 1.75rem;padding:1rem 1.25rem;}
+    .hamburger{display:none;}
+    .site-nav{
+      display:flex !important;position:static;
+      flex-direction:row;gap:1.25rem;margin-left:auto;
+      background:transparent;border:none;padding:0;
+    }
+  }
+
+  /* ---------- headings ---------- */
   h1{text-align:center;color:var(--accent);margin-bottom:1rem;
       font-size:clamp(1.6rem,5vw,2.2rem);}
 
-  /* nav */
-  nav{background:#1f1f1f;padding:1em;border-bottom:2px solid #444;
-      margin:-20px -20px 1.5rem;}
-  nav ul{display:flex;justify-content:center;list-style:none;gap:1em;flex-wrap:wrap;}
-  nav a{color:#fff;text-decoration:none;font-weight:bold;}
-
-  /* filters */
+  /* ---------- filters ---------- */
   .filter-bar{display:flex;flex-wrap:wrap;gap:.75rem;justify-content:center;margin-bottom:1.5rem;}
   .filter-bar input,.filter-bar select{
     background:var(--bg-card);color:var(--text-light);
@@ -44,16 +79,16 @@
   }
   .filter-bar input::placeholder{color:#aaa;}
 
-  /* grid */
+  /* ---------- grid ---------- */
   .mission-container{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;}
 
-  /* card */
+  /* ---------- card ---------- */
   .mission{background:var(--bg-card);border:1px solid var(--border-dark);
            border-radius:var(--radius);padding:1rem;display:flex;
            flex-direction:column;gap:.5rem;transition:transform .2s;}
   .mission:hover{transform:translateY(-4px);}
   .mission.completed{background:var(--completed-bg);border-color:var(--completed-border);}
-  .mission.expired{background:var(--expired-bg);border-color:var(--expired-border);opacity:.85;}
+  .mission.expired  {background:var(--expired-bg);border-color:var(--expired-border);opacity:.85;}
 
   .mission-header{display:flex;flex-direction:column;gap:.15rem;line-height:1.35;}
   .mission-name{font-weight:600;color:var(--accent);}
@@ -61,45 +96,56 @@
   .mission.expired   .mission-name{color:#ff8c8c;}
 
   .mission-meta{font-size:.85rem;color:#ddd;display:flex;flex-wrap:wrap;gap:.5rem;}
-  .tag{background:#444;padding:.15rem .5rem;border-radius:9999px;font-size:.7rem;white-space:nowrap;}
+  .tag{background:#444;padding:.15rem .5rem;border-radius:9999px;font-size:.7rem;}
 
-  /* rank shield icon */
+  /* ---------- rank shield ---------- */
   .rank-icon{width:1em;height:1em;vertical-align:-2px;margin-right:.25rem;fill:currentColor;}
   .bronze{color:var(--bronze);}
   .silver{color:var(--silver);}
   .gold  {color:var(--gold);}
 
-  /* toggle */
+  /* ---------- details toggle ---------- */
   .details{display:none;flex-direction:column;gap:.5rem;font-size:.9rem;margin-top:.25rem;}
   .mission.open .details{display:flex;}
-  .toggle-btn{align-self:flex-start;padding:.25rem .65rem;border:1px solid var(--border-dark);
-              border-radius:var(--radius);background:var(--accent);color:var(--bg-dark);
-              font-size:.75rem;font-weight:600;cursor:pointer;user-select:none;transition:filter .2s;}
+  .toggle-btn{
+    align-self:flex-start;padding:.25rem .65rem;border:1px solid var(--border-dark);
+    border-radius:var(--radius);background:var(--accent);color:var(--bg-dark);
+    font-size:.75rem;font-weight:600;cursor:pointer;user-select:none;
+    transition:filter .2s;
+  }
   .toggle-btn:hover{filter:brightness(1.1);}
 
-  /* responsive */
-  @media(max-width:480px){.mission-container{grid-template-columns:1fr;}nav ul{gap:.5rem;}}
+  /* ---------- small screens ---------- */
+  @media(max-width:480px){
+    .mission-container{grid-template-columns:1fr;}
+  }
 </style>
 </head>
 
 <body>
-<!-- hidden SVG symbol definitions -->
+<!-- hidden SVG for rank shield -->
 <svg style="display:none;" xmlns="http://www.w3.org/2000/svg">
   <symbol id="shield" viewBox="0 0 24 24">
     <path d="M12 2l7 4v6c0 5-3.8 9.6-7 10-3.2-.4-7-5-7-10V6l7-4z"/>
   </symbol>
 </svg>
 
-<!-- navigation -->
-<nav>
-  <ul>
-    <li><a href="Mercenary Guild Overview.html">🏰 Guild Overview</a></li>
-    <li><a href="Mission Board.html">📜 Mission Board</a></li>
-    <li><a href="The Armoury.html">🛡️ The Armoury</a></li>
-    <li><a href="Mission Reports.html">📝 Mission Reports</a></li>
-    <li><a href="The Iron Reserve.html">🛡️ The Iron Reserve</a></li>
-  </ul>
-</nav>
+<!-- ========== HEADER & NAVIGATION ========== -->
+<header class="site-header">
+  <div class="logo">Iron Meridian</div>
+
+  <input type="checkbox" id="nav-toggle" class="nav-toggle">
+  <label for="nav-toggle" class="hamburger">&#9776;</label>
+
+  <nav class="site-nav">
+    <a href="Mercenary Guild Overview.html">🏰 Overview</a>
+    <a href="Mission Board.html">📜 Mission Board</a>
+    <a href="Mission Reports.html">📝 Reports</a>
+    <a href="The Armoury.html">🛡️ The Armoury</a>
+    <a href="iron-meridian-downtime.html">⏳ Downtime</a>
+    <a href="The Iron Reserve.html">🏺 Reserve</a>
+  </nav>
+</header>
 
 <h1>The Iron Meridian – Mission Board</h1>
 
@@ -124,7 +170,7 @@
 <div id="missionContainer" class="mission-container"></div>
 
 <script>
-/* ---------- data (single-rank) ---------- */
+/* ---------- mission data ---------- */
 const missionData=[
   /* expired */
   {name:"Mossfang Hollow",types:["Exploration","Combat"],rank:"Bronze",
@@ -197,6 +243,7 @@ const missionData=[
    objective:"Contain arcane crop phenomena.",
    steps:["Meet agents","Assess instability","Investigate produce","Neutralise threats","Report"],extra:"Animated vegetables on the loose."}
 ];
+
 
 /* ---------- helpers ---------- */
 const rankOrder={Bronze:1,Silver:2,Gold:3};

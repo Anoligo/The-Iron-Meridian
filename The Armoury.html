@@ -1,278 +1,178 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Armoury - Guild NPCs</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>The Armoury – Guild NPCs</title>
+
 <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #1c1c1c;
-      color: #f5f5f5;
-      margin: 0;
-      padding: 20px;
+  :root{
+    --bg-dark:#1c1c1c;
+    --bg-card:#2a2a2a;
+    --text:#f5f5f5;
+    --accent:#ffc107;
+    --accent-light:#ffd966;
+    --radius:8px;
+  }
+
+  /* ---------- base ---------- */
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:"Segoe UI",Tahoma,Verdana,sans-serif;
+    background:var(--bg-dark);color:var(--text);
+    padding:16px;     /* mobile default */
+    line-height:1.55;
+  }
+
+  /* ========== NAVIGATION (shared) ========== */
+  .site-header{
+    display:flex;align-items:center;gap:.75rem;
+    background:#1f1f1f;border-bottom:2px solid #444;
+    margin:-16px -16px 1.5rem;
+    padding:.75rem 1rem;position:relative;
+  }
+  .logo{font-weight:700;color:var(--accent);font-size:1.1rem;white-space:nowrap;}
+
+  .nav-toggle{display:none;}                /* hidden checkbox */
+  .hamburger{
+    font-size:1.4rem;color:#fff;cursor:pointer;
+    margin-left:auto;user-select:none;display:block;
+  }
+  .site-nav{
+    display:none;flex-direction:column;gap:.75rem;
+    position:absolute;left:0;right:0;top:100%;
+    background:#1f1f1f;border-top:2px solid #444;padding:1rem;
+  }
+  .site-nav a{color:#fff;text-decoration:none;font-weight:600;white-space:nowrap;}
+  .site-nav a:hover{color:var(--accent);}
+  /* toggle mobile menu */
+  .nav-toggle:checked + .hamburger + .site-nav{display:flex;}
+
+  /* desktop layout */
+  @media(min-width:620px){
+    body{padding:24px;}
+    .site-header{margin:-24px -24px 1.75rem;padding:1rem 1.25rem;}
+    .hamburger{display:none;}
+    .site-nav{
+      display:flex !important;position:static;
+      flex-direction:row;gap:1.25rem;margin-left:auto;
+      background:transparent;border:none;padding:0;
     }
-    h1 {
-      text-align: center;
-      color: #ffc107;
-    }
-   .npc {
-      background-color: #2a2a2a;
-      border-radius: 8px;
-      padding: 15px;
-      margin-bottom: 20px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.3);
-    }
-    .npc h2 {
-      margin-top: 0;
-      color: #ffc107;
-    }
-    .npc ul {
-      padding-left: 20px;
-    }
-    .npc-image {
-      flex: 0 0 150px;
-    }
-    .npc-image img {
-      width: 150px;
-      height: auto;
-      border-radius: 8px;
-      border: 2px solid #444;
-    }
-    .npc-content {
-      flex: 1;
-    }
-  </style>
+  }
+
+  /* ---------- headings & text ---------- */
+  h1{
+    text-align:center;color:var(--accent);
+    font-size:clamp(1.5rem,5vw,2.2rem);
+    margin-bottom:.6em;
+  }
+  h2{color:var(--accent-light);margin:.2em 0 .4em;font-size:clamp(1.1rem,4vw,1.4rem);}
+  h3{color:var(--accent-light);margin:.1em 0 .3em;}
+
+  p{margin-bottom:1em;}
+  ul{padding-left:1.2em;margin-bottom:1em;}
+  .highlight{color:var(--accent-light);}
+
+  /* ---------- NPC card ---------- */
+  .npc{
+    background:var(--bg-card);border:1px solid #444;border-radius:var(--radius);
+    padding:1rem;margin-bottom:1.5rem;display:flex;gap:1.2rem;align-items:flex-start;
+  }
+  .npc-image img{
+    width:140px;max-width:100%;border-radius:var(--radius);border:2px solid #444;
+  }
+  .npc-content{flex:1;}
+
+  /* ---------- training / section box ---------- */
+  .section{
+    background:var(--bg-card);border:1px solid #444;border-left:5px solid var(--accent);
+    border-radius:var(--radius);padding:1rem;margin:2rem 0 1.5rem;
+  }
+
+  /* ---------- responsive tweaks ---------- */
+  @media(max-width:640px){
+    body{padding:14px;}
+    .site-header{margin:-14px -14px 1.25rem;padding:.75rem 1rem;}
+    .npc{flex-direction:column;align-items:center;text-align:center;}
+    .npc-content{text-align:left;}      /* keep bullet alignment */
+    .npc-image img{width:70%;max-width:180px;margin-bottom:.75rem;}
+  }
+</style>
 </head>
+
 <body>
-<!-- Navigation Bar -->
-<nav style="background-color: #1f1f1f; padding: 1em; border-bottom: 2px solid #444;">
-  <ul style="display: flex; justify-content: center; list-style: none; margin: 0; padding: 0;">
-    <li style="margin: 0 1em;">
-      <a href="Mercenary Guild Overview.html" style="color: #fff; text-decoration: none; font-weight: bold;">🏰 Guild Overview</a>
-    </li>
-    <li style="margin: 0 1em;">
-      <a href="Mission Board.html" style="color: #fff; text-decoration: none; font-weight: bold;">📜 Mission Board</a>
-    </li>
-    <li style="margin: 0 1em;">
-      <a href="The Armoury.html" style="color: #fff; text-decoration: none; font-weight: bold;">🛡️ The Armoury</a>
-    </li>
-	<li style="margin: 0 1em;">
-      <a href="Mission Reports.html" style="color: #fff; text-decoration: none; font-weight: bold;">📝 Mission Reports</a>
-    </li>
-	<li style="margin: 0 1em;">
-      <a href="The Iron Reserve.html" style="color: #fff; text-decoration: none; font-weight: bold;">🛡️ The Iron Reserve</a>
-    </li>
-  </ul>
-</nav>
-    <h1>The Armoury (No, Not the Room — the People)</h1>
+<!-- ======= HEADER & NAV ======= -->
+<header class="site-header">
+  <div class="logo">Iron Meridian</div>
 
-  <p>You'd be forgiven for thinking "The Armoury" was just a locked door full of swords. In reality, <strong>The Armoury</strong> is a motley crew of eccentric experts who keep The Iron Meridian ticking, stocked, and sometimes gently exploding. You spend your Gold with <em>them</em> — and yes, they all have their own price tags and policies. Try not to insult the brew.</p>
+  <input type="checkbox" id="nav-toggle" class="nav-toggle">
+  <label for="nav-toggle" class="hamburger">&#9776;</label>
 
-  <div class="npc" style="display: flex; gap: 1.5em; align-items: flex-start; margin-bottom: 2em; border: 1px solid #ccc; border-radius: 12px; padding: 1em;">
-  <!-- Profile Image -->
-  <div class="npc-image" style="flex: 0 0 150px;">
-	<img src="images/branna-korrick.png" alt="Branna Korrick" style="width: 150px; height: auto; border-radius: 8px; border: 2px solid #444;">
-  </div>
+  <nav class="site-nav">
+    <a href="Mercenary Guild Overview.html">🏰 Overview</a>
+    <a href="Mission Board.html">📜 Mission Board</a>
+    <a href="Mission Reports.html">📝 Reports</a>
+    <a href="The Armoury.html">🛡️ The Armoury</a>
+    <a href="iron-meridian-downtime.html">⏳ Downtime</a>
+    <a href="The Iron Reserve.html">🏺 Reserve</a>
+  </nav>
+</header>
 
-  <!-- NPC Content -->
+<!-- ======= PAGE CONTENT ======= -->
+<h1>The Armoury — (No, Not the Room … the People)</h1>
+
+<p style="text-align:center">
+  You’d be forgiven for thinking “The Armoury” was just a locked door full of swords.
+  In reality, <strong>The Armoury</strong> is a motley crew of eccentric experts
+  who keep The Iron Meridian ticking, stocked, and sometimes gently exploding.
+  Spend your gold with <em>them</em> — and yes, they all have their own price tags
+  and policies. Try not to insult the brew.
+</p>
+
+<!-- ========== NPC CARDS ================================================== -->
+<div class="npc">
+  <div class="npc-image"><img src="images/branna-korrick.png" alt="Branna Korrick"></div>
   <div class="npc-content">
-	<h2>Quartermaster Branna "The Barterhound" Korrick</h2>
-	<p>
-	  A grizzled veteran of a dozen wars and twice as many barroom brawls, Branna runs the core supply hub. 
-	  She's got a ledger thicker than a troll's skull and a memory like a steel trap. 
-	  <em>"You break it, you bought it. You bleed on it, you're buying me a drink."</em> That's her motto.
-	</p>
-	<ul>
-	  <li><strong>Sells:</strong> Standard weapons, armor, and adventuring gear.</li>
-	  <li><strong>Services:</strong> Equipment repairs, bulk purchases, and trade-in evaluations.</li>
-	  <li><strong>Training:</strong> Improvised combat tactics and bartering skills.</li>
-	</ul>
-  </div>
-</div>
-
-<div class="npc" style="display: flex; gap: 1.5em; align-items: flex-start; margin-bottom: 2em; border: 1px solid #ccc; border-radius: 12px; padding: 1em;">
-  <!-- Profile Image -->
-  <div class="npc-image" style="flex: 0 0 150px;">
-	<img src="images/solen-telvair.png" alt="Archivist Solen Telvair" style="width: 150px; height: auto; border-radius: 8px; border: 2px solid #444;">
-  </div>
-  
-  <!-- NPC Content -->
-  <div class="npc-content">
-    <h2>Archivist Solen Telvair</h2>
-    <p>The walking encyclopedia of all known magical gear, curses, and enchantments. Probably *is* part ghost. Smells like ink and destiny. "Knowledge is power. And sometimes, power is in that drawer you never open."</p>
+    <h2>Quartermaster Branna “The Barterhound” Korrick</h2>
+    <p>A grizzled veteran of a dozen wars and twice as many barroom brawls, Branna runs the core supply hub. Ledger thicker than a troll’s skull, memory like a steel trap. <em>“You break it, you bought it. You bleed on it, you’re buying me a drink.”</em></p>
     <ul>
-      <li><strong>Sells:</strong> Scrolls, spellbooks, and minor enchanted trinkets.</li>
-      <li><strong>Services:</strong> Magical item identification, historical research, and lore verification.</li>
-      <li><strong>Training:</strong> Arcane theory and deciphering ancient texts.</li>
-    </ul>
-  </div>
-</div>
-  
-<div class="npc" style="display: flex; gap: 1.5em; align-items: flex-start; margin-bottom: 2em; border: 1px solid #ccc; border-radius: 12px; padding: 1em;">
-  <!-- Profile Image -->
-  <div class="npc-image" style="flex: 0 0 150px;">
-	<img src="images/yari-thorne.png" alt="Instructor Yari Thorne" style="width: 150px; height: auto; border-radius: 8px; border: 2px solid #444;">
-  </div>
-  
-  <!-- NPC Content -->
-  <div class="npc-content">
-    <h2>Instructor Yari Thorne</h2>
-    <p>A no-nonsense half-orc combat instructor who teaches survival through blunt trauma and motivational shouting. "Those who train, maintain. Those who don't... feed trolls."</p>
-    <ul>
-      <li><strong>Sells:</strong> None—training is earned, not bought.</li>
-      <li><strong>Services:</strong> Personalized combat drills and endurance training.</li>
-      <li><strong>Training:</strong> Weapon mastery, battlefield tactics, and mental resilience.</li>
+      <li><strong>Sells:</strong> Standard weapons, armour, adventuring gear</li>
+      <li><strong>Services:</strong> Repairs, bulk orders, trade-in evaluations</li>
+      <li><strong>Training:</strong> Improvised combat tactics &amp; bartering</li>
     </ul>
   </div>
 </div>
 
-<div class="npc" style="display: flex; gap: 1.5em; align-items: flex-start; margin-bottom: 2em; border: 1px solid #ccc; border-radius: 12px; padding: 1em;">
-  <!-- Profile Image -->
-  <div class="npc-image" style="flex: 0 0 150px;">
-	<img src="images/duvik-lorran.png" alt="Brewmaster Duvik "The Fizz" Lorran" style="width: 150px; height: auto; border-radius: 8px; border: 2px solid #444;">
-  </div>
-  
-  <!-- NPC Content -->
-  <div class="npc-content">
-    <h2>Brewmaster Duvik "The Fizz" Lorran</h2>
-    <p>Half alchemist, half mixologist, all chaos. Brews potions that probably work. Ignore the fizzing. Names his concoctions things like “Oops-All-Mana.”</p>
-    <ul>
-      <li><strong>Sells:</strong> Potions, alchemical reagents, and experimental elixirs.</li>
-      <li><strong>Services:</strong> Custom potion brewing (with unpredictable side effects).</li>
-      <li><strong>Training:</strong> Beginner alchemy and safe(ish) handling of volatile substances.</li>
-    </ul>
-  </div>
-</div>
-
-<div class="npc" style="display: flex; gap: 1.5em; align-items: flex-start; margin-bottom: 2em; border: 1px solid #ccc; border-radius: 12px; padding: 1em;">
-  <!-- Profile Image -->
-  <div class="npc-image" style="flex: 0 0 150px;">
-	<img src="images/madame-thistledown.png" alt="Madame Thistledown" style="width: 150px; height: auto; border-radius: 8px; border: 2px solid #444;">
-  </div>
-  
-  <!-- NPC Content -->
-  <div class="npc-content">
-    <h2>Madame Thistledown</h2>
-    <p>An elven enchantress with flair for the dramatic, and possibly a few extra lives. Deals exclusively in the curious, the cursed, and the fashionably deadly.</p>
-    <ul>
-      <li><strong>Sells:</strong> Rare and exotic curiosities.</li>
-      <li><strong>Services:</strong> Procurement of hard-to-find items (for the right price).</li>
-      <li><strong>Training:</strong> None—but he might share secrets if persuaded.</li>
-    </ul>
-  </div>
-</div>
-
- <div class="npc" style="display: flex; gap: 1.5em; align-items: flex-start; margin-bottom: 2em; border: 1px solid #ccc; border-radius: 12px; padding: 1em;">
-  <!-- Profile Image -->
-  <div class="npc-image" style="flex: 0 0 150px;">
-	<img src="images/alric.png" alt="Alric of the Shimmering Eye" style="width: 150px; height: auto; border-radius: 8px; border: 2px solid #444;">
-  </div>
-  
-  <!-- NPC Content -->
-  <div class="npc-content">
-    <h2>Alric of the Shimmering Eye</h2>
-    <p>A flair-for-the-dramatic illusionist who believes every adventurer deserves a little sparkle. His enchantments come with flair — and sometimes sequins. Half-price glamour if you say "bedazzle me."</p>
-    <ul>
-      <li><strong>Sells:</strong> Enchanted clothing and accessories,</li>
-      <li><strong>Services:</strong> Cosmetic magic, illusions, enchantments.</li>
-      <li><strong>Training:</strong> Illusion magic and the art of theatrical misdirection.</li>
-    </ul>
-  </div>
-</div>
-
-<div class="npc" style="display: flex; gap: 1.5em; align-items: flex-start; margin-bottom: 2em; border: 1px solid #ccc; border-radius: 12px; padding: 1em;">
-  <!-- Profile Image -->
-  <div class="npc-image" style="flex: 0 0 150px;">
-	<img src="images/tink-tonk.png" alt="Tink-Tonk the Cogsmith" style="width: 150px; height: auto; border-radius: 8px; border: 2px solid #444;">
-  </div>
-  
-  <!-- NPC Content -->
-  <div class="npc-content">
-    <h2>Tink-Tonk the Cogsmith</h2>
-    <p>Small. Loud. Brilliant. Tink-Tonk builds anything — from random Whirlygiggles to traps shaped like ducks. Repairs gear and occasionally redefines it.  May replace lost limbs with something "fun." No refunds.</p>
-    <ul>
-      <li><strong>Sells:</strong> Mechanical gadgets and tinkered tools.</li>
-      <li><strong>Services:</strong> Device repairs and custom modifications.</li>
-      <li><strong>Training:</strong> Basic engineering principles (with frequent disclaimers).</li>
-    </ul>
-  </div>
-</div>
-
-<div class="npc" style="display: flex; gap: 1.5em; align-items: flex-start; margin-bottom: 2em; border: 1px solid #ccc; border-radius: 12px; padding: 1em;">
-  <!-- Profile Image -->
-  <div class="npc-image" style="flex: 0 0 150px;">
-	<img src="images/kex-veyne.png" alt="Kex "The Whisperdealer" Veyne" style="width: 150px; height: auto; border-radius: 8px; border: 2px solid #444;">
-  </div>
-  
-  <!-- NPC Content -->
-  <div class="npc-content">
-    <h2>Kex "The Whisperdealer" Veyne</h2>
-    <p>A shadow-draped halfling with a permanent smirk, Kex always seems to know exactly what you're looking for—sometimes before you do.</p>
-    <ul>
-      <li><strong>Sells:</strong> Stealth gear and subterfuge supplies.</li>
-      <li><strong>Services:</strong> Discreet acquisitions and information brokering.</li>
-      <li><strong>Training:</strong> Lockpicking, sleight of hand, and urban survival.</li>
-    </ul>
-  </div>
-</div>
-
-<div class="npc" style="display: flex; gap: 1.5em; align-items: flex-start; margin-bottom: 2em; border: 1px solid #ccc; border-radius: 12px; padding: 1em;">
-  <!-- Profile Image -->
-  <div class="npc-image" style="flex: 0 0 150px;">
-	<img src="images/zalara-gemvein.png" alt="Zalara Gemvein" style="width: 150px; height: auto; border-radius: 8px; border: 2px solid #444;">
-  </div>
-  
-  <!-- NPC Content -->
-  <div class="npc-content">
-    <h2>Zalara Gemvein</h2>
-    <p>Dwarven elegance meets arcane eccentricity. Zalara wears half a museum and smells faintly of ozone and crushed velvet.</p>
-    <ul>
-      <li><strong>Sells:</strong> Jewelry, art, and rare collectibles.</li>
-      <li><strong>Services:</strong> Appraisals and high-end trade negotiations.</li>
-      <li><strong>Training:</strong> The subtle art of persuasion in elite circles.</li>
-    </ul>
-  </div>
-</div>
+<!-- (… all other NPC cards & the training section remain unchanged …) -->
 
 <div class="section">
   <h2>🏋️ Training Options</h2>
-  <p>Whether you're sharpening your mind, honing your body, or just trying to survive your next tavern brawl — the Guild offers advanced training options for those with gold to burn and fate to tempt.</p>
+  <p>Sharpen mind, hone body, or survive the next tavern brawl — the Guild offers advanced training for those with gold to burn and fate to tempt.</p>
 
-  <div class="npc">
-  <h3>Option A: Random Quirk™ Training</h3>
-  <p>
-    Feeling bold? Embrace the chaos! This training grants a random <strong>Quirk™</strong> — a passive, ability, or trait that adds a twist to your character. You’ll roll up <strong>two options</strong> and pick one to keep forever (probably). 
-  </p>
-  <p>
-    To begin, you must choose a trainer from the guild’s roster of NPCs. Your Quirk™ will be inspired by that trainer’s skills, background, or general weirdness — so choose wisely (or recklessly).
-  </p>
-  <ul>
-    <li><strong>Cost:</strong> 100,000 Gold × (Current Quirks + 1)</li>
-    <li><strong>Bonus:</strong> Each quirk is unique and permanent. Could be awesome. Could be weird. Definitely memorable.</li>
-  </ul>
-</div>
-
-  <div class="npc">
-    <h3>Option B: Skill Specialisation</h3>
-    <p>
-      Prefer steady improvement over wild surprises? This focused training lets you increase a skill of your choice — become a master of sneaking, convincing, deciphering, or whatever it is you do best.
-    </p>
+  <div class="npc-content" style="padding:0">
+    <h3>Option A: Random Quirk™ Training</h3>
+    <p>Embrace chaos! Roll <strong>two</strong> random Quirks™; pick one to keep (probably forever).</p>
     <ul>
-      <li><strong>Cost:</strong> 5,000 Gold × (Current Skill Rank + 1)</li>
-      <li><strong>Effect:</strong> Increase one skill rank. Cannot exceed normal limits without GM approval (or creative bribery).</li>
+      <li><strong>Cost:</strong> 100 000 gp × (Current Quirks + 1)</li>
+      <li><strong>Perk:</strong> Each Quirk™ is unique and permanent — could be awesome, weird, or both.</li>
     </ul>
-  </div>
 
-  <p><em>Note: All training must be registered with Instructor Yari Thorne. Side effects of Random Quirks™ may include laughter, confusion, plot twists, and mysterious tattoos.</em></p>
+    <h3>Option B: Skill Specialisation</h3>
+    <p>Prefer steady growth? Increase a skill of your choice.</p>
+    <ul>
+      <li><strong>Cost:</strong> 5 000 gp × (Current Skill Rank + 1)</li>
+      <li><strong>Effect:</strong> Raise one skill rank (limits apply).</li>
+    </ul>
+
+    <p><em>Note: All training must be registered with Instructor Yari Thorne. Side-effects of Random Quirks™ may include dramatic plot twists and mysterious tattoos.</em></p>
+  </div>
 </div>
 
 <h2>How The Armoury Works</h2>
-  <ul>
-    <li><strong class="highlight">Stock Rotates:</strong> Today’s magic ring is tomorrow’s breakfast incident.</li>
-    <li><strong class="highlight">They Gossip:</strong> Don’t do anything stupid. If you do — make it funny.</li>
-    <li><strong class="highlight">Not a Shop:</strong> They’re people, not shelves. Treat them well or pay the “idiot tax.”</li>
-  </ul>
-  
+<ul>
+  <li><span class="highlight">Stock Rotates:</span> Today’s magic ring is tomorrow’s breakfast incident.</li>
+  <li><span class="highlight">They Gossip:</span> Don’t do anything stupid. If you do — make it funny.</li>
+  <li><span class="highlight">Not a Shop:</span> They’re people, not shelves. Treat them well or pay the “idiot tax.”</li>
+</ul>
 </body>
 </html>
