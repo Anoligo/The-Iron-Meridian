@@ -1,74 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>PF2 Encounter Manager</title>
 <script src="https://unpkg.com/vue@3"></script>
-
 <style>
-/* ---------- colours & fonts ---------- */
-:root{
-  --hp-bg:#402427;      /* muted background */
-  --hp-bar:#ff8a80;     /* pastel red bar */
-}
-body{background:#111;color:#ddd;font-family:"Segoe UI",Tahoma,sans-serif;margin:0;padding:1em;}
+:root{--hp-bg:#333;}
+body{background:#111;color:#ddd;font-family:"Segoe UI",Tahoma,sans-serif;margin:0;padding:1rem;}
 h2,h3{color:#f5ba42;margin:.3em 0;}
-input,select,button,textarea{
-  background:#222;color:#eee;border:1px solid #555;border-radius:4px;padding:.45em;margin:.2em;font:inherit;
-}
+input,select,button,textarea{background:#222;color:#eee;border:1px solid #555;border-radius:4px;padding:.45em;margin:.2em;font:inherit;}
 textarea{resize:vertical;} button:hover{background:#333;}
-
-/* ---------- add-form ---------- */
 .add-form{display:flex;flex-wrap:wrap;gap:.4em;align-items:flex-start;}
 .add-form select,.add-form input[type=text],.add-form input[type=number]{width:9.5em;}
 .add-form textarea{width:18em;min-height:3.8em;}
 .dice-btn{border:none;background:#333;padding:.35em .55em;border-radius:4px;cursor:pointer;}
-
-/* ---------- initiative table ---------- */
 table{width:100%;border-collapse:collapse;margin-top:.8em;}
 th,td{border:1px solid #444;padding:.55em;text-align:left;vertical-align:top;}
 tr.active{background:#2a2f33;font-weight:bold;}
 tr.dead{color:#777;text-decoration:line-through;}
 .color-dot{display:inline-block;width:1em;height:1em;border-radius:50%;margin-right:.35em;}
-
-/* quick stats bar */
 .stat-sum{display:flex;align-items:center;gap:.35em;font-size:.78em;margin-top:.25em;}
 .stat-box{background:#555;border-radius:3px;padding:.05em .35em;display:flex;align-items:center;gap:.2em;}
 .stat-box b{font-weight:700;}
 .hp-wrap{flex:1;position:relative;height:8px;background:var(--hp-bg);border-radius:4px;overflow:hidden;}
-.hp-bar{position:absolute;top:0;left:0;bottom:0;background:var(--hp-bar);}
-
-/* status pills */
+.hp-bar{position:absolute;top:0;left:0;bottom:0;}
 .status-tag{display:inline-block;background:#444;color:#fff;border-radius:9999px;font-size:.75em;padding:.1em .6em;margin:.15em;cursor:pointer;user-select:none;}
 .status-tag:hover{background:#666;}
-
-/* big buttons */
 .big-btn{margin-top:1em;padding:1em 2em;font-size:1.05em;border:none;border-radius:6px;cursor:pointer;}
 .start-btn,.next-btn{background:#f5ba42;color:#111;} .start-btn:hover,.next-btn:hover{background:#e5a832;}
 .end-btn{background:#c94a4a;color:#fff;} .end-btn:hover{background:#b23d3d;}
 .clear-btn{background:#555;color:#fff;} .clear-btn:hover{background:#666;}
-
-/* stat-card */
 .stat-block{background:#222;border:1px solid #555;border-radius:6px;padding:1em;margin-top:1em;}
 .stat-block pre{white-space:pre-wrap;margin:0;}
 .stat-card{font-family:serif;line-height:1.35;font-size:.93em;}
 .stat-card h4{margin:.1em 0 .3em;font-size:1.15em;font-weight:700;text-transform:uppercase;}
 .stat-tags span{display:inline-block;padding:.05em .4em;margin-right:.25em;border-radius:2px;font-size:.68em;color:#fff;font-weight:700;letter-spacing:.02em;}
-.tag-NE{background:#3949ab}.tag-LG{background:#2e7d32}.tag-CE{background:#c62828}
+.tag-NE{background:#3949ab}.tag-LE{background:#6a1b9a}.tag-LG{background:#2e7d32}.tag-CE{background:#c62828}.tag-CG{background:#0277bd}
 .tag-Medium{background:#4caf50}.tag-Large{background:#8d6e63}.tag-Small{background:#42a5f5}
-.tag-Aberration{background:#7b1fa2}.tag-Undead{background:#6d4c41}
+.tag-Aberration{background:#7b1fa2}.tag-Undead{background:#6d4c41}.tag-Beast{background:#5d4037}
 .stat-section{border-top:1px solid #555;margin-top:.45em;padding-top:.35em;}
 .stat-card ul{margin:.3em 0 .2em 1.2em;padding:0;}
 .action-icon{font-weight:700;border:1px solid #777;border-radius:2px;padding:0 .18em;font-size:.66em;margin-right:.25em;}
 .act-single{background:#444}.act-two{background:#555}.act-three{background:#666}
-
-/* accordions */
 details.box{background:#1b1b1b;border:1px solid #333;border-radius:8px;padding:1em;margin-top:1.6em;}
 details.box summary{cursor:pointer;font-size:1.08em;color:#f5ba42;padding:.4em 0;}
 details.box textarea{width:100%;height:10em;}
-
-/* mobile */
 @media(max-width:600px){
   .add-form textarea{width:100%;}
   table{font-size:.88em;} input[type=number]{width:4em;}
@@ -78,174 +55,150 @@ details.box textarea{width:100%;height:10em;}
 <body>
 <div id="app">
 
-  <h2>Initiative Tracker <span v-if="combatStarted">— Round {{round}}</span></h2>
+<h2>Initiative Tracker <span v-if="combatStarted">— Round {{round}}</span></h2>
+<button v-if="showRestore" @click="restoreAutosave" style="background:#f5ba42;color:#111;">Restore Autosave</button>
 
-  <!-- SAVE / LOAD / CLEAR -->
-  <div v-if="!combatStarted" style="margin-bottom:.6em;">
-    <input v-model="saveName" placeholder="Encounter name" style="width:12em;">
-    <button @click="saveEncounter">💾 Save</button>
+<!-- SAVE/LOAD -->
+<div v-if="!combatStarted" style="margin-bottom:.6em;">
+  <input v-model="saveName" placeholder="Encounter name" style="width:12em;">
+  <button @click="saveEncounter">💾 Save</button>
+  <select v-model="selectedSave">
+    <option value="" disabled selected>Load saved…</option>
+    <option v-for="n in savedList" :key="n" :value="n">{{n}}</option>
+  </select>
+  <button v-if="selectedSave" @click="loadEncounter">⭯ Load</button>
+  <button v-if="selectedSave" @click="deleteEncounter" style="color:#c94a4a">🗑️</button>
+  <button v-if="entities.length" class="clear-btn" @click="clearCurrent">🧹 Clear</button>
+</div>
 
-    <select v-model="selectedSave">
-      <option value="" disabled selected>Load saved…</option>
-      <option v-for="n in savedList" :key="n" :value="n">{{n}}</option>
+<!-- ADD FORM -->
+<form v-if="!combatStarted" class="add-form" @submit.prevent="addEntity" id="addForm">
+  <select v-model="newType"><option>Player</option><option>Monster</option></select>
+  <template v-if="newType==='Player'">
+    <select v-model="newName" id="nameInput">
+      <option value="" disabled>Select player…</option>
+      <option v-for="p in playerNames" :key="p">{{p}}</option>
+      <option value="__custom">Custom name…</option>
     </select>
-    <button v-if="selectedSave" @click="loadEncounter">⭯ Load</button>
-    <button v-if="selectedSave" @click="deleteEncounter" style="color:#c94a4a">🗑️</button>
+    <input v-if="newName==='__custom'" v-model="customPlayer" placeholder="Name">
+    <input v-model.number="newInitiative" type="number" placeholder="Initiative">
+  </template>
+  <template v-else>
+    <input v-model="newName" placeholder="Monster name" required id="nameInput">
+    <select v-model="newColor"><option>red</option><option>blue</option><option>yellow</option><option>green</option></select>
+    <div style="display:flex;align-items:center;gap:.3em;">
+      <input v-model.number="newHP" type="number" placeholder="HP" style="width:6em;">
+      <button type="button" class="dice-btn" @click="rollInit" title="d20+5 initiative">🎲</button>
+    </div>
+    <textarea v-model="newStatBlock" placeholder="Stat Block (plain or JSON)"></textarea>
+  </template>
+  <button type="submit">Add</button>
+</form>
 
-    <button v-if="entities.length" class="clear-btn" @click="clearCurrent">🧹 Clear</button>
+<!-- COMBAT CONTROLS -->
+<div v-if="entities.length">
+  <button v-if="!combatStarted" @click="startCombat" class="big-btn start-btn">Start Combat</button>
+  <div v-else>
+    <button @click="nextTurn" class="big-btn next-btn">Next Turn</button>
+    <button @click="endCombat" class="big-btn end-btn">End Combat</button>
   </div>
+</div>
 
-  <!-- ADD ENTITY FORM -->
-  <form v-if="!combatStarted" class="add-form" @submit.prevent="addEntity" id="addForm">
-    <select v-model="newType"><option>Player</option><option>Monster</option></select>
-
-    <template v-if="newType==='Player'">
-      <select v-model="newName" id="nameInput">
-        <option value="" disabled>Select player…</option>
-        <option v-for="p in playerNames" :key="p">{{p}}</option>
-        <option value="__custom">Custom name…</option>
-      </select>
-      <input v-if="newName==='__custom'" v-model="customPlayer" placeholder="Name">
-      <input v-model.number="newInitiative" type="number" placeholder="Initiative">
-    </template>
-
-    <template v-else>
-      <input v-model="newName" placeholder="Monster name" required id="nameInput">
-      <select v-model="newColor">
-        <option>red</option><option>blue</option><option>yellow</option><option>green</option>
-      </select>
-      <div style="display:flex;align-items:center;gap:.3em;">
-        <input v-model.number="newHP" type="number" placeholder="HP" style="width:6em;">
-        <button type="button" class="dice-btn" @click="rollInit">🎲</button>
+<!-- TABLE -->
+<table v-if="entities.length">
+<thead><tr><th>Init</th><th>Name</th><th>Type / HP</th><th>Status</th><th>Note</th><th>Actions</th></tr></thead>
+<tbody>
+<tr v-for="(e,i) in displayOrder" :key="e.id" :class="{active:i===turnIndex,dead:e.type==='Monster'&&e.hp<=0}">
+  <td>{{e.initiative}}</td>
+  <td>
+    <span v-if="e.type==='Monster'" class="color-dot" :style="{backgroundColor:e.color}"></span>{{e.name}}
+    <button v-if="!combatStarted && e.type==='Monster'" @click="duplicateFromRow(e)" title="Duplicate">📋</button>
+  </td>
+  <td>
+    <template v-if="e.type==='Monster'">
+      <div class="hp-wrap"><div class="hp-bar" :style="{width:hpPercent(e)+'%',background:hpColor(e)}"></div></div>
+      <small>
+        <input v-model.number="e.hp" type="number" style="width:3em;background:transparent;border:none;color:#ff8a80;text-align:right;">
+        / {{e.hpMax||'?'}}
+        <button @click="e.hp=Math.max(0,e.hp-5)">−5</button>
+        <button @click="e.hp=Math.max(0,e.hp-10)">−10</button>
+        <button @click="e.hp+=5">+5</button>
+        <button @click="e.hp+=10">+10</button>
+      </small>
+      <div class="stat-sum">
+        <div class="stat-box"><b>AC</b>{{e.ac||'—'}}</div>
+        <div class="stat-box"><b>F</b>{{e.fort||'—'}}</div>
+        <div class="stat-box"><b>R</b>{{e.ref||'—'}}</div>
+        <div class="stat-box"><b>W</b>{{e.will||'—'}}</div>
       </div>
-      <textarea v-model="newStatBlock" placeholder="Stat Block (plain or JSON)"></textarea>
     </template>
+    <template v-else>—</template>
+  </td>
+  <td>
+    <span v-for="(s,idx) in e.statuses" :key="idx" class="status-tag" :title="statusTitle(s)" @click="tickStatus(e,idx)">
+      {{formatStatus(s)}}
+    </span>
+    <template v-if="e._addingStatus">
+      <select @change="applyStatus(e,$event)" @blur="e._addingStatus=false">
+        <option value="" disabled selected>Add…</option>
+        <optgroup v-for="g in groupedConditions" :label="g.label" :key="g.label">
+          <option v-for="c in g.items" :key="c.name" :value="c.name">{{c.name}}</option>
+        </optgroup>
+        <option value="__custom">Custom…</option>
+      </select>
+    </template>
+    <button v-else @click="e._addingStatus=true" title="Add status">＋</button>
+  </td>
+  <td><span v-if="e.note" :title="e.note">📝</span><button @click="editNote(e)" title="Add/Edit note">📝</button></td>
+  <td>
+    <button v-if="combatStarted&&displayOrder[turnIndex]?.id===e.id" @click="delayTurn(e.id)">Delay</button>
+    <button v-if="e.type==='Monster'" @click="showStats(e)">Stats</button>
+    <button v-if="e.type==='Monster'&&e.hp<=0" @click="removeEntity(e.id)">Remove</button>
+  </td>
+</tr>
+</tbody>
+</table>
 
-    <button type="submit">Add</button>
-  </form>
+<!-- STAT BLOCK -->
+<div v-if="selectedMonster" class="stat-block"><div v-html="selectedMonster.html"></div></div>
 
-  <!-- COMBAT CONTROLS -->
-  <div v-if="entities.length">
-    <button v-if="!combatStarted" @click="startCombat" class="big-btn start-btn">Start Combat</button>
-    <div v-else>
-      <button @click="nextTurn" class="big-btn next-btn">Next Turn</button>
-      <button @click="endCombat" class="big-btn end-btn">End Combat</button>
-    </div>
-  </div>
+<!-- DELAYED LIST -->
+<div v-if="delayedEntities.length" style="margin-top:1em;border-top:1px dashed #555;padding-top:1em;">
+  <h3>Delayed</h3>
+  <ul><li v-for="e in delayedEntities" :key="e.id">{{e.name}} <button @click="resumeTurn(e.id)">Jump In</button></li></ul>
+</div>
 
-  <!-- INITIATIVE TABLE -->
-  <table v-if="entities.length">
-    <thead>
-      <tr><th>Init</th><th>Name</th><th>Type / HP</th><th>Status</th><th>Actions</th></tr>
-    </thead>
-    <tbody>
-      <tr v-for="(e,i) in displayOrder" :key="e.id"
-          :class="{active:i===turnIndex,dead:e.type==='Monster' && e.hp!==undefined && e.hp<=0}">
-        <td>{{e.initiative}}</td>
-        <td><span v-if="e.type==='Monster'" class="color-dot" :style="{backgroundColor:e.color}"></span>{{e.name}}</td>
-        <td>
-          <template v-if="e.type==='Monster'">
-            <div class="hp-wrap"><div class="hp-bar" :style="{width:hpPercent(e)+'%'}"></div></div>
-            <small>
-              <input v-model.number="e.hp"
-                     type="number"
-                     style="width:3em;background:transparent;border:none;color:#ff8a80;text-align:right;">
-              / {{e.hpMax||'?'}}
-            </small>
-            <div class="stat-sum">
-              <div class="stat-box"><b>AC</b>{{e.ac||'—'}}</div>
-              <div class="stat-box"><b>F</b>{{e.fort||'—'}}</div>
-              <div class="stat-box"><b>R</b>{{e.ref||'—'}}</div>
-              <div class="stat-box"><b>W</b>{{e.will||'—'}}</div>
-            </div>
-          </template>
-          <template v-else>—</template>
-        </td>
-
-        <td>
-          <span v-for="(s,idx) in e.statuses" :key="idx"
-                class="status-tag" :title="statusTitle(s)"
-                @click="tickStatus(e,idx)">{{formatStatus(s)}}</span>
-
-          <template v-if="e._addingStatus">
-            <select @change="applyStatus(e,$event)" @blur="e._addingStatus=false">
-              <option value="" disabled selected>Add…</option>
-              <optgroup v-for="g in groupedConditions" :label="g.label" :key="g.label">
-                <option v-for="c in g.items" :key="c.name" :value="c.name">{{c.name}}</option>
-              </optgroup>
-              <option value="__custom">Custom…</option>
-            </select>
-          </template>
-          <button v-else @click="e._addingStatus=true" title="Add status">＋</button>
-        </td>
-
-        <td>
-          <button v-if="combatStarted && displayOrder[turnIndex]?.id===e.id"
-                  @click="delayTurn(e.id)">Delay</button>
-          <button v-if="e.type==='Monster'" @click="showStats(e)">Stats</button>
-          <button v-if="e.type==='Monster' && e.hp!==undefined && e.hp<=0"
-                  @click="removeEntity(e.id)">Remove</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-
-  <!-- STAT BLOCK -->
-  <div v-if="selectedMonster" class="stat-block">
-    <div v-html="selectedMonster.html"></div>
-  </div>
-
-  <!-- DELAYED LIST -->
-  <div v-if="delayedEntities.length"
-       style="margin-top:1em;border-top:1px dashed #555;padding-top:1em;">
-    <h3>Delayed</h3>
-    <ul>
-      <li v-for="e in delayedEntities" :key="e.id">
-        {{e.name}} ({{e.type}}) <button @click="resumeTurn(e.id)">Jump In</button>
-      </li>
-    </ul>
-  </div>
-
-  <!-- CURRENT ENCOUNTER EXPORT / IMPORT -->
-  <details class="box">
-    <summary><strong>Current Encounter</strong></summary>
-    <textarea readonly :value="exportJSON()"></textarea>
-    <div style="margin:.6em 0">
-      <button @click="copyExport">Copy</button>
-      <button @click="downloadJSON">Download</button>
-    </div>
-    <div style="margin:.6em 0"><input type="file" @change="uploadJSON"></div>
-    <textarea v-model="importBlob" placeholder="…or paste JSON here"></textarea>
-    <button @click="importJSON">Load</button>
-  </details>
-
-  <!-- SAVED LIBRARY EXPORT / IMPORT -->
-  <details class="box">
-    <summary><strong>Saved Library</strong></summary>
-    <textarea readonly :value="libraryJSON"></textarea>
-    <div style="margin:.6em 0">
-      <button @click="copyLibrary">Copy Library</button>
-      <button @click="downloadLibrary">📤 Export Library</button>
-    </div>
-    <div style="margin:.6em 0"><input type="file" @change="uploadLibrary"></div>
-    <textarea v-model="importLibraryBlob" placeholder="…or paste library JSON here"></textarea>
-    <button @click="importLibrary">Import Library</button>
-  </details>
+<!-- EXPORT / IMPORT -->
+<details class="box">
+  <summary><strong>Current Encounter</strong></summary>
+  <textarea readonly :value="exportJSON()"></textarea>
+  <div style="margin:.6em 0"><button @click="copyExport">Copy</button><button @click="downloadJSON">Download</button></div>
+  <div style="margin:.6em 0"><input type="file" @change="uploadJSON"></div>
+  <textarea v-model="importBlob" placeholder="…or paste JSON here"></textarea>
+  <button @click="importJSON">Load</button>
+</details>
+<details class="box">
+  <summary><strong>Saved Library</strong></summary>
+  <textarea readonly :value="libraryJSON"></textarea>
+  <div style="margin:.6em 0"><button @click="copyLibrary">Copy Library</button><button @click="downloadLibrary">📤 Export Library</button></div>
+  <div style="margin:.6em 0"><input type="file" @change="uploadLibrary"></div>
+  <textarea v-model="importLibraryBlob" placeholder="…or paste library JSON here"></textarea>
+  <button @click="importLibrary">Import Library</button>
+</details>
 </div>
 
 <script>
 const { createApp } = Vue;
 
-/* ---------- condition list ---------- */
+/* --- full condition list (mental, physical, DoT, combat, sense, etc.) --- */
 const conds=[
-  {cat:'🧠 Mental',name:'Frightened',desc:'– status penalty to checks & DCs; reduces 1 each round.'},
+  {cat:'🧠 Mental',name:'Frightened',desc:'– status penalty to checks & DCs; reduces each round.'},
   {cat:'🧠 Mental',name:'Confused',desc:'Act randomly; may attack allies.'},
   {cat:'🧠 Mental',name:'Fascinated',desc:'Observe the source only; –2 Perception vs. others.'},
   {cat:'🧠 Mental',name:'Stupefied',desc:'Penalty to mental ability checks & spell DCs.'},
   {cat:'🧠 Mental',name:'Controlled',desc:'Another creature directs your actions.'},
   {cat:'🧠 Mental',name:'Dazed',desc:'Can use only 1 action on your turn.'},
   {cat:'🧠 Mental',name:'Unconscious',desc:'Knocked out; helpless.'},
-
   {cat:'🤕 Physical',name:'Doomed',desc:'Die at a lower dying value.'},
   {cat:'🤕 Physical',name:'Dying',desc:'On the brink of death; recovery checks.'},
   {cat:'🤕 Physical',name:'Wounded',desc:'Dying value increases faster if you fall again.'},
@@ -255,10 +208,8 @@ const conds=[
   {cat:'🤕 Physical',name:'Enfeebled',desc:'Penalty to Str checks & DCs.'},
   {cat:'🤕 Physical',name:'Fatigued',desc:'–1 AC & saves; no exploration activities.'},
   {cat:'🤕 Physical',name:'Exhausted',desc:'Severely weakened.'},
-
   {cat:'🔥 DoT',name:'Persistent Damage',desc:'Damage each round until removed.'},
   {cat:'🔥 DoT',name:'Burning',desc:'Narrative tag for ongoing fire (persistent fire).'},
-
   {cat:'💢 Combat',name:'Flat-Footed',desc:'–2 AC.'},
   {cat:'💢 Combat',name:'Prone',desc:'On ground; –2 attack rolls.'},
   {cat:'💢 Combat',name:'Grabbed',desc:'Immobilized; flat-footed.'},
@@ -267,323 +218,136 @@ const conds=[
   {cat:'💢 Combat',name:'Slowed',desc:'Lose actions each round.'},
   {cat:'💢 Combat',name:'Quickened',desc:'Gain 1 extra action (specific).'},
   {cat:'💢 Combat',name:'Invisible',desc:'Can’t be seen without special senses.'},
-
   {cat:'💬 Sense',name:'Blinded',desc:'Can’t see; flat-footed.'},
   {cat:'💬 Sense',name:'Deafened',desc:'Can’t hear; –2 initiative.'},
   {cat:'💬 Sense',name:'Sensory-Deprived',desc:'Senses disrupted (GM discretion).'},
-
   {cat:'🎯 Target',name:'Charmed',desc:'Target treats you as friendly; can’t act hostile.'},
   {cat:'🎯 Target',name:'Stunned',desc:'Lose a number of actions equal to value.'},
   {cat:'🎯 Target',name:'Incapacitated',desc:'Trait; less effective vs. higher-level foes.'},
-
   {cat:'🧊 Special',name:'Encumbered',desc:'Overloaded; speed reduced.'},
   {cat:'🧊 Special',name:'Concealed',desc:'DC 5 flat check to hit you.'},
   {cat:'🧊 Special',name:'Hidden',desc:'DC 11 flat check; attacker knows location but not sight.'},
   {cat:'🧊 Special',name:'Undetected',desc:'Attacker doesn’t know where you are.'},
   {cat:'🧊 Special',name:'Observed',desc:'You’re plainly visible.'}
 ];
-const grouped=[],conditionMap={};
-conds.forEach(c=>conditionMap[c.name]=c.desc);
-for(const gName of [...new Set(conds.map(c=>c.cat))]){
-  grouped.push({label:gName,items:conds.filter(c=>c.cat===gName)});
-}
+const grouped=[],conditionMap={};conds.forEach(c=>conditionMap[c.name]=c.desc);
+[...new Set(conds.map(c=>c.cat))].forEach(g=>grouped.push({label:g,items:conds.filter(c=>c.cat===g)}));
 
 createApp({
-  data(){
-    return{
-      entities:[],delayedEntities:[],
-      newType:'Player',newName:'',customPlayer:'',
-      newInitiative:null,newHP:null,newStatBlock:'',newColor:'red',
-      turnIndex:0,combatStarted:false,selectedMonster:null,round:1,
-
-      saveName:'',selectedSave:'',
-      savedList:JSON.parse(localStorage.getItem('encounterNames')||'[]'),
-
-      importBlob:'',importLibraryBlob:'',
-      playerNames:['Ecaon','Buggie','Styx Red-Claw','Vokkar','ObsidianIvy','ElderDan','Trusco'],
-      groupedConditions:grouped,conditionMap
-    };
-  },
-  computed:{
-    displayOrder(){
-      return this.combatStarted
-        ? this.entities
-        : [...this.entities].sort((a,b)=>b.initiative-a.initiative||a.order-b.order);
-    },
-    libraryJSON(){
-      const slots={};
-      this.savedList.forEach(n=>{
-        slots[n]=JSON.parse(localStorage.getItem('encounter_'+n)||'null');
-      });
-      return JSON.stringify({names:this.savedList,slots},null,2);
-    }
-  },
-  methods:{
-    d20(){return Math.floor(Math.random()*20)+1;},
-    hpPercent(e){if(!e.hpMax)return 0;return Math.max(0,Math.min(100,100*e.hp/e.hpMax));},
-    rollInit(){this.newInitiative=this.d20()+5;},
-
-    /* ---------- add & clear ---------- */
-    addEntity(){
-      const name=this.newType==='Player'
-        ? (this.newName==='__custom'?this.customPlayer:this.newName)
-        : this.newName;
-      if(!name)return;
-      const init=this.newType==='Monster'
-        ? (this.newInitiative||this.d20()+5)
-        : (this.newInitiative||0);
-      this.entities.push({
-        id:Date.now()+Math.random(),
-        name,initiative:init,type:this.newType,order:this.entities.length,
-        hp:this.newHP,hpMax:this.newHP,statBlock:this.newStatBlock,color:this.newColor,
-        statuses:[],_addingStatus:false,html:'',ac:null,fort:null,ref:null,will:null
-      });
-      this.newName='';this.customPlayer='';this.newInitiative=null;this.newHP=null;this.newStatBlock='';this.newColor='red';
-      this.$nextTick(()=>document.getElementById('nameInput')?.focus());
-    },
-    clearCurrent(){if(confirm('Really clear current encounter?')){this.entities=[];this.delayedEntities=[];this.turnIndex=0;this.selectedMonster=null;this.round=1;}},
-
-    /* ---------- save / load slot ---------- */
-    saveEncounter(){
-      if(!this.saveName.trim()){alert('Name it first');return;}
-      localStorage.setItem('encounter_'+this.saveName,
-        JSON.stringify({active:this.entities,delayed:this.delayedEntities}));
-      if(!this.savedList.includes(this.saveName)){
-        this.savedList.push(this.saveName);
-        localStorage.setItem('encounterNames',JSON.stringify(this.savedList));
-      }
-      this.saveName='';alert('Saved!');
-    },
-    loadEncounter(){
-      if(!this.selectedSave)return;
-      const blob=localStorage.getItem('encounter_'+this.selectedSave);
-      if(!blob){alert('No data');return;}
-      const d=JSON.parse(blob);
-      this.entities=d.active||[];this.delayedEntities=d.delayed||[];
-      this.turnIndex=0;this.combatStarted=false;this.selectedMonster=null;this.round=1;
-    },
-    deleteEncounter(){
-      if(this.selectedSave&&confirm('Delete “‘'+this.selectedSave+'” ?')){
-        localStorage.removeItem('encounter_'+this.selectedSave);
-        this.savedList=this.savedList.filter(n=>n!==this.selectedSave);
-        localStorage.setItem('encounterNames',JSON.stringify(this.savedList));
-        this.selectedSave='';
-      }
-    },
-
-    /* ---------- combat flow ---------- */
-    startCombat(){
-      this.entities.forEach(e=>{if(e.type==='Monster' && e.ac==null)this.parseBlock(e);});
-      this.entities.sort((a,b)=>b.initiative-a.initiative||a.order-b.order);
-      this.combatStarted=true;this.turnIndex=0;this.round=1;this.syncStatBlock();
-    },
-    nextTurn () {
-  if (!this.entities.length) return;
-
-  /* advance pointer & round ------------------------------------------------ */
-  if (this.turnIndex === this.entities.length - 1) this.round++;
-  this.turnIndex = (this.turnIndex + 1) % this.entities.length;
+data(){return{
+  entities:[],delayedEntities:[],
+  newType:'Player',newName:'',customPlayer:'',newInitiative:null,newHP:null,newStatBlock:'',newColor:'red',
+  turnIndex:0,combatStarted:false,selectedMonster:null,round:1,
+  saveName:'',selectedSave:'',savedList:JSON.parse(localStorage.getItem('encounterNames')||'[]'),
+  importBlob:'',importLibraryBlob:'',showRestore:false,
+  playerNames:['Ecaon','Buggie','Styx Red-Claw','Vokkar','ObsidianIvy','ElderDan','Trusco'],
+  colours:['red','blue','yellow','green','purple','orange','teal','pink'],
+  groupedConditions:grouped,conditionMap
+};},
+computed:{
+  displayOrder(){return this.combatStarted?this.entities:[...this.entities].sort((a,b)=>b.initiative-a.initiative||a.order-b.order);},
+  libraryJSON(){const slots={};this.savedList.forEach(n=>slots[n]=JSON.parse(localStorage.getItem('encounter_'+n)||'null'));return JSON.stringify({names:this.savedList,slots},null,2);}
+},
+methods:{
+d20(){return Math.floor(Math.random()*20)+1;},
+hpPercent(e){return e.hpMax?Math.max(0,Math.min(100,e.hp/e.hpMax*100)):0;},
+hpColor(e){const p=this.hpPercent(e);return p>66?'#4caf50':p>33?'#ffc107':'#f44336';},
+rollInit(){this.newInitiative=this.d20()+5;},
+nextColour(name){const used=this.entities.filter(m=>m.name===name).map(m=>m.color);return this.colours.find(c=>!used.includes(c))||used[0]||this.colours[0];},
+duplicateFromRow(mon){const c=JSON.parse(JSON.stringify(mon));c.id=Date.now()+Math.random();c.order=this.entities.length;c.color=this.nextColour(mon.name);this.entities.push(c);},
+addEntity(){
+  const n=this.newType==='Player'?(this.newName==='__custom'?this.customPlayer:this.newName):this.newName;
+  if(!n)return;
+  const init=this.newType==='Monster'?(this.newInitiative||this.d20()+5):(this.newInitiative||0);
+  this.entities.push({id:Date.now()+Math.random(),name:n,initiative:init,type:this.newType,order:this.entities.length,
+    hp:this.newHP,hpMax:this.newHP,statBlock:this.newStatBlock,color:this.newColor,statuses:[],_addingStatus:false,html:'',
+    ac:null,fort:null,ref:null,will:null,note:''});
+  this.newName='';this.customPlayer='';this.newInitiative=null;this.newHP=null;this.newStatBlock='';this.newColor='red';
+},
+clearCurrent(){if(confirm('Really clear current encounter?')){this.entities=[];this.delayedEntities=[];this.turnIndex=0;this.selectedMonster=null;this.round=1;}},
+saveEncounter(){if(!this.saveName.trim()){alert('Name it first');return;}localStorage.setItem('encounter_'+this.saveName,JSON.stringify({active:this.entities,delayed:this.delayedEntities}));if(!this.savedList.includes(this.saveName)){this.savedList.push(this.saveName);localStorage.setItem('encounterNames',JSON.stringify(this.savedList));}this.saveName='';alert('Saved!');},
+loadEncounter(){
+  if(!this.selectedSave)return;
+  const blob=localStorage.getItem('encounter_'+this.selectedSave);if(!blob){alert('No data');return;}
+  const d=JSON.parse(blob);this.entities=d.active||[];this.delayedEntities=d.delayed||[];this.turnIndex=0;this.combatStarted=false;this.selectedMonster=null;this.round=1;
+},
+deleteEncounter(){if(this.selectedSave&&confirm('Delete “‘'+this.selectedSave+'” ?')){localStorage.removeItem('encounter_'+this.selectedSave);this.savedList=this.savedList.filter(n=>n!==this.selectedSave);localStorage.setItem('encounterNames',JSON.stringify(this.savedList));this.selectedSave='';}},
+startCombat(){this.entities.forEach(e=>{if(e.type==='Monster'&&e.ac==null)this.parseBlock(e);});this.entities.sort((a,b)=>b.initiative-a.initiative||a.order-b.order);this.combatStarted=true;this.turnIndex=0;this.round=1;this.syncStatBlock();},
+nextTurn(){
+  if(!this.entities.length)return;
+  if(this.turnIndex===this.entities.length-1)this.round++;
+  this.turnIndex=(this.turnIndex+1)%this.entities.length;
   this.syncStatBlock();
-
-  /* ❷ NEW — initiative-based duration tick -------------------------------- */
-  const curInit = this.displayOrder[this.turnIndex].initiative;
-  this.entities.forEach(e => {
-    e.statuses.forEach(s => {
-      if (s.dur && s.srcInit === curInit) {
-        s.dur--;
-      }
-    });
-    e.statuses = e.statuses.filter(s => s.dur == null || s.dur > 0);
+  const curInit=this.displayOrder[this.turnIndex].initiative;
+  this.entities.forEach(e=>{
+    e.statuses.forEach(s=>{if(s.dur&&s.srcInit===curInit)s.dur--;});
+    e.statuses=e.statuses.filter(s=>s.dur==null||s.dur>0);
   });
 },
-
-    endCombat(){
-      this.entities=[];this.delayedEntities=[];
-      this.turnIndex=0;this.combatStarted=false;this.selectedMonster=null;this.round=1;
-    },
-    delayTurn(id){
-      const i=this.entities.findIndex(e=>e.id===id);
-      if(i!==-1){
-        this.delayedEntities.push(this.entities.splice(i,1)[0]);
-        if(this.turnIndex>=this.entities.length) this.turnIndex=0;
-        this.syncStatBlock();
-      }
-    },
-    resumeTurn(id){
-      const i=this.delayedEntities.findIndex(e=>e.id===id);
-      if(i!==-1){
-        const ent=this.delayedEntities.splice(i,1)[0];
-        const activeId=this.displayOrder[this.turnIndex]?.id;
-        const ins=this.entities.findIndex(e=>e.id===activeId);
-        this.entities.splice(ins,0,ent);
-        this.turnIndex=ins;this.syncStatBlock();
-      }
-    },
-
-    /* ---------- status handling ---------- */
-formatStatus (s) {
-  return s.dur ? `${s.name}:${s.dur}` : s.name;
+endCombat(){this.entities=[];this.delayedEntities=[];this.turnIndex=0;this.combatStarted=false;this.selectedMonster=null;this.round=1;},
+delayTurn(id){const i=this.entities.findIndex(e=>e.id===id);if(i!==-1){this.delayedEntities.push(this.entities.splice(i,1)[0]);if(this.turnIndex>=this.entities.length)this.turnIndex=0;this.syncStatBlock();}},
+resumeTurn(id){const i=this.delayedEntities.findIndex(e=>e.id===id);if(i!==-1){const ent=this.delayedEntities.splice(i,1)[0];const activeId=this.displayOrder[this.turnIndex].id;const ins=this.entities.findIndex(e=>e.id===activeId);this.entities.splice(ins,0,ent);this.turnIndex=ins;this.syncStatBlock();}},
+formatStatus(s){return s.dur?`${s.name}:${s.dur}`:s.name;},
+statusTitle(s){return (this.conditionMap[s.name]||s.name)+(s.dur?` (${s.dur} rounds)`:'');},
+tickStatus(ent,idx){const st=ent.statuses[idx];if(st.dur!=null){st.dur--;if(st.dur<=0)ent.statuses.splice(idx,1);}else ent.statuses.splice(idx,1);},
+applyStatus(ent,ev){
+  const val=ev.target.value;ent._addingStatus=false;if(!val)return;
+  let name='',dur=null;if(val==='__custom'){const c=prompt('Status name');if(!c)return;name=c;}else name=val;
+  if(name.includes(':')){const [n,d]=name.split(':');name=n;dur=parseInt(d);}
+  if(dur==null){const dp=prompt('Duration in rounds (blank none)');if(dp)dur=parseInt(dp);}
+  const srcInit=this.displayOrder[this.turnIndex]?.initiative??null;
+  ent.statuses.push({name,dur:isNaN(dur)?null:dur,srcInit});
 },
-statusTitle (s) {
-  return (this.conditionMap[s.name] || s.name) +
-         (s.dur ? ` (${s.dur} rounds)` : '');
+editNote(e){const n=prompt('GM note',e.note||'');if(n!==null)e.note=n;},
+showStats(ent){this.parseBlock(ent);this.selectedMonster=ent;},
+syncStatBlock(){const cur=this.entities[this.turnIndex];if(cur)this.parseBlock(cur);this.selectedMonster=(cur&&cur.type==='Monster')?cur:null;},
+parseBlock(mon){
+  try{
+    const o=typeof mon.statBlock==='string'?JSON.parse(mon.statBlock):mon.statBlock;
+    mon.html=this.buildCard(o);
+    mon.ac=o.ac||null;mon.fort=o.saves?.Fort||null;mon.ref=o.saves?.Ref||null;mon.will=o.saves?.Will||null;
+    mon.hpMax=mon.hpMax||o.hp||mon.hp;
+  }catch{mon.html=`<pre>${(mon.statBlock||'').replace(/</g,"&lt;")}</pre>`;}
 },
-    tickStatus (ent, idx) {
-  const st = ent.statuses[idx];
-  if (st.dur !== null && st.dur !== undefined) {
-    st.dur--;
-    if (st.dur <= 0) ent.statuses.splice(idx, 1);   // auto-remove only numbered
-  } else {
-    ent.statuses.splice(idx, 1);                    // manual click still removes timeless
-  }
+buildTag(lbl,cls){cls=cls||lbl.replace(/\\s+/g,'');return `<span class="tag-${cls}">${lbl}</span>`;},
+buildCard(o){
+  const tags=`<div class="stat-tags">${o.alignment?this.buildTag(o.alignment):''}${o.size?this.buildTag(o.size):''}${(o.traits||[]).map(t=>this.buildTag(t)).join('')}</div>`;
+  const head=`<h4>${o.name||'Creature'} <span style="float:right">Lvl ${o.level??'?'}</span></h4>${tags}`;
+  const senses=`<b>Perception</b> ${o.perception||''}${o.senses?'; '+o.senses.join(', '):''}`;
+  const skills=o.skills?`<b>Skills</b> ${Object.entries(o.skills).map(([k,v])=>k+' '+v).join(', ')}`:'';
+  const ability=o.abilities?Object.entries(o.abilities).map(([k,v])=>`${k} ${v}`).join(', '):'';
+  const saves=o.saves?`<b>Fort</b> ${o.saves.Fort||''}, <b>Ref</b> ${o.saves.Ref||''}, <b>Will</b> ${o.saves.Will||''}`:'';
+  const res=o.resist?`<b>Resist</b> ${fmt(o.resist)}`:'';
+  const weak=o.weak?`<b>Weak</b> ${fmt(o.weak)}`:'';
+  function fmt(x){return Object.entries(x).map(([k,v])=>k+' '+v).join(', ');}
+  const melee=(o.melee||[]).map(m=>`<li><b>Melee</b> ${m.name} ${m.attack||''}${m.traits?' ('+m.traits+')':''}, <i>Damage</i> ${m.damage}</li>`).join('');
+  const acts=(o.actions||[]).map(a=>{const icon=a.type==='three'?'◆◆◆':a.type==='two'?'◆◆':'◆';return `<div><span class="action-icon">${icon}</span><b>${a.name}.</b> ${a.text}</div>`;}).join('');
+  const desc=o.description?`<div class="stat-section">${o.description}</div>`:'';
+  return `<div class="stat-card">${head}<div class="stat-section">${senses}</div><div class="stat-section">${skills}<br>${ability}</div><div class="stat-section">AC ${o.ac||''}; ${saves}<br><b>HP</b> ${o.hp||''}${res?'; '+res:''}${weak?'; '+weak:''}</div><div class="stat-section"><b>Speed</b> ${o.speed||'—'} ft</div><ul>${melee}</ul>${acts}${desc}</div>`;
 },
-applyStatus (ent, ev) {
-  const val = ev.target.value;
-  ent._addingStatus = false;
-  if (!val) return;
-
-  // name / duration parsing (same as before) -------------
-  let name = '', dur = null;
-  if (val === '__custom') {
-    const c = prompt('Status name'); if (!c) return;
-    name = c;
-  } else {
-    name = val;
-  }
-  if (name.includes(':')) {
-    const [n, d] = name.split(':');
-    name = n; dur = parseInt(d || '');
-  }
-  if (dur == null) {
-    const dPrompt = prompt('Duration in rounds (blank for none)');
-    if (dPrompt) dur = parseInt(dPrompt);
-  }
-
-  // ❶ NEW — record the initiative of the acting creature
-  const srcInit = this.displayOrder[this.turnIndex]?.initiative ?? null;
-
-  ent.statuses.push({ name, dur: isNaN(dur) ? null : dur, srcInit });
+removeEntity(id){this.entities=this.entities.filter(e=>e.id!==id);this.delayedEntities=this.delayedEntities.filter(e=>e.id!==id);if(this.turnIndex>=this.entities.length)this.turnIndex=0;if(this.selectedMonster&&this.selectedMonster.id===id)this.selectedMonster=null;},
+exportJSON(){return JSON.stringify({active:this.entities,delayed:this.delayedEntities},null,2);},
+copyExport(){navigator.clipboard.writeText(this.exportJSON()).then(()=>alert('Copied!'));},
+downloadJSON(){const blob=new Blob([this.exportJSON()],{type:'application/json'});const url=URL.createObjectURL(blob);Object.assign(document.createElement('a'),{href:url,download:'encounter.json'}).click();URL.revokeObjectURL(url);},
+uploadJSON(ev){const f=ev.target.files[0];if(!f)return;const r=new FileReader();r.onload=x=>this.importBlob=x.target.result;r.readAsText(f);},
+importJSON(){try{const d=JSON.parse(this.importBlob||'{}');this.entities=d.active||[];this.delayedEntities=d.delayed||[];this.turnIndex=0;this.combatStarted=false;this.selectedMonster=null;this.round=1;}catch{alert('Invalid JSON');}},
+copyLibrary(){navigator.clipboard.writeText(this.libraryJSON).then(()=>alert('Copied library!'));},
+downloadLibrary(){const blob=new Blob([this.libraryJSON],{type:'application/json'});const url=URL.createObjectURL(blob);Object.assign(document.createElement('a'),{href:url,download:'encounter_library.json'}).click();URL.revokeObjectURL(url);},
+uploadLibrary(ev){const f=ev.target.files[0];if(!f)return;const r=new FileReader();r.onload=x=>this.importLibraryBlob=x.target.result;r.readAsText(f);},
+importLibrary(){try{const lib=JSON.parse(this.importLibraryBlob||'{}');if(!Array.isArray(lib.names)||typeof lib.slots!=='object')throw 0;lib.names.forEach(n=>{localStorage.setItem('encounter_'+n,JSON.stringify(lib.slots[n]));if(!this.savedList.includes(n))this.savedList.push(n);});localStorage.setItem('encounterNames',JSON.stringify(this.savedList));alert('Library imported!');}catch{alert('Invalid library JSON');}},
+restoreAutosave(){const d=JSON.parse(localStorage.getItem('encounter_autosave_current')||'{}');this.entities=d.active||[];this.delayedEntities=d.delayed||[];this.showRestore=false;}
 },
-
-
-    /* ---------- stat-block parsing / rendering ---------- */
-    showStats(ent){this.parseBlock(ent);this.selectedMonster=ent;},
-    syncStatBlock(){
-      const cur=this.entities[this.turnIndex];
-      if(cur) this.parseBlock(cur);
-      this.selectedMonster=(cur&&cur.type==='Monster')?cur:null;
-    },
-    parseBlock(mon){
-      try{
-        const o=typeof mon.statBlock==='string'?JSON.parse(mon.statBlock):mon.statBlock;
-        mon.html=this.buildCard(o);
-        mon.ac=o.ac||null;
-        mon.fort=o.saves?.Fort||null;
-        mon.ref=o.saves?.Ref||null;
-        mon.will=o.saves?.Will||null;
-        mon.hpMax=mon.hpMax||o.hp||mon.hp;
-      }catch{
-        mon.html=`<pre>${(mon.statBlock||'').replace(/</g,"&lt;")}</pre>`;
-        if(mon.ac==null){mon.ac=mon.fort=mon.ref=mon.will=null;}
-      }
-    },
-    buildTag(lbl,cls){cls=cls||lbl.replace(/\\s+/g,'');return `<span class="tag-${cls}">${lbl}</span>`;},
-    buildCard(o){
-      const tags=`<div class="stat-tags">
-        ${o.alignment?this.buildTag(o.alignment):''}
-        ${o.size?this.buildTag(o.size):''}
-        ${(o.traits||[]).map(t=>this.buildTag(t)).join('')}
-      </div>`;
-      const head=`<h4>${o.name||'Creature'} <span style="float:right">CR ${o.level??'?'}</span></h4>${tags}`;
-      const senses=`<b>Perception</b> ${o.perception||''}${o.senses?'; '+o.senses.join(', '):''}`;
-      const skills=o.skills?`<b>Skills</b> ${Object.entries(o.skills).map(([k,v])=>k+' '+v).join(', ')}`:'';
-      const ability=o.abilities?Object.entries(o.abilities).map(([k,v])=>`${k} ${v}`).join(', ') :'';
-      const saves=o.saves?`<b>Fort</b> ${o.saves.Fort||''}, <b>Ref</b> ${o.saves.Ref||''}, <b>Will</b> ${o.saves.Will||''}`:'';
-      const res=o.resist?`<b>Resist</b> ${fmt(o.resist)}`:'';
-      const weak=o.weak?`<b>Weak</b> ${fmt(o.weak)}`:'';
-      function fmt(x){return Object.entries(x).map(([k,v])=>k+' '+v).join(', ');}
-      const melee=(o.melee||[]).map(m=>
-        `<li><b>Melee</b> ${m.name} ${m.attack||''}${m.traits?' ('+m.traits+')':''}, <i>Damage</i> ${m.damage}</li>`
-      ).join('');
-      const acts=(o.actions||[]).map(a=>{
-        const icon=a.type==='three'?'◆◆◆':a.type==='two'?'◆◆':'◆';
-        const cls=a.type==='three'?'act-three':a.type==='two'?'act-two':'act-single';
-        return `<div><span class="action-icon ${cls}">${icon}</span><b>${a.name}.</b> ${a.text}</div>`;
-      }).join('');
-      const desc=o.description?`<div class="stat-section">${o.description}</div>`:'';
-      return `<div class="stat-card">${head}
-        <div class="stat-section">${senses}</div>
-        <div class="stat-section">${skills}<br>${ability}</div>
-        <div class="stat-section">AC ${o.ac||''}; ${saves}<br><b>HP</b> ${o.hp||''} ${res?'; '+res:''} ${weak?'; '+weak:''}</div>
-        <div class="stat-section"><b>Speed</b> ${o.speed||'—'} ft</div>
-        <ul>${melee}</ul>${acts}${desc}
-      </div>`;
-    },
-
-    /* ---------- monster removal ---------- */
-    removeEntity(id){
-      this.entities=this.entities.filter(e=>e.id!==id);
-      this.delayedEntities=this.delayedEntities.filter(e=>e.id!==id);
-      if(this.turnIndex>=this.entities.length) this.turnIndex=0;
-      if(this.selectedMonster && this.selectedMonster.id===id) this.selectedMonster=null;
-    },
-
-    /* ---------- current encounter export / import ---------- */
-    exportJSON(){return JSON.stringify({active:this.entities,delayed:this.delayedEntities},null,2);},
-    copyExport(){navigator.clipboard.writeText(this.exportJSON()).then(()=>alert('Copied!'));},
-    downloadJSON(){
-      const blob=new Blob([this.exportJSON()],{type:'application/json'});
-      const url=URL.createObjectURL(blob);
-      Object.assign(document.createElement('a'),{href:url,download:'encounter.json'}).click();
-      URL.revokeObjectURL(url);
-    },
-    uploadJSON(ev){
-      const f=ev.target.files[0]; if(!f)return;
-      const r=new FileReader(); r.onload=e=>this.importBlob=e.target.result; r.readAsText(f);
-    },
-    importJSON(){
-      try{
-        const d=JSON.parse(this.importBlob||'{}');
-        this.entities=d.active||[]; this.delayedEntities=d.delayed||[];
-        this.turnIndex=0; this.combatStarted=false; this.selectedMonster=null; this.round=1;
-      }catch{ alert('Invalid JSON'); }
-    },
-
-    /* ---------- library export / import ---------- */
-    copyLibrary(){navigator.clipboard.writeText(this.libraryJSON).then(()=>alert('Copied library!'));},
-    downloadLibrary(){
-      const blob=new Blob([this.libraryJSON],{type:'application/json'});
-      const url=URL.createObjectURL(blob);
-      Object.assign(document.createElement('a'),{href:url,download:'encounter_library.json'}).click();
-      URL.revokeObjectURL(url);
-    },
-    uploadLibrary(ev){
-      const f=ev.target.files[0]; if(!f)return;
-      const r=new FileReader(); r.onload=e=>this.importLibraryBlob=e.target.result; r.readAsText(f);
-    },
-    importLibrary(){
-      try{
-        const lib=JSON.parse(this.importLibraryBlob||'{}');
-        if(!Array.isArray(lib.names)||typeof lib.slots!=='object') throw 0;
-        lib.names.forEach(n=>{
-          localStorage.setItem('encounter_'+n,JSON.stringify(lib.slots[n]));
-          if(!this.savedList.includes(n)) this.savedList.push(n);
-        });
-        localStorage.setItem('encounterNames',JSON.stringify(this.savedList));
-        alert('Library imported!');
-      }catch{alert('Invalid library JSON');}
-    }
-  },
-  mounted(){
-    /* ---------- keyboard shortcuts ---------- */
-    window.addEventListener('keydown',e=>{
-      if(e.target.closest('input,textarea,select')) return;
-      if(e.code==='Space'){e.preventDefault();if(this.combatStarted)this.nextTurn();}
-      else if(e.code==='KeyS' && !this.combatStarted && this.entities.length){this.startCombat();}
-      else if(e.code==='KeyN' && !this.combatStarted){this.newType='Monster';this.$nextTick(()=>document.getElementById('nameInput')?.focus());}
-      else if(e.code==='KeyP' && !this.combatStarted){this.newType='Player';this.$nextTick(()=>document.getElementById('nameInput')?.focus());}
-    });
-  }
+mounted(){
+  setInterval(()=>{if(this.entities.length)localStorage.setItem('encounter_autosave_current',JSON.stringify({active:this.entities,delayed:this.delayedEntities}));},15000);
+  if(localStorage.getItem('encounter_autosave_current'))this.showRestore=true;
+  window.addEventListener('keydown',e=>{
+    if(e.target.closest('input,textarea,select'))return;
+    if(e.code==='Space'){e.preventDefault();if(this.combatStarted)this.nextTurn();}
+    else if(e.code==='KeyS'&&!this.combatStarted&&this.entities.length)this.startCombat();
+    else if(e.code==='KeyN'&&!this.combatStarted){this.newType='Monster';this.$nextTick(()=>document.getElementById('nameInput')?.focus());}
+    else if(e.code==='KeyP'&&!this.combatStarted){this.newType='Player';this.$nextTick(()=>document.getElementById('nameInput')?.focus());}
+  });
+}
 }).mount('#app');
 </script>
 </body>
