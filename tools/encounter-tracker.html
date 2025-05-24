@@ -377,20 +377,26 @@ createApp({
       this.entities.sort((a,b)=>b.initiative-a.initiative||a.order-b.order);
       this.combatStarted=true;this.turnIndex=0;this.round=1;this.syncStatBlock();
     },
-    nextTurn(){
-      if(!this.entities.length)return;
-      if(this.turnIndex===this.entities.length-1) this.round++;
-      this.turnIndex=(this.turnIndex+1)%this.entities.length;
-      this.syncStatBlock();
+    nextTurn () {
+  if (!this.entities.length) return;
 
-      /* decrement all numbered statuses at end of round */
-      if(this.turnIndex===0){
-        this.entities.forEach(e=>{
-          e.statuses.forEach(s=>{if(s.dur){s.dur--;}});         // tick
-          e.statuses = e.statuses.filter(s => s.dur === null || s.dur === undefined || s.dur > 0);
-        });
+  /* advance pointer & round ------------------------------------------------ */
+  if (this.turnIndex === this.entities.length - 1) this.round++;
+  this.turnIndex = (this.turnIndex + 1) % this.entities.length;
+  this.syncStatBlock();
+
+  /* ❷ NEW — initiative-based duration tick -------------------------------- */
+  const curInit = this.displayOrder[this.turnIndex].initiative;
+  this.entities.forEach(e => {
+    e.statuses.forEach(s => {
+      if (s.dur && s.srcInit === curInit) {
+        s.dur--;
       }
-    },
+    });
+    e.statuses = e.statuses.filter(s => s.dur == null || s.dur > 0);
+  });
+},
+
     endCombat(){
       this.entities=[];this.delayedEntities=[];
       this.turnIndex=0;this.combatStarted=false;this.selectedMonster=null;this.round=1;
@@ -415,8 +421,13 @@ createApp({
     },
 
     /* ---------- status handling ---------- */
-    formatStatus(s){return s.dur?`${s.name}:${s.dur}`:s.name;},
-    statusTitle(s){return (conditionMap[s.name]||s.name)+(s.dur?` (${s.dur} rounds)`:'');},
+formatStatus (s) {
+  return s.dur ? `${s.name}:${s.dur}` : s.name;
+},
+statusTitle (s) {
+  return (this.conditionMap[s.name] || s.name) +
+         (s.dur ? ` (${s.dur} rounds)` : '');
+},
     tickStatus (ent, idx) {
   const st = ent.statuses[idx];
   if (st.dur !== null && st.dur !== undefined) {
@@ -426,21 +437,34 @@ createApp({
     ent.statuses.splice(idx, 1);                    // manual click still removes timeless
   }
 },
-    applyStatus(ent,ev){
-      const val=ev.target.value;ent._addingStatus=false;if(!val)return;
-      let name='',dur=null;
-      if(val==='__custom'){
-        const c=prompt('Status name');if(!c)return;name=c;
-      }else name=val;
+applyStatus (ent, ev) {
+  const val = ev.target.value;
+  ent._addingStatus = false;
+  if (!val) return;
 
-      if(name.includes(':')){
-        const [n,d]=name.split(':');name=n;dur=parseInt(d||'');
-      }
-      if(dur==null){
-        const dp=prompt('Duration in rounds (blank for none)');if(dp)dur=parseInt(dp);
-      }
-      ent.statuses.push({name,dur:isNaN(dur)?null:dur});
-    },
+  // name / duration parsing (same as before) -------------
+  let name = '', dur = null;
+  if (val === '__custom') {
+    const c = prompt('Status name'); if (!c) return;
+    name = c;
+  } else {
+    name = val;
+  }
+  if (name.includes(':')) {
+    const [n, d] = name.split(':');
+    name = n; dur = parseInt(d || '');
+  }
+  if (dur == null) {
+    const dPrompt = prompt('Duration in rounds (blank for none)');
+    if (dPrompt) dur = parseInt(dPrompt);
+  }
+
+  // ❶ NEW — record the initiative of the acting creature
+  const srcInit = this.displayOrder[this.turnIndex]?.initiative ?? null;
+
+  ent.statuses.push({ name, dur: isNaN(dur) ? null : dur, srcInit });
+},
+
 
     /* ---------- stat-block parsing / rendering ---------- */
     showStats(ent){this.parseBlock(ent);this.selectedMonster=ent;},
