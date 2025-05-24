@@ -1,93 +1,117 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>The Iron Reserve – Guild Inventory</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>The Iron Reserve – Guild Inventory</title>
 
-  <style>
-    :root{
-      --bg-dark:#1c1c1c;
-      --bg-card:#2a2a2a;
-      --text:#f5f5f5;
-      --accent:#ffc107;
-      --accent-light:#ffd966;
-      --radius:8px;
-    }
+<style>
+  :root{
+    --bg-dark:#1c1c1c;
+    --bg-card:#2a2a2a;
+    --bg-rented:#2c1c34;          /* rented highlight */
+    --border-rented:#6f3f8c;
+    --text:#f5f5f5;
+    --accent:#ffc107;
+    --border-dark:#333;
+    --radius:8px;
+  }
 
-    /* -------- base -------- */
-    *{box-sizing:border-box;margin:0;padding:0;}
-    body{
-      font-family:'Segoe UI',Tahoma,Verdana,sans-serif;
-      background:var(--bg-dark);color:var(--text);
-      padding:20px;
-    }
+  /* ------- base ------- */
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:'Segoe UI',Tahoma,Verdana,sans-serif;
+    background:var(--bg-dark);color:var(--text);padding:20px;
+  }
 
-    /* ========== NAVIGATION (shared) ========== */
-    .site-header{
-      display:flex;align-items:center;gap:.75rem;
-      background:#1f1f1f;border-bottom:2px solid #444;
-      margin:-20px -20px 1.6rem;
-      padding:.8rem 1rem;position:relative;
-    }
-    .logo{font-weight:700;color:var(--accent);font-size:1.1rem;}
+  /* ========== NAVIGATION (shared) ========== */
+  .site-header{
+    display:flex;align-items:center;gap:.75rem;
+    background:#1f1f1f;border-bottom:2px solid #444;
+    margin:-20px -20px 1.5rem;padding:.75rem 1rem;position:relative;
+  }
+  .logo{font-weight:700;color:var(--accent);font-size:1.1rem;}
 
-    .nav-toggle{display:none;}
-    .hamburger{
-      font-size:1.4rem;color:#fff;cursor:pointer;
-      margin-left:auto;user-select:none;display:block;
-    }
+  .nav-toggle{display:none;}
+  .hamburger{
+    font-size:1.4rem;color:#fff;cursor:pointer;margin-left:auto;
+    user-select:none;display:block;
+  }
+  .site-nav{
+    display:none;flex-direction:column;gap:.75rem;
+    position:absolute;left:0;right:0;top:100%;
+    background:#1f1f1f;border-top:2px solid #444;padding:1rem;
+  }
+  .site-nav a{color:#fff;text-decoration:none;font-weight:600;}
+  .site-nav a:hover{color:var(--accent);}
+  .nav-toggle:checked + .hamburger + .site-nav{display:flex;}
+
+  @media(min-width:620px){
+    body{padding:24px;}
+    .site-header{margin:-24px -24px 1.75rem;padding:1rem 1.25rem;}
+    .hamburger{display:none;}
     .site-nav{
-      display:none;flex-direction:column;gap:.75rem;
-      position:absolute;left:0;right:0;top:100%;
-      background:#1f1f1f;border-top:2px solid #444;padding:1rem;
+      display:flex !important;position:static;
+      flex-direction:row;gap:1.25rem;margin-left:auto;
+      background:transparent;border:none;padding:0;
     }
-    .site-nav a{color:#fff;text-decoration:none;font-weight:600;}
-    .site-nav a:hover{color:var(--accent);}
-    .nav-toggle:checked + .hamburger + .site-nav{display:flex;}
+  }
 
-    @media(min-width:620px){
-      body{padding:32px;}
-      .site-header{margin:-32px -32px 2rem;padding:1rem 1.25rem;}
-      .hamburger{display:none;}
-      .site-nav{
-        display:flex !important;position:static;
-        flex-direction:row;gap:1.25rem;margin-left:auto;padding:0;
-        background:transparent;border:none;
-      }
-    }
+  /* ------- heading + intro ------- */
+  h1{
+    text-align:center;color:var(--accent);
+    font-size:clamp(1.5rem,5vw,2.2rem);margin-bottom:1rem;
+  }
+  p{line-height:1.6;margin-bottom:1.25rem;text-align:center;}
 
-    /* -------- page styles -------- */
-    h1{
-      text-align:center;color:var(--accent);margin:0 0 .9rem;
-      font-size:clamp(1.5rem,5vw,2.2rem);
-    }
+  /* ------- filters ------- */
+  .filter-bar{
+    display:flex;flex-wrap:wrap;gap:.75rem;justify-content:center;margin-bottom:1.5rem;
+  }
+  .filter-bar input,.filter-bar select{
+    background:var(--bg-card);color:var(--text);
+    border:1px solid var(--border-dark);
+    padding:.5rem .75rem;border-radius:var(--radius);min-width:140px;
+  }
+  .filter-bar input::placeholder{color:#aaa;}
 
-    /* responsive table wrapper */
-    .table-wrap{
-      overflow-x:auto;
-      -webkit-overflow-scrolling:touch;
-      border-radius:var(--radius);
-    }
-    table{
-      width:100%;min-width:650px;      /* forces swipe on narrow screens */
-      border-collapse:collapse;margin-bottom:20px;
-    }
-    th,td{
-      padding:12px;border-bottom:1px solid #333;text-align:left;vertical-align:top;
-    }
-    th{
-      background:#333;color:var(--accent);
-      position:sticky;top:0;           /* header stays visible while swiping */
-    }
-    tr:nth-child(even){background:var(--bg-card);}
-    .note{font-size:.9em;color:#aaa;margin-top:10px;}
+  /* ------- grid ------- */
+  .item-container{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;
+  }
 
-  </style>
+  /* ------- card ------- */
+  .item{
+    background:var(--bg-card);border:1px solid var(--border-dark);
+    border-radius:var(--radius);padding:1rem;display:flex;flex-direction:column;
+    gap:.5rem;transition:transform .2s;
+  }
+  .item:hover{transform:translateY(-4px);}
+  .item.rented{background:var(--bg-rented);border-color:var(--border-rented);}
+  .item-name{font-weight:600;color:var(--accent);font-size:1.05rem;}
+  .tags{display:flex;flex-wrap:wrap;gap:.5rem;font-size:.75rem;}
+  .tag{
+    background:#444;padding:.15rem .55rem;border-radius:9999px;white-space:nowrap;
+  }
+  .qty{font-weight:700;}
+
+  .details{display:none;flex-direction:column;gap:.45rem;font-size:.9rem;}
+  .item.open .details{display:flex;}
+
+  .toggle-btn{
+    align-self:flex-start;padding:.25rem .6rem;font-size:.75rem;font-weight:600;
+    border:1px solid var(--border-dark);border-radius:var(--radius);
+    background:var(--accent);color:var(--bg-dark);cursor:pointer;
+    user-select:none;transition:filter .2s;
+  }
+  .toggle-btn:hover{filter:brightness(1.1);}
+
+  @media(max-width:480px){.item-container{grid-template-columns:1fr;}}
+</style>
 </head>
 
 <body>
-<!-- ========= HEADER & NAV ========= -->
+<!-- ===== header nav ===== -->
 <header class="site-header">
   <div class="logo">Iron Meridian</div>
 
@@ -105,136 +129,101 @@
 </header>
 
 <h1>🏺 The Iron Reserve</h1>
+<p>Browse guild-owned gear available for purchase or rental. Rented items are highlighted.</p>
 
-<p>Welcome to the Iron Reserve — a vault of donated, recovered, or misplaced gear. Items are available for purchase or rental (where applicable). <br>Remember: lose it, and you owe the full cost!</p>
-
-<!-- responsive table -->
-<div class="table-wrap">
-  <table>
-    <thead>
-      <tr>
-        <th>Item Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Price&nbsp;(Buy)</th>
-        <th>Price&nbsp;(Rent)</th>
-        <th>Qty</th>
-        <th>Currently Rented</th>
-      </tr>
-    </thead>
-    <tbody id="itemTable"></tbody>
-  </table>
+<!-- filters -->
+<div class="filter-bar">
+  <input type="text" id="searchInput" placeholder="Search items…">
+  <select id="typeFilter"><option value="">All Types</option></select>
+  <select id="sortSelect">
+    <option value="name">Sort: Name</option>
+    <option value="price">Sort: Price</option>
+    <option value="quantity">Sort: Quantity</option>
+  </select>
 </div>
 
-<div class="note">
-  <strong>Note:</strong> Rental price is 20 % of the listed cost for non-consumable items. Consumables (like potions) must be bought outright.
-</div>
+<!-- item grid -->
+<div id="itemContainer" class="item-container"></div>
 
 <script>
-  const items = [
-  {
-    "name": "Cooking Pot Helm",
-    "type": "Armour",
-    "description": "–1 to AC (bulky, poorly fitted). +2 item bonus to Intimidation checks against creatures with the Chef archetype or culinary professions.",
-    "price": "20 gp",
-    "consumable": false,
-    "rented": "Yes (Brinna Mudwhistle)",
-    "quantity": "-"
-  },
+/* ---------- unified data ---------- */
+const items = [
   {
     "name": "The 'Velvet' Cloak",
-    "type": "Robes",
+    "type": "Armour",
     "description": "+1 item bonus to CHA checks/skills vs. goblins (they mistake it for 'real king stuff').",
     "price": "30 gp",
     "consumable": false,
-    "rented": "No",
-    "quantity": "-"
-  },
-  {
-    "name": "Boots of Rootmarch",
-    "type": "Boots",
-    "description": "+10 ft. status bonus to Speed. Ignore difficult terrain from natural undergrowth. 1/day: ‘Rootstride’ to gain +20 ft. speed and leave blooming vines.",
-    "price": "160 gp",
-    "consumable": false,
-    "rented": "Yes (Fenn the Sly)",
-    "quantity": "-"
+    "rented": "Yes (Brammle the Clever)",
+    "quantity": 0
   },
   {
     "name": "Potion of Spider Climb (Lesser)",
     "type": "Consumable",
-    "description": "Grants spider climb effect for 1 minute. Great for dramatic entrances (or exits).",
+    "description": "Grants spider climb effect for 1 minute.",
     "price": "12 gp",
     "consumable": true,
     "rented": "No",
-    "quantity": 1
+    "quantity": 2
   },
   {
-    "name": "Scroll of Grease (1st level)",
+    "name": "Scroll of Magic Missile (1st level)",
     "type": "Scroll",
-    "description": "Creates a slippery surface that trips enemies. Hilarity ensues.",
+    "description": "Auto-hit magical darts of force.",
     "price": "3 gp",
     "consumable": true,
     "rented": "No",
     "quantity": 4
   },
   {
-    "name": "Scroll of Magic Missile (1st level)",
-    "type": "Scroll",
-    "description": "Auto-hit magical darts of force. Never miss a target again!",
-    "price": "3 gp",
-    "consumable": true,
-    "rented": "No",
-    "quantity": 2
-  },
-  {
     "name": "Alchemist's Fire (Lesser)",
     "type": "Alchemical",
-    "description": "A bomb that sets things — and enemies — delightfully ablaze.",
+    "description": "Bomb that sets things ablaze.",
     "price": "3 gp",
     "consumable": true,
     "rented": "No",
-    "quantity": 3
+    "quantity": 5
   },
   {
     "name": "Tanglefoot Bag (Lesser)",
     "type": "Alchemical",
-    "description": "Glue enemies to the floor. Tactically hilarious.",
+    "description": "Glue enemies to the floor.",
     "price": "3 gp",
     "consumable": true,
     "rented": "No",
-    "quantity": 3
+    "quantity": 4
   },
   {
     "name": "Goggles of Night",
-    "type": "Wondrous Item",
-    "description": "Grant darkvision up to 60 feet for those born without it.",
+    "type": "Wondrous",
+    "description": "Grant darkvision up to 60 ft.",
     "price": "55 gp",
     "consumable": false,
-    "rented": "Yes (Torrek the Torchless)",
-    "quantity": "-"
+    "rented": "Yes (Sister Felruin)",
+    "quantity": 0
   },
   {
     "name": "Bracers of Armor +1",
-    "type": "Magical Armor",
-    "description": "Magically protective bracers for those who prefer robes over mail.",
+    "type": "Armour",
+    "description": "Protective bracers for robe lovers.",
     "price": "160 gp",
     "consumable": false,
     "rented": "No",
-    "quantity": "-"
+    "quantity": 1
   },
   {
     "name": "Weapon Potency Rune (+1)",
     "type": "Rune",
-    "description": "Makes a weapon strike harder and more accurately.",
+    "description": "Makes a weapon strike harder.",
     "price": "35 gp",
     "consumable": false,
     "rented": "No",
-    "quantity": "-"
+    "quantity": 1
   },
   {
     "name": "Feather Token (Ladder)",
-    "type": "Consumable Magic",
-    "description": "Summons a ladder when you least expect it (or most need it).",
+    "type": "Consumable",
+    "description": "Summons a ladder when needed.",
     "price": "8 gp",
     "consumable": true,
     "rented": "No",
@@ -242,58 +231,158 @@
   },
   {
     "name": "Battlefield Bandolier",
-    "type": "Wondrous Item",
-    "description": "Carry potions, bombs, and small gear for quick access.",
+    "type": "Wondrous",
+    "description": "Carry potions and bombs for quick access.",
     "price": "5 gp",
     "consumable": false,
-    "rented": "No",
-    "quantity": "-"
+    "rented": "Yes (Orvid Longarm)",
+    "quantity": 0
   },
   {
     "name": "Wand of Prestidigitation",
-    "type": "Magical Wand",
-    "description": "Casts prestidigitation at will. For cleaning, sparks, and stylish flair.",
+    "type": "Wondrous",
+    "description": "Casts prestidigitation at will.",
     "price": "60 gp",
     "consumable": false,
     "rented": "No",
-    "quantity": "-"
+    "quantity": 1
   },
   {
     "name": "Shield Spikes (Steel)",
-    "type": "Weapon Attachment",
-    "description": "Turns your shield into a poking hazard. +1d6 piercing damage.",
+    "type": "Attachment",
+    "description": "Turns shield into a poking hazard.",
     "price": "5 gp",
     "consumable": false,
     "rented": "No",
-    "quantity": "-"
+    "quantity": 2
   },
   {
     "name": "Potion of Antidote (Lesser)",
     "type": "Consumable",
-    "description": "Gain a +2 item bonus to saves vs poison for 6 hours.",
+    "description": "+2 item bonus vs poison for 6 h.",
     "price": "3 gp",
+    "consumable": true,
+    "rented": "No",
+    "quantity": 3
+  },
+  {
+    "name": "Amberglow Pauldrons",
+    "type": "Armour",
+    "description": "+1 item bonus to saves against fire. Once per day, absorb 5 fire damage as a reaction (glows faintly while active).",
+    "price": "75 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 1
+  },
+  {
+    "name": "Whistle of Echoing Steps",
+    "type": "Trinket",
+    "description": "Once per day, blow the whistle to create illusory footsteps moving away from your location for 30 ft (DC 14 Will disbelief).",
+    "price": "20 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 1
+  },
+  {
+    "name": "Potion of Healing (Minor)",
+    "type": "Consumable",
+    "description": "Restores 1d8 HP when consumed.",
+    "price": "4 gp",
+    "consumable": true,
+    "rented": "No",
+    "quantity": 5
+  },
+  {
+    "name": "Potion of Healing (Lesser)",
+    "type": "Consumable",
+    "description": "Restores 2d8+5 HP when consumed.",
+    "price": "12 gp",
+    "consumable": true,
+    "rented": "No",
+    "quantity": 3
+  },
+  {
+    "name": "Antiplague (Lesser)",
+    "type": "Consumable",
+    "description": "+2 item bonus to Fortitude saves vs disease for 24 hours.",
+    "price": "3 gp",
+    "consumable": true,
+    "rented": "No",
+    "quantity": 2
+  },
+  {
+    "name": "Elixir of Life (Minor)",
+    "type": "Consumable",
+    "description": "Restores 1d6 HP and grants +1 bonus to saving throws vs disease/poison for 10 min.",
+    "price": "3 gp",
+    "consumable": true,
+    "rented": "No",
+    "quantity": 4
+  },
+  {
+    "name": "Barkskin Brew",
+    "type": "Consumable",
+    "description": "Gain +1 item bonus to AC for 10 minutes; skin toughens like bark.",
+    "price": "5 gp",
     "consumable": true,
     "rented": "No",
     "quantity": 2
   }
 ]
-;
 
+/* ---------- helpers ---------- */
+function goldValue(str){const m=/([0-9]+) gp/i.exec(str);return m?+m[1]:0;}
+function rentPrice(item){if(item.consumable)return '-';return Math.ceil(goldValue(item.price)*0.2)+' gp';}
+const rented = it => it.rented && it.rented!=='No';
 
-function populateTable(){
-  const tb=document.getElementById('itemTable');
-  items.forEach(it=>{
-    const rent = it.consumable ? '-' :
-      (()=>{const[n,c]=it.price.split(' ');return Math.ceil(+n*0.2)+' '+c;})();
-    tb.insertAdjacentHTML('beforeend',`
-      <tr>
-        <td>${it.name}</td><td>${it.type}</td><td>${it.description}</td>
-        <td>${it.price}</td><td>${rent}</td><td>${it.quantity}</td><td>${it.rented}</td>
-      </tr>`);
+/* populate type filter */
+const typeSel=document.getElementById('typeFilter');
+[...new Set(items.map(i=>i.type))].sort().forEach(t=>{
+  const o=document.createElement('option');o.value=t;o.textContent=t;typeSel.appendChild(o);
+});
+
+/* render list */
+['searchInput','typeFilter','sortSelect'].forEach(id=>document.getElementById(id).addEventListener('input',render));
+render();
+
+function render(){
+  const q=document.getElementById('searchInput').value.toLowerCase();
+  const type=typeSel.value;
+  const sort=document.getElementById('sortSelect').value;
+
+  const list=items.filter(i=>
+    i.name.toLowerCase().includes(q)&&(!type||i.type===type)
+  ).sort((a,b)=>{
+    if(sort==='price')   return goldValue(a.price)-goldValue(b.price);
+    if(sort==='quantity')return (b.quantity||0)-(a.quantity||0);
+    return a.name.localeCompare(b.name);
+  });
+
+  const cont=document.getElementById('itemContainer');
+  cont.innerHTML='';
+  list.forEach(i=>{
+    const card=document.createElement('div');
+    card.className='item'+(rented(i)?' rented':'');
+    card.innerHTML=`
+      <div class="item-name">${i.name}</div>
+      <div class="tags">
+        <span class="tag">${i.type}</span>
+        <span class="tag">Buy: ${i.price}</span>
+        <span class="tag">Rent: ${rentPrice(i)}</span>
+        <span class="tag qty">Qty: ${i.quantity||'—'}</span>
+      </div>
+      <button class="toggle-btn">Details</button>
+      <div class="details">
+        <p>${i.description}</p>
+        <p><strong>Currently Rented:</strong> ${i.rented}</p>
+      </div>`;
+    card.querySelector('.toggle-btn').addEventListener('click',e=>{
+      card.classList.toggle('open');
+      e.target.textContent=card.classList.contains('open')?'Hide':'Details';
+    });
+    cont.appendChild(card);
   });
 }
-populateTable();
 </script>
 </body>
 </html>
-
