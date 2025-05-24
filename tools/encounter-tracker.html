@@ -5,8 +5,13 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0" />
 <title>PF2 Encounter Manager</title>
 <script src="https://unpkg.com/vue@3"></script>
+
 <style>
   /* ---------- colours & fonts ---------- */
+  :root{
+    --hp-bg:#522b3b;
+    --hp-bar:#ec8abd;
+  }
   body{background:#111;color:#ddd;font-family:"Segoe UI",Tahoma,sans-serif;margin:0;padding:1em;}
   h2,h3{color:#f5ba42;margin:.3em 0;}
   input,select,button,textarea{
@@ -22,61 +27,51 @@
 
   /* ---------- initiative table ---------- */
   table{width:100%;border-collapse:collapse;margin-top:.8em;}
-  th,td{border:1px solid #444;padding:.55em;text-align:left;}
+  th,td{border:1px solid #444;padding:.55em;text-align:left;vertical-align:top;}
   tr.active{background:#2a2f33;font-weight:bold;}
   tr.dead{color:#777;text-decoration:line-through;}
   .color-dot{display:inline-block;width:1em;height:1em;border-radius:50%;margin-right:.35em;}
 
-  /* ---------- status pills ---------- */
-  .status-tag{
-    display:inline-block;background:#444;color:#fff;border-radius:9999px;
-    font-size:.75em;padding:.1em .6em;margin:.15em;cursor:pointer;
-  }
+  /* quick stats bar */
+  .stat-sum{display:flex;align-items:center;gap:.35em;font-size:.78em;margin-top:.25em;}
+  .stat-box{background:#555;border-radius:3px;padding:.05em .35em;display:flex;align-items:center;gap:.2em;}
+  .stat-box b{font-weight:700;}
+  .hp-wrap{flex:1;position:relative;height:8px;background:var(--hp-bg);border-radius:4px;overflow:hidden;}
+  .hp-bar{position:absolute;top:0;left:0;bottom:0;background:var(--hp-bar);}
+
+  /* status pills */
+  .status-tag{display:inline-block;background:#444;color:#fff;border-radius:9999px;font-size:.75em;padding:.1em .6em;margin:.15em;cursor:pointer;}
   .status-tag:hover{background:#666;}
 
-  /* ---------- big buttons ---------- */
-  .big-btn{
-    margin-top:1em;padding:1em 2em;font-size:1.05em;border:none;border-radius:6px;cursor:pointer;
-  }
+  /* big buttons */
+  .big-btn{margin-top:1em;padding:1em 2em;font-size:1.05em;border:none;border-radius:6px;cursor:pointer;}
   .start-btn,.next-btn{background:#f5ba42;color:#111;} .start-btn:hover,.next-btn:hover{background:#e5a832;}
   .end-btn{background:#c94a4a;color:#fff;} .end-btn:hover{background:#b23d3d;}
   .clear-btn{background:#555;color:#fff;} .clear-btn:hover{background:#666;}
 
-  /* ---------- stat-block ---------- */
+  /* stat-card */
   .stat-block{background:#222;border:1px solid #555;border-radius:6px;padding:1em;margin-top:1em;}
   .stat-block pre{white-space:pre-wrap;margin:0;}
-
-  /* --- pretty monster card --- */
   .stat-card{font-family:serif;line-height:1.35;font-size:0.93em;}
   .stat-card h4{margin:.1em 0 .3em;font-size:1.15em;font-weight:700;text-transform:uppercase;}
-  .stat-tags span{
-    display:inline-block;padding:.05em .4em;margin-right:.25em;border-radius:2px;
-    font-size:.68em;color:#fff;font-weight:700;letter-spacing:.02em;
-  }
-  /* example colours */
+  .stat-tags span{display:inline-block;padding:.05em .4em;margin-right:.25em;border-radius:2px;font-size:.68em;color:#fff;font-weight:700;letter-spacing:.02em;}
   .tag-NE{background:#3949ab}.tag-LG{background:#2e7d32}.tag-CE{background:#c62828}
   .tag-Medium{background:#4caf50}.tag-Large{background:#8d6e63}.tag-Small{background:#42a5f5}
   .tag-Aberration{background:#7b1fa2}.tag-Undead{background:#6d4c41}
   .stat-section{border-top:1px solid #555;margin-top:.45em;padding-top:.35em;}
-  .stat-section b{margin-right:.25em;}
   .stat-card ul{margin:.3em 0 .2em 1.2em;padding:0;}
-  .action-icon{
-    font-weight:700;border:1px solid #777;border-radius:2px;padding:0 .18em;font-size:.66em;margin-right:.25em;
-  }
+  .action-icon{font-weight:700;border:1px solid #777;border-radius:2px;padding:0 .18em;font-size:.66em;margin-right:.25em;}
   .act-single{background:#444}.act-two{background:#555}.act-three{background:#666}
 
-  /* ---------- accordions ---------- */
-  details.box{
-    background:#1b1b1b;border:1px solid #333;border-radius:8px;padding:1em;margin-top:1.6em;
-  }
+  /* accordions */
+  details.box{background:#1b1b1b;border:1px solid #333;border-radius:8px;padding:1em;margin-top:1.6em;}
   details.box summary{cursor:pointer;font-size:1.08em;color:#f5ba42;padding:.4em 0;}
   details.box textarea{width:100%;height:10em;}
 
-  /* ---------- mobile ---------- */
+  /* mobile */
   @media(max-width:600px){
     .add-form textarea{width:100%;}
-    table{font-size:.88em;}
-    input[type=number]{width:4em;}
+    table{font-size:.88em;} input[type=number]{width:4em;}
   }
 </style>
 </head>
@@ -85,7 +80,7 @@
 
   <h2>Initiative Tracker</h2>
 
-  <!-- SAVE / LOAD / CLEAR ---------------------------------------------->
+  <!-- SAVE / LOAD / CLEAR -->
   <div v-if="!combatStarted" style="margin-bottom:.6em;">
     <input v-model="saveName" placeholder="Encounter name" style="width:12em;">
     <button @click="saveEncounter">💾 Save</button>
@@ -100,7 +95,7 @@
     <button v-if="entities.length" class="clear-btn" @click="clearCurrent">🧹 Clear</button>
   </div>
 
-  <!-- ADD ENTITY FORM --------------------------------------------------->
+  <!-- ADD ENTITY FORM -->
   <form v-if="!combatStarted" class="add-form" @submit.prevent="addEntity">
     <select v-model="newType"><option>Player</option><option>Monster</option></select>
 
@@ -126,7 +121,7 @@
     <button type="submit">Add</button>
   </form>
 
-  <!-- COMBAT CONTROLS --------------------------------------------------->
+  <!-- COMBAT CONTROLS -->
   <div v-if="entities.length">
     <button v-if="!combatStarted" @click="startCombat" class="big-btn start-btn">Start Combat</button>
     <div v-else>
@@ -135,27 +130,36 @@
     </div>
   </div>
 
-  <!-- INITIATIVE TABLE -------------------------------------------------->
+  <!-- INITIATIVE TABLE -->
   <table v-if="entities.length">
-    <thead><tr><th>Init</th><th>Name</th><th>Type</th><th>HP</th><th>Status</th><th>Actions</th></tr></thead>
+    <thead>
+      <tr><th>Init</th><th>Name</th><th>Type / HP</th><th>Status</th><th>Actions</th></tr>
+    </thead>
     <tbody>
-      <tr v-for="(e,i) in displayOrder" :key="e.id"
-          :class="{active:i===turnIndex,dead:e.hp!==undefined && e.hp<=0}">
+	<tr v-for="(e,i) in displayOrder" :key="e.id"
+    	:class="{active:i===turnIndex,dead:e.type==='Monster' && e.hp!==undefined && e.hp<=0}">
+
         <td>{{e.initiative}}</td>
         <td><span v-if="e.type==='Monster'" class="color-dot" :style="{backgroundColor:e.color}"></span>{{e.name}}</td>
-        <td>{{e.type}}</td>
         <td>
-          <input v-if="e.type==='Monster'" v-model.number="e.hp" type="number" style="width:4.5em;">
+          <template v-if="e.type==='Monster'">
+            <div class="hp-wrap"><div class="hp-bar" :style="{width:hpPercent(e)+'%'}"></div></div>
+            <small>{{e.hp||0}} / {{e.hpMax||'?'}}</small>
+            <div class="stat-sum">
+              <div class="stat-box"><b>AC</b>{{e.ac||'—'}}</div>
+              <div class="stat-box"><b>F</b>{{e.fort||'—'}}</div>
+              <div class="stat-box"><b>R</b>{{e.ref||'—'}}</div>
+              <div class="stat-box"><b>W</b>{{e.will||'—'}}</div>
+            </div>
+          </template>
           <template v-else>—</template>
         </td>
 
-        <!-- STATUS TAGS -->
         <td>
           <span v-for="(s,idx) in e.statuses" :key="idx"
                 class="status-tag" :title="conditionMap[s]||s"
                 @click="removeStatus(e,idx)">{{s}} ✕</span>
 
-          <!-- status picker -->
           <template v-if="e._addingStatus">
             <select @change="applyStatus(e,$event)" @blur="e._addingStatus=false">
               <option value="" disabled selected>Add…</option>
@@ -168,7 +172,6 @@
           <button v-else @click="e._addingStatus=true" title="Add status">＋</button>
         </td>
 
-        <!-- ACTION BUTTONS -->
         <td>
           <button v-if="combatStarted && displayOrder[turnIndex]?.id===e.id"
                   @click="delayTurn(e.id)">Delay</button>
@@ -180,12 +183,12 @@
     </tbody>
   </table>
 
-  <!-- MONSTER STAT BLOCK ----------------------------------------------->
+  <!-- STAT BLOCK -->
   <div v-if="selectedMonster" class="stat-block">
     <div v-html="selectedMonster.html"></div>
   </div>
 
-  <!-- DELAYED LIST ------------------------------------------------------>
+  <!-- DELAYED LIST -->
   <div v-if="delayedEntities.length"
        style="margin-top:1em;border-top:1px dashed #555;padding-top:1em;">
     <h3>Delayed</h3>
@@ -196,7 +199,7 @@
     </ul>
   </div>
 
-  <!-- CURRENT ENCOUNTER EXPORT / IMPORT -------------------------------->
+  <!-- CURRENT ENCOUNTER EXPORT / IMPORT -->
   <details class="box">
     <summary><strong>Current Encounter</strong></summary>
     <textarea readonly :value="exportJSON()"></textarea>
@@ -209,7 +212,7 @@
     <button @click="importJSON">Load</button>
   </details>
 
-  <!-- SAVED LIBRARY EXPORT / IMPORT ------------------------------------>
+  <!-- SAVED LIBRARY EXPORT / IMPORT -->
   <details class="box">
     <summary><strong>Saved Library</strong></summary>
     <textarea readonly :value="libraryJSON"></textarea>
@@ -226,9 +229,9 @@
 <script>
 const { createApp } = Vue;
 
-/* === Condition master list (trimmed for brevity – add any others you need) === */
-const conds = [
-  {cat:'🧠 Mental',name:'Frightened',desc:'– status penalty to checks & DCs; decreases each round.'},
+/* ---------- condition master list ---------- */
+const conds=[
+  {cat:'🧠 Mental',name:'Frightened',desc:'– status penalty to checks & DCs; decreases 1/round.'},
   {cat:'🧠 Mental',name:'Confused',desc:'Act randomly; may attack allies.'},
   {cat:'🤕 Physical',name:'Doomed',desc:'Lower dying threshold.'},
   {cat:'🤕 Physical',name:'Wounded',desc:'Gain dying faster next time.'},
@@ -240,30 +243,24 @@ const conds = [
   {cat:'🧊 Special',name:'Concealed',desc:'DC 5 flat check to hit.'},
   {cat:'🧊 Special',name:'Hidden',desc:'DC 11 flat check to hit.'}
 ];
-const grouped = [];
-const conditionMap = {};
-for (const c of conds){ conditionMap[c.name]=c.desc; }
-for (const g of [...new Set(conds.map(c=>c.cat))]){
-  grouped.push({label:g,items:conds.filter(c=>c.cat===g)});
+const grouped=[],conditionMap={};
+conds.forEach(c=>conditionMap[c.name]=c.desc);
+for(const gName of [...new Set(conds.map(c=>c.cat))]){
+  grouped.push({label:gName,items:conds.filter(c=>c.cat===gName)});
 }
 
 createApp({
   data(){
     return{
-      /* encounter data */
       entities:[],delayedEntities:[],
       newType:'Player',newName:'',customPlayer:'',
       newInitiative:null,newHP:null,newStatBlock:'',newColor:'red',
       turnIndex:0,combatStarted:false,selectedMonster:null,
 
-      /* save / load */
       saveName:'',selectedSave:'',
       savedList:JSON.parse(localStorage.getItem('encounterNames')||'[]'),
 
-      /* import blobs */
       importBlob:'',importLibraryBlob:'',
-
-      /* misc */
       playerNames:['Ecaon','Buggie','Styx Red-Claw','Vokkar','ObsidianIvy','ElderDan','Trusco'],
       groupedConditions:grouped,conditionMap
     };
@@ -284,25 +281,30 @@ createApp({
   },
   methods:{
     d20(){return Math.floor(Math.random()*20)+1;},
+    hpPercent(e){if(!e.hpMax)return 0;return Math.max(0,Math.min(100,100*e.hp/e.hpMax));},
 
-    /* ---------- entity helpers ---------- */
+    /* ---------------- add / clear ---------------- */
     addEntity(){
-      const n=this.newType==='Player'
+      const name=this.newType==='Player'
         ? (this.newName==='__custom'?this.customPlayer:this.newName)
         : this.newName;
-      if(!n)return;
+      if(!name)return;
+
       const init=this.newType==='Monster'
         ? (this.newInitiative||this.d20()+5)
         : (this.newInitiative||0);
+
       this.entities.push({
         id:Date.now()+Math.random(),
-        name:n,initiative:init,type:this.newType,order:this.entities.length,
-        hp:this.newType==='Monster'?this.newHP:undefined,
-        statBlock:this.newStatBlock,
-        color:this.newColor,statuses:[],_addingStatus:false,html:''
+        name,initiative:init,type:this.newType,order:this.entities.length,
+        hp:this.newHP,hpMax:this.newHP,
+        statBlock:this.newStatBlock,color:this.newColor,
+        statuses:[],_addingStatus:false,html:'',
+        ac:null,fort:null,ref:null,will:null
       });
-      this.newName='';this.customPlayer='';this.newInitiative=null;
-      this.newHP=null;this.newStatBlock='';this.newColor='red';
+
+      this.newName='';this.customPlayer='';
+      this.newInitiative=null;this.newHP=null;this.newStatBlock='';this.newColor='red';
     },
     clearCurrent(){
       if(confirm('Really clear current encounter?')){
@@ -311,7 +313,7 @@ createApp({
       }
     },
 
-    /* ---------- save / load single ---------- */
+    /* ---------------- save / load a slot ---------------- */
     saveEncounter(){
       if(!this.saveName.trim()){alert('Name it first');return;}
       localStorage.setItem('encounter_'+this.saveName,
@@ -323,7 +325,8 @@ createApp({
       this.saveName='';alert('Saved!');
     },
     loadEncounter(){
-      const blob=localStorage.getItem('encounter_'+this.selectedSave||'');
+      if(!this.selectedSave)return;
+      const blob=localStorage.getItem('encounter_'+this.selectedSave);
       if(!blob){alert('No data');return;}
       const d=JSON.parse(blob);
       this.entities=d.active||[];this.delayedEntities=d.delayed||[];
@@ -338,11 +341,21 @@ createApp({
       }
     },
 
-    /* ---------- combat flow ---------- */
-    startCombat(){
-      this.entities.sort((a,b)=>b.initiative-a.initiative||a.order-b.order);
-      this.combatStarted=true;this.turnIndex=0;this.syncStatBlock();
-    },
+/* combat flow ---------------------------------------------------- */
+startCombat () {
+  /* ❶  extract quick-stats for every monster once */
+  this.entities.forEach(e => {
+    if (e.type === 'Monster' && (e.ac === null || e.ac === undefined)) {
+      this.parseBlock(e);          // fills AC / saves / hpMax, etc.
+    }
+  });
+
+  /* ❷  sort & begin combat (unchanged lines) */
+  this.entities.sort((a, b) => b.initiative - a.initiative || a.order - b.order);
+  this.combatStarted = true;
+  this.turnIndex = 0;
+  this.syncStatBlock();
+},
     nextTurn(){
       if(this.entities.length){
         this.turnIndex=(this.turnIndex+1)%this.entities.length;
@@ -365,24 +378,23 @@ createApp({
         const activeId=this.displayOrder[this.turnIndex]?.id;
         const ins=this.entities.findIndex(e=>e.id===activeId);
         this.entities.splice(ins,0,ent);
-        this.turnIndex=ins;
-        this.syncStatBlock();
+        this.turnIndex=ins;this.syncStatBlock();
       }
     },
 
-    /* ---------- status handling ---------- */
+    /* ---------------- status handling ---------------- */
     applyStatus(ent,ev){
       const val=ev.target.value;
       ent._addingStatus=false;
       if(!val)return;
       if(val==='__custom'){
         const c=prompt('Custom status'); if(c) ent.statuses.push(c);
-      } else ent.statuses.push(val);
+      }else ent.statuses.push(val);
     },
-    removeStatus(ent,i){ ent.statuses.splice(i,1); },
+    removeStatus(ent,i){ent.statuses.splice(i,1);},
 
-    /* ---------- stat-block parsing ---------- */
-    showStats(ent){ this.parseBlock(ent); this.selectedMonster=ent; },
+    /* ---------------- stat-block parsing & rendering ---------------- */
+    showStats(ent){this.parseBlock(ent);this.selectedMonster=ent;},
     syncStatBlock(){
       const cur=this.entities[this.turnIndex];
       if(cur) this.parseBlock(cur);
@@ -390,58 +402,52 @@ createApp({
     },
     parseBlock(mon){
       try{
-        const obj=typeof mon.statBlock==='string'
-          ? JSON.parse(mon.statBlock)
-          : mon.statBlock;
-        mon.html=this.buildCard(obj);
+        const o=typeof mon.statBlock==='string'?JSON.parse(mon.statBlock):mon.statBlock;
+        mon.html=this.buildCard(o);
+        mon.ac=o.ac||null;
+        mon.fort=o.saves?.Fort||null;
+        mon.ref=o.saves?.Ref||null;
+        mon.will=o.saves?.Will||null;
+        mon.hpMax=mon.hpMax||o.hp||mon.hp;
       }catch{
         mon.html=`<pre>${(mon.statBlock||'').replace(/</g,"&lt;")}</pre>`;
+        if(mon.ac==null){mon.ac=mon.fort=mon.ref=mon.will=null;}
       }
     },
-    buildTag(lbl,cls){cls=cls||lbl.replace(/\\s+/g,'');
-      return `<span class="tag-${cls}">${lbl}</span>`;},
+    buildTag(lbl,cls){cls=cls||lbl.replace(/\\s+/g,'');return `<span class="tag-${cls}">${lbl}</span>`;},
     buildCard(o){
-      const tags = `
-        <div class="stat-tags">
-          ${o.alignment?this.buildTag(o.alignment):''}
-          ${o.size?this.buildTag(o.size):''}
-          ${(o.traits||[]).map(t=>this.buildTag(t)).join('')}
-        </div>`;
-      const head = `<h4>${o.name||'Creature'} <span style="float:right">CR ${o.level??'?'}</span></h4>${tags}`;
-
-      const senses = `<b>Perception</b> ${o.perception||''}${o.senses?'; '+o.senses.join(', '):''}`;
-      const skills = o.skills ? `<b>Skills</b> ${Object.entries(o.skills).map(([k,v])=>k+' '+v).join(', ')}` : '';
-      const ability = o.abilities ? Object.entries(o.abilities).map(([k,v])=>`${k} ${v}`).join(', ') : '';
-
-      const saves = o.saves ? `<b>Fort</b> ${o.saves.Fort||''}, <b>Ref</b> ${o.saves.Ref||''}, <b>Will</b> ${o.saves.Will||''}` : '';
-      const res = o.resist ? `<b>Resist</b> ${fmt(o.resist)}` : '';
-      const weak = o.weak ? `<b>Weak</b> ${fmt(o.weak)}` : '';
-      function fmt(x){return Object.entries(x).map(([k,v])=>k+' '+v).join(', ');}
-
-      const melee = (o.melee||[]).map(m=>
+      const tags=`<div class="stat-tags">
+        ${o.alignment?this.buildTag(o.alignment):''}
+        ${o.size?this.buildTag(o.size):''}
+        ${(o.traits||[]).map(t=>this.buildTag(t)).join('')}
+      </div>`;
+      const head=`<h4>${o.name||'Creature'} <span style="float:right">CR ${o.level??'?'}</span></h4>${tags}`;
+      const senses=`<b>Perception</b> ${o.perception||''}${o.senses?'; '+o.senses.join(', '):''}`;
+      const skills=o.skills?`<b>Skills</b> ${Object.entries(o.skills).map(([k,v])=>k+' '+v).join(', ')}`:'';
+      const ability=o.abilities?Object.entries(o.abilities).map(([k,v])=>`${k} ${v}`).join(', '):'';
+      const saves=o.saves?`<b>Fort</b> ${o.saves.Fort||''}, <b>Ref</b> ${o.saves.Ref||''}, <b>Will</b> ${o.saves.Will||''}`:'';
+      const res=o.resist?`<b>Resist</b> ${fmt(o.resist)}`:'';
+      const weak=o.weak?`<b>Weak</b> ${fmt(o.weak)}`:'';
+      function fmt(obj){return Object.entries(obj).map(([k,v])=>k+' '+v).join(', ');}
+      const melee=(o.melee||[]).map(m=>
         `<li><b>Melee</b> ${m.name} ${m.attack||''}${m.traits?' ('+m.traits+')':''}, <i>Damage</i> ${m.damage}</li>`
       ).join('');
-
-      const acts = (o.actions||[]).map(a=>{
-        const icon = a.type==='three'?'◆◆◆':a.type==='two'?'◆◆':'◆';
-        const cls = a.type==='three'?'act-three':a.type==='two'?'act-two':'act-single';
+      const acts=(o.actions||[]).map(a=>{
+        const icon=a.type==='three'?'◆◆◆':a.type==='two'?'◆◆':'◆';
+        const cls=a.type==='three'?'act-three':a.type==='two'?'act-two':'act-single';
         return `<div><span class="action-icon ${cls}">${icon}</span><b>${a.name}.</b> ${a.text}</div>`;
       }).join('');
-
-      const desc = o.description?`<div class="stat-section">${o.description}</div>`:'';
-
-      return `<div class="stat-card">
-        ${head}
+      const desc=o.description?`<div class="stat-section">${o.description}</div>`:'';
+      return `<div class="stat-card">${head}
         <div class="stat-section">${senses}</div>
         <div class="stat-section">${skills}<br>${ability}</div>
         <div class="stat-section">AC ${o.ac||''}; ${saves}<br><b>HP</b> ${o.hp||''} ${res?'; '+res:''} ${weak?'; '+weak:''}</div>
         <div class="stat-section"><b>Speed</b> ${o.speed||'—'} ft</div>
-        <ul>${melee}</ul>
-        ${acts}${desc}
+        <ul>${melee}</ul>${acts}${desc}
       </div>`;
     },
 
-    /* ---------- monster removal ---------- */
+    /* ---------------- remove monster ---------------- */
     removeEntity(id){
       this.entities=this.entities.filter(e=>e.id!==id);
       this.delayedEntities=this.delayedEntities.filter(e=>e.id!==id);
@@ -449,7 +455,7 @@ createApp({
       if(this.selectedMonster && this.selectedMonster.id===id) this.selectedMonster=null;
     },
 
-    /* ---------- export / import current encounter ---------- */
+    /* ---------------- current encounter import / export ---------------- */
     exportJSON(){return JSON.stringify({active:this.entities,delayed:this.delayedEntities},null,2);},
     copyExport(){navigator.clipboard.writeText(this.exportJSON()).then(()=>alert('Copied!'));},
     downloadJSON(){
@@ -470,7 +476,7 @@ createApp({
       }catch{ alert('Invalid JSON'); }
     },
 
-    /* ---------- export / import library ---------- */
+    /* ---------------- library import / export ---------------- */
     copyLibrary(){navigator.clipboard.writeText(this.libraryJSON).then(()=>alert('Copied library!'));},
     downloadLibrary(){
       const blob=new Blob([this.libraryJSON],{type:'application/json'});
