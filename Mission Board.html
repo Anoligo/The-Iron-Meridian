@@ -1,276 +1,274 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Iron Meridian - Mission Board</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #1c1c1c;
-      color: #f5f5f5;
-      margin: 0;
-      padding: 20px;
-    }
-    h1 {
-      text-align: center;
-      color: #ffc107;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 20px;
-    }
-    th, td {
-      padding: 12px;
-      border-bottom: 1px solid #333;
-      text-align: left;
-      vertical-align: top;
-    }
-    th {
-      background-color: #333;
-      color: #ffc107;
-    }
-    tr:nth-child(even) {
-      background-color: #2a2a2a;
-    }
-    details {
-      background-color: #2a2a2a;
-      margin-top: 10px;
-      padding: 10px;
-      border-radius: 6px;
-    }
-    summary {
-      font-weight: bold;
-      cursor: pointer;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>The Iron Meridian – Mission Board</title>
+
+<style>
+  :root{
+    --bg-dark:#1c1c1c;
+    --bg-card:#2a2a2a;
+    --text-light:#f5f5f5;
+    --accent:#ffc107;
+    --border-dark:#333;
+    --radius:8px;
+    /* rank colours */
+    --bronze:#cd7f32;
+    --silver:#c0c0c0;
+    --gold:#ffd700;
+    /* status colours */
+    --completed-bg:#243b24;  --completed-border:#3f7f3f;
+    --expired-bg:#3b2424;    --expired-border:#7f3f3f;
+  }
+
+  /* base */
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',Tahoma,Verdana,sans-serif;
+       background:var(--bg-dark);color:var(--text-light);padding:20px;}
+  h1{text-align:center;color:var(--accent);margin-bottom:1rem;
+      font-size:clamp(1.6rem,5vw,2.2rem);}
+
+  /* nav */
+  nav{background:#1f1f1f;padding:1em;border-bottom:2px solid #444;
+      margin:-20px -20px 1.5rem;}
+  nav ul{display:flex;justify-content:center;list-style:none;gap:1em;flex-wrap:wrap;}
+  nav a{color:#fff;text-decoration:none;font-weight:bold;}
+
+  /* filters */
+  .filter-bar{display:flex;flex-wrap:wrap;gap:.75rem;justify-content:center;margin-bottom:1.5rem;}
+  .filter-bar input,.filter-bar select{
+    background:var(--bg-card);color:var(--text-light);
+    border:1px solid var(--border-dark);padding:.5rem .75rem;
+    border-radius:var(--radius);min-width:140px;
+  }
+  .filter-bar input::placeholder{color:#aaa;}
+
+  /* grid */
+  .mission-container{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;}
+
+  /* card */
+  .mission{background:var(--bg-card);border:1px solid var(--border-dark);
+           border-radius:var(--radius);padding:1rem;display:flex;
+           flex-direction:column;gap:.5rem;transition:transform .2s;}
+  .mission:hover{transform:translateY(-4px);}
+  .mission.completed{background:var(--completed-bg);border-color:var(--completed-border);}
+  .mission.expired{background:var(--expired-bg);border-color:var(--expired-border);opacity:.85;}
+
+  .mission-header{display:flex;flex-direction:column;gap:.15rem;line-height:1.35;}
+  .mission-name{font-weight:600;color:var(--accent);}
+  .mission.completed .mission-name{color:#8cff8c;}
+  .mission.expired   .mission-name{color:#ff8c8c;}
+
+  .mission-meta{font-size:.85rem;color:#ddd;display:flex;flex-wrap:wrap;gap:.5rem;}
+  .tag{background:#444;padding:.15rem .5rem;border-radius:9999px;font-size:.7rem;white-space:nowrap;}
+
+  /* rank shield icon */
+  .rank-icon{width:1em;height:1em;vertical-align:-2px;margin-right:.25rem;fill:currentColor;}
+  .bronze{color:var(--bronze);}
+  .silver{color:var(--silver);}
+  .gold  {color:var(--gold);}
+
+  /* toggle */
+  .details{display:none;flex-direction:column;gap:.5rem;font-size:.9rem;margin-top:.25rem;}
+  .mission.open .details{display:flex;}
+  .toggle-btn{align-self:flex-start;padding:.25rem .65rem;border:1px solid var(--border-dark);
+              border-radius:var(--radius);background:var(--accent);color:var(--bg-dark);
+              font-size:.75rem;font-weight:600;cursor:pointer;user-select:none;transition:filter .2s;}
+  .toggle-btn:hover{filter:brightness(1.1);}
+
+  /* responsive */
+  @media(max-width:480px){.mission-container{grid-template-columns:1fr;}nav ul{gap:.5rem;}}
+</style>
 </head>
+
 <body>
-<!-- Navigation Bar -->
-<nav style="background-color: #1f1f1f; padding: 1em; border-bottom: 2px solid #444;">
-  <ul style="display: flex; justify-content: center; list-style: none; margin: 0; padding: 0;">
-    <li style="margin: 0 1em;">
-      <a href="Mercenary Guild Overview.html" style="color: #fff; text-decoration: none; font-weight: bold;">🏰 Guild Overview</a>
-    </li>
-    <li style="margin: 0 1em;">
-      <a href="Mission Board.html" style="color: #fff; text-decoration: none; font-weight: bold;">📜 Mission Board</a>
-    </li>
-    <li style="margin: 0 1em;">
-      <a href="The Armoury.html" style="color: #fff; text-decoration: none; font-weight: bold;">🛡️ The Armoury</a>
-    </li>
-	<li style="margin: 0 1em;">
-      <a href="Mission Reports.html" style="color: #fff; text-decoration: none; font-weight: bold;">📝 Mission Reports</a>
-    </li>
-    <li style="margin: 0 1em;">
-      <a href="The Iron Reserve.html" style="color: #fff; text-decoration: none; font-weight: bold;">🛡️ The Iron Reserve</a>
-    </li>
+<!-- hidden SVG symbol definitions -->
+<svg style="display:none;" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="shield" viewBox="0 0 24 24">
+    <path d="M12 2l7 4v6c0 5-3.8 9.6-7 10-3.2-.4-7-5-7-10V6l7-4z"/>
+  </symbol>
+</svg>
+
+<!-- navigation -->
+<nav>
+  <ul>
+    <li><a href="Mercenary Guild Overview.html">🏰 Guild Overview</a></li>
+    <li><a href="Mission Board.html">📜 Mission Board</a></li>
+    <li><a href="The Armoury.html">🛡️ The Armoury</a></li>
+    <li><a href="Mission Reports.html">📝 Mission Reports</a></li>
+    <li><a href="The Iron Reserve.html">🛡️ The Iron Reserve</a></li>
   </ul>
 </nav>
-  <h1>The Iron Meridian - Mission Board</h1>
-  <table>
-    <thead>
-      <tr>
-        <th>Mission</th>
-        <th>Type</th>
-        <th>Recommended Rank</th>
-        <th>Est. Length</th>
-        <th>Reward</th>
-      </tr>
-    </thead>
-    <tbody id="mission-table-body">
-      <!-- Mission rows will be injected here -->
-    </tbody>
-  </table>
 
-  <script>
-const missionData = [
-  {
-    "name": "Mossfang Hollow",
-    "type": "Exploration / Combat",
-    "rank": "Bronze",
-    "length": "Short-Medium",
-    "reward": "150g + Natural Curios + Minor Magical Trinket",
-    "location": "Mossfang Hollow (Near Bramblebrook Woods)",
-    "objective": "Investigate reports of aggressive plant life and strange, flickering lights deep within the old woods.",
-    "steps": [
-      "Travel to Mossfang Hollow through Bramblebrook Woods.",
-      "Explore the affected region and observe any unusual phenomena.",
-      "Identify the source of the disturbance.",
-      "Resolve the threat and return with findings."
-    ],
-    "extra": "Locals say travelers vanish into the moss and don’t come back. Also, a giant raccoon was seen wearing a crown of ivy. Could be important. Probably isn’t."
-  },
-  {
-    "name": "Tending the Fallen",
-    "type": "Diplomatic",
-    "rank": "Bronze",
-    "length": "Short",
-    "reward": "80g + Pale Paladin Reputation",
-    "location": "Pale Paladins' Stronghold",
-    "objective": "Assist with sacred ceremonies honoring fallen warriors.",
-    "steps": [
-      "Attend the memorial service in proper attire.",
-      "Assist with ceremonial duties and preparations.",
-      "Support the needs of temple staff with dignity and respect.",
-      "Help maintain order and ensure the rites proceed smoothly."
-    ],
-    "extra": "Strictly no touching the holy relics. Seriously."
-  },
-  {
-    "name": "The Mad Sorcerer’s Last Trick",
-    "type": "Investigation/Combat",
-    "rank": "Gold",
-    "length": "Long",
-    "reward": "2000g + Possibly Sentient Magical Trinket",
-    "location": "Dismal Forest",
-    "objective": "Investigate rising magical anomalies and neutralize the source.",
-    "steps": [
-      "Enter the anomalous zone (bring protective measures).",
-      "Track evidence of magical instability.",
-      "Determine the cause and stop it, if possible.",
-      "Return with a report and any recovered artifacts."
-    ],
-    "extra": "Expect weird time distortions. And trees that argue."
-  },
-  {
-    "name": "Demon Portal Shutdown",
-    "type": "Combat/Exploration",
-    "rank": "Gold",
-    "length": "Long",
-    "reward": "4000g + Demon-Slaying Relic",
-    "location": "Shadowlands Rift",
-    "objective": "Disable a growing portal breach before full demonic incursion.",
-    "steps": [
-      "Secure safe passage through hostile terrain.",
-      "Examine the portal and its surroundings.",
-      "Shut down the breach by any viable means.",
-      "Evacuate quickly if the area destabilizes."
-    ],
-    "extra": "Containment Authority suggests NOT poking it."
-  },
-  {
-    "name": "Eyes in the Shadows",
-    "type": "Stealth/Covert",
-    "rank": "Silver",
-    "length": "Medium",
-    "reward": "2000g + Faction Intel",
-    "location": "Dismal Blades Hideout",
-    "objective": "Infiltrate the rogue faction's base and gather intelligence.",
-    "steps": [
-      "Gain access without being detected.",
-      "Locate and record key information.",
-      "Optional: Sabotage or plant misinformation.",
-      "Leave no trace and return safely."
-    ],
-    "extra": "Fake mustaches recommended but not provided."
-  },
-  {
-    "name": "Guild Priority: Cluster Echo",
-    "type": "Investigation",
-    "rank": "Bronze/Silver",
-    "length": "Medium",
-    "reward": "1500g + Special Access to Archives",
-    "location": "Ashminster Wilds, Site 3",
-    "objective": "Investigate ruins or installations tied to 'Subject Cluster #3.'",
-    "steps": [
-      "Review notes and translations at The Armoury.",
-      "Travel to Site 3 and secure the surrounding area.",
-      "Document and examine any structural anomalies or symbols.",
-      "Recover any intact records or relics."
-    ],
-    "extra": "Archivist Solen warns: sigils may still trigger latent enchantments."
-  },
-  {
-    "name": "The Emberdeep Cellar",
-    "type": "Exploration / Combat / Puzzle",
-    "rank": "Bronze",
-    "length": "Short-Medium",
-    "reward": "120g + Relic Dust + Scroll Fragment",
-    "location": "Abandoned Cellar under Emberdeep Tavern",
-    "objective": "Explore the sealed subcellar recently discovered beneath Emberdeep’s old tavern.",
-    "steps": [
-      "Access the cellar through the compromised foundation.",
-      "Explore and document the interior layout and contents.",
-      "Deal with any hazards or opposition encountered.",
-      "Secure any suspicious objects or magical remnants."
-    ],
-    "extra": "The barkeep swears the casks started whispering. Again."
-  },
-  {
-    "name": "Shrine of the Hollow Watcher",
-    "type": "Exploration / Combat / Religious",
-    "rank": "Bronze",
-    "length": "Medium",
-    "reward": "200g + Blessing of the Hollow + Relic Token",
-    "location": "Shrine Cavern off Duskspine Ridge",
-    "objective": "Investigate the reawakening of an ancient shrine buried within a cliffside cave.",
-    "steps": [
-      "Descend safely into the shrine caverns.",
-      "Survey the ancient site and take notes.",
-      "Respond to any anomalies, disturbances, or guardian presence.",
-      "Complete the mission with reverence."
-    ],
-    "extra": "Local miners say they hear whispering prayers echoing from the ridge at night."
-  },
-  {
-    "name": "The Pie Witch of Duskhollow (Expired)",
-    "type": "Investigation/Social",
-    "rank": "Bronze",
-    "length": "Short",
-    "reward": "Expired - No longer active",
-    "location": "Duskhollow",
-    "objective": "This mission has been withdrawn from the board. Reports suggest the pie situation resolved itself... or everyone just stopped complaining.",
-    "steps": [
-      "Formerly involved cautious social inquiry and observation.",
-      "Assignment expired due to unresolved pastry-based anomalies.",
-      "Locals now host a weekly Pie Appreciation Society.",
-      "Guild suspects mild enchantment. Or exceptional baking skills."
-    ],
-    "extra": "Further investigation not advised. Or necessary. Probably."
-  }
+<h1>The Iron Meridian – Mission Board</h1>
+
+<!-- filters -->
+<div class="filter-bar">
+  <input type="text" id="searchInput" placeholder="Search by name…">
+  <select id="rankFilter">
+    <option value="">All Ranks</option>
+    <option value="Bronze">Bronze</option>
+    <option value="Silver">Silver</option>
+    <option value="Gold">Gold</option>
+  </select>
+  <select id="typeFilter"><option value="">All Types</option></select>
+  <select id="sortSelect">
+    <option value="rank">Sort: Rank</option>
+    <option value="name">Sort: Name</option>
+    <option value="length">Sort: Length</option>
+    <option value="reward">Sort: Reward</option>
+  </select>
+</div>
+
+<div id="missionContainer" class="mission-container"></div>
+
+<script>
+/* ---------- data (single-rank) ---------- */
+const missionData=[
+  /* expired */
+  {name:"Mossfang Hollow",types:["Exploration","Combat"],rank:"Bronze",
+   length:"Short-Medium",reward:"Resolved",status:"expired",
+   location:"Mossfang Hollow (Near Bramblebrook Woods)",
+   objective:"Aggressive plant life neutralised; no further flickering lights.",
+   steps:[],extra:"The crowned raccoon was never caught."},
+
+  {name:"Tending the Fallen",types:["Diplomatic"],rank:"Bronze",
+   length:"Short",reward:"Resolved",status:"expired",
+   location:"Pale Paladins' Stronghold",
+   objective:"Ceremonial support rendered successfully.",steps:[],extra:"Relics untouched. Barely."},
+
+  /* completed */
+  {name:"The Emberdeep Cellar",types:["Exploration","Combat","Puzzle"],rank:"Bronze",
+   length:"Short-Medium",reward:"120g + Relic Dust",status:"completed",
+   location:"Cellar under Emberdeep Tavern",
+   objective:"Disturbance neutralised and site secured.",steps:[],extra:"Casks have stopped whispering."},
+
+  /* active */
+  {name:"The Mad Sorcerer’s Last Trick",types:["Investigation","Combat"],rank:"Gold",length:"Long",
+   reward:"2000g + Sentient Trinket",status:"active",location:"Dismal Forest",
+   objective:"Investigate anomalies and neutralise the source.",
+   steps:["Enter anomalous zone","Track instability","Stop the cause","Report"],extra:"Trees may argue."},
+
+  {name:"Demon Portal Shutdown",types:["Combat","Exploration"],rank:"Gold",length:"Long",
+   reward:"4000g + Demon-Slaying Relic",status:"active",location:"Shadowlands Rift",
+   objective:"Disable a growing portal breach.",
+   steps:["Secure passage","Examine portal","Shut breach","Evacuate"],extra:"Do NOT poke it."},
+
+  {name:"Eyes in the Shadows",types:["Stealth","Covert"],rank:"Silver",length:"Medium",
+   reward:"2000g + Faction Intel",status:"active",location:"Dismal Blades Hideout",
+   objective:"Gather intelligence undetected.",
+   steps:["Gain access","Collect info","Optionally sabotage","Exit cleanly"],extra:"Fake moustaches optional."},
+
+  {name:"The Saltstone Descent",types:["Exploration","Combat","Puzzle"],rank:"Silver",length:"Medium-Long",
+   reward:"600g + Ancient Seals",status:"active",location:"Saltstone Catacombs",
+   objective:"Reach sealed dwarven archive.",steps:["Map tunnels","Bypass defences","Collect tablets","Return"],extra:"Avoid cave-ins."},
+
+  {name:"The Mirrorpool Pact",types:["Diplomacy","Investigation"],rank:"Silver",length:"Short-Medium",
+   reward:"450g + Renown",status:"active",location:"Mirrorpool Hamlet",
+   objective:"Mediate dispute with pond spirit.",steps:["Investigate","Interview locals","Resolve"],extra:"Spirits may appear as koi."},
+
+  {name:"Guild Priority: Cluster Echo",types:["Investigation"],rank:"Bronze",length:"Medium",
+   reward:"1500g + Archive Access",status:"active",location:"Ashminster Wilds, Site 3",
+   objective:"Investigate ruins of Subject Cluster #3.",
+   steps:["Review notes","Secure site","Document anomalies","Recover relics"],extra:"Sigils may fire off enchantments."},
+
+  {name:"Shrine of the Hollow Watcher",types:["Exploration","Combat","Religious"],rank:"Bronze",length:"Medium",
+   reward:"200g + Blessing",status:"active",location:"Duskspine Ridge Cavern",
+   objective:"Investigate reawakening shrine.",
+   steps:["Descend","Survey site","Address guardians","Conclude reverently"],extra:"Whispering prayers heard at night."},
+
+  {name:"A Thief in the Night",types:["Investigation","Social"],rank:"Bronze",length:"Short",
+   reward:"100g + Local Favor",status:"active",location:"Nearby Villages",
+   objective:"Solve unexplained thefts.",steps:["Interview villagers","Search clues","Identify culprit","Recover goods"],extra:"Villagers blame the wind."},
+
+  {name:"Ashsmoke Recovery",types:["Exploration","Salvage"],rank:"Bronze",length:"Short",
+   reward:"120g + Salvage",status:"active",location:"Outpost near Ashsmoke Trail",
+   objective:"Salvage gear from landslide ruin.",
+   steps:["Navigate paths","Assess risk","Salvage","Avoid collapses"],extra:"Bring rope and fear of gravity."},
+
+  {name:"Mireborn Stirrings",types:["Investigation","Combat"],rank:"Bronze",length:"Medium",
+   reward:"150g + Marshsilver",status:"active",location:"South of Veilfen Marsh",
+   objective:"Probe eerie fogs and bubbling vents.",
+   steps:["Meet marsh-runners","Survey vents","Identify threat","Neutralise"],extra:"The air hums if you’re quiet."},
+
+  {name:"The Turnip Trials",types:["Combat","Arcane"],rank:"Bronze",length:"Medium",
+   reward:"300g + Crate",status:"active",location:"Ashminster Farmlands",
+   objective:"Contain arcane crop phenomena.",
+   steps:["Meet agents","Assess instability","Investigate produce","Neutralise threats","Report"],extra:"Animated vegetables on the loose."}
 ];
-document.addEventListener('DOMContentLoaded', function () {
-  const tableBody = document.getElementById('mission-table-body');
 
-  missionData.forEach(mission => {
-    // Create main row
-    const row = document.createElement('tr');
+/* ---------- helpers ---------- */
+const rankOrder={Bronze:1,Silver:2,Gold:3};
+const statusOrder={active:0,completed:1,expired:2};
+function parseLength(l){return["Short","Short-Medium","Medium","Medium-Long","Long"].indexOf(l.split(' ')[0]);}
+function rewardVal(r){const m=/([0-9]+)g/i.exec(r);return m?+m[1]:0;}
 
-    row.innerHTML = `
-      <td><strong>${mission.name}</strong></td>
-      <td>${mission.type}</td>
-      <td>${mission.rank}</td>
-      <td>${mission.length}</td>
-      <td>${mission.reward}</td>
-    `;
-
-    tableBody.appendChild(row);
-
-    // Create full-width details row
-    const detailsRow = document.createElement('tr');
-    const detailsCell = document.createElement('td');
-    detailsCell.colSpan = 5;
-
-    const detail = document.createElement('details');
-    const summary = document.createElement('summary');
-    summary.textContent = `View Details`;
-    detail.appendChild(summary);
-
-    const detailContent = `
-      <p><strong>Location:</strong> ${mission.location}</p>
-      <p><strong>Objective:</strong> ${mission.objective}</p>
-      ${mission.steps ? `<ol>${mission.steps.map(step => `<li>${step}</li>`).join('')}</ol>` : ''}
-      ${mission.extra ? `<p><em>${mission.extra}</em></p>` : ''}
-    `;
-
-    detail.innerHTML += detailContent;
-    detailsCell.appendChild(detail);
-    detailsRow.appendChild(detailsCell);
-    tableBody.appendChild(detailsRow);
-  });
+/* populate type filter */
+const typeSel=document.getElementById('typeFilter');
+[...new Set(missionData.flatMap(m=>m.types))].sort().forEach(t=>{
+  const o=document.createElement('option');o.value=t;o.textContent=t;typeSel.appendChild(o);
 });
 
-  </script>
+/* render */
+['searchInput','rankFilter','typeFilter','sortSelect'].forEach(id=>document.getElementById(id).addEventListener('input',render));
+render();
+
+function render(){
+  const q=document.getElementById('searchInput').value.toLowerCase();
+  const rankSel=document.getElementById('rankFilter').value;
+  const typeSel=document.getElementById('typeFilter').value;
+  const sortSel=document.getElementById('sortSelect').value;
+
+  const filtered=missionData.filter(m=>
+    m.name.toLowerCase().includes(q)&&
+    (!rankSel||m.rank===rankSel)&&
+    (!typeSel||m.types.includes(typeSel))
+  );
+
+  filtered.sort((a,b)=>{
+    const s=statusOrder[a.status]-statusOrder[b.status];
+    if(s!==0)return s;
+    switch(sortSel){
+      case'rank':return rankOrder[a.rank]-rankOrder[b.rank];
+      case'length':return parseLength(a.length)-parseLength(b.length);
+      case'reward':return rewardVal(b.reward)-rewardVal(a.reward);
+      default:return a.name.localeCompare(b.name);
+    }
+  });
+
+  const container=document.getElementById('missionContainer');
+  container.innerHTML='';
+  filtered.forEach(m=>{
+    const card=document.createElement('div');
+    card.className=`mission ${m.status}`;
+    card.innerHTML=`
+      <div class="mission-header">
+        <div class="mission-name ${m.rank.toLowerCase()}">
+          <svg class="rank-icon ${m.rank.toLowerCase()}"><use href="#shield"/></svg>
+          ${m.name}
+        </div>
+        <div class="mission-meta">
+          ${m.types.map(t=>`<span class="tag">${t}</span>`).join('')}
+          <span class="tag">Rank: ${m.rank}</span>
+          <span class="tag">${m.length}</span>
+          <span class="tag">${m.reward}</span>
+        </div>
+      </div>
+      <button class="toggle-btn">Show details</button>
+      <div class="details">
+        <p><strong>Location:</strong> ${m.location}</p>
+        <p><strong>Objective:</strong> ${m.objective}</p>
+        ${m.steps.length?`<ol>${m.steps.map(s=>`<li>${s}</li>`).join('')}</ol>`:''}
+        ${m.extra?`<p><em>${m.extra}</em></p>`:''}
+      </div>`;
+    card.querySelector('.toggle-btn').addEventListener('click',e=>{
+      card.classList.toggle('open');
+      e.target.textContent=card.classList.contains('open')?'Hide details':'Show details';
+    });
+    container.appendChild(card);
+  });
+}
+</script>
 </body>
 </html>

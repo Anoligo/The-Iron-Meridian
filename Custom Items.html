@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iron Meridian - Custom Item Ledger</title>
+  <style>
+    body {
+      font-family: 'Garamond', 'Georgia', serif;
+      background-color: #f4f0e6;
+      color: #2c1b0b;
+      padding: 2em;
+    }
+    h1 {
+      text-align: center;
+      color: #4b2c20;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 2em;
+    }
+    th, td {
+      border: 1px solid #4b2c20;
+      padding: 0.75em;
+      text-align: left;
+    }
+    th {
+      background-color: #d7cbbd;
+    }
+    tr:nth-child(even) {
+      background-color: #f8f6f2;
+    }
+  </style>
+</head>
+<body>
+  <h1>📘 Iron Meridian - Custom Magic Item Ledger</h1>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Item Name</th>
+        <th>Type</th>
+        <th>Level</th>
+        <th>Effect Summary</th>
+        <th>Craft DC</th>
+      </tr>
+    </thead>
+    <tbody id="item-table-body">
+    </tbody>
+  </table>
+
+  <script>
+    const itemData = [
+      {
+        name: "Echo Gem",
+        type: "Wondrous, Consumable",
+        level: 2,
+        effect: "Records a whispered phrase (6 sec) and replays it once per day. Currently stores... flatulence.",
+        craftDC: 14
+      },
+      {
+        name: "Moonstone Pendant",
+        type: "Worn, Magical",
+        level: 2,
+        effect: "Glows near undead; +1 vs mental/fear saves 1/day; reveals 1 spirit question if used in shrine (1/week).",
+        craftDC: 15
+      },
+      {
+        name: "Whispering Ring",
+        type: "Worn, Magical",
+        level: 3,
+        effect: "Cast Message at will; Calm Emotions 1/day (DC 16); faint background whispers when inactive.",
+        craftDC: 16
+      },
+      {
+        name: "Copperleaf Journal",
+        type: "Unique Lore Item (non-magical)",
+        level: "—",
+        effect: "Grants –2 DC to Religion/Diplomacy checks vs Serelith if referenced; contains failed soul-retort ritual notes.",
+        craftDC: "—"
+      },
+      {
+        name: "Catalytic Core Shard",
+        type: "Alchemical Reagent",
+        level: 3,
+        effect: "+1 item bonus to Crafting acid/fire bombs; valuable alchemical component (worth 25 gp).",
+        craftDC: 15
+      },
+      {
+        name: "Intact Alchemical Heart",
+        type: "Consumable, Alchemical Reagent",
+        level: 4,
+        effect: "If salvaged properly, functions once as a Lesser Elemental Gem – Fire; worth 50 gp.",
+        craftDC: 15
+      },
+      {
+        name: "Branna’s Bakefire Biscuits",
+        type: "Consumable, Alchemical, Food",
+        level: 1,
+        effect: "+1 to saves vs fatigue & fear for 1 hour; bonus to Endurance if eaten at breakfast; Crit = 1d8 healing",
+        craftDC: 15
+      },
+	  {
+    "name": "Riverwarden's Aegis",
+    "type": "Worn, Magical (Abjuration)",
+    "level": 2,
+    "effect": "While worn, +1 bonus on saves vs. effects from corrupted Redwater/creatures influenced by its blight. Once per day, if opened, emits a clear chime (30ft radius) granting +1 bonus on next save vs. minor negative condition (fear, sickened, temp penalties) for 1 min. Corrupted creatures may be staggered (Will DC 14 negates). Potential for greater cleansing effects if awakened.",
+    "craftDC": "—"
+  },
+  {
+    "name": "Dried Moonpetal",
+    "type": "Consumable, Herb (Non-magical)",
+    "level": 1,
+    "effect": "Can be brewed into tea. Grants +1 bonus on Will saves vs. fear effects for 1 hour. (Value: 5 sp per bundle)",
+    "craftDC": 14
+  },
+  {
+    "name": "Clockwork Bird with Shifting Plumage",
+    "type": "Wondrous, Magical",
+    "level": 2,
+    "effect": "When wound (Thievery DC 10), it chirps and brass feathers shift colors for 1 minute. During this time, creatures within 10 ft suffering a minor negative condition (+1 bonus on next save to overcome that condition). (Value: 40-60 gp)",
+    "craftDC": 14
+  }
+    ];
+
+    const tableBody = document.getElementById('item-table-body');
+
+    itemData.forEach(item => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td><strong>${item.name}</strong></td>
+        <td>${item.type}</td>
+        <td>${item.level}</td>
+        <td>${item.effect}</td>
+        <td>${item.craftDC}</td>
+      `;
+      tableBody.appendChild(row);
+    });
+  </script>
+</body>
+</html>
