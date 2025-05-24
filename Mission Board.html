@@ -115,6 +115,14 @@
   }
   .toggle-btn:hover{filter:brightness(1.1);}
 
+  /* keep numbered steps inside card */
+.details ol{
+  list-style-position: inside;   /* numbers counted inside padding */
+  padding-left: 0;               /* no extra indent */
+  margin-left: 0;                /* align with text */
+}
+
+
   /* ---------- small screens ---------- */
   @media(max-width:480px){
     .mission-container{grid-template-columns:1fr;}
