@@ -3,65 +3,49 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-<title>Pathfinder 2e Encounter Manager</title>
+<title>PF2 Encounter Manager</title>
 <script src="https://unpkg.com/vue@3"></script>
 <style>
-  /* ----- base colours & fonts ----- */
+  /* --- colours & fonts --- */
   body{background:#111;color:#ddd;font-family:"Segoe UI",Tahoma,sans-serif;margin:0;padding:1em;}
   h2,h3{color:#f5ba42;margin:.3em 0;}
   input,select,button,textarea{
-    background:#222;color:#eee;border:1px solid #555;border-radius:4px;
-    padding:.45em;margin:.2em;font:inherit;
+    background:#222;color:#eee;border:1px solid #555;border-radius:4px;padding:.45em;margin:.2em;font:inherit;
   }
-  textarea{resize:vertical;}
-  button:hover{background:#333;}
+  textarea{resize:vertical;} button:hover{background:#333;}
 
-  /* ----- add-form flex layout ----- */
+  /* --- add-form flex --- */
   .add-form{display:flex;flex-wrap:wrap;gap:.4em;align-items:flex-start;}
-  .add-form select,
-  .add-form input[type=text],
-  .add-form input[type=number]{width:9.5em;}
+  .add-form select,.add-form input[type=text],.add-form input[type=number]{width:9.5em;}
   .add-form textarea{width:18em;min-height:3.8em;}
 
-  /* ----- initiative table ----- */
+  /* --- table --- */
   table{width:100%;border-collapse:collapse;margin-top:.7em;}
   th,td{border:1px solid #444;padding:.5em;text-align:left;}
-  tr.active{background:#2a2f33;font-weight:bold;}
-  tr.dead{color:#777;text-decoration:line-through;}
+  tr.active{background:#2a2f33;font-weight:bold;} tr.dead{color:#777;text-decoration:line-through;}
   .color-dot{display:inline-block;width:1em;height:1em;border-radius:50%;margin-right:.35em;}
 
-  /* ----- status badges ----- */
-  .status-tag{
-    display:inline-block;background:#444;color:#fff;border-radius:9999px;
-    font-size:.75em;padding:.1em .6em;margin:.1em;cursor:pointer;
-  }
+  /* --- status pills --- */
+  .status-tag{display:inline-block;background:#444;color:#fff;border-radius:9999px;font-size:.75em;padding:.1em .6em;margin:.15em;cursor:pointer;}
   .status-tag:hover{background:#666;}
 
-  /* ----- control buttons ----- */
-  .big-btn{
-    margin-top:1em;padding:1em 2em;font-size:1.1em;border:none;border-radius:6px;cursor:pointer;
-  }
-  .start-btn,.next-btn{background:#f5ba42;color:#111;}
-  .start-btn:hover,.next-btn:hover{background:#e5a832;}
-  .end-btn{background:#c94a4a;color:#fff;}
-  .end-btn:hover{background:#b23d3d;}
+  /* --- buttons --- */
+  .big-btn{margin-top:1em;padding:1em 2em;font-size:1.1em;border:none;border-radius:6px;cursor:pointer;}
+  .start-btn,.next-btn{background:#f5ba42;color:#111;} .start-btn:hover,.next-btn:hover{background:#e5a832;}
+  .end-btn{background:#c94a4a;color:#fff;} .end-btn:hover{background:#b23d3d;}
 
-  /* ----- stat block panel ----- */
+  /* --- stat block --- */
   .stat-block{background:#222;border:1px solid #555;border-radius:6px;padding:1em;margin-top:1em;}
   .stat-block pre{white-space:pre-wrap;margin:0;}
 
-  /* ----- import/export box ----- */
-  details.import-export{
-    background:#1b1b1b;border:1px solid #333;border-radius:8px;padding:1em;margin-top:2em;
-  }
+  /* --- import/export --- */
+  details.import-export{background:#1b1b1b;border:1px solid #333;border-radius:8px;padding:1em;margin-top:2em;}
   details.import-export summary{cursor:pointer;font-size:1.1em;color:#f5ba42;padding:.4em 0;}
   details.import-export textarea{width:100%;height:10em;}
 
-  /* ----- mobile tweaks ----- */
+  /* --- mobile tweaks --- */
   @media(max-width:600px){
-    .add-form textarea{width:100%;}
-    table{font-size:.9em;}
-    input[type=number]{width:4em;}
+    .add-form textarea{width:100%;} table{font-size:.9em;} input[type=number]{width:4em;}
   }
 </style>
 </head>
@@ -70,11 +54,9 @@
 
   <h2>Initiative Tracker</h2>
 
-  <!-- ========== ADD ENTITY FORM (hidden once combat starts) ========== -->
+  <!-- ========== ADD ENTITY FORM ========== -->
   <form v-if="!combatStarted" class="add-form" @submit.prevent="addEntity">
-    <select v-model="newType">
-      <option>Player</option><option>Monster</option>
-    </select>
+    <select v-model="newType"><option>Player</option><option>Monster</option></select>
 
     <!-- player quick-pick -->
     <template v-if="newType==='Player'">
@@ -112,33 +94,38 @@
 
   <!-- ========== INIT TABLE ========== -->
   <table v-if="entities.length">
-    <thead>
-      <tr><th>Init</th><th>Name</th><th>Type</th><th>HP</th><th>Status</th><th>Actions</th></tr>
-    </thead>
+    <thead><tr><th>Init</th><th>Name</th><th>Type</th><th>HP</th><th>Status</th><th>Actions</th></tr></thead>
     <tbody>
       <tr v-for="(e,i) in displayOrder" :key="e.id"
           :class="{active:i===turnIndex,dead:e.hp!==undefined && e.hp<=0}">
         <td>{{e.initiative}}</td>
-        <td>
-          <span v-if="e.type==='Monster'" class="color-dot" :style="{backgroundColor:e.color}"></span>
-          {{e.name}}
-        </td>
+        <td><span v-if="e.type==='Monster'" class="color-dot" :style="{backgroundColor:e.color}"></span>{{e.name}}</td>
         <td>{{e.type}}</td>
+        <td><input v-if="e.type==='Monster'" v-model.number="e.hp" type="number" style="width:4.5em;"><template v-else>—</template></td>
+
+        <!-- STATUS CELL -->
         <td>
-          <input v-if="e.type==='Monster'" v-model.number="e.hp" type="number" style="width:4.5em;">
-          <template v-else>—</template>
+          <span v-for="(s,idx) in e.statuses" :key="idx" class="status-tag"
+                :title="conditionMap[s]||s" @click="removeStatus(e,idx)">{{s}} ✕</span>
+
+          <!-- dropdown or + -->
+          <template v-if="e._addingStatus">
+            <select @change="applyStatus(e,$event)" @blur="e._addingStatus=false">
+              <option value="" disabled selected>Add…</option>
+              <optgroup v-for="g in groupedConditions" :label="g.label" :key="g.label">
+                <option v-for="c in g.items" :value="c.name" :key="c.name">{{c.name}}</option>
+              </optgroup>
+              <option value="__custom">Custom…</option>
+            </select>
+          </template>
+          <button v-else @click="e._addingStatus=true" title="Add status">＋</button>
         </td>
+
+        <!-- ACTIONS -->
         <td>
-          <span v-for="(s,idx) in e.statuses" :key="idx"
-                class="status-tag" @click="removeStatus(e,idx)">{{s}} ✕</span>
-          <button @click="addStatus(e)" title="Add status">＋</button>
-        </td>
-        <td>
-          <button v-if="combatStarted && displayOrder[turnIndex]?.id===e.id"
-                  @click="delayTurn(e.id)">Delay</button>
+          <button v-if="combatStarted && displayOrder[turnIndex]?.id===e.id" @click="delayTurn(e.id)">Delay</button>
           <button v-if="e.type==='Monster'" @click="showStats(e)">Stats</button>
-          <button v-if="e.type==='Monster' && e.hp!==undefined && e.hp<=0"
-                  @click="removeEntity(e.id)">Remove</button>
+          <button v-if="e.type==='Monster' && e.hp!==undefined && e.hp<=0" @click="removeEntity(e.id)">Remove</button>
         </td>
       </tr>
     </tbody>
@@ -151,28 +138,17 @@
   </div>
 
   <!-- ========== DELAYED LIST ========== -->
-  <div v-if="delayedEntities.length"
-       style="margin-top:1em;border-top:1px dashed #555;padding-top:1em;">
+  <div v-if="delayedEntities.length" style="margin-top:1em;border-top:1px dashed #555;padding-top:1em;">
     <h3>Delayed</h3>
-    <ul>
-      <li v-for="e in delayedEntities" :key="e.id">
-        {{e.name}} ({{e.type}})
-        <button @click="resumeTurn(e.id)">Jump In</button>
-      </li>
-    </ul>
+    <ul><li v-for="e in delayedEntities" :key="e.id">{{e.name}} <button @click="resumeTurn(e.id)">Jump In</button></li></ul>
   </div>
 
   <!-- ========== IMPORT / EXPORT ========== -->
   <details class="import-export">
     <summary><strong>Import / Export Encounter</strong></summary>
     <textarea readonly :value="exportJSON()"></textarea>
-    <div style="margin:.6em 0">
-      <button @click="copyExport">Copy</button>
-      <button @click="downloadJSON">Download</button>
-    </div>
-    <div style="margin:.6em 0">
-      <input type="file" @change="uploadJSON">
-    </div>
+    <div style="margin:.6em 0"><button @click="copyExport">Copy</button><button @click="downloadJSON">Download</button></div>
+    <div style="margin:.6em 0"><input type="file" @change="uploadJSON"></div>
     <textarea v-model="importBlob" placeholder="…or paste JSON here"></textarea>
     <button @click="importJSON">Load</button>
   </details>
@@ -180,6 +156,54 @@
 
 <script>
 const { createApp } = Vue;
+
+/* ---------- condition master list ---------- */
+const conditions = [
+  {cat:"🧠 Mental", name:"Frightened", desc:"– status penalty to checks & DCs; reduces each round."},
+  {cat:"🧠 Mental", name:"Confused", desc:"Act randomly; may attack allies."},
+  {cat:"🧠 Mental", name:"Fascinated", desc:"Only actions to observe the source; –2 Perception/skills vs others."},
+  {cat:"🧠 Mental", name:"Stupefied", desc:"Penalty to mental stats & concentration."},
+  {cat:"🧠 Mental", name:"Controlled", desc:"GM dictates your actions."},
+  {cat:"🧠 Mental", name:"Dazed", desc:"Can take only one action."},
+  {cat:"🧠 Mental", name:"Unconscious", desc:"Knocked out; helpless."},
+
+  {cat:"🤕 Physical", name:"Doomed", desc:"Die sooner (lower dying threshold)."},
+  {cat:"🤕 Physical", name:"Dying", desc:"Need recovery checks each round."},
+  {cat:"🤕 Physical", name:"Wounded", desc:"Gain dying faster next time."},
+  {cat:"🤕 Physical", name:"Paralyzed", desc:"Can't act, flat-footed."},
+  {cat:"🤕 Physical", name:"Petrified", desc:"Turned to stone."},
+  {cat:"🤕 Physical", name:"Clumsy", desc:"Penalty to Dex checks & DCs."},
+  {cat:"🤕 Physical", name:"Enfeebled", desc:"Penalty to Str checks & DCs."},
+  {cat:"🤕 Physical", name:"Fatigued", desc:"–1 AC & saves; no exploration activities."},
+  {cat:"🤕 Physical", name:"Exhausted", desc:"Severely weakened."},
+
+  {cat:"🔥 DoT", name:"Persistent Damage", desc:"Takes damage each round until removed."},
+
+  {cat:"💢 Combat", name:"Flat-Footed", desc:"–2 AC."},
+  {cat:"💢 Combat", name:"Prone", desc:"Lying down; –2 attack rolls."},
+  {cat:"💢 Combat", name:"Grabbed", desc:"Immobilized by foe; flat-footed."},
+  {cat:"💢 Combat", name:"Restrained", desc:"Can't act; flat-footed."},
+  {cat:"💢 Combat", name:"Immobilized", desc:"Can't move voluntarily."},
+  {cat:"💢 Combat", name:"Slowed", desc:"Lose 1+ actions per round."},
+  {cat:"💢 Combat", name:"Quickened", desc:"Gain 1 extra action (specific)."},
+  {cat:"💢 Combat", name:"Invisible", desc:"Can't be seen without special senses."},
+
+  {cat:"💬 Sense", name:"Blinded", desc:"Can't see; –4 Perception; flat-footed."},
+  {cat:"💬 Sense", name:"Deafened", desc:"Can't hear; –2 initiative."},
+
+  {cat:"🎯 Target", name:"Charmed", desc:"Treated as friendly."},
+  {cat:"🎯 Target", name:"Stunned", desc:"Lose actions."},
+
+  {cat:"🧊 Special", name:"Concealed", desc:"DC 5 flat-check to hit."},
+  {cat:"🧊 Special", name:"Hidden", desc:"DC 11 flat-check to hit."}
+];
+/* group by cat for dropdown */
+const grouped = [];
+for(const g of [...new Set(conditions.map(c=>c.cat))]){
+  grouped.push({label:g,items:conditions.filter(c=>c.cat===g)});
+}
+/* map name→desc */
+const condMap = Object.fromEntries(conditions.map(c=>[c.name,c.desc]));
 
 createApp({
   data(){
@@ -189,11 +213,12 @@ createApp({
       newInitiative:null, newHP:null, newStatBlock:'', newColor:'red',
       turnIndex:0, combatStarted:false, selectedMonster:null,
       importBlob:'',
-      playerNames:['Ecaon','Buggie','Styx Red-Claw','Vokkar','ObsidianIvy','ElderDan','Trusco']
+      playerNames:['Ecaon','Buggie','Styx Red-Claw','Vokkar','ObsidianIvy','ElderDan','Trusco'],
+      groupedConditions:grouped, conditionMap:condMap
     };
   },
   computed:{
-    displayOrder(){               /* sorted list before combat */
+    displayOrder(){
       return this.combatStarted
         ? this.entities
         : [...this.entities].sort((a,b)=>b.initiative-a.initiative||a.order-b.order);
@@ -201,112 +226,48 @@ createApp({
   },
   methods:{
     d20(){return Math.floor(Math.random()*20)+1;},
-
-    /* ------- Add entity ------- */
+    /* add creature */
     addEntity(){
-      const name = this.newType==='Player'
+      const name=this.newType==='Player'
         ? (this.newName==='__custom'?this.customPlayer:this.newName)
         : this.newName;
-      if(!name) return;
-
-      const init = this.newType==='Monster'
-        ? (this.newInitiative || this.d20() + 5)
-        : (this.newInitiative || 0);
-
+      if(!name)return;
+      const init=this.newType==='Monster'? (this.newInitiative||this.d20()+5) : (this.newInitiative||0);
       this.entities.push({
-        id:Date.now()+Math.random(),
-        name, initiative:init, type:this.newType, order:this.entities.length,
-        hp:this.newType==='Monster'?this.newHP:undefined,
-        statBlock:this.newType==='Monster'?this.newStatBlock:'',
-        color:this.newColor, statuses:[]
+        id:Date.now()+Math.random(),name,initiative:init,type:this.newType,order:this.entities.length,
+        hp:this.newType==='Monster'?this.newHP:undefined,statBlock:this.newType==='Monster'?this.newStatBlock:'',
+        color:this.newColor,statuses:[],_addingStatus:false
       });
+      this.newName='';this.customPlayer='';this.newInitiative=null;this.newHP=null;this.newStatBlock='';this.newColor='red';
+    },
+    /* combat */
+    startCombat(){this.entities.sort((a,b)=>b.initiative-a.initiative||a.order-b.order);this.combatStarted=true;this.turnIndex=0;this.syncStatBlock();},
+    nextTurn(){if(this.entities.length){this.turnIndex=(this.turnIndex+1)%this.entities.length;this.syncStatBlock();}},
+    endCombat(){this.entities=[];this.delayedEntities=[];this.turnIndex=0;this.combatStarted=false;this.selectedMonster=null;},
+    delayTurn(id){const i=this.entities.findIndex(e=>e.id===id);if(i!==-1){this.delayedEntities.push(this.entities.splice(i,1)[0]);if(this.turnIndex>=this.entities.length)this.turnIndex=0;this.syncStatBlock();}},
+    resumeTurn(id){const i=this.delayedEntities.findIndex(e=>e.id===id);if(i!==-1){const ent=this.delayedEntities.splice(i,1)[0];const activeId=this.displayOrder[this.turnIndex]?.id;const ins=this.entities.findIndex(e=>e.id===activeId);this.entities.splice(ins,0,ent);this.turnIndex=ins;this.syncStatBlock();}},
 
-      /* reset form fields */
-      this.newName=''; this.customPlayer=''; this.newInitiative=null;
-      this.newHP=null; this.newStatBlock=''; this.newColor='red';
+    /* status handling */
+    applyStatus(ent,e){
+      const val=e.target.value;
+      ent._addingStatus=false;
+      if(!val)return;
+      if(val==='__custom'){const c=prompt("Custom status");if(c)ent.statuses.push(c);} else ent.statuses.push(val);
     },
-
-    /* ------- Combat flow ------- */
-    startCombat(){
-      this.entities.sort((a,b)=>b.initiative-a.initiative||a.order-b.order);
-      this.combatStarted=true; this.turnIndex=0;
-      this.syncStatBlock();
-    },
-    nextTurn(){
-      if(this.entities.length){
-        this.turnIndex=(this.turnIndex+1)%this.entities.length;
-        this.syncStatBlock();
-      }
-    },
-    endCombat(){
-      this.entities=[]; this.delayedEntities=[];
-      this.turnIndex=0; this.combatStarted=false; this.selectedMonster=null;
-    },
-
-    /* Delay / Resume */
-    delayTurn(id){
-      const idx=this.entities.findIndex(e=>e.id===id);
-      if(idx!==-1){
-        this.delayedEntities.push(this.entities.splice(idx,1)[0]);
-        if(this.turnIndex>=this.entities.length) this.turnIndex=0;
-        this.syncStatBlock();
-      }
-    },
-    resumeTurn(id){
-      const idx=this.delayedEntities.findIndex(e=>e.id===id);
-      if(idx!==-1){
-        const ent=this.delayedEntities.splice(idx,1)[0];
-        const activeId=this.displayOrder[this.turnIndex]?.id;
-        const insert=this.entities.findIndex(e=>e.id===activeId);
-        this.entities.splice(insert,0,ent);
-        this.turnIndex=insert; this.syncStatBlock();
-      }
-    },
-
-    /* ------- Stat-block sync ------- */
-    syncStatBlock(){
-      const current=this.entities[this.turnIndex];
-      this.selectedMonster=(current&&current.type==='Monster')?current:null;
-    },
+    addStatus(ent){ent._addingStatus=true;},
+    removeStatus(ent,i){ent.statuses.splice(i,1);},
+    /* stat block */
+    syncStatBlock(){const cur=this.entities[this.turnIndex];this.selectedMonster=(cur&&cur.type==='Monster')?cur:null;},
     showStats(ent){this.selectedMonster=ent;},
+    /* remove monster */
+    removeEntity(id){this.entities=this.entities.filter(e=>e.id!==id);this.delayedEntities=this.delayedEntities.filter(e=>e.id!==id);if(this.turnIndex>=this.entities.length)this.turnIndex=0;if(this.selectedMonster&&this.selectedMonster.id===id)this.selectedMonster=null;},
 
-    /* ------- Status tags ------- */
-    addStatus(ent){
-      const s=prompt("Status to add (e.g. 'Frightened 1')");
-      if(s) ent.statuses.push(s);
-    },
-    removeStatus(ent,i){ ent.statuses.splice(i,1); },
-
-    /* ------- Remove (monsters only) ------- */
-    removeEntity(id){
-      this.entities=this.entities.filter(e=>e.id!==id);
-      this.delayedEntities=this.delayedEntities.filter(e=>e.id!==id);
-      if(this.turnIndex>=this.entities.length) this.turnIndex=0;
-      if(this.selectedMonster && this.selectedMonster.id===id) this.selectedMonster=null;
-    },
-
-    /* ------- Import / Export ------- */
+    /* import/export */
     exportJSON(){return JSON.stringify({active:this.entities,delayed:this.delayedEntities},null,2);},
     copyExport(){navigator.clipboard.writeText(this.exportJSON()).then(()=>alert("Copied!"));},
-    downloadJSON(){
-      const blob=new Blob([this.exportJSON()],{type:"application/json"});
-      const url=URL.createObjectURL(blob);
-      Object.assign(document.createElement("a"),{href:url,download:"encounter.json"}).click();
-      URL.revokeObjectURL(url);
-    },
-    uploadJSON(e){
-      const f=e.target.files[0]; if(!f) return;
-      const r=new FileReader();
-      r.onload=x=>{this.importBlob=x.target.result;};
-      r.readAsText(f);
-    },
-    importJSON(){
-      try{
-        const d=JSON.parse(this.importBlob||"{}");
-        this.entities=d.active||[]; this.delayedEntities=d.delayed||[];
-        this.turnIndex=0; this.combatStarted=false; this.selectedMonster=null;
-      }catch{ alert("Invalid JSON"); }
-    }
+    downloadJSON(){const b=new Blob([this.exportJSON()],{type:"application/json"});const u=URL.createObjectURL(b);Object.assign(document.createElement("a"),{href:u,download:"encounter.json"}).click();URL.revokeObjectURL(u);},
+    uploadJSON(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=x=>this.importBlob=x.target.result;r.readAsText(f);},
+    importJSON(){try{const d=JSON.parse(this.importBlob||"{}");this.entities=d.active||[];this.delayedEntities=d.delayed||[];this.turnIndex=0;this.combatStarted=false;this.selectedMonster=null;}catch{alert("Invalid JSON");}}
   }
 }).mount("#app");
 </script>

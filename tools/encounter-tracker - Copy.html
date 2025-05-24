@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>Pathfinder 2e Encounter Manager</title>
+<script src="https://unpkg.com/vue@3"></script>
+<style>
+  /* ----- base colours & fonts ----- */
+  body{background:#111;color:#ddd;font-family:"Segoe UI",Tahoma,sans-serif;margin:0;padding:1em;}
+  h2,h3{color:#f5ba42;margin:.3em 0;}
+  input,select,button,textarea{
+    background:#222;color:#eee;border:1px solid #555;border-radius:4px;
+    padding:.45em;margin:.2em;font:inherit;
+  }
+  textarea{resize:vertical;}
+  button:hover{background:#333;}
+
+  /* ----- add-form flex layout ----- */
+  .add-form{display:flex;flex-wrap:wrap;gap:.4em;align-items:flex-start;}
+  .add-form select,
+  .add-form input[type=text],
+  .add-form input[type=number]{width:9.5em;}
+  .add-form textarea{width:18em;min-height:3.8em;}
+
+  /* ----- initiative table ----- */
+  table{width:100%;border-collapse:collapse;margin-top:.7em;}
+  th,td{border:1px solid #444;padding:.5em;text-align:left;}
+  tr.active{background:#2a2f33;font-weight:bold;}
+  tr.dead{color:#777;text-decoration:line-through;}
+  .color-dot{display:inline-block;width:1em;height:1em;border-radius:50%;margin-right:.35em;}
+
+  /* ----- status badges ----- */
+  .status-tag{
+    display:inline-block;background:#444;color:#fff;border-radius:9999px;
+    font-size:.75em;padding:.1em .6em;margin:.1em;cursor:pointer;
+  }
+  .status-tag:hover{background:#666;}
+
+  /* ----- control buttons ----- */
+  .big-btn{
+    margin-top:1em;padding:1em 2em;font-size:1.1em;border:none;border-radius:6px;cursor:pointer;
+  }
+  .start-btn,.next-btn{background:#f5ba42;color:#111;}
+  .start-btn:hover,.next-btn:hover{background:#e5a832;}
+  .end-btn{background:#c94a4a;color:#fff;}
+  .end-btn:hover{background:#b23d3d;}
+
+  /* ----- stat block panel ----- */
+  .stat-block{background:#222;border:1px solid #555;border-radius:6px;padding:1em;margin-top:1em;}
+  .stat-block pre{white-space:pre-wrap;margin:0;}
+
+  /* ----- import/export box ----- */
+  details.import-export{
+    background:#1b1b1b;border:1px solid #333;border-radius:8px;padding:1em;margin-top:2em;
+  }
+  details.import-export summary{cursor:pointer;font-size:1.1em;color:#f5ba42;padding:.4em 0;}
+  details.import-export textarea{width:100%;height:10em;}
+
+  /* ----- mobile tweaks ----- */
+  @media(max-width:600px){
+    .add-form textarea{width:100%;}
+    table{font-size:.9em;}
+    input[type=number]{width:4em;}
+  }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <h2>Initiative Tracker</h2>
+
+  <!-- ========== ADD ENTITY FORM (hidden once combat starts) ========== -->
+  <form v-if="!combatStarted" class="add-form" @submit.prevent="addEntity">
+    <select v-model="newType">
+      <option>Player</option><option>Monster</option>
+    </select>
+
+    <!-- player quick-pick -->
+    <template v-if="newType==='Player'">
+      <select v-model="newName">
+        <option value="" disabled>Select player…</option>
+        <option v-for="p in playerNames" :key="p">{{p}}</option>
+        <option value="__custom">Custom name…</option>
+      </select>
+      <input v-if="newName==='__custom'" v-model="customPlayer" placeholder="Name">
+      <input v-model.number="newInitiative" type="number" placeholder="Initiative">
+    </template>
+
+    <!-- monster entry -->
+    <template v-else>
+      <input v-model="newName" placeholder="Monster name" required>
+      <select v-model="newColor">
+        <option red>red</option><option blue>blue</option>
+        <option yellow>yellow</option><option green>green</option>
+      </select>
+      <input v-model.number="newHP" type="number" placeholder="HP">
+      <textarea v-model="newStatBlock" placeholder="Stat Block"></textarea>
+    </template>
+
+    <button type="submit">Add</button>
+  </form>
+
+  <!-- ========== COMBAT CONTROLS ========== -->
+  <div v-if="entities.length">
+    <button v-if="!combatStarted" @click="startCombat" class="big-btn start-btn">Start Combat</button>
+    <div v-else>
+      <button @click="nextTurn" class="big-btn next-btn">Next Turn</button>
+      <button @click="endCombat" class="big-btn end-btn">End Combat</button>
+    </div>
+  </div>
+
+  <!-- ========== INIT TABLE ========== -->
+  <table v-if="entities.length">
+    <thead>
+      <tr><th>Init</th><th>Name</th><th>Type</th><th>HP</th><th>Status</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      <tr v-for="(e,i) in displayOrder" :key="e.id"
+          :class="{active:i===turnIndex,dead:e.hp!==undefined && e.hp<=0}">
+        <td>{{e.initiative}}</td>
+        <td>
+          <span v-if="e.type==='Monster'" class="color-dot" :style="{backgroundColor:e.color}"></span>
+          {{e.name}}
+        </td>
+        <td>{{e.type}}</td>
+        <td>
+          <input v-if="e.type==='Monster'" v-model.number="e.hp" type="number" style="width:4.5em;">
+          <template v-else>—</template>
+        </td>
+        <td>
+          <span v-for="(s,idx) in e.statuses" :key="idx"
+                class="status-tag" @click="removeStatus(e,idx)">{{s}} ✕</span>
+          <button @click="addStatus(e)" title="Add status">＋</button>
+        </td>
+        <td>
+          <button v-if="combatStarted && displayOrder[turnIndex]?.id===e.id"
+                  @click="delayTurn(e.id)">Delay</button>
+          <button v-if="e.type==='Monster'" @click="showStats(e)">Stats</button>
+          <button v-if="e.type==='Monster' && e.hp!==undefined && e.hp<=0"
+                  @click="removeEntity(e.id)">Remove</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ========== STAT BLOCK ========== -->
+  <div v-if="selectedMonster" class="stat-block">
+    <h3>{{selectedMonster.name}} — Stat Block</h3>
+    <pre>{{selectedMonster.statBlock}}</pre>
+  </div>
+
+  <!-- ========== DELAYED LIST ========== -->
+  <div v-if="delayedEntities.length"
+       style="margin-top:1em;border-top:1px dashed #555;padding-top:1em;">
+    <h3>Delayed</h3>
+    <ul>
+      <li v-for="e in delayedEntities" :key="e.id">
+        {{e.name}} ({{e.type}})
+        <button @click="resumeTurn(e.id)">Jump In</button>
+      </li>
+    </ul>
+  </div>
+
+  <!-- ========== IMPORT / EXPORT ========== -->
+  <details class="import-export">
+    <summary><strong>Import / Export Encounter</strong></summary>
+    <textarea readonly :value="exportJSON()"></textarea>
+    <div style="margin:.6em 0">
+      <button @click="copyExport">Copy</button>
+      <button @click="downloadJSON">Download</button>
+    </div>
+    <div style="margin:.6em 0">
+      <input type="file" @change="uploadJSON">
+    </div>
+    <textarea v-model="importBlob" placeholder="…or paste JSON here"></textarea>
+    <button @click="importJSON">Load</button>
+  </details>
+</div>
+
+<script>
+const { createApp } = Vue;
+
+createApp({
+  data(){
+    return{
+      entities:[], delayedEntities:[],
+      newType:'Player', newName:'', customPlayer:'',
+      newInitiative:null, newHP:null, newStatBlock:'', newColor:'red',
+      turnIndex:0, combatStarted:false, selectedMonster:null,
+      importBlob:'',
+      playerNames:['Ecaon','Buggie','Styx Red-Claw','Vokkar','ObsidianIvy','ElderDan','Trusco']
+    };
+  },
+  computed:{
+    displayOrder(){               /* sorted list before combat */
+      return this.combatStarted
+        ? this.entities
+        : [...this.entities].sort((a,b)=>b.initiative-a.initiative||a.order-b.order);
+    }
+  },
+  methods:{
+    d20(){return Math.floor(Math.random()*20)+1;},
+
+    /* ------- Add entity ------- */
+    addEntity(){
+      const name = this.newType==='Player'
+        ? (this.newName==='__custom'?this.customPlayer:this.newName)
+        : this.newName;
+      if(!name) return;
+
+      const init = this.newType==='Monster'
+        ? (this.newInitiative || this.d20() + 5)
+        : (this.newInitiative || 0);
+
+      this.entities.push({
+        id:Date.now()+Math.random(),
+        name, initiative:init, type:this.newType, order:this.entities.length,
+        hp:this.newType==='Monster'?this.newHP:undefined,
+        statBlock:this.newType==='Monster'?this.newStatBlock:'',
+        color:this.newColor, statuses:[]
+      });
+
+      /* reset form fields */
+      this.newName=''; this.customPlayer=''; this.newInitiative=null;
+      this.newHP=null; this.newStatBlock=''; this.newColor='red';
+    },
+
+    /* ------- Combat flow ------- */
+    startCombat(){
+      this.entities.sort((a,b)=>b.initiative-a.initiative||a.order-b.order);
+      this.combatStarted=true; this.turnIndex=0;
+      this.syncStatBlock();
+    },
+    nextTurn(){
+      if(this.entities.length){
+        this.turnIndex=(this.turnIndex+1)%this.entities.length;
+        this.syncStatBlock();
+      }
+    },
+    endCombat(){
+      this.entities=[]; this.delayedEntities=[];
+      this.turnIndex=0; this.combatStarted=false; this.selectedMonster=null;
+    },
+
+    /* Delay / Resume */
+    delayTurn(id){
+      const idx=this.entities.findIndex(e=>e.id===id);
+      if(idx!==-1){
+        this.delayedEntities.push(this.entities.splice(idx,1)[0]);
+        if(this.turnIndex>=this.entities.length) this.turnIndex=0;
+        this.syncStatBlock();
+      }
+    },
+    resumeTurn(id){
+      const idx=this.delayedEntities.findIndex(e=>e.id===id);
+      if(idx!==-1){
+        const ent=this.delayedEntities.splice(idx,1)[0];
+        const activeId=this.displayOrder[this.turnIndex]?.id;
+        const insert=this.entities.findIndex(e=>e.id===activeId);
+        this.entities.splice(insert,0,ent);
+        this.turnIndex=insert; this.syncStatBlock();
+      }
+    },
+
+    /* ------- Stat-block sync ------- */
+    syncStatBlock(){
+      const current=this.entities[this.turnIndex];
+      this.selectedMonster=(current&&current.type==='Monster')?current:null;
+    },
+    showStats(ent){this.selectedMonster=ent;},
+
+    /* ------- Status tags ------- */
+    addStatus(ent){
+      const s=prompt("Status to add (e.g. 'Frightened 1')");
+      if(s) ent.statuses.push(s);
+    },
+    removeStatus(ent,i){ ent.statuses.splice(i,1); },
+
+    /* ------- Remove (monsters only) ------- */
+    removeEntity(id){
+      this.entities=this.entities.filter(e=>e.id!==id);
+      this.delayedEntities=this.delayedEntities.filter(e=>e.id!==id);
+      if(this.turnIndex>=this.entities.length) this.turnIndex=0;
+      if(this.selectedMonster && this.selectedMonster.id===id) this.selectedMonster=null;
+    },
+
+    /* ------- Import / Export ------- */
+    exportJSON(){return JSON.stringify({active:this.entities,delayed:this.delayedEntities},null,2);},
+    copyExport(){navigator.clipboard.writeText(this.exportJSON()).then(()=>alert("Copied!"));},
+    downloadJSON(){
+      const blob=new Blob([this.exportJSON()],{type:"application/json"});
+      const url=URL.createObjectURL(blob);
+      Object.assign(document.createElement("a"),{href:url,download:"encounter.json"}).click();
+      URL.revokeObjectURL(url);
+    },
+    uploadJSON(e){
+      const f=e.target.files[0]; if(!f) return;
+      const r=new FileReader();
+      r.onload=x=>{this.importBlob=x.target.result;};
+      r.readAsText(f);
+    },
+    importJSON(){
+      try{
+        const d=JSON.parse(this.importBlob||"{}");
+        this.entities=d.active||[]; this.delayedEntities=d.delayed||[];
+        this.turnIndex=0; this.combatStarted=false; this.selectedMonster=null;
+      }catch{ alert("Invalid JSON"); }
+    }
+  }
+}).mount("#app");
+</script>
+</body>
+</html>
