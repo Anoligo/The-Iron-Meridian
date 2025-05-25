@@ -92999,15 +92999,21 @@ nextTurn () {
   if (this.turnIndex === this.entities.length - 1) this.round++;
   this.turnIndex = (this.turnIndex + 1) % this.entities.length;
 
-  /* ── NEW: decrement durations at this initiative ── */
-  const currentInit = this.displayOrder[this.turnIndex].initiative;
-  this.entities.forEach(ent => {
-    ent.statuses.forEach(st => {
-      if (st.dur != null && st.srcInit === currentInit) st.dur--;
-    });
-    ent.statuses = ent.statuses.filter(st => st.dur == null || st.dur > 0);
-  });
-  /* ──────────────────────────────────────────────── */
+ /* ── decrement each status only once per round ── */
+ const currentInit = this.displayOrder[this.turnIndex].initiative;
+ this.entities.forEach(ent => {
+   ent.statuses.forEach(st => {
+     if (
+       st.dur != null &&
+       st.srcInit === currentInit &&
+       st.lastTickRound !== this.round
+     ) {
+       st.dur--;
+       st.lastTickRound = this.round;
+     }
+   });
+   ent.statuses = ent.statuses.filter(st => st.dur == null || st.dur > 0);
+ });
 
   this.syncStatBlock();
 },
@@ -93033,7 +93039,12 @@ applyStatus(ent,ev){
   if(name.includes(':')){const [n,d]=name.split(':');name=n;dur=parseInt(d);}
   if(dur==null){const d=prompt('Duration (blank none)');if(d)dur=parseInt(d);}
      const srcInit = this.displayOrder[this.turnIndex]?.initiative ?? null;
-     ent.statuses.push({ name, dur: isNaN(dur) ? null : dur, srcInit });
+  ent.statuses.push({
+	name,
+	dur: isNaN(dur) ? null : dur,
+	srcInit,
+	lastTickRound: null       // ← will prevent double-tick in same round
+      });
 },
 /* notes */
 editNote(e){const n=prompt('GM note',e.note||'');if(n!==null)e.note=n},
