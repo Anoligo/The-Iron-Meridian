@@ -92625,6 +92625,13 @@ tr.dead{color:#777;text-decoration:line-through}
   </select>
   <button v-if="selectedSave" @click="loadEncounter">⭯ Load</button>
   <button v-if="selectedSave" @click="deleteEncounter" style="color:#c94a4a">🗑️</button>
+<button
+  v-if="entities.length"
+  @click="rerollAll"
+  class="clear-btn"
+  title="Reroll all monsters' Initiative">
+  🎲 Reroll All
+</button>
   <button v-if="entities.length" class="clear-btn" @click="clearCurrent">🧹 Clear</button>
 </div>
 
@@ -92689,6 +92696,8 @@ tr.dead{color:#777;text-decoration:line-through}
     <tr v-for="(e,i) in displayOrder" :key="e.id" :class="{active:i===turnIndex,dead:e.type==='Monster'&&e.hp<=0}">
       <td>{{e.initiative}}</td>
       <td><span v-if="e.type==='Monster'" class="color-dot" :style="{backgroundColor:e.color}"></span>{{e.name}}
+  <button v-if="!combatStarted && e.type==='Monster'"
+          @click="rerollInit(e.id)" title="Reroll Initiative">🎲</button>
           <button v-if="!combatStarted && e.type==='Monster'" @click="duplicateFromRow(e)">📋</button></td>
 
       <!-- type / HP -->
@@ -93196,6 +93205,21 @@ deleteEncounter(){
       alert('Invalid library JSON');
     }
   },
+/** Reroll initiative for a single monster (by ID) */
+rerollInit(id) {
+  const ent = this.entities.find(e => e.id === id);
+  if (!ent) return;
+  ent.initiative = this.d20() + 5;  // or whatever bonus you prefer
+},
+
+/** Reroll initiative for all monsters in prep mode */
+rerollAll() {
+  this.entities.forEach(ent => {
+    if (ent.type === 'Monster') {
+      ent.initiative = this.d20() + 5;
+    }
+  });
+},
 
 
 clearCurrent(){
