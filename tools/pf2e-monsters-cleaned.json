@@ -50853,7 +50853,7 @@
       "Will": "+11"
     },
     "level": 6,
-    "size": "med",
+    "size": "Medium",
     "ac": 24,
     "actions": [
       {
@@ -50951,7 +50951,7 @@
       "Will": "+6"
     },
     "level": 3,
-    "size": "med",
+    "size": "Medium",
     "ac": 18,
     "actions": [
       {
@@ -51049,7 +51049,7 @@
       "Will": "+23"
     },
     "level": 13,
-    "size": "huge",
+    "size": "Huge",
     "ac": 33,
     "actions": [
       {
@@ -51192,7 +51192,7 @@
       "Will": "+23"
     },
     "level": 13,
-    "size": "huge",
+    "size": "Huge",
     "ac": 33,
     "actions": [
       {
@@ -51345,7 +51345,7 @@
       "Will": "+29"
     },
     "level": 18,
-    "size": "grg",
+    "size": "Gargantuan",
     "ac": 41,
     "actions": [
       {
@@ -51494,7 +51494,7 @@
       "Will": "+29"
     },
     "level": 18,
-    "size": "grg",
+    "size": "Gargantuan",
     "ac": 41,
     "actions": [
       {
@@ -51653,7 +51653,7 @@
       "Will": "+17"
     },
     "level": 9,
-    "size": "lg",
+    "size": "Large",
     "ac": 27,
     "actions": [
       {
@@ -51794,7 +51794,7 @@
       "Will": "+17"
     },
     "level": 9,
-    "size": "lg",
+    "size": "Large",
     "ac": 27,
     "actions": [
       {
@@ -51944,7 +51944,7 @@
       "Will": "+23"
     },
     "level": 12,
-    "size": "lg",
+    "size": "Large",
     "ac": 33,
     "actions": [
       {
@@ -52026,7 +52026,7 @@
       "Will": "+15"
     },
     "level": 7,
-    "size": "med",
+    "size": "Medium",
     "ac": 27,
     "actions": [
       {
@@ -52131,7 +52131,7 @@
       "Will": "+7"
     },
     "level": 1,
-    "size": "sm",
+    "size": "Small",
     "ac": 16,
     "actions": [
       {
@@ -52197,7 +52197,7 @@
       "Will": "+8"
     },
     "level": 2,
-    "size": "med",
+    "size": "Medium",
     "ac": 17,
     "actions": [
       {
@@ -52272,7 +52272,7 @@
       "Will": "+23"
     },
     "level": 12,
-    "size": "med",
+    "size": "Medium",
     "ac": 32,
     "actions": [
       {
@@ -52375,7 +52375,7 @@
       "Will": "+7"
     },
     "level": 4,
-    "size": "lg",
+    "size": "Large",
     "ac": 21,
     "actions": [
       {
@@ -52441,7 +52441,7 @@
       "Will": "+4"
     },
     "level": 2,
-    "size": "med",
+    "size": "Medium",
     "ac": 17,
     "actions": [
       {
@@ -52499,7 +52499,7 @@
       "Will": "+3"
     },
     "level": -1,
-    "size": "sm",
+    "size": "Small",
     "ac": 15,
     "actions": [
       {
@@ -52556,7 +52556,7 @@
       "Will": "+5"
     },
     "level": 3,
-    "size": "med",
+    "size": "Medium",
     "ac": 19,
     "actions": [
       {
@@ -52614,7 +52614,7 @@
       "Will": "+14"
     },
     "level": 8,
-    "size": "huge",
+    "size": "Huge",
     "ac": 29,
     "actions": [
       {
@@ -52695,7 +52695,7 @@
       "Will": "+7"
     },
     "level": 3,
-    "size": "lg",
+    "size": "Large",
     "ac": 18,
     "actions": [
       {
@@ -52765,7 +52765,7 @@
       "Will": "+12"
     },
     "level": 6,
-    "size": "huge",
+    "size": "Huge",
     "ac": 26,
     "actions": [
       {
@@ -52828,7 +52828,7 @@
       "Will": "+31"
     },
     "level": 18,
-    "size": "grg",
+    "size": "Gargantuan",
     "ac": 42,
     "actions": [
       {
@@ -52910,7 +52910,7 @@
       "Will": "+7"
     },
     "level": 1,
-    "size": "tiny",
+    "size": "Tiny",
     "ac": 16,
     "actions": [
       {
@@ -52980,7 +52980,7 @@
       "Will": "+16"
     },
     "level": 8,
-    "size": "huge",
+    "size": "Huge",
     "ac": 26,
     "actions": [
       {
@@ -53068,7 +53068,7 @@
       "Will": "+11"
     },
     "level": 4,
-    "size": "lg",
+    "size": "Large",
     "ac": 20,
     "actions": [
       {
@@ -53143,7 +53143,7 @@
       "Will": "+9"
     },
     "level": 5,
-    "size": "lg",
+    "size": "Large",
     "ac": 21,
     "actions": [
       {
@@ -53199,7 +53199,7 @@
       "Will": "+26"
     },
     "level": 16,
-    "size": "lg",
+    "size": "Large",
     "ac": 39,
     "actions": [
       {
@@ -53313,7 +53313,7 @@
       "Will": "+9"
     },
     "level": 3,
-    "size": "med",
+    "size": "Medium",
     "ac": 20,
     "actions": [
       {
@@ -53402,7 +53402,7 @@
       "Will": "+25"
     },
     "level": 14,
-    "size": "huge",
+    "size": "Huge",
     "ac": 36,
     "actions": [
       {
@@ -53486,7 +53486,7 @@
       "Will": "+13"
     },
     "level": 6,
-    "size": "huge",
+    "size": "Huge",
     "ac": 22,
     "traits": [
       "plant",
@@ -53541,7 +53541,7 @@
       "Will": "+18"
     },
     "level": 8,
-    "size": "med",
+    "size": "Medium",
     "ac": 26,
     "actions": [
       {
@@ -53618,7 +53618,7 @@
       "Will": "+3"
     },
     "level": 0,
-    "size": "med",
+    "size": "Medium",
     "ac": 16,
     "actions": [
       {
@@ -53687,7 +53687,7 @@
       "Will": "+12"
     },
     "level": 7,
-    "size": "med",
+    "size": "Medium",
     "ac": 25,
     "actions": [
       {
@@ -53770,7 +53770,7 @@
       "Will": "+11"
     },
     "level": 5,
-    "size": "sm",
+    "size": "Small",
     "ac": 22,
     "actions": [
       {
@@ -53890,7 +53890,7 @@
       "Will": "+18"
     },
     "level": 8,
-    "size": "med",
+    "size": "Medium",
     "ac": 26,
     "actions": [
       {
@@ -53981,7 +53981,7 @@
       "Will": "+27"
     },
     "level": 17,
-    "size": "grg",
+    "size": "Gargantuan",
     "ac": 41,
     "actions": [
       {
@@ -54100,7 +54100,7 @@
       "Will": "+32"
     },
     "level": 17,
-    "size": "med",
+    "size": "Medium",
     "ac": 39,
     "actions": [
       {
@@ -54186,7 +54186,7 @@
       "Will": "+8"
     },
     "level": 4,
-    "size": "med",
+    "size": "Medium",
     "ac": 20,
     "actions": [
       {
@@ -54264,7 +54264,7 @@
       "Will": "+11"
     },
     "level": 5,
-    "size": "med",
+    "size": "Medium",
     "ac": 22,
     "actions": [
       {
@@ -54322,7 +54322,7 @@
       "Will": "+23"
     },
     "level": 15,
-    "size": "grg",
+    "size": "Gargantuan",
     "ac": 35,
     "actions": [
       {
@@ -54428,7 +54428,7 @@
       "Will": "+8"
     },
     "level": 2,
-    "size": "med",
+    "size": "Medium",
     "ac": 15,
     "actions": [
       {
@@ -54486,7 +54486,7 @@
       "Will": "+7"
     },
     "level": 1,
-    "size": "med",
+    "size": "Medium",
     "ac": 16,
     "actions": [
       {
@@ -54567,7 +54567,7 @@
       "Will": "+11"
     },
     "level": 3,
-    "size": "med",
+    "size": "Medium",
     "ac": 18,
     "actions": [
       {
@@ -54656,7 +54656,7 @@
       "Will": "+8"
     },
     "level": 2,
-    "size": "med",
+    "size": "Medium",
     "ac": 17,
     "actions": [
       {
@@ -54742,7 +54742,7 @@
       "Will": "+8"
     },
     "level": 5,
-    "size": "med",
+    "size": "Medium",
     "ac": 20,
     "actions": [
       {
@@ -54812,7 +54812,7 @@
       "Will": "+19"
     },
     "level": 8,
-    "size": "med",
+    "size": "Medium",
     "ac": 27,
     "actions": [
       {
@@ -54898,7 +54898,7 @@
       "Will": "+5"
     },
     "level": 0,
-    "size": "med",
+    "size": "Medium",
     "ac": 15,
     "actions": [
       {
@@ -54965,7 +54965,7 @@
       "Will": "+10"
     },
     "level": 5,
-    "size": "med",
+    "size": "Medium",
     "ac": 22,
     "actions": [
       {
@@ -55063,7 +55063,7 @@
       "Will": "+6"
     },
     "level": 3,
-    "size": "med",
+    "size": "Medium",
     "ac": 19,
     "actions": [
       {
@@ -55124,7 +55124,7 @@
       "Will": "+16"
     },
     "level": 10,
-    "size": "grg",
+    "size": "Gargantuan",
     "ac": 28,
     "actions": [
       {
@@ -55193,7 +55193,7 @@
       "Will": "+5"
     },
     "level": 2,
-    "size": "med",
+    "size": "Medium",
     "ac": 17,
     "actions": [
       {
@@ -55270,7 +55270,7 @@
       "Will": "+6"
     },
     "level": 3,
-    "size": "med",
+    "size": "Medium",
     "ac": 20,
     "actions": [
       {
@@ -55347,7 +55347,7 @@
       "Will": "+6"
     },
     "level": 1,
-    "size": "tiny",
+    "size": "Tiny",
     "ac": 16,
     "actions": [
       {
@@ -55426,7 +55426,7 @@
       "Will": "+23"
     },
     "level": 14,
-    "size": "lg",
+    "size": "Large",
     "ac": 35,
     "actions": [
       {
@@ -55523,7 +55523,7 @@
       "Will": "+4"
     },
     "level": 1,
-    "size": "sm",
+    "size": "Small",
     "ac": 17,
     "actions": [
       {
@@ -55619,7 +55619,7 @@
       "Will": "+8"
     },
     "level": 4,
-    "size": "med",
+    "size": "Medium",
     "ac": 21,
     "actions": [
       {
@@ -55709,7 +55709,7 @@
       "Will": "+6"
     },
     "level": 2,
-    "size": "sm",
+    "size": "Small",
     "ac": 19,
     "actions": [
       {
@@ -55793,7 +55793,7 @@
       "Will": "+4"
     },
     "level": 1,
-    "size": "tiny",
+    "size": "Tiny",
     "ac": 16,
     "actions": [
       {
@@ -55885,7 +55885,7 @@
       "Will": "+4"
     },
     "level": 1,
-    "size": "med",
+    "size": "Medium",
     "ac": 17,
     "actions": [
       {
@@ -55962,7 +55962,7 @@
       "Will": "+18"
     },
     "level": 12,
-    "size": "med",
+    "size": "Medium",
     "ac": 33,
     "actions": [
       {
@@ -56033,7 +56033,7 @@
       "Will": "+13"
     },
     "level": 6,
-    "size": "lg",
+    "size": "Large",
     "ac": 24,
     "actions": [
       {
@@ -56102,7 +56102,7 @@
       "Will": "+21"
     },
     "level": 13,
-    "size": "grg",
+    "size": "Gargantuan",
     "ac": 32,
     "actions": [
       {
@@ -56216,7 +56216,7 @@
       "Will": "+9"
     },
     "level": 3,
-    "size": "lg",
+    "size": "Large",
     "ac": 18,
     "actions": [
       {
@@ -56290,7 +56290,7 @@
       "Will": "+5"
     },
     "level": 3,
-    "size": "lg",
+    "size": "Large",
     "ac": 18,
     "actions": [
       {
@@ -56351,7 +56351,7 @@
       "Will": "+11"
     },
     "level": 3,
-    "size": "med",
+    "size": "Medium",
     "ac": 19,
     "actions": [
       {
@@ -56424,7 +56424,7 @@
       "Will": "+15"
     },
     "level": 8,
-    "size": "lg",
+    "size": "Large",
     "ac": 26,
     "actions": [
       {
@@ -56492,7 +56492,7 @@
       "Will": "+14"
     },
     "level": 8,
-    "size": "lg",
+    "size": "Large",
     "ac": 27,
     "actions": [
       {
@@ -56591,7 +56591,7 @@
       "Will": "+16"
     },
     "level": 6,
-    "size": "sm",
+    "size": "Small",
     "ac": 24,
     "actions": [
       {
@@ -56683,7 +56683,7 @@
       "Will": "+7"
     },
     "level": 3,
-    "size": "sm",
+    "size": "Small",
     "ac": 18,
     "actions": [
       {
@@ -56755,7 +56755,7 @@
       "Will": "+6"
     },
     "level": 3,
-    "size": "sm",
+    "size": "Small",
     "ac": 18,
     "actions": [
       {
@@ -56814,7 +56814,7 @@
       "Will": "+17"
     },
     "level": 10,
-    "size": "lg",
+    "size": "Large",
     "ac": 29,
     "actions": [
       {
@@ -56882,7 +56882,7 @@
       "Will": "+21"
     },
     "level": 11,
-    "size": "huge",
+    "size": "Huge",
     "ac": 30,
     "actions": [
       {
@@ -56965,7 +56965,7 @@
       "Will": "+15"
     },
     "level": 7,
-    "size": "med",
+    "size": "Medium",
     "ac": 24,
     "actions": [
       {
@@ -57063,7 +57063,7 @@
       "Will": "+6"
     },
     "level": 3,
-    "size": "sm",
+    "size": "Small",
     "ac": 17,
     "actions": [
       {
@@ -57115,7 +57115,7 @@
       "Will": "+10"
     },
     "level": 4,
-    "size": "med",
+    "size": "Medium",
     "ac": 22,
     "actions": [
       {
@@ -57230,7 +57230,7 @@
       "Will": "+4"
     },
     "level": -1,
-    "size": "tiny",
+    "size": "Tiny",
     "ac": 15,
     "actions": [
       {
@@ -57283,7 +57283,7 @@
       "Will": "+10"
     },
     "level": 7,
-    "size": "huge",
+    "size": "Huge",
     "ac": 27,
     "actions": [
       {
@@ -57348,7 +57348,7 @@
       "Will": "+25"
     },
     "level": 12,
-    "size": "lg",
+    "size": "Large",
     "ac": 33,
     "actions": [
       {
@@ -57468,7 +57468,7 @@
       "Will": "+25"
     },
     "level": 12,
-    "size": "lg",
+    "size": "Large",
     "ac": 33,
     "actions": [
       {
@@ -57598,7 +57598,7 @@
       "Will": "+32"
     },
     "level": 17,
-    "size": "huge",
+    "size": "Huge",
     "ac": 40,
     "actions": [
       {
@@ -57719,7 +57719,7 @@
       "Will": "+32"
     },
     "level": 17,
-    "size": "huge",
+    "size": "Huge",
     "ac": 40,
     "actions": [
       {
@@ -57850,7 +57850,7 @@
       "Will": "+18"
     },
     "level": 8,
-    "size": "lg",
+    "size": "Large",
     "ac": 27,
     "actions": [
       {
@@ -57969,7 +57969,7 @@
       "Will": "+18"
     },
     "level": 8,
-    "size": "lg",
+    "size": "Large",
     "ac": 27,
     "actions": [
       {
@@ -58099,7 +58099,7 @@
       "Will": "+22"
     },
     "level": 14,
-    "size": "grg",
+    "size": "Gargantuan",
     "ac": 37,
     "actions": [
       {
@@ -58210,7 +58210,7 @@
       "Will": "+2"
     },
     "level": -1,
-    "size": "tiny",
+    "size": "Tiny",
     "ac": 12,
     "actions": [
       {
@@ -58287,7 +58287,7 @@
       "Will": "+5"
     },
     "level": 2,
-    "size": "lg",
+    "size": "Large",
     "ac": 17,
     "actions": [
       {
@@ -58360,7 +58360,7 @@
       "Will": "+18"
     },
     "level": 9,
-    "size": "med",
+    "size": "Medium",
     "ac": 28,
     "actions": [
       {
@@ -58453,7 +58453,7 @@
       "Will": "+12"
     },
     "level": 5,
-    "size": "lg",
+    "size": "Large",
     "ac": 21,
     "actions": [
       {
@@ -58528,7 +58528,7 @@
       "Will": "+5"
     },
     "level": 1,
-    "size": "tiny",
+    "size": "Tiny",
     "ac": 16,
     "actions": [
       {
@@ -58597,7 +58597,7 @@
       "Will": "+10"
     },
     "level": 4,
-    "size": "lg",
+    "size": "Large",
     "ac": 21,
     "actions": [
       {
@@ -58655,7 +58655,7 @@
       "Will": "+18"
     },
     "level": 11,
-    "size": "grg",
+    "size": "Gargantuan",
     "ac": 31,
     "actions": [
       {
@@ -58735,7 +58735,7 @@
       "Will": "+5"
     },
     "level": 2,
-    "size": "med",
+    "size": "Medium",
     "ac": 17,
     "actions": [
       {
@@ -58800,7 +58800,7 @@
       "Will": "+15"
     },
     "level": 9,
-    "size": "huge",
+    "size": "Huge",
     "ac": 26,
     "actions": [
       {
@@ -58873,7 +58873,7 @@
       "Will": "+10"
     },
     "level": 5,
-    "size": "sm",
+    "size": "Small",
     "ac": 22,
     "actions": [
       {
@@ -58942,7 +58942,7 @@
       "Will": "+3"
     },
     "level": 2,
-    "size": "sm",
+    "size": "Small",
     "ac": 19,
     "actions": [
       {
@@ -59028,7 +59028,7 @@
       "Will": "+6"
     },
     "level": 3,
-    "size": "sm",
+    "size": "Small",
     "ac": 19,
     "actions": [
       {
@@ -59109,7 +59109,7 @@
       "Will": "+13"
     },
     "level": 8,
-    "size": "lg",
+    "size": "Large",
     "ac": 27,
     "actions": [
       {
@@ -59204,7 +59204,7 @@
       "Will": "+16"
     },
     "level": 10,
-    "size": "med",
+    "size": "Medium",
     "ac": 30,
     "actions": [
       {
@@ -59288,7 +59288,7 @@
       "Will": "+6"
     },
     "level": 2,
-    "size": "med",
+    "size": "Medium",
     "ac": 17,
     "actions": [
       {
@@ -59379,7 +59379,7 @@
       "Will": "+26"
     },
     "level": 15,
-    "size": "huge",
+    "size": "Huge",
     "ac": 36,
     "actions": [
       {
@@ -59500,7 +59500,7 @@
       "Will": "+26"
     },
     "level": 15,
-    "size": "huge",
+    "size": "Huge",
     "ac": 36,
     "actions": [
       {
@@ -59631,7 +59631,7 @@
       "Will": "+32"
     },
     "level": 20,
-    "size": "grg",
+    "size": "Gargantuan",
     "ac": 44,
     "actions": [
       {
@@ -59754,7 +59754,7 @@
       "Will": "+32"
     },
     "level": 20,
-    "size": "grg",
+    "size": "Gargantuan",
     "ac": 44,
     "actions": [
       {
@@ -59887,7 +59887,7 @@
       "Will": "+21"
     },
     "level": 11,
-    "size": "lg",
+    "size": "Large",
     "ac": 30,
     "actions": [
       {
@@ -60006,7 +60006,7 @@
       "Will": "+21"
     },
     "level": 11,
-    "size": "lg",
+    "size": "Large",
     "ac": 30,
     "actions": [
       {
@@ -60135,7 +60135,7 @@
       "Will": "+8"
     },
     "level": 3,
-    "size": "lg",
+    "size": "Large",
     "ac": 18,
     "actions": [
       {
@@ -60209,7 +60209,7 @@
       "Will": "+15"
     },
     "level": 9,
-    "size": "huge",
+    "size": "Huge",
     "ac": 16,
     "actions": [
       {
@@ -60282,7 +60282,7 @@
       "Will": "+17"
     },
     "level": 9,
-    "size": "huge",
+    "size": "Huge",
     "ac": 29,
     "actions": [
       {
@@ -60369,7 +60369,7 @@
       "Will": "+8"
     },
     "level": 3,
-    "size": "tiny",
+    "size": "Tiny",
     "ac": 19,
     "actions": [
       {
@@ -60440,7 +60440,7 @@
       "Will": "+8"
     },
     "level": 2,
-    "size": "med",
+    "size": "Medium",
     "ac": 19,
     "actions": [
       {
@@ -60517,7 +60517,7 @@
       "Will": "+24"
     },
     "level": 13,
-    "size": "med",
+    "size": "Medium",
     "ac": 35,
     "actions": [
       {
@@ -60627,7 +60627,7 @@
       "Will": "+10"
     },
     "level": 3,
-    "size": "med",
+    "size": "Medium",
     "ac": 17,
     "actions": [
       {
@@ -60708,7 +60708,7 @@
       "Will": "+17"
     },
     "level": 7,
-    "size": "med",
+    "size": "Medium",
     "ac": 28,
     "actions": [
       {
@@ -60815,7 +60815,7 @@
       "Will": "+10"
     },
     "level": 4,
-    "size": "med",
+    "size": "Medium",
     "ac": 21,
     "actions": [
       {
@@ -60911,7 +60911,7 @@
       "Will": "+14"
     },
     "level": 4,
-    "size": "med",
+    "size": "Medium",
     "ac": 20,
     "actions": [
       {
@@ -60991,7 +60991,7 @@
       "Will": "+5"
     },
     "level": 1,
-    "size": "med",
+    "size": "Medium",
     "ac": 17,
     "actions": [
       {
@@ -61065,7 +61065,7 @@
       "Will": "+29"
     },
     "level": 15,
-    "size": "med",
+    "size": "Medium",
     "ac": 35,
     "actions": [
       {
@@ -61148,7 +61148,7 @@
       "Will": "+2"
     },
     "level": -1,
-    "size": "sm",
+    "size": "Small",
     "ac": 15,
     "actions": [
       {
@@ -61206,7 +61206,7 @@
       "Will": "+3"
     },
     "level": 1,
-    "size": "sm",
+    "size": "Small",
     "ac": 15,
     "actions": [
       {
@@ -61272,7 +61272,7 @@
       "Will": "+12"
     },
     "level": 6,
-    "size": "med",
+    "size": "Medium",
     "ac": 24,
     "actions": [
       {
@@ -61345,7 +61345,7 @@
       "Will": "+4"
     },
     "level": 1,
-    "size": "sm",
+    "size": "Small",
     "ac": 16,
     "actions": [
       {
@@ -61405,7 +61405,7 @@
       "Will": "+21"
     },
     "level": 11,
-    "size": "huge",
+    "size": "Huge",
     "ac": 32,
     "actions": [
       {
@@ -61502,7 +61502,7 @@
       "Will": "+18"
     },
     "level": 11,
-    "size": "huge",
+    "size": "Huge",
     "ac": 32,
     "actions": [
       {
@@ -61585,7 +61585,7 @@
       "Will": "+19"
     },
     "level": 11,
-    "size": "huge",
+    "size": "Huge",
     "ac": 31,
     "actions": [
       {
@@ -61666,7 +61666,7 @@
       "Will": "+19"
     },
     "level": 11,
-    "size": "huge",
+    "size": "Huge",
     "ac": 31,
     "actions": [
       {
@@ -61744,7 +61744,7 @@
       "Will": "+13"
     },
     "level": 7,
-    "size": "huge",
+    "size": "Huge",
     "ac": 23,
     "actions": [
       {
@@ -61813,7 +61813,7 @@
       "Will": "+7"
     },
     "level": 1,
-    "size": "med",
+    "size": "Medium",
     "ac": 16,
     "actions": [
       {
@@ -61898,7 +61898,7 @@
       "Will": "+26"
     },
     "level": 14,
-    "size": "huge",
+    "size": "Huge",
     "ac": 36,
     "actions": [
       {
@@ -62019,7 +62019,7 @@
       "Will": "+26"
     },
     "level": 14,
-    "size": "huge",
+    "size": "Huge",
     "ac": 36,
     "actions": [
       {
@@ -62150,7 +62150,7 @@
       "Will": "+35"
     },
     "level": 19,
-    "size": "grg",
+    "size": "Gargantuan",
     "ac": 43,
     "actions": [
       {
@@ -62273,7 +62273,7 @@
       "Will": "+35"
     },
     "level": 19,
-    "size": "grg",
+    "size": "Gargantuan",
     "ac": 43,
     "actions": [
       {
@@ -62406,7 +62406,7 @@
       "Will": "+21"
     },
     "level": 10,
-    "size": "lg",
+    "size": "Large",
     "ac": 30,
     "actions": [
       {
@@ -62525,7 +62525,7 @@
       "Will": "+21"
     },
     "level": 10,
-    "size": "lg",
+    "size": "Large",
     "ac": 30,
     "actions": [
       {
@@ -62653,7 +62653,7 @@
       "Will": "+6"
     },
     "level": 2,
-    "size": "med",
+    "size": "Medium",
     "ac": 16,
     "actions": [
       {
@@ -62744,7 +62744,7 @@
       "Will": "+18"
     },
     "level": 9,
-    "size": "lg",
+    "size": "Large",
     "ac": 28,
     "actions": [
       {
@@ -62850,7 +62850,7 @@
       "Will": "+11"
     },
     "level": 2,
-    "size": "tiny",
+    "size": "Tiny",
     "ac": 18,
     "actions": [
       {
@@ -62916,7 +62916,7 @@
       "Will": "+18"
     },
     "level": 10,
-    "size": "lg",
+    "size": "Large",
     "ac": 31,
     "actions": [
       {
@@ -62994,7 +62994,7 @@
       "Will": "+7"
     },
     "level": 1,
-    "size": "sm",
+    "size": "Small",
     "ac": 17,
     "actions": [
       {
@@ -63060,7 +63060,7 @@
       "Will": "+15"
     },
     "level": 9,
-    "size": "huge",
+    "size": "Huge",
     "ac": 28,
     "actions": [
       {
@@ -63137,7 +63137,7 @@
       "Will": "+10"
     },
     "level": 5,
-    "size": "lg",
+    "size": "Large",
     "ac": 22,
     "actions": [
       {
@@ -63221,7 +63221,7 @@
       "Will": "+4"
     },
     "level": -1,
-    "size": "sm",
+    "size": "Small",
     "ac": 16,
     "actions": [
       {
@@ -63278,7 +63278,7 @@
       "Will": "+7"
     },
     "level": 5,
-    "size": "lg",
+    "size": "Large",
     "ac": 20,
     "actions": [
       {
@@ -63363,7 +63363,7 @@
       "Will": "+24"
     },
     "level": 14,
-    "size": "huge",
+    "size": "Huge",
     "ac": 36,
     "actions": [
       {
@@ -63463,7 +63463,7 @@
       "Will": "+24"
     },
     "level": 14,
-    "size": "huge",
+    "size": "Huge",
     "ac": 36,
     "actions": [
       {
@@ -63573,7 +63573,7 @@
       "Will": "+32"
     },
     "level": 19,
-    "size": "grg",
+    "size": "Gargantuan",
     "ac": 43,
     "actions": [
       {
@@ -63679,7 +63679,7 @@
       "Will": "+32"
     },
     "level": 19,
-    "size": "grg",
+    "size": "Gargantuan",
     "ac": 43,
     "actions": [
       {
@@ -63795,7 +63795,7 @@
       "Will": "+19"
     },
     "level": 10,
-    "size": "lg",
+    "size": "Large",
     "ac": 30,
     "actions": [
       {
@@ -63889,7 +63889,7 @@
       "Will": "+19"
     },
     "level": 10,
-    "size": "lg",
+    "size": "Large",
     "ac": 30,
     "actions": [
       {
@@ -63993,7 +63993,7 @@
       "Will": "+14"
     },
     "level": 7,
-    "size": "lg",
+    "size": "Large",
     "ac": 25,
     "actions": [
       {
@@ -64082,7 +64082,7 @@
       "Will": "+16"
     },
     "level": 9,
-    "size": "lg",
+    "size": "Large",
     "ac": 29,
     "actions": [
       {
@@ -64170,7 +64170,7 @@
       "Will": "+6"
     },
     "level": 2,
-    "size": "sm",
+    "size": "Small",
     "ac": 19,
     "actions": [
       {
@@ -64254,7 +64254,7 @@
       "Will": "+11"
     },
     "level": 4,
-    "size": "med",
+    "size": "Medium",
     "ac": 21,
     "actions": [
       {
@@ -64337,7 +64337,7 @@
       "Will": "+10"
     },
     "level": 4,
-    "size": "med",
+    "size": "Medium",
     "ac": 21,
     "actions": [
       {
@@ -64406,7 +64406,7 @@
       "Will": "+8"
     },
     "level": 4,
-    "size": "med",
+    "size": "Medium",
     "ac": 20,
     "actions": [
       {
@@ -64479,7 +64479,7 @@
       "Will": "+22"
     },
     "level": 10,
-    "size": "med",
+    "size": "Medium",
     "ac": 27,
     "actions": [
       {
@@ -64560,7 +64560,7 @@
       "Will": "+6"
     },
     "level": 2,
-    "size": "med",
+    "size": "Medium",
     "ac": 17,
     "actions": [
       {
@@ -64667,7 +64667,7 @@
       "Will": "+5"
     },
     "level": 1,
-    "size": "med",
+    "size": "Medium",
     "ac": 17,
     "actions": [
       {
@@ -64764,7 +64764,7 @@
       "Will": "+15"
     },
     "level": 8,
-    "size": "huge",
+    "size": "Huge",
     "ac": 25,
     "actions": [
       {
@@ -64854,7 +64854,7 @@
       "Will": "+9"
     },
     "level": 7,
-    "size": "huge",
+    "size": "Huge",
     "ac": 26,
     "actions": [
       {
@@ -64928,7 +64928,7 @@
       "Will": "+5"
     },
     "level": 2,
-    "size": "med",
+    "size": "Medium",
     "ac": 18,
     "actions": [
       {
@@ -64997,7 +64997,7 @@
       "Will": "+7"
     },
     "level": 2,
-    "size": "lg",
+    "size": "Large",
     "ac": 18,
     "actions": [
       {
@@ -65061,7 +65061,7 @@
       "Will": "+2"
     },
     "level": -1,
-    "size": "med",
+    "size": "Medium",
     "ac": 15,
     "actions": [
       {
@@ -65115,7 +65115,7 @@
       "Will": "+10"
     },
     "level": 5,
-    "size": "med",
+    "size": "Medium",
     "ac": 22,
     "actions": [
       {
@@ -65197,7 +65197,7 @@
       "Will": "+9"
     },
     "level": 3,
-    "size": "lg",
+    "size": "Large",
     "ac": 17,
     "actions": [
       {
@@ -65274,7 +65274,7 @@
       "Will": "+15"
     },
     "level": 10,
-    "size": "huge",
+    "size": "Huge",
     "ac": 29,
     "actions": [
       {
@@ -65353,7 +65353,7 @@
       "Will": "+9"
     },
     "level": 5,
-    "size": "lg",
+    "size": "Large",
     "ac": 22,
     "actions": [
       {
@@ -65412,7 +65412,7 @@
       "Will": "+5"
     },
     "level": 1,
-    "size": "med",
+    "size": "Medium",
     "ac": 16,
     "actions": [
       {
@@ -65466,7 +65466,7 @@
       "Will": "+14"
     },
     "level": 8,
-    "size": "huge",
+    "size": "Huge",
     "ac": 27,
     "actions": [
       {
@@ -65524,7 +65524,7 @@
       "Will": "+7"
     },
     "level": 3,
-    "size": "lg",
+    "size": "Large",
     "ac": 18,
     "actions": [
       {
@@ -65594,7 +65594,7 @@
       "Will": "+5"
     },
     "level": 2,
-    "size": "med",
+    "size": "Medium",
     "ac": 18,
     "actions": [
       {
@@ -65663,7 +65663,7 @@
       "Will": "+9"
     },
     "level": 5,
-    "size": "lg",
+    "size": "Large",
     "ac": 21,
     "actions": [
       {
@@ -65732,7 +65732,7 @@
       "Will": "+15"
     },
     "level": 8,
-    "size": "huge",
+    "size": "Huge",
     "ac": 27,
     "actions": [
       {
@@ -65823,7 +65823,7 @@
       "Will": "+3"
     },
     "level": -1,
-    "size": "sm",
+    "size": "Small",
     "ac": 15,
     "actions": [
       {
@@ -65877,7 +65877,7 @@
       "Will": "+7"
     },
     "level": 3,
-    "size": "lg",
+    "size": "Large",
     "ac": 18,
     "actions": [
       {
@@ -65955,7 +65955,7 @@
       "Will": "+8"
     },
     "level": 4,
-    "size": "lg",
+    "size": "Large",
     "ac": 22,
     "actions": [
       {
@@ -66013,7 +66013,7 @@
       "Will": "+10"
     },
     "level": 6,
-    "size": "lg",
+    "size": "Large",
     "ac": 21,
     "actions": [
       {
@@ -66083,7 +66083,7 @@
       "Will": "+6"
     },
     "level": 2,
-    "size": "med",
+    "size": "Medium",
     "ac": 17,
     "actions": [
       {
@@ -66147,7 +66147,7 @@
       "Will": "+6"
     },
     "level": 3,
-    "size": "lg",
+    "size": "Large",
     "ac": 17,
     "actions": [
       {
@@ -66210,7 +66210,7 @@
       "Will": "+8"
     },
     "level": 4,
-    "size": "lg",
+    "size": "Large",
     "ac": 20,
     "actions": [
       {
@@ -66269,7 +66269,7 @@
       "Will": "+19"
     },
     "level": 12,
-    "size": "sm",
+    "size": "Small",
     "ac": 34,
     "actions": [
       {
@@ -66373,7 +66373,7 @@
       "Will": "+28"
     },
     "level": 16,
-    "size": "huge",
+    "size": "Huge",
     "ac": 41,
     "actions": [
       {
@@ -66463,7 +66463,7 @@
       "Will": "+9"
     },
     "level": 5,
-    "size": "lg",
+    "size": "Large",
     "ac": 12,
     "actions": [
       {
@@ -66536,7 +66536,7 @@
       "Will": "+6"
     },
     "level": 2,
-    "size": "med",
+    "size": "Medium",
     "ac": 16,
     "actions": [
       {
@@ -66625,7 +66625,7 @@
       "Will": "+9"
     },
     "level": 1,
-    "size": "sm",
+    "size": "Small",
     "ac": 16,
     "actions": [
       {
@@ -66684,7 +66684,7 @@
       "Will": "+5"
     },
     "level": 1,
-    "size": "sm",
+    "size": "Small",
     "ac": 17,
     "actions": [
       {
@@ -66751,7 +66751,7 @@
       "Will": "+5"
     },
     "level": 1,
-    "size": "med",
+    "size": "Medium",
     "ac": 15,
     "actions": [
       {
@@ -66823,7 +66823,7 @@
       "Will": "+4"
     },
     "level": 1,
-    "size": "sm",
+    "size": "Small",
     "ac": 17,
     "actions": [
       {
@@ -66872,7 +66872,7 @@
       "Will": "+5"
     },
     "level": 1,
-    "size": "sm",
+    "size": "Small",
     "ac": 17,
     "actions": [
       {
@@ -66943,7 +66943,7 @@
       "Will": "+3"
     },
     "level": -1,
-    "size": "sm",
+    "size": "Small",
     "ac": 16,
     "actions": [
       {
@@ -67008,7 +67008,7 @@
       "Will": "+20"
     },
     "level": 12,
-    "size": "lg",
+    "size": "Large",
     "ac": 31,
     "actions": [
       {
@@ -67096,7 +67096,7 @@
       "Will": "+17"
     },
     "level": 11,
-    "size": "grg",
+    "size": "Gargantuan",
     "ac": 30,
     "actions": [
       {
@@ -67175,7 +67175,7 @@
       "Will": "+20"
     },
     "level": 11,
-    "size": "med",
+    "size": "Medium",
     "ac": 31,
     "actions": [
       {
@@ -67283,7 +67283,7 @@
       "Will": "+6"
     },
     "level": 3,
-    "size": "lg",
+    "size": "Large",
     "ac": 18,
     "actions": [
       {
@@ -67343,7 +67343,7 @@
       "Will": "+22"
     },
     "level": 11,
-    "size": "med",
+    "size": "Medium",
     "ac": 31,
     "actions": [
       {
@@ -67443,7 +67443,7 @@
       "Will": "+7"
     },
     "level": 1,
-    "size": "sm",
+    "size": "Small",
     "ac": 17,
     "actions": [
       {
@@ -67526,7 +67526,7 @@
       "Will": "+18"
     },
     "level": 10,
-    "size": "med",
+    "size": "Medium",
     "ac": 31,
     "actions": [
       {
@@ -67632,7 +67632,7 @@
       "Will": "+22"
     },
     "level": 12,
-    "size": "huge",
+    "size": "Huge",
     "ac": 32,
     "actions": [
       {
@@ -67724,7 +67724,7 @@
       "Will": "+9"
     },
     "level": 4,
-    "size": "huge",
+    "size": "Huge",
     "ac": 21,
     "actions": [
       {
@@ -67794,7 +67794,7 @@
       "Will": "+16"
     },
     "level": 9,
-    "size": "lg",
+    "size": "Large",
     "ac": 28,
     "actions": [
       {
@@ -67864,7 +67864,7 @@
       "Will": "+19"
     },
     "level": 8,
-    "size": "med",
+    "size": "Medium",
     "ac": 26,
     "actions": [
       {
@@ -67933,7 +67933,7 @@
       "Will": "+21"
     },
     "level": 11,
-    "size": "huge",
+    "size": "Huge",
     "ac": 31,
     "actions": [
       {
@@ -68010,7 +68010,7 @@
       "Will": "+15"
     },
     "level": 7,
-    "size": "med",
+    "size": "Medium",
     "ac": 24,
     "actions": [
       {
@@ -68088,7 +68088,7 @@
       "Will": "+6"
     },
     "level": 2,
-    "size": "med",
+    "size": "Medium",
     "ac": 16,
     "actions": [
       {
@@ -68179,7 +68179,7 @@
       "Will": "+7"
     },
     "level": 4,
-    "size": "lg",
+    "size": "Large",
     "ac": 21,
     "actions": [
       {
@@ -68257,7 +68257,7 @@
       "Will": "+24"
     },
     "level": 14,
-    "size": "huge",
+    "size": "Huge",
     "ac": 36,
     "actions": [
       {
@@ -68340,7 +68340,7 @@
       "Will": "+38"
     },
     "level": 21,
-    "size": "med",
+    "size": "Medium",
     "ac": 47,
     "actions": [
       {
@@ -68452,7 +68452,7 @@
       "Will": "+5"
     },
     "level": 0,
-    "size": "sm",
+    "size": "Small",
     "ac": 15,
     "actions": [
       {
@@ -68543,7 +68543,7 @@
       "Will": "+8"
     },
     "level": 3,
-    "size": "lg",
+    "size": "Large",
     "ac": 17,
     "actions": [
       {
@@ -68611,7 +68611,7 @@
       "Will": "+7"
     },
     "level": 3,
-    "size": "med",
+    "size": "Medium",
     "ac": 17,
     "actions": [
       {
@@ -68675,7 +68675,7 @@
       "Will": "+4"
     },
     "level": -1,
-    "size": "sm",
+    "size": "Small",
     "ac": 15,
     "actions": [
       {
@@ -68730,7 +68730,7 @@
       "Will": "+30"
     },
     "level": 19,
-    "size": "grg",
+    "size": "Gargantuan",
     "ac": 43,
     "actions": [
       {
@@ -68834,7 +68834,7 @@
       "Will": "+28"
     },
     "level": 14,
-    "size": "med",
+    "size": "Medium",
     "ac": 36,
     "actions": [
       {
@@ -68946,7 +68946,7 @@
       "Will": "+11"
     },
     "level": 4,
-    "size": "huge",
+    "size": "Huge",
     "ac": 21,
     "actions": [
       {
@@ -69007,7 +69007,7 @@
       "Will": "+5"
     },
     "level": -1,
-    "size": "sm",
+    "size": "Small",
     "ac": 15,
     "actions": [
       {
@@ -69070,7 +69070,7 @@
       "Will": "+7"
     },
     "level": 1,
-    "size": "sm",
+    "size": "Small",
     "ac": 16,
     "actions": [
       {
@@ -69146,7 +69146,7 @@
       "Will": "+12"
     },
     "level": 5,
-    "size": "med",
+    "size": "Medium",
     "ac": 21,
     "actions": [
       {
@@ -69229,7 +69229,7 @@
       "Will": "+7"
     },
     "level": 3,
-    "size": "med",
+    "size": "Medium",
     "ac": 17,
     "actions": [
       {
@@ -69294,7 +69294,7 @@
       "Will": "+10"
     },
     "level": 2,
-    "size": "med",
+    "size": "Medium",
     "ac": 17,
     "actions": [
       {
@@ -69364,7 +69364,7 @@
       "Will": "+6"
     },
     "level": 1,
-    "size": "lg",
+    "size": "Large",
     "ac": 15,
     "actions": [
       {
@@ -69423,7 +69423,7 @@
       "Will": "+6"
     },
     "level": 2,
-    "size": "lg",
+    "size": "Large",
     "ac": 18,
     "actions": [
       {
@@ -69493,7 +69493,7 @@
       "Will": "+8"
     },
     "level": 4,
-    "size": "med",
+    "size": "Medium",
     "ac": 23,
     "actions": [
       {
@@ -69572,7 +69572,7 @@
       "Will": "+13"
     },
     "level": 6,
-    "size": "med",
+    "size": "Medium",
     "ac": 25,
     "actions": [
       {
@@ -69647,7 +69647,7 @@
       "Will": "+5"
     },
     "level": 1,
-    "size": "med",
+    "size": "Medium",
     "ac": 18,
     "actions": [
       {
@@ -69720,7 +69720,7 @@
       "Will": "+3"
     },
     "level": 0,
-    "size": "tiny",
+    "size": "Tiny",
     "ac": 17,
     "actions": [
       {
@@ -69781,7 +69781,7 @@
       "Will": "+23"
     },
     "level": 12,
-    "size": "huge",
+    "size": "Huge",
     "ac": 34,
     "actions": [
       {
@@ -69898,7 +69898,7 @@
       "Will": "+23"
     },
     "level": 12,
-    "size": "huge",
+    "size": "Huge",
     "ac": 34,
     "actions": [
       {
@@ -70025,7 +70025,7 @@
       "Will": "+32"
     },
     "level": 17,
-    "size": "grg",
+    "size": "Gargantuan",
     "ac": 41,
     "actions": [
       {
@@ -70154,7 +70154,7 @@
       "Will": "+32"
     },
     "level": 17,
-    "size": "grg",
+    "size": "Gargantuan",
     "ac": 41,
     "actions": [
       {
@@ -70293,7 +70293,7 @@
       "Will": "+17"
     },
     "level": 8,
-    "size": "lg",
+    "size": "Large",
     "ac": 28,
     "actions": [
       {
@@ -70398,7 +70398,7 @@
       "Will": "+17"
     },
     "level": 8,
-    "size": "lg",
+    "size": "Large",
     "ac": 28,
     "actions": [
       {
@@ -70512,7 +70512,7 @@
       "Will": "+4"
     },
     "level": 1,
-    "size": "med",
+    "size": "Medium",
     "ac": 18,
     "actions": [
       {
@@ -70595,7 +70595,7 @@
       "Will": "+4"
     },
     "level": 0,
-    "size": "med",
+    "size": "Medium",
     "ac": 15,
     "actions": [
       {
@@ -70670,7 +70670,7 @@
       "Will": "+8"
     },
     "level": 2,
-    "size": "med",
+    "size": "Medium",
     "ac": 18,
     "actions": [
       {
@@ -70748,7 +70748,7 @@
       "Will": "+5"
     },
     "level": 1,
-    "size": "med",
+    "size": "Medium",
     "ac": 17,
     "actions": [
       {
@@ -70828,7 +70828,7 @@
       "Will": "+7"
     },
     "level": 3,
-    "size": "lg",
+    "size": "Large",
     "ac": 18,
     "actions": [
       {
@@ -70897,7 +70897,7 @@
       "Will": "+10"
     },
     "level": 6,
-    "size": "huge",
+    "size": "Huge",
     "ac": 23,
     "actions": [
       {
@@ -70980,7 +70980,7 @@
       "Will": "+4"
     },
     "level": 1,
-    "size": "med",
+    "size": "Medium",
     "ac": 16,
     "actions": [
       {
@@ -71045,7 +71045,7 @@
       "Will": "+27"
     },
     "level": 17,
-    "size": "grg",
+    "size": "Gargantuan",
     "ac": 41,
     "actions": [
       {
@@ -71155,7 +71155,7 @@
       "Will": "+20"
     },
     "level": 9,
-    "size": "lg",
+    "size": "Large",
     "ac": 28,
     "actions": [
       {
@@ -71244,7 +71244,7 @@
       "Will": "+7"
     },
     "level": 1,
-    "size": "tiny",
+    "size": "Tiny",
     "ac": 17,
     "actions": [
       {
@@ -71325,7 +71325,7 @@
       "Will": "+16"
     },
     "level": 9,
-    "size": "lg",
+    "size": "Large",
     "ac": 28,
     "actions": [
       {
@@ -71399,7 +71399,7 @@
       "Will": "+14"
     },
     "level": 6,
-    "size": "lg",
+    "size": "Large",
     "ac": 24,
     "actions": [
       {
@@ -71492,7 +71492,7 @@
       "Will": "+22"
     },
     "level": 13,
-    "size": "lg",
+    "size": "Large",
     "ac": 33,
     "actions": [
       {
@@ -71564,7 +71564,7 @@
       "Will": "+34"
     },
     "level": 17,
-    "size": "huge",
+    "size": "Huge",
     "ac": 38,
     "actions": [
       {
@@ -71697,7 +71697,7 @@
       "Will": "+11"
     },
     "level": 5,
-    "size": "lg",
+    "size": "Large",
     "ac": 22,
     "actions": [
       {
@@ -71799,7 +71799,7 @@
       "Will": "+15"
     },
     "level": 7,
-    "size": "lg",
+    "size": "Large",
     "ac": 25,
     "actions": [
       {
@@ -71887,7 +71887,7 @@
       "Will": "+18"
     },
     "level": 8,
-    "size": "lg",
+    "size": "Large",
     "ac": 26,
     "actions": [
       {
@@ -71985,7 +71985,7 @@
       "Will": "+13"
     },
     "level": 4,
-    "size": "med",
+    "size": "Medium",
     "ac": 20,
     "actions": [
       {
@@ -72093,7 +72093,7 @@
       "Will": "+7"
     },
     "level": 1,
-    "size": "tiny",
+    "size": "Tiny",
     "ac": 15,
     "actions": [
       {
@@ -72159,7 +72159,7 @@
       "Will": "+11"
     },
     "level": 6,
-    "size": "lg",
+    "size": "Large",
     "ac": 23,
     "actions": [
       {
@@ -72253,7 +72253,7 @@
       "Will": "+16"
     },
     "level": 7,
-    "size": "lg",
+    "size": "Large",
     "ac": 25,
     "actions": [
       {
@@ -72339,7 +72339,7 @@
       "Will": "+34"
     },
     "level": 17,
-    "size": "lg",
+    "size": "Large",
     "ac": 40,
     "actions": [
       {
@@ -72474,7 +72474,7 @@
       "Will": "+10"
     },
     "level": 3,
-    "size": "med",
+    "size": "Medium",
     "ac": 19,
     "actions": [
       {
@@ -72546,7 +72546,7 @@
       "Will": "+7"
     },
     "level": 2,
-    "size": "med",
+    "size": "Medium",
     "ac": 18,
     "actions": [
       {
@@ -72623,7 +72623,7 @@
       "Will": "+8"
     },
     "level": 4,
-    "size": "med",
+    "size": "Medium",
     "ac": 21,
     "actions": [
       {
@@ -72709,7 +72709,7 @@
       "Will": "+7"
     },
     "level": 2,
-    "size": "sm",
+    "size": "Small",
     "ac": 16,
     "actions": [
       {
@@ -72789,7 +72789,7 @@
       "Will": "+6"
     },
     "level": 1,
-    "size": "sm",
+    "size": "Small",
     "ac": 16,
     "actions": [
       {
@@ -72870,7 +72870,7 @@
       "Will": "+3"
     },
     "level": -1,
-    "size": "sm",
+    "size": "Small",
     "ac": 16,
     "actions": [
       {
@@ -72945,7 +72945,7 @@
       "Will": "+32"
     },
     "level": 18,
-    "size": "grg",
+    "size": "Gargantuan",
     "ac": 42,
     "actions": [
       {
@@ -73047,7 +73047,7 @@
       "Will": "+14"
     },
     "level": 8,
-    "size": "lg",
+    "size": "Large",
     "ac": 26,
     "actions": [
       {
@@ -73133,7 +73133,7 @@
       "Will": "+17"
     },
     "level": 8,
-    "size": "lg",
+    "size": "Large",
     "ac": 27,
     "actions": [
       {
@@ -73211,7 +73211,7 @@
       "Will": "+15"
     },
     "level": 6,
-    "size": "lg",
+    "size": "Large",
     "ac": 24,
     "actions": [
       {
@@ -73295,7 +73295,7 @@
       "Will": "+9"
     },
     "level": 4,
-    "size": "med",
+    "size": "Medium",
     "ac": 20,
     "actions": [
       {
@@ -73371,7 +73371,7 @@
       "Will": "+12"
     },
     "level": 5,
-    "size": "med",
+    "size": "Medium",
     "ac": 23,
     "actions": [
       {
@@ -73443,7 +73443,7 @@
       "Will": "+4"
     },
     "level": 0,
-    "size": "sm",
+    "size": "Small",
     "ac": 18,
     "actions": [
       {
@@ -73528,7 +73528,7 @@
       "Will": "+5"
     },
     "level": 2,
-    "size": "med",
+    "size": "Medium",
     "ac": 18,
     "actions": [
       {
@@ -73603,7 +73603,7 @@
       "Will": "+32"
     },
     "level": 16,
-    "size": "med",
+    "size": "Medium",
     "ac": 39,
     "actions": [
       {
@@ -73700,7 +73700,7 @@
       "Will": "+19"
     },
     "level": 9,
-    "size": "lg",
+    "size": "Large",
     "ac": 28,
     "actions": [
       {
@@ -73803,7 +73803,7 @@
       "Will": "+23"
     },
     "level": 12,
-    "size": "med",
+    "size": "Medium",
     "ac": 31,
     "actions": [
       {
@@ -73906,7 +73906,7 @@
       "Will": "+7"
     },
     "level": 3,
-    "size": "lg",
+    "size": "Large",
     "ac": 18,
     "actions": [
       {
@@ -73981,7 +73981,7 @@
       "Will": "+10"
     },
     "level": 5,
-    "size": "med",
+    "size": "Medium",
     "ac": 21,
     "actions": [
       {
@@ -74057,7 +74057,7 @@
       "Will": "+11"
     },
     "level": 7,
-    "size": "huge",
+    "size": "Huge",
     "ac": 14,
     "actions": [
       {
@@ -74129,7 +74129,7 @@
       "Will": "+10"
     },
     "level": 5,
-    "size": "lg",
+    "size": "Large",
     "ac": 20,
     "actions": [
       {
@@ -74201,7 +74201,7 @@
       "Will": "+10"
     },
     "level": 5,
-    "size": "med",
+    "size": "Medium",
     "ac": 24,
     "actions": [
       {
@@ -74272,7 +74272,7 @@
       "Will": "+10"
     },
     "level": 5,
-    "size": "med",
+    "size": "Medium",
     "ac": 22,
     "actions": [
       {
@@ -74340,7 +74340,7 @@
       "Will": "+5"
     },
     "level": 1,
-    "size": "med",
+    "size": "Medium",
     "ac": 16,
     "actions": [
       {
@@ -74429,7 +74429,7 @@
       "Will": "+6"
     },
     "level": 1,
-    "size": "med",
+    "size": "Medium",
     "ac": 17,
     "actions": [
       {
@@ -74520,7 +74520,7 @@
       "Will": "+10"
     },
     "level": 2,
-    "size": "med",
+    "size": "Medium",
     "ac": 17,
     "actions": [
       {
@@ -74593,7 +74593,7 @@
       "Will": "+6"
     },
     "level": 2,
-    "size": "med",
+    "size": "Medium",
     "ac": 16,
     "actions": [
       {
@@ -74683,7 +74683,7 @@
       "Will": "+6"
     },
     "level": 1,
-    "size": "tiny",
+    "size": "Tiny",
     "ac": 17,
     "actions": [
       {
@@ -74758,7 +74758,7 @@
       "Will": "+27"
     },
     "level": 18,
-    "size": "grg",
+    "size": "Gargantuan",
     "ac": 40,
     "actions": [
       {
@@ -74873,7 +74873,7 @@
       "Will": "+18"
     },
     "level": 10,
-    "size": "huge",
+    "size": "Huge",
     "ac": 29,
     "actions": [
       {
@@ -74958,7 +74958,7 @@
       "Will": "+12"
     },
     "level": 6,
-    "size": "lg",
+    "size": "Large",
     "ac": 23,
     "actions": [
       {
@@ -75028,7 +75028,7 @@
       "Will": "+12"
     },
     "level": 6,
-    "size": "lg",
+    "size": "Large",
     "ac": 23,
     "actions": [
       {
@@ -75097,7 +75097,7 @@
       "Will": "+17"
     },
     "level": 8,
-    "size": "lg",
+    "size": "Large",
     "ac": 27,
     "actions": [
       {
@@ -75177,7 +75177,7 @@
       "Will": "+14"
     },
     "level": 7,
-    "size": "med",
+    "size": "Medium",
     "ac": 25,
     "actions": [
       {
@@ -75265,7 +75265,7 @@
       "Will": "+17"
     },
     "level": 9,
-    "size": "grg",
+    "size": "Gargantuan",
     "ac": 27,
     "actions": [
       {
@@ -75351,7 +75351,7 @@
       "Will": "+13"
     },
     "level": 8,
-    "size": "grg",
+    "size": "Gargantuan",
     "ac": 26,
     "actions": [
       {
@@ -75414,7 +75414,7 @@
       "Will": "+4"
     },
     "level": 1,
-    "size": "med",
+    "size": "Medium",
     "ac": 18,
     "actions": [
       {
@@ -75478,7 +75478,7 @@
       "Will": "+10"
     },
     "level": 2,
-    "size": "med",
+    "size": "Medium",
     "ac": 17,
     "actions": [
       {
@@ -75544,7 +75544,7 @@
       "Will": "+10"
     },
     "level": 4,
-    "size": "lg",
+    "size": "Large",
     "ac": 20,
     "actions": [
       {
@@ -75624,7 +75624,7 @@
       "Will": "+25"
     },
     "level": 13,
-    "size": "huge",
+    "size": "Huge",
     "ac": 33,
     "actions": [
       {
@@ -75737,7 +75737,7 @@
       "Will": "+25"
     },
     "level": 13,
-    "size": "huge",
+    "size": "Huge",
     "ac": 33,
     "actions": [
       {
@@ -75860,7 +75860,7 @@
       "Will": "+33"
     },
     "level": 18,
-    "size": "huge",
+    "size": "Huge",
     "ac": 41,
     "actions": [
       {
@@ -75973,7 +75973,7 @@
       "Will": "+33"
     },
     "level": 18,
-    "size": "huge",
+    "size": "Huge",
     "ac": 41,
     "actions": [
       {
@@ -76096,7 +76096,7 @@
       "Will": "+20"
     },
     "level": 9,
-    "size": "lg",
+    "size": "Large",
     "ac": 27,
     "actions": [
       {
@@ -76198,7 +76198,7 @@
       "Will": "+20"
     },
     "level": 9,
-    "size": "lg",
+    "size": "Large",
     "ac": 27,
     "actions": [
       {
@@ -76310,7 +76310,7 @@
       "Will": "+4"
     },
     "level": -1,
-    "size": "sm",
+    "size": "Small",
     "ac": 14,
     "actions": [
       {
@@ -76381,7 +76381,7 @@
       "Will": "+29"
     },
     "level": 15,
-    "size": "med",
+    "size": "Medium",
     "ac": 38,
     "actions": [
       {
@@ -76491,7 +76491,7 @@
       "Will": "+14"
     },
     "level": 8,
-    "size": "lg",
+    "size": "Large",
     "ac": 26,
     "actions": [
       {
@@ -76572,7 +76572,7 @@
       "Will": "+26"
     },
     "level": 15,
-    "size": "grg",
+    "size": "Gargantuan",
     "ac": 37,
     "actions": [
       {
@@ -76687,7 +76687,7 @@
       "Will": "+16"
     },
     "level": 6,
-    "size": "med",
+    "size": "Medium",
     "ac": 23,
     "actions": [
       {
@@ -76759,7 +76759,7 @@
       "Will": "+20"
     },
     "level": 9,
-    "size": "med",
+    "size": "Medium",
     "ac": 27,
     "actions": [
       {
@@ -76855,7 +76855,7 @@
       "Will": "+17"
     },
     "level": 7,
-    "size": "med",
+    "size": "Medium",
     "ac": 26,
     "actions": [
       {
@@ -76963,7 +76963,7 @@
       "Will": "+8"
     },
     "level": 1,
-    "size": "med",
+    "size": "Medium",
     "ac": 14,
     "actions": [
       {
@@ -77050,7 +77050,7 @@
       "Will": "+35"
     },
     "level": 20,
-    "size": "lg",
+    "size": "Large",
     "ac": 46,
     "actions": [
       {
@@ -77200,7 +77200,7 @@
       "Will": "+12"
     },
     "level": 6,
-    "size": "lg",
+    "size": "Large",
     "ac": 24,
     "actions": [
       {
@@ -77272,7 +77272,7 @@
       "Will": "+20"
     },
     "level": 10,
-    "size": "med",
+    "size": "Medium",
     "ac": 32,
     "actions": [
       {
@@ -77350,7 +77350,7 @@
       "Will": "+38"
     },
     "level": 20,
-    "size": "lg",
+    "size": "Large",
     "ac": 46,
     "actions": [
       {
@@ -77469,7 +77469,7 @@
       "Will": "+6"
     },
     "level": 1,
-    "size": "tiny",
+    "size": "Tiny",
     "ac": 16,
     "actions": [
       {
@@ -77546,7 +77546,7 @@
       "Will": "+15"
     },
     "level": 9,
-    "size": "lg",
+    "size": "Large",
     "ac": 27,
     "actions": [
       {
@@ -77620,7 +77620,7 @@
       "Will": "+20"
     },
     "level": 9,
-    "size": "lg",
+    "size": "Large",
     "ac": 28,
     "actions": [
       {
@@ -77718,7 +77718,7 @@
       "Will": "+18"
     },
     "level": 10,
-    "size": "lg",
+    "size": "Large",
     "ac": 31,
     "actions": [
       {
@@ -77794,7 +77794,7 @@
       "Will": "+15"
     },
     "level": 7,
-    "size": "lg",
+    "size": "Large",
     "ac": 25,
     "actions": [
       {
@@ -77868,7 +77868,7 @@
       "Will": "+6"
     },
     "level": 4,
-    "size": "lg",
+    "size": "Large",
     "ac": 18,
     "actions": [
       {
@@ -77946,7 +77946,7 @@
       "Will": "+5"
     },
     "level": 3,
-    "size": "lg",
+    "size": "Large",
     "ac": 17,
     "traits": [
       "giant",
@@ -78002,7 +78002,7 @@
       "Will": "+23"
     },
     "level": 11,
-    "size": "lg",
+    "size": "Large",
     "ac": 30,
     "actions": [
       {
@@ -78108,7 +78108,7 @@
       "Will": "+23"
     },
     "level": 11,
-    "size": "lg",
+    "size": "Large",
     "ac": 30,
     "actions": [
       {
@@ -78224,7 +78224,7 @@
       "Will": "+29"
     },
     "level": 16,
-    "size": "huge",
+    "size": "Huge",
     "ac": 38,
     "actions": [
       {
@@ -78336,7 +78336,7 @@
       "Will": "+29"
     },
     "level": 16,
-    "size": "huge",
+    "size": "Huge",
     "ac": 38,
     "actions": [
       {
@@ -78458,7 +78458,7 @@
       "Will": "+17"
     },
     "level": 7,
-    "size": "lg",
+    "size": "Large",
     "ac": 24,
     "actions": [
       {
@@ -78557,7 +78557,7 @@
       "Will": "+17"
     },
     "level": 7,
-    "size": "lg",
+    "size": "Large",
     "ac": 24,
     "actions": [
       {
@@ -78665,7 +78665,7 @@
       "Will": "+20"
     },
     "level": 12,
-    "size": "med",
+    "size": "Medium",
     "ac": 25,
     "actions": [
       {
@@ -78768,7 +78768,7 @@
       "Will": "+7"
     },
     "level": 2,
-    "size": "med",
+    "size": "Medium",
     "ac": 19,
     "actions": [
       {
@@ -78848,7 +78848,7 @@
       "Will": "+2"
     },
     "level": 0,
-    "size": "med",
+    "size": "Medium",
     "ac": 14,
     "actions": [
       {
@@ -78917,7 +78917,7 @@
       "Will": "+4"
     },
     "level": 1,
-    "size": "med",
+    "size": "Medium",
     "ac": 18,
     "actions": [
       {
@@ -78999,7 +78999,7 @@
       "Will": "+12"
     },
     "level": 5,
-    "size": "huge",
+    "size": "Huge",
     "ac": 21,
     "actions": [
       {
@@ -79071,7 +79071,7 @@
       "Will": "+2"
     },
     "level": 0,
-    "size": "med",
+    "size": "Medium",
     "ac": 13,
     "actions": [
       {
@@ -79131,7 +79131,7 @@
       "Will": "+7"
     },
     "level": 3,
-    "size": "lg",
+    "size": "Large",
     "ac": 17,
     "actions": [
       {
@@ -79189,7 +79189,7 @@
       "Will": "+18"
     },
     "level": 12,
-    "size": "huge",
+    "size": "Huge",
     "ac": 33,
     "actions": [
       {
@@ -79247,7 +79247,7 @@
       "Will": "+7"
     },
     "level": 3,
-    "size": "lg",
+    "size": "Large",
     "ac": 18,
     "actions": [
       {
@@ -79318,7 +79318,7 @@
       "Will": "+11"
     },
     "level": 7,
-    "size": "med",
+    "size": "Medium",
     "ac": 26,
     "actions": [
       {
@@ -79386,7 +79386,7 @@
       "Will": "+16"
     },
     "level": 8,
-    "size": "med",
+    "size": "Medium",
     "ac": 26,
     "actions": [
       {
@@ -79468,7 +79468,7 @@
       "Will": "+13"
     },
     "level": 4,
-    "size": "med",
+    "size": "Medium",
     "ac": 21,
     "actions": [
       {
@@ -79546,7 +79546,7 @@
       "Will": "+23"
     },
     "level": 10,
-    "size": "med",
+    "size": "Medium",
     "ac": 30,
     "actions": [
       {
@@ -79661,7 +79661,7 @@
       "Will": "+28"
     },
     "level": 15,
-    "size": "grg",
+    "size": "Gargantuan",
     "ac": 36,
     "actions": [
       {
@@ -79761,7 +79761,7 @@
       "Will": "+7"
     },
     "level": 2,
-    "size": "tiny",
+    "size": "Tiny",
     "ac": 19,
     "actions": [
       {
@@ -79831,7 +79831,7 @@
       "Will": "+8"
     },
     "level": 3,
-    "size": "med",
+    "size": "Medium",
     "ac": 17,
     "actions": [
       {
@@ -79895,7 +79895,7 @@
       "Will": "+12"
     },
     "level": 4,
-    "size": "sm",
+    "size": "Small",
     "ac": 23,
     "actions": [
       {
@@ -79965,7 +79965,7 @@
       "Will": "+4"
     },
     "level": 1,
-    "size": "med",
+    "size": "Medium",
     "ac": 13,
     "actions": [
       {
@@ -80042,7 +80042,7 @@
       "Will": "+37"
     },
     "level": 20,
-    "size": "lg",
+    "size": "Large",
     "ac": 45,
     "actions": [
       {
@@ -80146,7 +80146,7 @@
       "Will": "+13"
     },
     "level": 5,
-    "size": "med",
+    "size": "Medium",
     "ac": 22,
     "actions": [
       {
@@ -80236,7 +80236,7 @@
       "Will": "+10"
     },
     "level": 4,
-    "size": "med",
+    "size": "Medium",
     "ac": 23,
     "actions": [
       {
@@ -80313,7 +80313,7 @@
       "Will": "+6"
     },
     "level": 2,
-    "size": "med",
+    "size": "Medium",
     "ac": 16,
     "actions": [
       {
@@ -80404,7 +80404,7 @@
       "Will": "+6"
     },
     "level": 2,
-    "size": "lg",
+    "size": "Large",
     "ac": 16,
     "actions": [
       {
@@ -80456,7 +80456,7 @@
       "Will": "+6"
     },
     "level": 0,
-    "size": "tiny",
+    "size": "Tiny",
     "ac": 14,
     "actions": [
       {
@@ -80527,7 +80527,7 @@
       "Will": "+17"
     },
     "level": 7,
-    "size": "sm",
+    "size": "Small",
     "ac": 25,
     "actions": [
       {
@@ -80611,7 +80611,7 @@
       "Will": "+8"
     },
     "level": 2,
-    "size": "sm",
+    "size": "Small",
     "ac": 17,
     "actions": [
       {
@@ -80697,7 +80697,7 @@
       "Will": "+4"
     },
     "level": 1,
-    "size": "med",
+    "size": "Medium",
     "ac": 15,
     "actions": [
       {
@@ -80766,7 +80766,7 @@
       "Will": "+11"
     },
     "level": 4,
-    "size": "med",
+    "size": "Medium",
     "ac": 22,
     "actions": [
       {
@@ -80873,7 +80873,7 @@
       "Will": "+21"
     },
     "level": 13,
-    "size": "huge",
+    "size": "Huge",
     "ac": 32,
     "actions": [
       {
@@ -80968,7 +80968,7 @@
       "Will": "+18"
     },
     "level": 7,
-    "size": "sm",
+    "size": "Small",
     "ac": 25,
     "actions": [
       {
@@ -81044,7 +81044,7 @@
       "Will": "+31"
     },
     "level": 15,
-    "size": "lg",
+    "size": "Large",
     "ac": 36,
     "actions": [
       {
@@ -81140,7 +81140,7 @@
       "Will": "+21"
     },
     "level": 10,
-    "size": "lg",
+    "size": "Large",
     "ac": 30,
     "actions": [
       {
@@ -81237,7 +81237,7 @@
       "Will": "+12"
     },
     "level": 7,
-    "size": "huge",
+    "size": "Huge",
     "ac": 25,
     "actions": [
       {
@@ -81305,7 +81305,7 @@
       "Will": "+18"
     },
     "level": 10,
-    "size": "med",
+    "size": "Medium",
     "ac": 30,
     "actions": [
       {
@@ -81418,7 +81418,7 @@
       "Will": "+6"
     },
     "level": 1,
-    "size": "tiny",
+    "size": "Tiny",
     "ac": 16,
     "actions": [
       {
@@ -81507,7 +81507,7 @@
       "Will": "+4"
     },
     "level": 1,
-    "size": "lg",
+    "size": "Large",
     "ac": 14,
     "actions": [
       {
@@ -81563,7 +81563,7 @@
       "Will": "+9"
     },
     "level": 4,
-    "size": "sm",
+    "size": "Small",
     "ac": 21,
     "actions": [
       {
@@ -81656,7 +81656,7 @@
       "Will": "+10"
     },
     "level": 5,
-    "size": "sm",
+    "size": "Small",
     "ac": 21,
     "actions": [
       {
@@ -81747,7 +81747,7 @@
       "Will": "+4"
     },
     "level": 1,
-    "size": "sm",
+    "size": "Small",
     "ac": 20,
     "actions": [
       {
@@ -81818,7 +81818,7 @@
       "Will": "+19"
     },
     "level": 10,
-    "size": "lg",
+    "size": "Large",
     "ac": 31,
     "actions": [
       {
@@ -81921,7 +81921,7 @@
       "Will": "+17"
     },
     "level": 6,
-    "size": "med",
+    "size": "Medium",
     "ac": 23,
     "actions": [
       {
@@ -82003,7 +82003,7 @@
       "Will": "+11"
     },
     "level": 4,
-    "size": "lg",
+    "size": "Large",
     "ac": 22,
     "actions": [
       {
@@ -82067,7 +82067,7 @@
       "Will": "+17"
     },
     "level": 6,
-    "size": "sm",
+    "size": "Small",
     "ac": 23,
     "actions": [
       {
@@ -82161,7 +82161,7 @@
       "Will": "+5"
     },
     "level": 1,
-    "size": "med",
+    "size": "Medium",
     "ac": 16,
     "actions": [
       {
@@ -82220,7 +82220,7 @@
       "Will": "+5"
     },
     "level": 1,
-    "size": "lg",
+    "size": "Large",
     "ac": 16,
     "actions": [
       {
@@ -82278,7 +82278,7 @@
       "Will": "+4"
     },
     "level": 0,
-    "size": "med",
+    "size": "Medium",
     "ac": 14,
     "actions": [
       {
@@ -82336,7 +82336,7 @@
       "Will": "+7"
     },
     "level": 3,
-    "size": "med",
+    "size": "Medium",
     "ac": 17,
     "actions": [
       {
@@ -82417,7 +82417,7 @@
       "Will": "+16"
     },
     "level": 9,
-    "size": "grg",
+    "size": "Gargantuan",
     "ac": 27,
     "actions": [
       {
@@ -82506,7 +82506,7 @@
       "Will": "+28"
     },
     "level": 16,
-    "size": "grg",
+    "size": "Gargantuan",
     "ac": 38,
     "actions": [
       {
@@ -82610,7 +82610,7 @@
       "Will": "+10"
     },
     "level": 6,
-    "size": "lg",
+    "size": "Large",
     "ac": 14,
     "actions": [
       {
@@ -82679,7 +82679,7 @@
       "Will": "+16"
     },
     "level": 8,
-    "size": "lg",
+    "size": "Large",
     "ac": 27,
     "actions": [
       {
@@ -82783,7 +82783,7 @@
       "Will": "+12"
     },
     "level": 4,
-    "size": "med",
+    "size": "Medium",
     "ac": 19,
     "actions": [
       {
@@ -82867,7 +82867,7 @@
       "Will": "+11"
     },
     "level": 4,
-    "size": "med",
+    "size": "Medium",
     "ac": 19,
     "actions": [
       {
@@ -82933,7 +82933,7 @@
       "Will": "+8"
     },
     "level": 4,
-    "size": "lg",
+    "size": "Large",
     "ac": 21,
     "actions": [
       {
@@ -82984,7 +82984,7 @@
       "Will": "+10"
     },
     "level": 3,
-    "size": "med",
+    "size": "Medium",
     "ac": 19,
     "actions": [
       {
@@ -83063,7 +83063,7 @@
       "Will": "+21"
     },
     "level": 12,
-    "size": "grg",
+    "size": "Gargantuan",
     "ac": 35,
     "actions": [
       {
@@ -83160,7 +83160,7 @@
       "Will": "+9"
     },
     "level": 4,
-    "size": "med",
+    "size": "Medium",
     "ac": 19,
     "actions": [
       {
@@ -83257,7 +83257,7 @@
       "Will": "+7"
     },
     "level": 2,
-    "size": "med",
+    "size": "Medium",
     "ac": 17,
     "actions": [
       {
@@ -83350,7 +83350,7 @@
       "Will": "+15"
     },
     "level": 6,
-    "size": "med",
+    "size": "Medium",
     "ac": 23,
     "actions": [
       {
@@ -83464,7 +83464,7 @@
       "Will": "+25"
     },
     "level": 15,
-    "size": "med",
+    "size": "Medium",
     "ac": 37,
     "actions": [
       {
@@ -83573,7 +83573,7 @@
       "Will": "+3"
     },
     "level": 1,
-    "size": "med",
+    "size": "Medium",
     "ac": 8,
     "actions": [
       {
@@ -83630,7 +83630,7 @@
       "Will": "+23"
     },
     "level": 13,
-    "size": "lg",
+    "size": "Large",
     "ac": 33,
     "actions": [
       {
@@ -83711,7 +83711,7 @@
       "Will": "+12"
     },
     "level": 4,
-    "size": "med",
+    "size": "Medium",
     "ac": 20,
     "actions": [
       {
@@ -83778,7 +83778,7 @@
       "Will": "+12"
     },
     "level": 4,
-    "size": "med",
+    "size": "Medium",
     "ac": 20,
     "actions": [
       {
@@ -83857,7 +83857,7 @@
       "Will": "+27"
     },
     "level": 16,
-    "size": "grg",
+    "size": "Gargantuan",
     "ac": 39,
     "actions": [
       {
@@ -83982,7 +83982,7 @@
       "Will": "+19"
     },
     "level": 12,
-    "size": "med",
+    "size": "Medium",
     "ac": 33,
     "actions": [
       {
@@ -84062,7 +84062,7 @@
       "Will": "+21"
     },
     "level": 12,
-    "size": "huge",
+    "size": "Huge",
     "ac": 33,
     "actions": [
       {
@@ -84135,7 +84135,7 @@
       "Will": "+6"
     },
     "level": 2,
-    "size": "med",
+    "size": "Medium",
     "ac": 19,
     "actions": [
       {
@@ -84216,7 +84216,7 @@
       "Will": "+7"
     },
     "level": 3,
-    "size": "lg",
+    "size": "Large",
     "ac": 17,
     "actions": [
       {
@@ -84287,7 +84287,7 @@
       "Will": "+8"
     },
     "level": 2,
-    "size": "lg",
+    "size": "Large",
     "ac": 16,
     "actions": [
       {
@@ -84352,7 +84352,7 @@
       "Will": "+13"
     },
     "level": 7,
-    "size": "huge",
+    "size": "Huge",
     "ac": 25,
     "actions": [
       {
@@ -84417,7 +84417,7 @@
       "Will": "+2"
     },
     "level": -1,
-    "size": "med",
+    "size": "Medium",
     "ac": 16,
     "actions": [
       {
@@ -84485,7 +84485,7 @@
       "Will": "+35"
     },
     "level": 18,
-    "size": "huge",
+    "size": "Huge",
     "ac": 42,
     "actions": [
       {
@@ -84591,7 +84591,7 @@
       "Will": "+6"
     },
     "level": 2,
-    "size": "med",
+    "size": "Medium",
     "ac": 16,
     "actions": [
       {
@@ -84681,7 +84681,7 @@
       "Will": "+4"
     },
     "level": 2,
-    "size": "med",
+    "size": "Medium",
     "ac": 17,
     "actions": [
       {
@@ -84750,7 +84750,7 @@
       "Will": "+15"
     },
     "level": 7,
-    "size": "lg",
+    "size": "Large",
     "ac": 27,
     "actions": [
       {
@@ -84827,7 +84827,7 @@
       "Will": "+10"
     },
     "level": 6,
-    "size": "lg",
+    "size": "Large",
     "ac": 23,
     "actions": [
       {
@@ -84901,7 +84901,7 @@
       "Will": "+7"
     },
     "level": 3,
-    "size": "lg",
+    "size": "Large",
     "ac": 18,
     "actions": [
       {
@@ -84979,7 +84979,7 @@
       "Will": "+21"
     },
     "level": 13,
-    "size": "lg",
+    "size": "Large",
     "ac": 33,
     "actions": [
       {
@@ -85085,7 +85085,7 @@
       "Will": "+7"
     },
     "level": 3,
-    "size": "sm",
+    "size": "Small",
     "ac": 19,
     "actions": [
       {
@@ -85148,7 +85148,7 @@
       "Will": "+6"
     },
     "level": 2,
-    "size": "tiny",
+    "size": "Tiny",
     "ac": 17,
     "actions": [
       {
@@ -85202,7 +85202,7 @@
       "Will": "+6"
     },
     "level": 2,
-    "size": "tiny",
+    "size": "Tiny",
     "ac": 17,
     "actions": [
       {
@@ -85256,7 +85256,7 @@
       "Will": "+6"
     },
     "level": 2,
-    "size": "tiny",
+    "size": "Tiny",
     "ac": 17,
     "actions": [
       {
@@ -85310,7 +85310,7 @@
       "Will": "+6"
     },
     "level": 2,
-    "size": "tiny",
+    "size": "Tiny",
     "ac": 17,
     "actions": [
       {
@@ -85364,7 +85364,7 @@
       "Will": "+6"
     },
     "level": 2,
-    "size": "tiny",
+    "size": "Tiny",
     "ac": 17,
     "actions": [
       {
@@ -85418,7 +85418,7 @@
       "Will": "+6"
     },
     "level": 2,
-    "size": "tiny",
+    "size": "Tiny",
     "ac": 17,
     "actions": [
       {
@@ -85472,7 +85472,7 @@
       "Will": "+6"
     },
     "level": 2,
-    "size": "tiny",
+    "size": "Tiny",
     "ac": 17,
     "actions": [
       {
@@ -85526,7 +85526,7 @@
       "Will": "+6"
     },
     "level": 2,
-    "size": "tiny",
+    "size": "Tiny",
     "ac": 17,
     "actions": [
       {
@@ -85580,7 +85580,7 @@
       "Will": "+6"
     },
     "level": 2,
-    "size": "tiny",
+    "size": "Tiny",
     "ac": 17,
     "actions": [
       {
@@ -85634,7 +85634,7 @@
       "Will": "+6"
     },
     "level": 2,
-    "size": "tiny",
+    "size": "Tiny",
     "ac": 17,
     "actions": [
       {
@@ -85688,7 +85688,7 @@
       "Will": "+6"
     },
     "level": 2,
-    "size": "tiny",
+    "size": "Tiny",
     "ac": 17,
     "actions": [
       {
@@ -85742,7 +85742,7 @@
       "Will": "+3"
     },
     "level": 0,
-    "size": "tiny",
+    "size": "Tiny",
     "ac": 17,
     "actions": [
       {
@@ -85798,7 +85798,7 @@
       "Will": "+19"
     },
     "level": 8,
-    "size": "lg",
+    "size": "Large",
     "ac": 27,
     "actions": [
       {
@@ -85879,7 +85879,7 @@
       "Will": "+2"
     },
     "level": 0,
-    "size": "lg",
+    "size": "Large",
     "ac": 15,
     "actions": [
       {
@@ -85940,7 +85940,7 @@
       "Will": "+3"
     },
     "level": -1,
-    "size": "tiny",
+    "size": "Tiny",
     "ac": 15,
     "actions": [
       {
@@ -86005,7 +86005,7 @@
       "Will": "+4"
     },
     "level": -1,
-    "size": "tiny",
+    "size": "Tiny",
     "ac": 15,
     "actions": [
       {
@@ -86069,7 +86069,7 @@
       "Will": "+13"
     },
     "level": 7,
-    "size": "huge",
+    "size": "Huge",
     "ac": 23,
     "actions": [
       {
@@ -86132,7 +86132,7 @@
       "Will": "+19"
     },
     "level": 11,
-    "size": "lg",
+    "size": "Large",
     "ac": 30,
     "actions": [
       {
@@ -86205,7 +86205,7 @@
       "Will": "+14"
     },
     "level": 8,
-    "size": "lg",
+    "size": "Large",
     "ac": 27,
     "actions": [
       {
@@ -86290,7 +86290,7 @@
       "Will": "+19"
     },
     "level": 9,
-    "size": "lg",
+    "size": "Large",
     "ac": 27,
     "actions": [
       {
@@ -86377,7 +86377,7 @@
       "Will": "+5"
     },
     "level": 3,
-    "size": "lg",
+    "size": "Large",
     "ac": 10,
     "actions": [
       {
@@ -86444,7 +86444,7 @@
       "Will": "+17"
     },
     "level": 7,
-    "size": "med",
+    "size": "Medium",
     "ac": 23,
     "actions": [
       {
@@ -86549,7 +86549,7 @@
       "Will": "+12"
     },
     "level": 4,
-    "size": "med",
+    "size": "Medium",
     "ac": 21,
     "actions": [
       {
@@ -86642,7 +86642,7 @@
       "Will": "+22"
     },
     "level": 14,
-    "size": "med",
+    "size": "Medium",
     "ac": 36,
     "actions": [
       {
@@ -86724,7 +86724,7 @@
       "Will": "+31"
     },
     "level": 20,
-    "size": "grg",
+    "size": "Gargantuan",
     "ac": 46,
     "actions": [
       {
@@ -86851,7 +86851,7 @@
       "Will": "+4"
     },
     "level": 2,
-    "size": "med",
+    "size": "Medium",
     "ac": 19,
     "actions": [
       {
@@ -86941,7 +86941,7 @@
       "Will": "+33"
     },
     "level": 19,
-    "size": "grg",
+    "size": "Gargantuan",
     "ac": 42,
     "actions": [
       {
@@ -87049,7 +87049,7 @@
       "Will": "+32"
     },
     "level": 18,
-    "size": "lg",
+    "size": "Large",
     "ac": 42,
     "actions": [
       {
@@ -87155,7 +87155,7 @@
       "Will": "+8"
     },
     "level": 4,
-    "size": "lg",
+    "size": "Large",
     "ac": 21,
     "actions": [
       {
@@ -87229,7 +87229,7 @@
       "Will": "+7"
     },
     "level": 5,
-    "size": "lg",
+    "size": "Large",
     "ac": 12,
     "actions": [
       {
@@ -87296,7 +87296,7 @@
       "Will": "+7"
     },
     "level": 3,
-    "size": "lg",
+    "size": "Large",
     "ac": 18,
     "actions": [
       {
@@ -87357,7 +87357,7 @@
       "Will": "+4"
     },
     "level": -1,
-    "size": "tiny",
+    "size": "Tiny",
     "ac": 15,
     "actions": [
       {
@@ -87420,7 +87420,7 @@
       "Will": "+33"
     },
     "level": 21,
-    "size": "grg",
+    "size": "Gargantuan",
     "ac": 47,
     "actions": [
       {
@@ -87542,7 +87542,7 @@
       "Will": "+43"
     },
     "level": 25,
-    "size": "huge",
+    "size": "Huge",
     "ac": 54,
     "actions": [
       {
@@ -87666,7 +87666,7 @@
       "Will": "+14"
     },
     "level": 8,
-    "size": "huge",
+    "size": "Huge",
     "ac": 26,
     "actions": [
       {
@@ -87744,7 +87744,7 @@
       "Will": "+15"
     },
     "level": 10,
-    "size": "lg",
+    "size": "Large",
     "ac": 29,
     "actions": [
       {
@@ -87847,7 +87847,7 @@
       "Will": "+7"
     },
     "level": 3,
-    "size": "tiny",
+    "size": "Tiny",
     "ac": 19,
     "actions": [
       {
@@ -87919,7 +87919,7 @@
       "Will": "+19"
     },
     "level": 10,
-    "size": "grg",
+    "size": "Gargantuan",
     "ac": 29,
     "actions": [
       {
@@ -87998,7 +87998,7 @@
       "Will": "+12"
     },
     "level": 4,
-    "size": "med",
+    "size": "Medium",
     "ac": 21,
     "actions": [
       {
@@ -88099,7 +88099,7 @@
       "Will": "+14"
     },
     "level": 5,
-    "size": "sm",
+    "size": "Small",
     "ac": 22,
     "traits": [
       "gnome",
@@ -88158,7 +88158,7 @@
       "Will": "+5"
     },
     "level": 1,
-    "size": "sm",
+    "size": "Small",
     "ac": 17,
     "actions": [
       {
@@ -88223,7 +88223,7 @@
       "Will": "+5"
     },
     "level": 2,
-    "size": "sm",
+    "size": "Small",
     "ac": 18,
     "actions": [
       {
@@ -88293,7 +88293,7 @@
       "Will": "+11"
     },
     "level": 3,
-    "size": "lg",
+    "size": "Large",
     "ac": 20,
     "actions": [
       {
@@ -88375,7 +88375,7 @@
       "Will": "+6"
     },
     "level": 1,
-    "size": "lg",
+    "size": "Large",
     "ac": 15,
     "actions": [
       {
@@ -88431,7 +88431,7 @@
       "Will": "+17"
     },
     "level": 6,
-    "size": "med",
+    "size": "Medium",
     "ac": 24,
     "actions": [
       {
@@ -88555,7 +88555,7 @@
       "Will": "+20"
     },
     "level": 9,
-    "size": "med",
+    "size": "Medium",
     "ac": 27,
     "actions": [
       {
@@ -88684,7 +88684,7 @@
       "Will": "+11"
     },
     "level": 4,
-    "size": "med",
+    "size": "Medium",
     "ac": 22,
     "actions": [
       {
@@ -88775,7 +88775,7 @@
       "Will": "+17"
     },
     "level": 7,
-    "size": "med",
+    "size": "Medium",
     "ac": 27,
     "actions": [
       {
@@ -88875,7 +88875,7 @@
       "Will": "+4"
     },
     "level": 1,
-    "size": "sm",
+    "size": "Small",
     "ac": 16,
     "actions": [
       {
@@ -88940,7 +88940,7 @@
       "Will": "+14"
     },
     "level": 5,
-    "size": "med",
+    "size": "Medium",
     "ac": 21,
     "actions": [
       {
@@ -89031,7 +89031,7 @@
       "Will": "+15"
     },
     "level": 9,
-    "size": "lg",
+    "size": "Large",
     "ac": 28,
     "actions": [
       {
@@ -89128,7 +89128,7 @@
       "Will": "+9"
     },
     "level": 5,
-    "size": "lg",
+    "size": "Large",
     "ac": 21,
     "actions": [
       {
@@ -89193,7 +89193,7 @@
       "Will": "+22"
     },
     "level": 10,
-    "size": "lg",
+    "size": "Large",
     "ac": 31,
     "actions": [
       {
@@ -89280,7 +89280,7 @@
       "Will": "+24"
     },
     "level": 14,
-    "size": "lg",
+    "size": "Large",
     "ac": 34,
     "actions": [
       {
@@ -89398,7 +89398,7 @@
       "Will": "+28"
     },
     "level": 16,
-    "size": "med",
+    "size": "Medium",
     "ac": 40,
     "actions": [
       {
@@ -89502,7 +89502,7 @@
       "Will": "+5"
     },
     "level": -1,
-    "size": "tiny",
+    "size": "Tiny",
     "ac": 14,
     "actions": [
       {
@@ -89561,7 +89561,7 @@
       "Will": "+6"
     },
     "level": 1,
-    "size": "tiny",
+    "size": "Tiny",
     "ac": 17,
     "actions": [
       {
@@ -89651,7 +89651,7 @@
       "Will": "+10"
     },
     "level": 5,
-    "size": "med",
+    "size": "Medium",
     "ac": 22,
     "actions": [
       {
@@ -89755,7 +89755,7 @@
       "Will": "+34"
     },
     "level": 20,
-    "size": "lg",
+    "size": "Large",
     "ac": 45,
     "actions": [
       {
@@ -89869,7 +89869,7 @@
       "Will": "+6"
     },
     "level": 2,
-    "size": "lg",
+    "size": "Large",
     "ac": 17,
     "actions": [
       {
@@ -89927,7 +89927,7 @@
       "Will": "+5"
     },
     "level": 1,
-    "size": "med",
+    "size": "Medium",
     "ac": 16,
     "actions": [
       {
@@ -89985,7 +89985,7 @@
       "Will": "+6"
     },
     "level": 2,
-    "size": "med",
+    "size": "Medium",
     "ac": 17,
     "actions": [
       {
@@ -90061,7 +90061,7 @@
       "Will": "+27"
     },
     "level": 16,
-    "size": "grg",
+    "size": "Gargantuan",
     "ac": 37,
     "actions": [
       {
@@ -90168,7 +90168,7 @@
       "Will": "+8"
     },
     "level": 4,
-    "size": "lg",
+    "size": "Large",
     "ac": 18,
     "actions": [
       {
@@ -90222,7 +90222,7 @@
       "Will": "+4"
     },
     "level": 1,
-    "size": "sm",
+    "size": "Small",
     "ac": 16,
     "actions": [
       {
@@ -90290,7 +90290,7 @@
       "Will": "+10"
     },
     "level": 4,
-    "size": "lg",
+    "size": "Large",
     "ac": 23,
     "actions": [
       {
@@ -90406,7 +90406,7 @@
       "Will": "+8"
     },
     "level": 2,
-    "size": "med",
+    "size": "Medium",
     "ac": 19,
     "actions": [
       {
@@ -90511,7 +90511,7 @@
       "Will": "+9"
     },
     "level": 4,
-    "size": "lg",
+    "size": "Large",
     "ac": 21,
     "actions": [
       {
@@ -90619,7 +90619,7 @@
       "Will": "+7"
     },
     "level": 3,
-    "size": "med",
+    "size": "Medium",
     "ac": 17,
     "actions": [
       {
@@ -90721,7 +90721,7 @@
       "Will": "+10"
     },
     "level": 3,
-    "size": "med",
+    "size": "Medium",
     "ac": 18,
     "actions": [
       {
@@ -90812,7 +90812,7 @@
       "Will": "+14"
     },
     "level": 6,
-    "size": "sm",
+    "size": "Small",
     "ac": 27,
     "actions": [
       {
@@ -90886,7 +90886,7 @@
       "Will": "+7"
     },
     "level": 3,
-    "size": "sm",
+    "size": "Small",
     "ac": 18,
     "actions": [
       {
@@ -90959,7 +90959,7 @@
       "Will": "+10"
     },
     "level": 5,
-    "size": "lg",
+    "size": "Large",
     "ac": 23,
     "actions": [
       {
@@ -91041,7 +91041,7 @@
       "Will": "+5"
     },
     "level": 1,
-    "size": "med",
+    "size": "Medium",
     "ac": 15,
     "actions": [
       {
@@ -91100,7 +91100,7 @@
       "Will": "+15"
     },
     "level": 6,
-    "size": "lg",
+    "size": "Large",
     "ac": 25,
     "actions": [
       {
@@ -91179,7 +91179,7 @@
       "Will": "+14"
     },
     "level": 6,
-    "size": "med",
+    "size": "Medium",
     "ac": 24,
     "actions": [
       {
@@ -91266,7 +91266,7 @@
       "Will": "+6"
     },
     "level": 2,
-    "size": "med",
+    "size": "Medium",
     "ac": 16,
     "actions": [
       {
@@ -91356,7 +91356,7 @@
       "Will": "+13"
     },
     "level": 6,
-    "size": "lg",
+    "size": "Large",
     "ac": 24,
     "actions": [
       {
@@ -91450,7 +91450,7 @@
       "Will": "+18"
     },
     "level": 8,
-    "size": "sm",
+    "size": "Small",
     "ac": 26,
     "actions": [
       {
@@ -91539,7 +91539,7 @@
       "Will": "+9"
     },
     "level": 3,
-    "size": "med",
+    "size": "Medium",
     "ac": 18,
     "actions": [
       {
@@ -91620,7 +91620,7 @@
       "Will": "+5"
     },
     "level": 2,
-    "size": "med",
+    "size": "Medium",
     "ac": 17,
     "actions": [
       {
@@ -91711,7 +91711,7 @@
       "Will": "+4"
     },
     "level": 1,
-    "size": "med",
+    "size": "Medium",
     "ac": 14,
     "actions": [
       {
@@ -91794,7 +91794,7 @@
       "Will": "+35"
     },
     "level": 20,
-    "size": "huge",
+    "size": "Huge",
     "ac": 45,
     "actions": [
       {
@@ -91927,7 +91927,7 @@
       "Will": "+13"
     },
     "level": 5,
-    "size": "lg",
+    "size": "Large",
     "ac": 21,
     "actions": [
       {
@@ -92008,7 +92008,7 @@
       "Will": "+12"
     },
     "level": 6,
-    "size": "med",
+    "size": "Medium",
     "ac": 23,
     "actions": [
       {
@@ -92104,7 +92104,7 @@
       "Will": "+7"
     },
     "level": 3,
-    "size": "sm",
+    "size": "Small",
     "ac": 18,
     "actions": [
       {
@@ -92157,7 +92157,7 @@
       "Will": "+4"
     },
     "level": 1,
-    "size": "sm",
+    "size": "Small",
     "ac": 16,
     "actions": [
       {
@@ -92233,7 +92233,7 @@
       "Will": "+6"
     },
     "level": 2,
-    "size": "lg",
+    "size": "Large",
     "ac": 15,
     "actions": [
       {
@@ -92297,7 +92297,7 @@
       "Will": "+12"
     },
     "level": 6,
-    "size": "huge",
+    "size": "Huge",
     "ac": 21,
     "actions": [
       {
@@ -92372,7 +92372,7 @@
       "Will": "+2"
     },
     "level": -1,
-    "size": "med",
+    "size": "Medium",
     "ac": 12,
     "actions": [
       {
@@ -92443,7 +92443,7 @@
       "Will": "+8"
     },
     "level": 2,
-    "size": "med",
+    "size": "Medium",
     "ac": 18,
     "actions": [
       {
