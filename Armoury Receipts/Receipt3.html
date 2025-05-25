@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Iron Meridian - Appraisal Receipt</title>
+  <style>
+    body {
+      font-family: 'Courier New', monospace;
+      background-color: #f5f0e8;
+      color: #222;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2em;
+    }
+
+    .receipt {
+      background: #fff;
+      border: 3px double #000;
+      padding: 2em;
+      box-shadow: 4px 4px 12px rgba(0,0,0,0.15);
+    }
+
+    h1, h2 {
+      text-align: center;
+      margin: 0.2em 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1em;
+    }
+
+    th, td {
+      border-bottom: 1px dashed #aaa;
+      padding: 0.5em;
+      vertical-align: top;
+    }
+
+    th {
+      background: #eee;
+      text-align: left;
+    }
+
+    .notes {
+      font-style: italic;
+      color: #444;
+    }
+
+    .summary-box {
+      background: #eee;
+      padding: 1em;
+      margin-top: 2em;
+      font-size: 1.1em;
+      border: 2px solid #999;
+    }
+
+    .stamp {
+      margin-top: 2em;
+      font-weight: bold;
+      border: 2px solid #d00;
+      display: inline-block;
+      padding: 0.5em 1em;
+      transform: rotate(-3deg);
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 0.8em;
+      margin-top: 3em;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <div class="receipt">
+    <h1>IRON MERIDIAN</h1>
+    <h2>Item Identification & Appraisal Receipt</h2>
+    <p style="text-align:center;"><em>“Even the smallest trinket may hide unexpected worth.”</em></p>
+
+    <table>
+      <thead>
+        <tr><th>Item</th><th>Status</th><th>Fee</th><th>Appraisal Details</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Silver Goose Brooch</td>
+          <td>Identified</td>
+          <td>2 gp</td>
+          <td class="notes">Silver inlay, minor historical craft. Decorative. Fetches up to 5 gp with collectors fond of animal motifs or quaint rural fashion.</td>
+        </tr>
+        <tr>
+          <td>Fine Woolly Scarf</td>
+          <td>Identified</td>
+          <td>2 gp</td>
+          <td class="notes">Well-woven and lightly enchanted with a minor comfort charm — maintains warmth in cold climates. No combat utility. Market value: 10 gp for arctic travelers or nobles.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="summary-box">
+      <strong>💼 Summary:</strong><br>
+      Identification Fees Due: <strong>4 gp</strong><br>
+      Estimated Combined Sale Value (if sold): <strong>15 gp</strong>
+    </div>
+
+    <div class="stamp">Inspected — The Armoury</div>
+
+    <div class="footer">
+      <p>"Appraised items not claimed within 30 days may be transferred to Guild Reserve."</p>
+    </div>
+  </div>
+</body>
+</html>

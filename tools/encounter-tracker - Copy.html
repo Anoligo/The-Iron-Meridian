@@ -92640,16 +92640,6 @@ tr.dead{color:#777;text-decoration:line-through}
 
   <!-- monster -->
   <template v-else>
-<!-- ★ NEW: scaling dropdown -->
-<select v-model.number="newTemplateDelta" title="Apply Weak / Elite template">
-  <option :value="0">Normal</option>
-  <option :value="-1">Weak (-1 level)</option>
-  <option :value="1">Elite (+1 level)</option>
-  <optgroup label="Custom shift">
-    <option v-for="n in [2,3,4]" :key="n" :value="n">{{'+'+n+' levels'}}</option>
-    <option v-for="n in [-2,-3,-4]" :key="n" :value="n">{{n+' levels'}}</option>
-  </optgroup>
-</select>
     <input list="monsterList" v-model="newName" id="nameInput" @input="prefillMonster"
            placeholder="Monster name" autocomplete="off">
     <datalist id="monsterList">
@@ -92660,6 +92650,7 @@ tr.dead{color:#777;text-decoration:line-through}
     <select v-model="newColor"><option>red</option><option>blue</option><option>yellow</option><option>green</option></select>
     <div style="display:flex;align-items:center;gap:.3em">
       <input v-model.number="newHP" type="number" placeholder="HP" style="width:6em">
+      <button type="button" class="dice-btn" @click="rollInit" title="d20+5 initiative">🎲</button>
     </div>
     <textarea v-model="newStatBlock" placeholder="Stat-block JSON (auto-filled)"></textarea>
   </template>
@@ -92790,59 +92781,19 @@ data(){return{
   saveName:'',selectedSave:'',savedList:JSON.parse(localStorage.getItem('encounterNames')||'[]'),
   playerNames:['Ecaon','Buggie','Styx Red-Claw','Vokkar','ObsidianIvy','ElderDan','Trusco'],
   colours:['red','blue','yellow','green','purple','orange','teal','pink'],
-  groupedConditions:grouped,conditionMap,
-  newTemplateDelta: 0,   // 0 = Normal
+  groupedConditions:grouped,conditionMap
 }},
 computed:{
   displayOrder(){return this.combatStarted?this.entities:[...this.entities].sort((a,b)=>b.initiative-a.initiative||a.order-b.order)}
 },
 methods:{
 /* auto-prefill when monster name matches */
-scaleMonsterJSON (cre, delta) {
-  if (!delta) return cre;                 // Normal
-  delta = Math.max(-4, Math.min(4, delta)); // clamp sensibly
-  const mod  = delta * 2;                 // PF2 uses ±2 per level step
-
-  const scaled = JSON.parse(JSON.stringify(cre));        // deep clone
-  const plusPct = delta > 0 ? 0.2 * delta : 0.2 * delta; // HP ±20 % per step
-
-  /* bump every d20 modifier we can find */
-  const bump = obj => { for (const k in obj) obj[k] += mod; };
-  if (scaled.ac)        scaled.ac        += mod;
-  if (scaled.perception)scaled.perception+= mod;
-  if (scaled.hp)        scaled.hp        = Math.max(1, Math.round(scaled.hp * (1 + plusPct)));
-  if (scaled.saves)     bump(scaled.saves);
-  if (scaled.skills)    bump(scaled.skills);
-  if (scaled.abilities) bump(scaled.abilities);
-
-  /* bump melee / ranged attack bonuses & damage */
-  (scaled.melee  || []).forEach(w => {
-      if (w.attack)    w.attack    += mod;
-      if (w.damageRoll)w.damageRoll+= mod;              // flat mods
-  });
-  (scaled.ranged || []).forEach(w => {
-      if (w.attack)    w.attack    += mod;
-      if (w.damageRoll)w.damageRoll+= mod;
-  });
-
-  /* top-level spell DC / attack */
-  if (scaled.spellDC)       scaled.spellDC       += mod;
-  if (scaled.spellAttack)   scaled.spellAttack   += mod;
-
-  /* damage in actions text is flavour – leave it, GM can eyeball */
-  scaled.level = (scaled.level ?? 0) + delta;
-  return scaled;
-},
 prefillMonster(){
   const hit=this.monsterIndex.find(m=>m.name.toLowerCase()===this.newName.toLowerCase());
   if(!hit)return;
-
-  const delta = this.newTemplateDelta || 0;            // –1 Weak, +1 Elite, etc.
-     const blob  = this.scaleMonsterJSON(hit, delta);
-
-  this.newHP        = blob.hp;
+  this.newHP=hit.hp;
   this.newColor=this.nextColour(hit.name);
-  this.newStatBlock = JSON.stringify(blob);
+  this.newStatBlock=JSON.stringify(hit);
 },
 /* dice util */
 d20(){return Math.floor(Math.random()*20)+1},
