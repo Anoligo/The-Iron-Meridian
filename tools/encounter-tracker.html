@@ -92901,10 +92901,23 @@ data(){return{
   groupedConditions:grouped,conditionMap,
   newTemplateDelta: 0,   // 0 = Normal
   importBlob: '', 
+  savedList: JSON.parse(localStorage.getItem('encounterNames')||'[]'),
+     importLibraryBlob: '',
 }},
-computed:{
-  displayOrder(){return this.combatStarted?this.entities:[...this.entities].sort((a,b)=>b.initiative-a.initiative||a.order-b.order)}
-},
+computed: {
+    displayOrder(){ 
+      return this.combatStarted
+        ? this.entities
+        : [...this.entities].sort((a,b) => b.initiative - a.initiative || a.order - b.order);
+    },
+    libraryJSON() {
+      const slots = {};
+      this.savedList.forEach(name => {
+        slots[name] = JSON.parse(localStorage.getItem('encounter_' + name) || 'null');
+      });
+      return JSON.stringify({ names: this.savedList, slots }, null, 2);
+    }
+  },
 methods:{
 /* auto-prefill when monster name matches */
 scaleMonsterJSON (cre, delta) {
@@ -93171,7 +93184,7 @@ deleteEncounter(){
     } catch {
       alert('Invalid library JSON');
     }
-  }
+  },
 
 
 clearCurrent(){
