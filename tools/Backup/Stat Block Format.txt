@@ -1,0 +1,28 @@
+{
+  "name": "Eye Horror",
+  "level": 4,
+  "alignment": "NE",
+  "size": "Medium",
+  "traits": ["Aberration"],
+  "perception": "+14",
+  "senses": ["All-Around Sight", "True Darkvision"],
+  "languages": ["Telepathy"],
+  "skills": { "Acrobatics": "+5", "Athletics": "+10", "Stealth": "+7" },
+  "abilities": { "Str": "+3", "Dex": "+3", "Con": "+3", "Int": "+5", "Wis": "+5", "Cha": "+5" },
+  "ac": 18,
+  "saves": { "Fort": "+11", "Ref": "+8", "Will": "+14" },
+  "hp": 60,
+  "resist": { "Psychic": 5, "Bludgeoning": 5 },
+  "weak": { "Piercing": 5, "Radiant": 5 },
+  "speed": 30,
+  "melee": [
+    { "name": "tentacle", "attack": "+12", "traits": "Reach 10 ft", "damage": "2d6+5 bludgeoning" },
+    { "name": "mouth", "attack": "+14", "damage": "2d8+5 piercing" }
+  ],
+  "spells": { "DC": 21, "attack": "+13" },
+  "actions": [
+    { "name": "Grapple", "type": "single", "text": "After a tentacle hit you may Grapple (DC 18 Escape)." },
+    { "name": "Mind Blast", "type": "three", "text": "3d6 psychic dmg in 30-ft cone (DC 21 half)." }
+  ],
+  "description": "A floating mass covered in eyes…"
+}

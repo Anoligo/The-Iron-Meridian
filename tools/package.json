@@ -1,0 +1,11 @@
+{
+  "name": "encounter-tracker",
+  "version": "1.0.0",
+  "description": "PF2 Encounter Manager",
+  "scripts": {
+    "start": "http-server -c-1"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+} 
