@@ -1,5 +1,5 @@
 // Character status enum
-export const CharacterStatus = {
+export const PlayerStatus = {
     ACTIVE: 'active',
     INJURED: 'injured',
     CURSED: 'cursed',
@@ -8,7 +8,7 @@ export const CharacterStatus = {
 };
 
 // Pathfinder classes
-export const CharacterClass = {
+export const PlayerClass = {
     BARBARIAN: 'barbarian',
     BARD: 'bard',
     CLERIC: 'cleric',
@@ -22,64 +22,73 @@ export const CharacterClass = {
     WIZARD: 'wizard'
 };
 
-export class Character {
-    constructor(name, race, characterClass, level = 1, createdAt, updatedAt) {
-        this.id = Date.now();
+import { Entity } from './entity.js';
+
+export class Player extends Entity {
+    constructor(name, playerClass, level = 1, createdAt = new Date(), updatedAt = new Date()) {
+        super(null, new Date(createdAt), new Date(updatedAt));
         this.name = name;
-        this.race = race;
-        this.characterClass = characterClass;
+        this.class = playerClass;
         this.level = level;
-        this.status = CharacterStatus.ACTIVE;
-        this.quests = [];
-        this.conditions = [];
-        this.equipment = [];
-        this.notes = [];
-        this.createdAt = createdAt instanceof Date ? createdAt : new Date(createdAt || Date.now());
-        this.updatedAt = updatedAt instanceof Date ? updatedAt : new Date(updatedAt || Date.now());
+        this.experience = 0;
+        this.inventory = [];
+        this.activeQuests = [];
+        this.completedQuests = [];
     }
 
-    addCondition(condition) {
-        if (!this.conditions.includes(condition)) {
-            this.conditions.push(condition);
+    addToInventory(item) {
+        if (!this.inventory.includes(item)) {
+            this.inventory.push(item);
             this.updatedAt = new Date();
         }
     }
 
-    removeCondition(condition) {
-        this.conditions = this.conditions.filter(c => c !== condition);
+    removeFromInventory(item) {
+        this.inventory = this.inventory.filter(i => i !== item);
         this.updatedAt = new Date();
     }
 
-    addEquipment(item) {
-        if (!this.equipment.includes(item)) {
-            this.equipment.push(item);
+    addActiveQuest(quest) {
+        if (!this.activeQuests.includes(quest)) {
+            this.activeQuests.push(quest);
             this.updatedAt = new Date();
         }
     }
 
-    removeEquipment(item) {
-        this.equipment = this.equipment.filter(i => i !== item);
+    removeActiveQuest(quest) {
+        this.activeQuests = this.activeQuests.filter(q => q !== quest);
         this.updatedAt = new Date();
     }
 
-    addNote(content) {
-        this.notes.push({
-            content,
-            timestamp: new Date()
-        });
-        this.updatedAt = new Date();
-    }
-
-    updateStatus(status) {
-        if (!Object.values(CharacterStatus).includes(status)) {
-            return;
+    addCompletedQuest(quest) {
+        if (!this.completedQuests.includes(quest)) {
+            this.completedQuests.push(quest);
+            this.updatedAt = new Date();
         }
-        this.status = status;
+    }
+
+    removeCompletedQuest(quest) {
+        this.completedQuests = this.completedQuests.filter(q => q !== quest);
         this.updatedAt = new Date();
     }
 
-    levelUp() {
-        this.level++;
+    addExperience(amount) {
+        this.experience += amount;
+        // Check for level up (1000 XP per level)
+        const newLevel = Math.floor(this.experience / 1000) + 1;
+        if (newLevel > this.level) {
+            this.level = newLevel;
+        }
+        this.updatedAt = new Date();
+    }
+
+    updateName(name) {
+        this.name = name;
+        this.updatedAt = new Date();
+    }
+
+    updateClass(playerClass) {
+        this.class = playerClass;
         this.updatedAt = new Date();
     }
 }
@@ -100,7 +109,7 @@ export class PlayerManager {
             <h2>Players</h2>
             <div class="row mb-4">
                 <div class="col">
-                    <button class="btn btn-primary" id="newCharacterBtn">New Character</button>
+                    <button class="btn btn-primary" id="newPlayerBtn">New Player</button>
                 </div>
             </div>
             <div class="row">
@@ -108,7 +117,7 @@ export class PlayerManager {
                     <div class="card">
                         <div class="card-header">
                             <div class="d-flex justify-content-between align-items-center">
-                                <span>Characters List</span>
+                                <span>Players List</span>
                                 <div class="btn-group">
                                     <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="classFilter" data-bs-toggle="dropdown">
                                         Filter by Class
@@ -125,19 +134,19 @@ export class PlayerManager {
                         </div>
                         <div class="card-body">
                             <div class="mb-3">
-                                <input type="text" class="form-control" id="characterSearch" placeholder="Search characters...">
+                                <input type="text" class="form-control" id="playerSearch" placeholder="Search players...">
                             </div>
-                            <div id="characterList" class="list-group"></div>
+                            <div id="playerList" class="list-group"></div>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-8">
                     <div class="card">
                         <div class="card-header">
-                            Character Details
+                            Player Details
                         </div>
-                        <div class="card-body" id="characterDetails">
-                            <p class="text-muted">Select a character to view details</p>
+                        <div class="card-body" id="playerDetails">
+                            <p class="text-muted">Select a player to view details</p>
                         </div>
                     </div>
                 </div>
@@ -146,239 +155,210 @@ export class PlayerManager {
     }
 
     setupEventListeners() {
-        document.getElementById('newCharacterBtn').addEventListener('click', () => this.showNewCharacterForm());
+        document.getElementById('newPlayerBtn').addEventListener('click', () => this.showNewPlayerForm());
         document.getElementById('classFilter').addEventListener('click', (e) => {
-            const characterClass = e.target.dataset.class;
-            if (characterClass) {
-                this.handleClassFilter(characterClass);
+            const playerClass = e.target.dataset.class;
+            if (playerClass) {
+                this.handleClassFilter(playerClass);
             }
         });
-        document.getElementById('characterSearch').addEventListener('input', (e) => {
+        document.getElementById('playerSearch').addEventListener('input', (e) => {
             this.handleSearch(e.target.value);
         });
     }
 
     getFormValue(form, fieldName) {
-        const field = form[fieldName];
-        if (field) {
-            return field.value;
+        if (form instanceof HTMLFormElement) {
+            const input = form.elements[fieldName];
+            return input ? input.value : null;
         }
-        return null;
+        return form[fieldName]?.value || form[fieldName];
     }
 
-    createNewCharacter(form) {
-        const name = this.getFormValue(form, 'characterName');
-        const race = this.getFormValue(form, 'characterRace');
-        const classType = this.getFormValue(form, 'characterClass');
-        const level = parseInt(this.getFormValue(form, 'characterLevel')) || 1;
-
-        if (name && race && classType) {
-            const character = new Character(name, race, classType, level);
-            this.dataManager.appState.players.push(character);
-            this.dataManager.saveData();
-            this.renderCharacterList();
+    createNewPlayer(form) {
+        if (!form || !form.playerName?.value || !form.playerClass?.value || !form.playerLevel?.value) {
+            throw new Error('Invalid form data');
         }
+        const player = new Player(
+            form.playerName.value,
+            form.playerClass.value,
+            parseInt(form.playerLevel.value)
+        );
+        this.dataManager.addPlayer(player);
+        this.renderPlayerList();
     }
 
     handleClassFilter(classType) {
-        const characters = classType === 'all'
-            ? this.dataManager.appState.players
-            : this.dataManager.appState.players.filter(c => c.classType === classType);
-        this.renderCharacterList(characters);
-    }
-
-    handleSearch(searchTerm) {
         const players = this.dataManager.appState.players;
-        const filteredPlayers = searchTerm
-            ? players.filter(player => 
-                player.name.toLowerCase().includes(searchTerm.toLowerCase()))
-            : players;
-        this.renderCharacterList(filteredPlayers);
+        const filteredPlayers = classType === 'all' ? players : players.filter(player => player.class === classType);
+        this.renderPlayerList(filteredPlayers);
     }
 
-    addCondition(characterId, condition) {
-        const character = this.dataManager.appState.players.find(p => p.id === characterId);
-        if (!character) return;
-
-        if (!character.conditions.includes(condition)) {
-            character.conditions.push(condition);
-            character.updatedAt = new Date();
-            this.dataManager.saveData();
-            this.showCharacterDetails(characterId);
+    handleSearch(query) {
+        if (!query) {
+            this.renderPlayerList();
+            return;
         }
+        const players = this.dataManager.appState.players;
+        const filteredPlayers = players.filter(player => 
+            player.name.toLowerCase().includes(query.toLowerCase()) ||
+            player.class.toLowerCase().includes(query.toLowerCase())
+        );
+        this.renderPlayerList(filteredPlayers);
     }
 
-    addEquipment(characterId, equipment) {
-        const character = this.dataManager.appState.players.find(p => p.id === characterId);
-        if (!character) return;
+    addToInventory(playerId, item) {
+        const player = this.dataManager.appState.players.find(p => p.id === playerId);
+        if (!player) return;
 
-        if (!character.equipment.includes(equipment)) {
-            character.equipment.push(equipment);
-            character.updatedAt = new Date();
-            this.dataManager.saveData();
-            this.showCharacterDetails(characterId);
+        player.addToInventory(item);
+        this.dataManager.saveData();
+        this.showPlayerDetails(playerId);
+    }
+
+    addActiveQuest(playerId, quest) {
+        const player = this.dataManager.appState.players.find(p => p.id === playerId);
+        if (!player) return;
+
+        player.addActiveQuest(quest);
+        this.dataManager.saveData();
+        this.showPlayerDetails(playerId);
+    }
+
+    addCompletedQuest(playerId, quest) {
+        const player = this.dataManager.appState.players.find(p => p.id === playerId);
+        if (!player) return;
+
+        player.addCompletedQuest(quest);
+        this.dataManager.saveData();
+        this.showPlayerDetails(playerId);
+    }
+
+    addExperience(playerId, amount) {
+        const player = this.dataManager.appState.players.find(p => p.id === playerId);
+        if (!player) return;
+
+        player.addExperience(amount);
+        this.dataManager.saveData();
+        this.showPlayerDetails(playerId);
+    }
+
+    updatePlayerName(playerId, form) {
+        if (!form || !form.playerName?.value) {
+            throw new Error('Invalid form data');
         }
+        const player = this.dataManager.getPlayerById(playerId);
+        player.name = form.playerName.value;
+        this.renderPlayerList();
     }
 
-    addNote(characterId, form) {
-        const character = this.dataManager.appState.players.find(c => c.id === characterId);
-        if (character) {
-            const content = this.getFormValue(form, 'content');
-            if (content) {
-                character.addNote(content);
-                this.dataManager.saveData();
-                this.showCharacterDetails(characterId);
-            }
+    updatePlayerClass(playerId, form) {
+        if (!form || !form.playerClass?.value) {
+            throw new Error('Invalid form data');
         }
+        const player = this.dataManager.getPlayerById(playerId);
+        player.class = form.playerClass.value;
+        this.renderPlayerList();
     }
 
-    updateCharacterStatus(characterId, status) {
-        const character = this.dataManager.appState.players.find(c => c.id === characterId);
-        if (!character) return;
-
-        character.status = status;
-        character.updatedAt = new Date();
-        this.renderCharacterList();
+    updatePlayerLevel(playerId, form) {
+        if (!form || !form.playerLevel?.value) {
+            throw new Error('Invalid form data');
+        }
+        const player = this.dataManager.getPlayerById(playerId);
+        player.level = parseInt(form.playerLevel.value);
+        this.renderPlayerList();
     }
 
-    renderCharacterList(players = this.dataManager.appState.players) {
-        const characterList = document.getElementById('characterList');
-        characterList.innerHTML = players.map(character => `
-            <a href="#" class="list-group-item list-group-item-action" data-character-id="${character.id}">
+    addPlayerQuest(playerId, form) {
+        if (!form || !form.questId?.value) {
+            throw new Error('Invalid form data');
+        }
+        const player = this.dataManager.getPlayerById(playerId);
+        player.addQuest(form.questId.value);
+        this.renderPlayerList();
+    }
+
+    addPlayerItem(playerId, form) {
+        if (!form || !form.itemId?.value) {
+            throw new Error('Invalid form data');
+        }
+        const player = this.dataManager.getPlayerById(playerId);
+        player.addItem(form.itemId.value);
+        this.renderPlayerList();
+    }
+
+    renderPlayerList(players = this.dataManager.appState.players) {
+        const playerList = document.getElementById('playerList');
+        if (!playerList) return;
+
+        playerList.innerHTML = players.map(player => `
+            <a href="#" class="list-group-item list-group-item-action" data-player-id="${player.id}">
                 <div class="d-flex w-100 justify-content-between">
-                    <h5 class="mb-1">${character.name}</h5>
-                    <small class="text-muted">${character.characterClass}</small>
+                    <h5 class="mb-1">${player.name}</h5>
+                    <small class="text-muted">Level ${player.level} ${player.class}</small>
                 </div>
-                <p class="mb-1">Level ${character.level}</p>
                 <div>
-                    ${character.conditions.map(condition => 
-                        `<span class="badge bg-danger me-1">${condition}</span>`
-                    ).join('')}
+                    <span class="badge bg-primary">${player.class}</span>
+                    <span class="badge bg-secondary">Level ${player.level}</span>
+                    <small class="text-muted ms-2">Last updated: ${player.updatedAt.toLocaleDateString()}</small>
                 </div>
             </a>
         `).join('');
-
-        characterList.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const characterId = e.currentTarget.dataset.characterId;
-                this.showCharacterDetails(characterId);
-            });
-        });
     }
 
-    showCharacterDetails(characterId) {
-        const character = this.dataManager.appState.players.find(p => p.id === characterId);
-        if (!character) return;
+    showPlayerDetails(playerId) {
+        const player = this.dataManager.appState.players.find(p => p.id === playerId);
+        if (!player) return;
 
-        const characterDetails = document.getElementById('characterDetails');
-        characterDetails.innerHTML = `
-            <h3>${character.name}</h3>
-            <p class="text-muted">Level ${character.level} ${character.characterClass}</p>
-            <div class="mb-3">
-                <h5>Conditions</h5>
-                <div>
-                    ${character.conditions.map(condition => `
-                        <span class="badge bg-danger me-1">
-                            ${condition}
-                            <button class="btn-close btn-close-white" data-condition="${condition}"></button>
-                        </span>
-                    `).join('')}
-                    <button class="btn btn-sm btn-outline-danger" id="addConditionBtn">Add Condition</button>
-                </div>
-            </div>
-            <div class="mb-3">
-                <h5>Equipment</h5>
-                <div>
-                    ${character.equipment.map(item => `
-                        <span class="badge bg-secondary me-1">
-                            ${item}
-                            <button class="btn-close btn-close-white" data-equipment="${item}"></button>
-                        </span>
-                    `).join('')}
-                    <button class="btn btn-sm btn-outline-secondary" id="addEquipmentBtn">Add Equipment</button>
-                </div>
-            </div>
-            <div class="mb-3">
-                <h5>Notes</h5>
-                <div id="characterNotes">
-                    ${character.notes.map(note => `
-                        <div class="card mb-2">
-                            <div class="card-body">
-                                <p class="card-text">${note.content}</p>
-                                <small class="text-muted">${new Date(note.timestamp).toLocaleString()}</small>
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-                <button class="btn btn-sm btn-outline-primary" id="addNoteBtn">Add Note</button>
-            </div>
+        const details = document.getElementById('playerDetails');
+        details.innerHTML = `
+            <h3>${player.name}</h3>
+            <p>Level ${player.level} ${player.class}</p>
+            <p>Experience: ${player.experience}</p>
+            
+            <h4>Inventory</h4>
+            <ul>
+                ${player.inventory.map(item => `<li>${item}</li>`).join('')}
+            </ul>
+
+            <h4>Active Quests</h4>
+            <ul>
+                ${player.activeQuests.map(quest => `<li>${quest}</li>`).join('')}
+            </ul>
+
+            <h4>Completed Quests</h4>
+            <ul>
+                ${player.completedQuests.map(quest => `<li>${quest}</li>`).join('')}
+            </ul>
+
             <div class="mt-3">
-                <button class="btn btn-primary" id="editCharacterBtn">Edit Character</button>
+                <button class="btn btn-primary" id="editPlayerBtn">Edit Player</button>
             </div>
         `;
 
-        this.setupCharacterDetailsEventListeners(character);
+        this.setupPlayerDetailsEventListeners(player);
     }
 
-    setupCharacterDetailsEventListeners(character) {
-        document.getElementById('addConditionBtn').addEventListener('click', () => {
-            const condition = prompt('Enter condition:');
-            if (condition) {
-                this.addCondition(character.id, condition);
-            }
-        });
-
-        document.getElementById('addEquipmentBtn').addEventListener('click', () => {
-            const equipment = prompt('Enter equipment:');
-            if (equipment) {
-                this.addEquipment(character.id, equipment);
-            }
-        });
-
-        document.getElementById('addNoteBtn').addEventListener('click', () => {
-            const content = prompt('Enter note:');
-            if (content) {
-                this.addNote(character.id, { content });
-            }
-        });
-
-        document.getElementById('editCharacterBtn').addEventListener('click', () => {
-            this.showEditCharacterForm(character.id);
-        });
-
-        document.querySelectorAll('[data-condition]').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const condition = btn.dataset.condition;
-                character.conditions = character.conditions.filter(c => c !== condition);
-                character.updatedAt = new Date();
-                this.dataManager.saveData();
-                this.showCharacterDetails(character.id);
-            });
-        });
-
-        document.querySelectorAll('[data-equipment]').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const equipment = btn.dataset.equipment;
-                character.equipment = character.equipment.filter(e => e !== equipment);
-                character.updatedAt = new Date();
-                this.dataManager.saveData();
-                this.showCharacterDetails(character.id);
-            });
+    setupPlayerDetailsEventListeners(player) {
+        document.getElementById('editPlayerBtn').addEventListener('click', () => {
+            this.showEditPlayerForm(player.id);
         });
     }
 
-    showNewCharacterForm() {
-        const characterDetails = document.getElementById('characterDetails');
-        characterDetails.innerHTML = `
-            <form id="newCharacterForm">
+    showNewPlayerForm() {
+        const details = document.getElementById('playerDetails');
+        details.innerHTML = `
+            <h3>New Player</h3>
+            <form id="newPlayerForm">
                 <div class="mb-3">
-                    <label for="name" class="form-label">Name</label>
-                    <input type="text" class="form-control" id="name" name="name" required>
+                    <label for="playerName" class="form-label">Name</label>
+                    <input type="text" class="form-control" id="playerName" name="playerName" required>
                 </div>
                 <div class="mb-3">
-                    <label for="class" class="form-label">Class</label>
-                    <select class="form-select" id="class" name="class" required>
+                    <label for="playerClass" class="form-label">Class</label>
+                    <select class="form-select" id="playerClass" name="playerClass" required>
+                        <option value="">Select a class</option>
                         <option value="fighter">Fighter</option>
                         <option value="wizard">Wizard</option>
                         <option value="rogue">Rogue</option>
@@ -386,76 +366,47 @@ export class PlayerManager {
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label for="level" class="form-label">Level</label>
-                    <input type="number" class="form-control" id="level" name="level" value="1" min="1" max="20" required>
+                    <label for="playerLevel" class="form-label">Level</label>
+                    <input type="number" class="form-control" id="playerLevel" name="playerLevel" value="1" min="1">
                 </div>
-                <button type="submit" class="btn btn-primary">Create Character</button>
+                <button type="submit" class="btn btn-primary">Create Player</button>
             </form>
         `;
 
-        document.getElementById('newCharacterForm').addEventListener('submit', (e) => {
+        document.getElementById('newPlayerForm').addEventListener('submit', (e) => {
             e.preventDefault();
-            const character = this.createNewCharacter(e.target);
-            if (character) {
-                this.showCharacterDetails(character.id);
-            }
+            this.createNewPlayer(e.target);
         });
     }
 
-    showEditCharacterForm(characterId) {
-        const character = this.dataManager.appState.players.find(p => p.id === characterId);
-        if (!character) return;
+    showEditPlayerForm(playerId) {
+        const player = this.dataManager.appState.players.find(p => p.id === playerId);
+        if (!player) return;
 
-        const characterDetails = document.getElementById('characterDetails');
-        characterDetails.innerHTML = `
-            <form id="editCharacterForm">
+        const details = document.getElementById('playerDetails');
+        details.innerHTML = `
+            <h3>Edit Player</h3>
+            <form id="editPlayerForm">
                 <div class="mb-3">
-                    <label for="name" class="form-label">Name</label>
-                    <input type="text" class="form-control" id="name" name="name" value="${character.name}" required>
+                    <label for="playerName" class="form-label">Name</label>
+                    <input type="text" class="form-control" id="playerName" name="playerName" value="${player.name}" required>
                 </div>
                 <div class="mb-3">
-                    <label for="class" class="form-label">Class</label>
-                    <select class="form-select" id="class" name="class" required>
-                        <option value="fighter" ${character.characterClass === 'fighter' ? 'selected' : ''}>Fighter</option>
-                        <option value="wizard" ${character.characterClass === 'wizard' ? 'selected' : ''}>Wizard</option>
-                        <option value="rogue" ${character.characterClass === 'rogue' ? 'selected' : ''}>Rogue</option>
-                        <option value="cleric" ${character.characterClass === 'cleric' ? 'selected' : ''}>Cleric</option>
+                    <label for="playerClass" class="form-label">Class</label>
+                    <select class="form-select" id="playerClass" name="playerClass" required>
+                        <option value="fighter" ${player.class === 'fighter' ? 'selected' : ''}>Fighter</option>
+                        <option value="wizard" ${player.class === 'wizard' ? 'selected' : ''}>Wizard</option>
+                        <option value="rogue" ${player.class === 'rogue' ? 'selected' : ''}>Rogue</option>
+                        <option value="cleric" ${player.class === 'cleric' ? 'selected' : ''}>Cleric</option>
                     </select>
                 </div>
-                <div class="mb-3">
-                    <label for="level" class="form-label">Level</label>
-                    <input type="number" class="form-control" id="level" name="level" value="${character.level}" min="1" max="20" required>
-                </div>
-                <button type="submit" class="btn btn-primary">Update Character</button>
+                <button type="submit" class="btn btn-primary">Update Player</button>
             </form>
         `;
 
-        document.getElementById('editCharacterForm').addEventListener('submit', (e) => {
+        document.getElementById('editPlayerForm').addEventListener('submit', (e) => {
             e.preventDefault();
-            this.updateCharacter(characterId, e.target);
-            this.showCharacterDetails(characterId);
+            this.updatePlayer(playerId, e.target);
         });
-    }
-
-    updateCharacter(characterId, form) {
-        const character = this.dataManager.appState.players.find(p => p.id === characterId);
-        if (!character) return;
-
-        const name = this.getFormValue(form, 'name');
-        const characterClass = this.getFormValue(form, 'class');
-        const level = parseInt(this.getFormValue(form, 'level')) || 1;
-
-        if (!name || !characterClass) {
-            console.error('Missing required fields');
-            return;
-        }
-
-        character.name = name;
-        character.characterClass = characterClass;
-        character.level = level;
-        character.updatedAt = new Date();
-
-        this.dataManager.saveData();
-        this.renderCharacterList();
     }
 } 

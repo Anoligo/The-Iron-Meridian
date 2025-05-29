@@ -24,9 +24,11 @@ export const NoteTag = {
     OTHER: 'other'
 };
 
-export class Note {
-    constructor(title, content, category = NoteCategory.LORE) {
-        this.id = Date.now().toString();
+import { Entity } from './entity.js';
+
+export class Note extends Entity {
+    constructor(title, content, category = 'lore', createdAt = new Date(), updatedAt = new Date()) {
+        super(null, new Date(createdAt), new Date(updatedAt));
         this.title = title;
         this.content = content;
         this.category = category;
@@ -37,8 +39,6 @@ export class Note {
             characters: [],
             items: []
         };
-        this.createdAt = new Date();
-        this.updatedAt = new Date();
     }
 
     updateTitle(title) {
@@ -75,56 +75,65 @@ export class Note {
     addRelatedQuest(questId) {
         if (!this.relatedEntities.quests.includes(questId)) {
             this.relatedEntities.quests.push(questId);
-            this.updatedAt = Date.now();
+            this.updatedAt = new Date();
         }
     }
 
     removeRelatedQuest(questId) {
         this.relatedEntities.quests = this.relatedEntities.quests.filter(id => id !== questId);
-        this.updatedAt = Date.now();
+        this.updatedAt = new Date();
     }
 
     addRelatedLocation(locationId) {
         if (!this.relatedEntities.locations.includes(locationId)) {
             this.relatedEntities.locations.push(locationId);
-            this.updatedAt = Date.now();
+            this.updatedAt = new Date();
         }
     }
 
     removeRelatedLocation(locationId) {
         this.relatedEntities.locations = this.relatedEntities.locations.filter(id => id !== locationId);
-        this.updatedAt = Date.now();
+        this.updatedAt = new Date();
     }
 
     addRelatedCharacter(characterId) {
         if (!this.relatedEntities.characters.includes(characterId)) {
             this.relatedEntities.characters.push(characterId);
-            this.updatedAt = Date.now();
+            this.updatedAt = new Date();
         }
     }
 
     removeRelatedCharacter(characterId) {
         this.relatedEntities.characters = this.relatedEntities.characters.filter(id => id !== characterId);
-        this.updatedAt = Date.now();
+        this.updatedAt = new Date();
     }
 
     addRelatedItem(itemId) {
         if (!this.relatedEntities.items.includes(itemId)) {
             this.relatedEntities.items.push(itemId);
-            this.updatedAt = Date.now();
+            this.updatedAt = new Date();
         }
     }
 
     removeRelatedItem(itemId) {
         this.relatedEntities.items = this.relatedEntities.items.filter(id => id !== itemId);
-        this.updatedAt = Date.now();
+        this.updatedAt = new Date();
     }
+
+    get name() { return this.title; }
+    set name(val) { this.title = val; }
 }
 
 export class NotesManager {
-    constructor(dataManager) {
+    constructor(dataManager, isTest = false) {
         this.dataManager = dataManager;
-        this.initializeNotesSection();
+        if (!this.dataManager.appState.notes) {
+            this.dataManager.appState.notes = [];
+        }
+        if (!isTest) {
+            this.initializeNotesSection();
+            this.setupEventListeners();
+        }
     }
 
     initializeNotesSection() {
@@ -200,23 +209,22 @@ export class NotesManager {
     }
 
     handleCategoryFilter(category) {
-        const notes = category === 'all' 
-            ? this.dataManager.appState.notes 
-            : this.dataManager.appState.notes.filter(note => note.category === category);
-        this.renderNoteList(notes);
+        const notes = this.dataManager.appState.notes;
+        const filteredNotes = category === 'all' ? notes : notes.filter(note => note.category === category);
+        this.renderNoteList(filteredNotes);
     }
 
-    handleSearch(searchTerm) {
-        if (!searchTerm) {
+    handleSearch(query) {
+        if (!query) {
             this.renderNoteList();
             return;
         }
-
-        const notes = this.dataManager.appState.notes.filter(note => 
-            note.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            note.content.toLowerCase().includes(searchTerm.toLowerCase())
+        const notes = this.dataManager.appState.notes;
+        const filteredNotes = notes.filter(note => 
+            note.title.toLowerCase().includes(query.toLowerCase()) ||
+            note.content.toLowerCase().includes(query.toLowerCase())
         );
-        this.renderNoteList(notes);
+        this.renderNoteList(filteredNotes);
     }
 
     getFormValue(form, fieldName) {
@@ -228,15 +236,15 @@ export class NotesManager {
     }
 
     createNewNote(form) {
-        const title = this.getFormValue(form, 'title');
-        const content = this.getFormValue(form, 'content');
-        const category = this.getFormValue(form, 'category');
-
-        if (!title || !content) return;
-
-        const note = new Note(title, content, category);
-        this.dataManager.appState.notes.push(note);
-        this.dataManager.saveData();
+        if (!form || !form.noteTitle?.value || !form.noteContent?.value || !form.noteCategory?.value) {
+            throw new Error('Invalid form data');
+        }
+        const note = new Note(
+            form.noteTitle.value,
+            form.noteContent.value,
+            form.noteCategory.value
+        );
+        this.dataManager.addNote(note);
         this.renderNoteList();
     }
 
@@ -287,21 +295,17 @@ export class NotesManager {
         if (!note) return;
 
         const noteDetails = document.getElementById('noteDetails');
-        if (!noteDetails) return;
-
         noteDetails.innerHTML = `
+            <h3>${note.title}</h3>
+            <p class="text-muted">Category: ${note.category}</p>
             <div class="mb-3">
-                <h5>${note.title}</h5>
+                <h5>Content</h5>
                 <p>${note.content}</p>
-                <div>
-                    <span class="badge bg-${this.getCategoryColor(note.category)}">${note.category}</span>
-                    <small class="text-muted ms-2">Last updated: ${note.updatedAt.toLocaleDateString()}</small>
-                </div>
             </div>
             <div class="mb-3">
-                <h6>Tags</h6>
+                <h5>Tags</h5>
                 <div>
-                    ${note.tags.map(tag => `
+                    ${(note.tags || []).map(tag => `
                         <span class="badge bg-secondary me-1">
                             ${tag}
                             <button class="btn-close btn-close-white" data-tag="${tag}"></button>
@@ -311,51 +315,56 @@ export class NotesManager {
                 </div>
             </div>
             <div class="mb-3">
-                <h6>Quests</h6>
-                <div>
-                    ${note.relatedEntities.quests.map(quest => `
-                        <span class="badge bg-primary me-1">
-                            ${quest}
-                            <button class="btn-close btn-close-white" data-quest="${quest}"></button>
-                        </span>
-                    `).join('')}
-                    <button class="btn btn-sm btn-outline-primary" id="addQuestBtn">Add Quest</button>
-                </div>
-            </div>
-            <div class="mb-3">
-                <h6>Locations</h6>
-                <div>
-                    ${note.relatedEntities.locations.map(location => `
-                        <span class="badge bg-success me-1">
-                            ${location}
-                            <button class="btn-close btn-close-white" data-location="${location}"></button>
-                        </span>
-                    `).join('')}
-                    <button class="btn btn-sm btn-outline-success" id="addLocationBtn">Add Location</button>
-                </div>
-            </div>
-            <div class="mb-3">
-                <h6>Characters</h6>
-                <div>
-                    ${note.relatedEntities.characters.map(character => `
-                        <span class="badge bg-info me-1">
-                            ${character}
-                            <button class="btn-close btn-close-white" data-character="${character}"></button>
-                        </span>
-                    `).join('')}
-                    <button class="btn btn-sm btn-outline-info" id="addCharacterBtn">Add Character</button>
-                </div>
-            </div>
-            <div class="mb-3">
-                <h6>Items</h6>
-                <div>
-                    ${note.relatedEntities.items.map(item => `
-                        <span class="badge bg-warning me-1">
-                            ${item}
-                            <button class="btn-close btn-close-white" data-item="${item}"></button>
-                        </span>
-                    `).join('')}
-                    <button class="btn btn-sm btn-outline-warning" id="addItemBtn">Add Item</button>
+                <h5>Related Entities</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Quests</h6>
+                        <div>
+                            ${(note.relatedEntities?.quests || []).map(quest => `
+                                <span class="badge bg-primary me-1">
+                                    ${quest}
+                                    <button class="btn-close btn-close-white" data-quest="${quest}"></button>
+                                </span>
+                            `).join('')}
+                            <button class="btn btn-sm btn-outline-primary" id="addQuestBtn">Add Quest</button>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Locations</h6>
+                        <div>
+                            ${(note.relatedEntities?.locations || []).map(location => `
+                                <span class="badge bg-success me-1">
+                                    ${location}
+                                    <button class="btn-close btn-close-white" data-location="${location}"></button>
+                                </span>
+                            `).join('')}
+                            <button class="btn btn-sm btn-outline-success" id="addLocationBtn">Add Location</button>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Characters</h6>
+                        <div>
+                            ${(note.relatedEntities?.characters || []).map(character => `
+                                <span class="badge bg-info me-1">
+                                    ${character}
+                                    <button class="btn-close btn-close-white" data-character="${character}"></button>
+                                </span>
+                            `).join('')}
+                            <button class="btn btn-sm btn-outline-info" id="addCharacterBtn">Add Character</button>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Items</h6>
+                        <div>
+                            ${(note.relatedEntities?.items || []).map(item => `
+                                <span class="badge bg-warning me-1">
+                                    ${item}
+                                    <button class="btn-close btn-close-white" data-item="${item}"></button>
+                                </span>
+                            `).join('')}
+                            <button class="btn btn-sm btn-outline-warning" id="addItemBtn">Add Item</button>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="mt-3">
@@ -363,31 +372,31 @@ export class NotesManager {
             </div>
         `;
 
-        this.setupNoteDetailsEventListeners(noteId);
+        this.setupNoteDetailsEventListeners(note);
     }
 
-    setupNoteDetailsEventListeners(noteId) {
-        document.getElementById('addTagBtn').addEventListener('click', () => this.showAddTagForm(noteId));
-        document.getElementById('addQuestBtn').addEventListener('click', () => this.showAddRelatedQuestForm(noteId));
-        document.getElementById('addLocationBtn').addEventListener('click', () => this.showAddRelatedLocationForm(noteId));
-        document.getElementById('addCharacterBtn').addEventListener('click', () => this.showAddRelatedCharacterForm(noteId));
-        document.getElementById('addItemBtn').addEventListener('click', () => this.showAddRelatedItemForm(noteId));
-        document.getElementById('editNoteBtn').addEventListener('click', () => this.showEditNoteForm(noteId));
+    setupNoteDetailsEventListeners(note) {
+        document.getElementById('addTagBtn').addEventListener('click', () => this.showAddTagForm(note.id));
+        document.getElementById('addQuestBtn').addEventListener('click', () => this.showAddRelatedQuestForm(note.id));
+        document.getElementById('addLocationBtn').addEventListener('click', () => this.showAddRelatedLocationForm(note.id));
+        document.getElementById('addCharacterBtn').addEventListener('click', () => this.showAddRelatedCharacterForm(note.id));
+        document.getElementById('addItemBtn').addEventListener('click', () => this.showAddRelatedItemForm(note.id));
+        document.getElementById('editNoteBtn').addEventListener('click', () => this.showEditNoteForm(note.id));
 
         document.querySelectorAll('[data-tag]').forEach(btn => {
-            btn.addEventListener('click', () => this.removeTag(noteId, btn.dataset.tag));
+            btn.addEventListener('click', () => this.removeTag(note.id, btn.dataset.tag));
         });
         document.querySelectorAll('[data-quest]').forEach(btn => {
-            btn.addEventListener('click', () => this.removeRelatedQuest(noteId, btn.dataset.quest));
+            btn.addEventListener('click', () => this.removeRelatedQuest(note.id, btn.dataset.quest));
         });
         document.querySelectorAll('[data-location]').forEach(btn => {
-            btn.addEventListener('click', () => this.removeRelatedLocation(noteId, btn.dataset.location));
+            btn.addEventListener('click', () => this.removeRelatedLocation(note.id, btn.dataset.location));
         });
         document.querySelectorAll('[data-character]').forEach(btn => {
-            btn.addEventListener('click', () => this.removeRelatedCharacter(noteId, btn.dataset.character));
+            btn.addEventListener('click', () => this.removeRelatedCharacter(note.id, btn.dataset.character));
         });
         document.querySelectorAll('[data-item]').forEach(btn => {
-            btn.addEventListener('click', () => this.removeRelatedItem(noteId, btn.dataset.item));
+            btn.addEventListener('click', () => this.removeRelatedItem(note.id, btn.dataset.item));
         });
     }
 
@@ -502,49 +511,49 @@ export class NotesManager {
         this.renderNoteList();
     }
 
-    addTag(noteId, tag) {
-        const note = this.dataManager.appState.notes.find(n => n.id === noteId);
-        if (!note) return;
-
-        note.addTag(tag);
-        this.dataManager.saveData();
-        this.showNoteDetails(noteId);
+    addTag(noteId, form) {
+        if (!form || !form.tagName?.value) {
+            throw new Error('Invalid form data');
+        }
+        const note = this.dataManager.getNoteById(noteId);
+        note.addTag(form.tagName.value);
+        this.renderNoteList();
     }
 
-    addRelatedQuest(noteId, questId) {
-        const note = this.dataManager.appState.notes.find(n => n.id === noteId);
-        if (!note) return;
-
-        note.addRelatedQuest(questId);
-        this.dataManager.saveData();
-        this.showNoteDetails(noteId);
+    addRelatedQuest(noteId, form) {
+        if (!form || !form.questId?.value) {
+            throw new Error('Invalid form data');
+        }
+        const note = this.dataManager.getNoteById(noteId);
+        note.addRelatedQuest(form.questId.value);
+        this.renderNoteList();
     }
 
-    addRelatedLocation(noteId, locationId) {
-        const note = this.dataManager.appState.notes.find(n => n.id === noteId);
-        if (!note) return;
-
-        note.addRelatedLocation(locationId);
-        this.dataManager.saveData();
-        this.showNoteDetails(noteId);
+    addRelatedLocation(noteId, form) {
+        if (!form || !form.locationId?.value) {
+            throw new Error('Invalid form data');
+        }
+        const note = this.dataManager.getNoteById(noteId);
+        note.addRelatedLocation(form.locationId.value);
+        this.renderNoteList();
     }
 
-    addRelatedCharacter(noteId, characterId) {
-        const note = this.dataManager.appState.notes.find(n => n.id === noteId);
-        if (!note) return;
-
-        note.addRelatedCharacter(characterId);
-        this.dataManager.saveData();
-        this.showNoteDetails(noteId);
+    addRelatedCharacter(noteId, form) {
+        if (!form || !form.characterId?.value) {
+            throw new Error('Invalid form data');
+        }
+        const note = this.dataManager.getNoteById(noteId);
+        note.addRelatedCharacter(form.characterId.value);
+        this.renderNoteList();
     }
 
-    addRelatedItem(noteId, itemId) {
-        const note = this.dataManager.appState.notes.find(n => n.id === noteId);
-        if (!note) return;
-
-        note.addRelatedItem(itemId);
-        this.dataManager.saveData();
-        this.showNoteDetails(noteId);
+    addRelatedItem(noteId, form) {
+        if (!form || !form.itemId?.value) {
+            throw new Error('Invalid form data');
+        }
+        const note = this.dataManager.getNoteById(noteId);
+        note.addRelatedItem(form.itemId.value);
+        this.renderNoteList();
     }
 
     showAddTagForm(noteId) {
@@ -722,39 +731,32 @@ export class NotesManager {
     }
 
     updateNoteTitle(noteId, form) {
-        const note = this.dataManager.appState.notes.find(n => n.id === noteId);
-        if (!note) return;
-
-        const title = this.getFormValue(form, 'noteTitle');
-        if (title) {
-            note.updateTitle(title);
-            this.dataManager.saveData();
-            this.showNoteDetails(noteId);
+        if (!form || !form.title?.value) {
+            throw new Error('Invalid form data');
         }
+        const note = this.dataManager.getNoteById(noteId);
+        note.title = form.title.value;
+        this.renderNoteList();
     }
 
     updateNoteContent(noteId, form) {
-        const note = this.dataManager.appState.notes.find(n => n.id === noteId);
-        if (!note) return;
-
-        const content = this.getFormValue(form, 'noteContent');
-        if (content) {
-            note.updateContent(content);
-            this.dataManager.saveData();
-            this.showNoteDetails(noteId);
+        if (!form || !form.content?.value) {
+            throw new Error('Invalid form data');
         }
+        const note = this.dataManager.getNoteById(noteId);
+        note.content = form.content.value;
+        this.renderNoteList();
     }
 
     updateNoteCategory(noteId, form) {
         const note = this.dataManager.appState.notes.find(n => n.id === noteId);
         if (!note) return;
 
-        const category = this.getFormValue(form, 'category');
-        if (!category || !Object.values(NoteCategory).includes(category)) return;
+        const newCategory = form.noteCategory.value;
+        if (!Object.values(NoteCategory).includes(newCategory)) return;
 
-        note.category = category;
-        note.updatedAt = new Date();
+        note.updateCategory(newCategory);
         this.dataManager.saveData();
-        this.showNoteDetails(noteId);
+        this.renderNoteList();
     }
 } 

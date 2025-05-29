@@ -1,29 +1,22 @@
 import { jest } from '@jest/globals';
 
-// Mock Date for consistent testing
-class MockDate extends Date {
+// Save the real Date
+const RealDate = Date;
+
+class MockDate extends RealDate {
     constructor(...args) {
         if (args.length === 0) {
-            super(1704067200000); // Fixed date for testing
-        } else {
-            super(...args);
+            return new RealDate('2025-01-01T00:00:00.000Z');
         }
+        return new RealDate(...args);
     }
-
     static now() {
-        return 1704067200000;
-    }
-
-    valueOf() {
-        return 1704067200000;
-    }
-
-    toString() {
-        return 'Wed Jan 01 2025 00:00:00 GMT+0000';
+        return new RealDate('2025-01-01T00:00:00.000Z').getTime();
     }
 }
 
 // Set global Date to MockDate
+Object.setPrototypeOf(MockDate, RealDate);
 global.Date = MockDate;
 
 // Mock window.notesManager

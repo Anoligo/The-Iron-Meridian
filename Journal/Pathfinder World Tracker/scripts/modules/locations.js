@@ -21,27 +21,25 @@ export const DiscoveryStatus = {
     CLEARED: 'cleared'
 };
 
-export class Location {
-    constructor(name, type, description, x = 0, y = 0, createdAt, updatedAt) {
-        this.id = Date.now();
+import { Entity } from './entity.js';
+
+export class Location extends Entity {
+    constructor(name, description, type = LocationType.CITY, x = 0, y = 0, createdAt = new Date(), updatedAt = new Date()) {
+        super(null, new Date(createdAt), new Date(updatedAt));
         this.name = name;
-        this.type = type;
         this.description = description;
-        this.coordinates = { x, y };
-        this.status = DiscoveryStatus.UNKNOWN;
-        this.connectedLocations = [];
-        this.quests = [];
-        this.notes = [];
-        this.createdAt = createdAt instanceof Date ? createdAt : new Date(createdAt || Date.now());
-        this.updatedAt = updatedAt instanceof Date ? updatedAt : new Date(updatedAt || Date.now());
+        this.type = type;
+        this.x = x;
+        this.y = y;
+        this.discovered = false;
+        this.relatedQuests = [];
+        this.relatedItems = [];
     }
 
     updateCoordinates(coordinates) {
-        if (!coordinates || typeof coordinates.x !== 'number' || typeof coordinates.y !== 'number') return false;
-        
-        this.coordinates = { x: coordinates.x, y: coordinates.y };
-        this.updatedAt = new Date().toISOString();
-        return true;
+        this.x = coordinates.x;
+        this.y = coordinates.y;
+        this.updatedAt = new Date();
     }
 
     addRelatedQuest(questId) {
@@ -53,18 +51,6 @@ export class Location {
 
     removeRelatedQuest(questId) {
         this.relatedQuests = this.relatedQuests.filter(id => id !== questId);
-        this.updatedAt = new Date();
-    }
-
-    addRelatedCharacter(characterId) {
-        if (!this.relatedCharacters.includes(characterId)) {
-            this.relatedCharacters.push(characterId);
-            this.updatedAt = new Date();
-        }
-    }
-
-    removeRelatedCharacter(characterId) {
-        this.relatedCharacters = this.relatedCharacters.filter(id => id !== characterId);
         this.updatedAt = new Date();
     }
 
@@ -95,6 +81,11 @@ export class Location {
         this.updatedAt = new Date();
     }
 
+    markAsDiscovered() {
+        this.discovered = true;
+        this.updatedAt = new Date();
+    }
+
     addConnectedLocation(locationId) {
         if (!this.connectedLocations.includes(locationId)) {
             this.connectedLocations.push(locationId);
@@ -121,11 +112,16 @@ export class Location {
 
     addNote(content) {
         const note = {
+            id: Date.now(),
             content,
-            timestamp: new Date()
+            timestamp: new Date(),
+            updatedAt: new Date()
         };
+        // Ensure timestamp is a Date instance for test compatibility
+        note.timestamp = note.timestamp instanceof Date ? note.timestamp : new Date(note.timestamp);
         this.notes.push(note);
         this.updatedAt = new Date();
+        return note;
     }
 
     updateStatus(status) {
@@ -135,6 +131,25 @@ export class Location {
         this.status = status;
         this.updatedAt = new Date();
     }
+
+    updateLocationName(newName) {
+        this.name = newName;
+        this.updatedAt = new Date();
+    }
+
+    updateLocationDescription(newDescription) {
+        this.description = newDescription;
+        this.updatedAt = new Date();
+    }
+
+    updateLocationType(newType) {
+        this.type = newType;
+        this.updatedAt = new Date();
+    }
+
+    get isDiscovered() { return this.discovered; }
+    set isDiscovered(val) { this.discovered = val; }
+    get coordinates() { return { x: this.x, y: this.y }; }
 }
 
 export class LocationManager {
@@ -225,35 +240,34 @@ export class LocationManager {
     }
 
     createNewLocation(form) {
+        if (!form || !form.locationName?.value || !form.locationType?.value || !form.locationDescription?.value) {
+            throw new Error('Invalid form data');
+        }
         const location = new Location(
             form.locationName.value,
             form.locationType.value,
-            form.locationDescription.value,
-            parseInt(form.locationX.value) || 0,
-            parseInt(form.locationY.value) || 0,
-            new Date(),
-            new Date()
+            form.locationDescription.value
         );
-        this.dataManager.appState.locations.push(location);
-        this.dataManager.saveData();
+        this.dataManager.addLocation(location);
         this.renderLocationList();
     }
 
     handleTypeFilter(type) {
         const locations = this.dataManager.appState.locations;
-        const filteredLocations = type === 'all' 
-            ? locations 
-            : locations.filter(location => location.type === type);
+        const filteredLocations = type === 'all' ? locations : locations.filter(location => location.type === type);
         this.renderLocationList(filteredLocations);
     }
 
-    handleSearch(searchTerm) {
+    handleSearch(query) {
+        if (!query) {
+            this.renderLocationList();
+            return;
+        }
         const locations = this.dataManager.appState.locations;
-        const filteredLocations = searchTerm
-            ? locations.filter(location => 
-                location.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                location.description.toLowerCase().includes(searchTerm.toLowerCase()))
-            : locations;
+        const filteredLocations = locations.filter(location => 
+            location.name.toLowerCase().includes(query.toLowerCase()) ||
+            location.description.toLowerCase().includes(query.toLowerCase())
+        );
         this.renderLocationList(filteredLocations);
     }
 
@@ -302,6 +316,8 @@ export class LocationManager {
 
     renderLocationList(locations = this.dataManager.appState.locations) {
         const locationList = document.getElementById('locationList');
+        if (!locationList) return;
+
         locationList.innerHTML = locations.map(location => `
             <a href="#" class="list-group-item list-group-item-action" data-location-id="${location.id}">
                 <div class="d-flex w-100 justify-content-between">
@@ -310,9 +326,10 @@ export class LocationManager {
                 </div>
                 <p class="mb-1">${location.description}</p>
                 <div>
-                    ${location.discovered ? '<span class="badge bg-success">Discovered</span>' : '<span class="badge bg-secondary">Undiscovered</span>'}
-                    ${location.quests?.length ? `<span class="badge bg-primary">${location.quests.length} Quests</span>` : ''}
-                    ${location.npcs?.length ? `<span class="badge bg-info">${location.npcs.length} NPCs</span>` : ''}
+                    <span class="badge bg-primary">${location.type}</span>
+                    <span class="badge bg-secondary">${location.relatedQuests.length} Quests</span>
+                    <span class="badge bg-info">${location.relatedItems.length} Items</span>
+                    <small class="text-muted ms-2">Last updated: ${location.updatedAt.toLocaleDateString()}</small>
                 </div>
             </a>
         `).join('');
@@ -356,7 +373,7 @@ export class LocationManager {
                         <div class="card mb-2">
                             <div class="card-body">
                                 <p class="card-text">${note.content}</p>
-                                <small class="text-muted">${new Date(note.timestamp).toLocaleString()}</small>
+                                <small class="text-muted">${new Date(note.updatedAt).toLocaleString()}</small>
                             </div>
                         </div>
                     `).join('') || ''}
@@ -566,14 +583,89 @@ export class LocationManager {
         const location = this.dataManager.appState.locations.find(l => l.id === locationId);
         if (!location) return;
 
-        const x = parseInt(this.getFormValue(form, 'x'));
-        const y = parseInt(this.getFormValue(form, 'y'));
+        const x = parseInt(form.coordinateX.value) || 0;
+        const y = parseInt(form.coordinateY.value) || 0;
+        
+        location.updateCoordinates({ x, y });
+        this.dataManager.saveData();
+        this.renderLocationList();
+    }
 
-        if (isNaN(x) || isNaN(y)) return;
-
-        location.coordinates = { x, y };
-        location.updatedAt = Date.now();
+    addRelatedQuest(locationId, questId) {
+        const location = this.dataManager.appState.locations.find(l => l.id === locationId);
+        if (!location) return;
+        location.addRelatedQuest(questId);
         this.dataManager.saveData();
         this.showLocationDetails(locationId);
+    }
+
+    addRelatedItem(locationId, itemId) {
+        const location = this.dataManager.appState.locations.find(l => l.id === locationId);
+        if (!location) return;
+        location.addRelatedItem(itemId);
+        this.dataManager.saveData();
+        this.showLocationDetails(locationId);
+    }
+
+    markAsDiscovered(locationId) {
+        const location = this.dataManager.appState.locations.find(l => l.id === locationId);
+        if (!location) return;
+        location.markAsDiscovered();
+        this.dataManager.saveData();
+        this.showLocationDetails(locationId);
+    }
+
+    updateLocationName(locationId, form) {
+        if (!form || !form.locationName?.value) {
+            throw new Error('Invalid form data');
+        }
+        const location = this.dataManager.getLocationById(locationId);
+        location.name = form.locationName.value;
+        this.renderLocationList();
+    }
+
+    updateLocationDescription(locationId, form) {
+        if (!form || !form.locationDescription?.value) {
+            throw new Error('Invalid form data');
+        }
+        const location = this.dataManager.getLocationById(locationId);
+        location.description = form.locationDescription.value;
+        this.renderLocationList();
+    }
+
+    updateLocationType(locationId, form) {
+        if (!form || !form.locationType?.value) {
+            throw new Error('Invalid form data');
+        }
+        const location = this.dataManager.getLocationById(locationId);
+        location.type = form.locationType.value;
+        this.renderLocationList();
+    }
+
+    addLocationConnection(locationId, form) {
+        if (!form || !form.connectedLocationId?.value || !form.connectionType?.value) {
+            throw new Error('Invalid form data');
+        }
+        const location = this.dataManager.getLocationById(locationId);
+        location.addConnection(form.connectedLocationId.value, form.connectionType.value);
+        this.renderLocationList();
+    }
+
+    addLocationNPC(locationId, form) {
+        if (!form || !form.npcId?.value) {
+            throw new Error('Invalid form data');
+        }
+        const location = this.dataManager.getLocationById(locationId);
+        location.addNPC(form.npcId.value);
+        this.renderLocationList();
+    }
+
+    addLocationQuest(locationId, form) {
+        if (!form || !form.questId?.value) {
+            throw new Error('Invalid form data');
+        }
+        const location = this.dataManager.getLocationById(locationId);
+        location.addQuest(form.questId.value);
+        this.renderLocationList();
     }
 } 

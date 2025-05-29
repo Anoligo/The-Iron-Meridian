@@ -1,3 +1,5 @@
+import { Entity } from './entity.js';
+
 // Guild activity types
 export const GuildActivityType = {
     QUEST: 'quest',
@@ -16,17 +18,15 @@ export const GuildResourceType = {
     OTHER: 'other'
 };
 
-export class GuildActivity {
-    constructor(name, type, description, createdAt, updatedAt) {
-        this.id = Date.now();
+export class GuildActivity extends Entity {
+    constructor(name, description, type = GuildActivityType.QUEST, createdAt = new Date(), updatedAt = new Date()) {
+        super(null, new Date(createdAt), new Date(updatedAt));
         this.name = name;
-        this.type = type;
         this.description = description;
+        this.type = type;
+        this.status = 'pending';
         this.rewards = [];
         this.participants = [];
-        this.status = 'pending';
-        this.createdAt = createdAt instanceof Date ? createdAt : new Date(createdAt || Date.now());
-        this.updatedAt = updatedAt instanceof Date ? updatedAt : new Date(updatedAt || Date.now());
     }
 
     addReward(reward) {
@@ -63,14 +63,13 @@ export class GuildActivity {
     }
 }
 
-export class GuildResource {
-    constructor(name, type, quantity, createdAt, updatedAt) {
-        this.id = Date.now();
+export class GuildResource extends Entity {
+    constructor(name, description, type = GuildResourceType.GOLD, quantity = 0, createdAt = new Date(), updatedAt = new Date()) {
+        super(null, new Date(createdAt), new Date(updatedAt));
         this.name = name;
+        this.description = description;
         this.type = type;
         this.quantity = quantity;
-        this.createdAt = createdAt instanceof Date ? createdAt : new Date(createdAt || Date.now());
-        this.updatedAt = updatedAt instanceof Date ? updatedAt : new Date(updatedAt || Date.now());
     }
 
     addQuantity(amount) {
@@ -83,16 +82,13 @@ export class GuildResource {
         this.updatedAt = new Date();
     }
 
-    updateName(name) {
-        this.name = name;
+    updateName(newName) {
+        this.name = newName;
         this.updatedAt = new Date();
     }
 
-    updateType(type) {
-        if (!Object.values(GuildResourceType).includes(type)) {
-            return;
-        }
-        this.type = type;
+    updateType(newType) {
+        this.type = newType;
         this.updatedAt = new Date();
     }
 }
@@ -172,39 +168,46 @@ export class GuildManager {
             }
         });
         document.getElementById('activitySearch').addEventListener('input', (e) => {
-            this.handleActivitySearch(e.target.value);
+            this.handleSearch(e.target.value);
         });
     }
 
     getFormValue(form, fieldName) {
-        const field = form[fieldName];
-        if (field) {
-            return field.value;
+        if (form instanceof HTMLFormElement) {
+            const input = form.elements[fieldName];
+            return input ? input.value : null;
         }
-        return null;
+        return form[fieldName]?.value || form[fieldName];
     }
 
     createNewActivity(form) {
-        const activity = new GuildActivity(
-            form.activityName.value,
-            form.activityType.value,
-            form.activityDescription.value,
-            new Date(),
-            new Date()
-        );
+        const name = form.name?.value || form.name;
+        const description = form.description?.value || form.description;
+        const type = form.type?.value || form.type;
+
+        if (!name || !description || !type) {
+            console.error('Missing required fields for activity creation');
+            return;
+        }
+
+        const activity = new GuildActivity(name, description, type);
         this.dataManager.appState.guildLogs.activities.push(activity);
         this.dataManager.saveData();
         this.renderActivityList();
     }
 
     createNewResource(form) {
-        const resource = new GuildResource(
-            form.resourceName.value,
-            form.resourceType.value,
-            parseInt(form.resourceQuantity.value),
-            new Date(),
-            new Date()
-        );
+        const name = form.name?.value || form.name;
+        const description = form.description?.value || form.description;
+        const type = form.type?.value || form.type;
+        const quantity = parseInt(form.quantity?.value || form.quantity) || 0;
+
+        if (!name || !description || !type) {
+            console.error('Missing required fields for resource creation');
+            return;
+        }
+
+        const resource = new GuildResource(name, description, type, quantity);
         this.dataManager.appState.guildLogs.resources.push(resource);
         this.dataManager.saveData();
         this.renderResourceList();
@@ -218,27 +221,30 @@ export class GuildManager {
         this.renderActivityList(filteredActivities);
     }
 
-    handleActivitySearch(searchTerm) {
-        const activities = this.dataManager.appState.guildLogs.activities || [];
-        const filteredActivities = searchTerm
-            ? activities.filter(activity => 
-                activity.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                activity.description.toLowerCase().includes(searchTerm.toLowerCase()))
-            : activities;
+    handleSearch(query) {
+        if (!query) {
+            this.renderActivityList();
+            return;
+        }
+        const activities = this.dataManager.appState.guildLogs.activities;
+        const filteredActivities = activities.filter(activity => 
+            activity.name.toLowerCase().includes(query.toLowerCase()) ||
+            activity.description.toLowerCase().includes(query.toLowerCase())
+        );
         this.renderActivityList(filteredActivities);
     }
 
     handleResourceTypeFilter(type) {
-        const resources = type === 'all'
-            ? this.dataManager.appState.guildResources
-            : this.dataManager.appState.guildResources.filter(r => r.type === type);
-        this.renderResourceList(resources);
+        const resources = this.dataManager.appState.guildLogs.resources || [];
+        const filteredResources = type === 'all'
+            ? resources
+            : resources.filter(r => r.type === type);
+        this.renderResourceList(filteredResources);
     }
 
     handleResourceSearch(searchTerm) {
-        const resources = this.dataManager.appState.guildResources.filter(r =>
-            r.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            r.description.toLowerCase().includes(searchTerm.toLowerCase())
+        const resources = this.dataManager.appState.guildLogs.resources.filter(r =>
+            r.name.toLowerCase().includes(searchTerm.toLowerCase())
         );
         this.renderResourceList(resources);
     }
@@ -289,31 +295,36 @@ export class GuildManager {
     }
 
     updateResourceName(resourceId, form) {
-        const resource = this.dataManager.appState.guildResources.find(r => r.id === resourceId);
-        if (resource) {
-            const newName = this.getFormValue(form, 'name');
-            if (newName) {
-                resource.updateName(newName);
-                this.dataManager.saveData();
-                this.showResourceDetails(resourceId);
-            }
-        }
+        const resource = this.dataManager.appState.guildLogs.resources.find(r => r.id === resourceId);
+        if (!resource) return;
+
+        const newName = form.resourceName.value;
+        if (!newName) return;
+
+        resource.updateName(newName);
+        this.dataManager.saveData();
+        this.renderResourceList();
     }
 
     updateResourceType(resourceId, form) {
-        const resource = this.dataManager.appState.guildResources.find(r => r.id === resourceId);
-        if (resource) {
-            const newType = this.getFormValue(form, 'type');
-            if (newType && Object.values(GuildResourceType).includes(newType)) {
-                resource.updateType(newType);
-                this.dataManager.saveData();
-                this.showResourceDetails(resourceId);
-            }
-        }
+        const resource = this.dataManager.appState.guildLogs.resources.find(r => r.id === resourceId);
+        if (!resource) return;
+
+        const newType = form.resourceType.value;
+        if (!Object.values(GuildResourceType).includes(newType)) return;
+
+        resource.updateType(newType);
+        this.dataManager.saveData();
+        this.renderResourceList();
     }
 
     renderActivityList(activities = this.dataManager.appState.guildLogs.activities) {
-        const activityList = document.getElementById('activityList');
+        let activityList = document.getElementById('activityList');
+        if (!activityList) {
+            this.initializeGuildSection();
+            activityList = document.getElementById('activityList');
+            if (!activityList) return;
+        }
         activityList.innerHTML = activities.map(activity => `
             <a href="#" class="list-group-item list-group-item-action" data-activity-id="${activity.id}">
                 <div class="d-flex w-100 justify-content-between">
@@ -535,9 +546,12 @@ export class GuildManager {
     }
 
     renderResourceList() {
-        const resourceList = document.getElementById('resourceList');
-        if (!resourceList) return;
-
+        let resourceList = document.getElementById('resourceList');
+        if (!resourceList) {
+            this.initializeGuildSection();
+            resourceList = document.getElementById('resourceList');
+            if (!resourceList) return;
+        }
         const resources = this.dataManager.appState.guildLogs.resources || [];
         resourceList.innerHTML = resources.map(resource => `
             <a href="#" class="list-group-item list-group-item-action" data-resource-id="${resource.id}">

@@ -4,6 +4,7 @@ import { LootManager } from './modules/loot.js';
 import { LocationManager } from './modules/locations.js';
 import { NotesManager } from './modules/notes.js';
 import { GuildManager } from './modules/guild.js';
+import { DataManager } from './modules/data.js';
 
 // Data structure for the application
 const appState = {
@@ -12,9 +13,21 @@ const appState = {
     loot: [],
     locations: [],
     notes: [],
-    guildLogs: [],
+    guildLogs: {
+        activities: [],
+        resources: []
+    },
     guildResources: []
 };
+
+// Initialize managers with StorageManager
+const storageManager = StorageManager;
+const questManager = new QuestManager(storageManager);
+const playerManager = new PlayerManager(storageManager);
+const lootManager = new LootManager(storageManager);
+const locationManager = new LocationManager(storageManager);
+const notesManager = new NotesManager(storageManager);
+const guildManager = new GuildManager(storageManager);
 
 // Local Storage Management
 const StorageManager = {
@@ -125,7 +138,17 @@ class DataManager {
     }
 
     addGuildLog(log) {
-        appState.guildLogs.push(log);
+        if (!this.appState.guildLogs) {
+            this.appState.guildLogs = {
+                activities: [],
+                resources: []
+            };
+        }
+        if (log.type === 'activity') {
+            this.appState.guildLogs.activities.push(log);
+        } else if (log.type === 'resource') {
+            this.appState.guildLogs.resources.push(log);
+        }
         this.saveData();
     }
 
@@ -149,10 +172,10 @@ class DataManager {
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', () => {
-    const navigation = new NavigationManager();
+    // Initialize data manager
     const dataManager = new DataManager();
     
-    // Initialize modules
+    // Initialize managers
     const questManager = new QuestManager(dataManager);
     const playerManager = new PlayerManager(dataManager);
     const lootManager = new LootManager(dataManager);
@@ -169,16 +192,24 @@ document.addEventListener('DOMContentLoaded', () => {
     window.notesManager = notesManager;
     window.guildManager = guildManager;
 
-    // Update dashboard counts
-    const updateDashboardCounts = () => {
-        const activeQuests = appState.quests.filter(q => q.status === 'ongoing').length;
-        const partyMembers = appState.players.length;
-        const locations = appState.locations.length;
+    // Subscribe to state changes for dashboard updates
+    dataManager.subscribe(state => {
+        const activeQuests = state.quests.filter(q => q.status === 'ongoing').length;
+        const partyMembers = state.players.length;
+        const locations = state.locations.length;
 
         document.getElementById('activeQuestsCount').textContent = activeQuests;
         document.getElementById('partyMembersCount').textContent = partyMembers;
         document.getElementById('locationsCount').textContent = locations;
-    };
+    });
 
-    updateDashboardCounts();
+    // Initial dashboard update
+    const state = dataManager.appState;
+    const activeQuests = state.quests.filter(q => q.status === 'ongoing').length;
+    const partyMembers = state.players.length;
+    const locations = state.locations.length;
+
+    document.getElementById('activeQuestsCount').textContent = activeQuests;
+    document.getElementById('partyMembersCount').textContent = partyMembers;
+    document.getElementById('locationsCount').textContent = locations;
 }); 

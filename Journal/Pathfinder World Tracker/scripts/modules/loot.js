@@ -17,20 +17,20 @@ export const ItemRarity = {
     LEGENDARY: 'legendary'
 };
 
-export class Item {
-    constructor(name, description, type, rarity, createdAt, updatedAt) {
-        this.id = Date.now();
+import { Entity } from './entity.js';
+
+export class Item extends Entity {
+    constructor(name, description, type = ItemType.WEAPON, rarity = ItemRarity.COMMON, createdAt = new Date(), updatedAt = new Date()) {
+        super(null, new Date(createdAt), new Date(updatedAt));
         this.name = name;
         this.description = description;
         this.type = type;
         this.rarity = rarity;
-        this.isCursed = false;
-        this.curseEffects = [];
         this.effects = [];
+        this.curseEffects = [];
+        this.isCursed = false;
         this.owner = null;
         this.questSource = null;
-        this.createdAt = createdAt instanceof Date ? createdAt : new Date();
-        this.updatedAt = updatedAt instanceof Date ? updatedAt : new Date();
     }
 
     addCurseEffect(effect) {
@@ -436,10 +436,10 @@ export class LootManager {
         const item = this.dataManager.appState.loot.find(i => i.id === itemId);
         if (!item) return;
 
-        const name = form.name?.value || form.name;
-        const description = form.description?.value || form.description;
-        const type = form.type?.value || form.type;
-        const rarity = form.rarity?.value || form.rarity;
+        const name = this.getFormValue(form, 'name');
+        const description = this.getFormValue(form, 'description');
+        const type = this.getFormValue(form, 'type');
+        const rarity = this.getFormValue(form, 'rarity');
         const isCursed = form.isCursed?.checked || form.isCursed;
 
         if (!name || !description || !type || !rarity) {
@@ -498,9 +498,9 @@ export class LootManager {
         const item = this.dataManager.appState.loot.find(i => i.id === itemId);
         if (!item) return;
 
-        const name = this.getFormValue(form, 'itemName');
-        if (name) {
-            item.updateName(name);
+        const newName = form.itemName.value;
+        if (newName) {
+            item.updateName(newName);
             this.dataManager.saveData();
             this.showItemDetails(itemId);
         }
@@ -510,9 +510,9 @@ export class LootManager {
         const item = this.dataManager.appState.loot.find(i => i.id === itemId);
         if (!item) return;
 
-        const description = this.getFormValue(form, 'itemDescription');
-        if (description) {
-            item.updateDescription(description);
+        const newDescription = form.itemDescription.value;
+        if (newDescription) {
+            item.updateDescription(newDescription);
             this.dataManager.saveData();
             this.showItemDetails(itemId);
         }
@@ -522,9 +522,9 @@ export class LootManager {
         const item = this.dataManager.appState.loot.find(i => i.id === itemId);
         if (!item) return;
 
-        const rarity = this.getFormValue(form, 'itemRarity');
-        if (rarity && Object.values(ItemRarity).includes(rarity)) {
-            item.updateRarity(rarity);
+        const newRarity = form.itemRarity.value;
+        if (newRarity && Object.values(ItemRarity).includes(newRarity)) {
+            item.updateRarity(newRarity);
             this.dataManager.saveData();
             this.showItemDetails(itemId);
         }

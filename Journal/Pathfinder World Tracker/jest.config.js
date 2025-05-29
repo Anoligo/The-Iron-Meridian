@@ -1,21 +1,17 @@
 export default {
     testEnvironment: 'jsdom',
-    moduleFileExtensions: ['js'],
     transform: {
-        '^.+\\.js$': ['babel-jest', { configFile: './.babelrc' }]
+        '^.+\\.js$': 'babel-jest'
     },
-    testMatch: ['**/tests/**/*.test.js', '**/scripts/tests/**/*.test.js'],
-    setupFiles: ['./tests/setup.js'],
-    moduleNameMapper: {
-        '^@/(.*)$': '<rootDir>/scripts/$1',
-        '^(\\.{1,2}/.*)\\.js$': '$1'
-    },
+    moduleFileExtensions: ['js'],
+    testMatch: ['**/tests/**/*.test.js'],
+    setupFilesAfterEnv: ['<rootDir>/tests/test-setup.js'],
     transformIgnorePatterns: [
         'node_modules/(?!(bootstrap)/)'
     ],
-    testEnvironmentOptions: {
-        url: 'http://localhost'
+    moduleNameMapper: {
+        '^@/(.*)$': '<rootDir>/$1'
     },
-    moduleDirectories: ['node_modules', 'scripts'],
-    roots: ['<rootDir>/scripts', '<rootDir>/tests']
+    verbose: true,
+    testTimeout: 10000
 }; 
