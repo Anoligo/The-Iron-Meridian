@@ -85,7 +85,13 @@ export class LootManager {
             this.dataManager.appState.loot = [];
         }
         this.initializeLootSection();
-        this.setupEventListeners();
+        
+        // Use setTimeout to ensure the DOM is ready before setting up event listeners
+        setTimeout(() => {
+            this.setupEventListeners();
+            // Initial render of the item list
+            this.renderItemList();
+        }, 0);
     }
 
     initializeLootSection() {
@@ -141,15 +147,36 @@ export class LootManager {
     }
 
     setupEventListeners() {
-        document.getElementById('newItemBtn').addEventListener('click', () => this.showNewItemForm());
-        document.getElementById('itemTypeFilter').addEventListener('click', (e) => {
-            e.preventDefault();
-            const type = e.target.dataset.type;
-            this.handleTypeFilter(type);
-        });
-        document.getElementById('itemSearch').addEventListener('input', (e) => {
-            this.handleSearch(e.target.value);
-        });
+        const newItemBtn = document.getElementById('newItemBtn');
+        const itemTypeFilter = document.getElementById('itemTypeFilter');
+        const itemSearch = document.getElementById('itemSearch');
+        
+        if (newItemBtn) {
+            console.log('Adding click event to newItemBtn');
+            newItemBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                console.log('New Item button clicked');
+                this.showNewItemForm();
+            });
+        } else {
+            console.error('Could not find newItemBtn');
+        }
+        
+        if (itemTypeFilter) {
+            itemTypeFilter.addEventListener('click', (e) => {
+                e.preventDefault();
+                const type = e.target.dataset.type;
+                if (type) {
+                    this.handleTypeFilter(type);
+                }
+            });
+        }
+        
+        if (itemSearch) {
+            itemSearch.addEventListener('input', (e) => {
+                this.handleSearch(e.target.value);
+            });
+        }
     }
 
     createNewItem(form) {
@@ -161,9 +188,35 @@ export class LootManager {
             new Date(),
             new Date()
         );
+        
+        // Set cursed status if checked
+        item.isCursed = form.isCursed.checked;
+        
         this.dataManager.appState.loot.push(item);
         this.dataManager.saveData();
+        
+        // Show the new item in the list and select it
         this.renderItemList();
+        this.showItemDetails(item.id);
+        
+        // Show success message
+        const itemList = document.getElementById('itemList');
+        if (itemList) {
+            const successMsg = document.createElement('div');
+            successMsg.className = 'alert alert-success alert-dismissible fade show';
+            successMsg.role = 'alert';
+            successMsg.innerHTML = `
+                Item "${item.name}" created successfully!
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            itemList.parentNode.insertBefore(successMsg, itemList);
+            
+            // Auto-dismiss after 3 seconds
+            setTimeout(() => {
+                successMsg.classList.remove('show');
+                setTimeout(() => successMsg.remove(), 150);
+            }, 3000);
+        }
     }
 
     handleFilter(filter) {
@@ -216,22 +269,30 @@ export class LootManager {
         this.showItemDetails(itemId);
     }
 
-    renderItemList(items = []) {
+    renderItemList(items = null) {
         const itemList = document.getElementById('itemList');
         if (!itemList) return;
 
-        itemList.innerHTML = items.map(item => `
+        // If no items provided, use all items from the data manager
+        const itemsToRender = items || this.dataManager.appState.loot || [];
+        
+        if (itemsToRender.length === 0) {
+            itemList.innerHTML = '<div class="text-muted p-3">No items found</div>';
+            return;
+        }
+
+        itemList.innerHTML = itemsToRender.map(item => `
             <a href="#" class="list-group-item list-group-item-action" data-item-id="${item.id}">
                 <div class="d-flex w-100 justify-content-between">
                     <h5 class="mb-1">${item.name}</h5>
                     <small class="text-muted">${item.type}</small>
                 </div>
-                <p class="mb-1">${item.description}</p>
+                <p class="mb-1">${item.description.substring(0, 100)}${item.description.length > 100 ? '...' : ''}</p>
                 <div>
-                    <span class="badge bg-${this.getRarityColor(item.rarity)}">${item.rarity}</span>
+                    <span class="badge bg-${this.getRarityColor(item.rarity)}">${item.rarity.replace('_', ' ')}</span>
                     ${item.isCursed ? '<span class="badge bg-danger ms-1">Cursed</span>' : ''}
-                    ${item.effects.length > 0 ? 
-                        `<span class="badge bg-warning ms-1">${item.effects.length} effects</span>` : 
+                    ${item.effects?.length > 0 ? 
+                        `<span class="badge bg-warning ms-1">${item.effects.length} effect${item.effects.length !== 1 ? 's' : ''}</span>` : 
                         ''}
                 </div>
             </a>
@@ -327,55 +388,87 @@ export class LootManager {
 
     showNewItemForm() {
         const itemDetails = document.getElementById('itemDetails');
+        if (!itemDetails) return;
+        
         itemDetails.innerHTML = `
-            <form id="newItemForm">
-                <div class="mb-3">
-                    <label for="name" class="form-label">Name</label>
-                    <input type="text" class="form-control" id="name" name="name" required>
+            <div class="card">
+                <div class="card-header">
+                    <h3>Create New Item</h3>
                 </div>
-                <div class="mb-3">
-                    <label for="description" class="form-label">Description</label>
-                    <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+                <div class="card-body">
+                    <form id="newItemForm">
+                        <div class="mb-3">
+                            <label for="itemName" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="itemName" name="itemName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="itemDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="itemDescription" name="itemDescription" rows="3" required></textarea>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="itemType" class="form-label">Type</label>
+                                    <select class="form-select" id="itemType" name="itemType" required>
+                                        <option value="weapon">Weapon</option>
+                                        <option value="armor">Armor</option>
+                                        <option value="magic">Magic</option>
+                                        <option value="consumable">Consumable</option>
+                                        <option value="currency">Currency</option>
+                                        <option value="misc">Misc</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="itemRarity" class="form-label">Rarity</label>
+                                    <select class="form-select" id="itemRarity" name="itemRarity" required>
+                                        <option value="common">Common</option>
+                                        <option value="uncommon">Uncommon</option>
+                                        <option value="rare">Rare</option>
+                                        <option value="very_rare">Very Rare</option>
+                                        <option value="legendary">Legendary</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="isCursed" name="isCursed">
+                                <label class="form-check-label" for="isCursed">Cursed Item</label>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-plus me-1"></i> Create Item
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary" id="cancelNewItem">
+                                <i class="fas fa-times me-1"></i> Cancel
+                            </button>
+                        </div>
+                    </form>
                 </div>
-                <div class="mb-3">
-                    <label for="type" class="form-label">Type</label>
-                    <select class="form-select" id="type" name="type" required>
-                        <option value="weapon">Weapon</option>
-                        <option value="armor">Armor</option>
-                        <option value="potion">Potion</option>
-                        <option value="scroll">Scroll</option>
-                        <option value="ring">Ring</option>
-                        <option value="wand">Wand</option>
-                        <option value="other">Other</option>
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <label for="rarity" class="form-label">Rarity</label>
-                    <select class="form-select" id="rarity" name="rarity" required>
-                        <option value="common">Common</option>
-                        <option value="uncommon">Uncommon</option>
-                        <option value="rare">Rare</option>
-                        <option value="very_rare">Very Rare</option>
-                        <option value="legendary">Legendary</option>
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="isCursed" name="isCursed">
-                        <label class="form-check-label" for="isCursed">Cursed Item</label>
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-primary">Create Item</button>
-            </form>
+            </div>
         `;
 
-        document.getElementById('newItemForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const item = this.createNewItem(e.target);
-            if (item) {
-                this.showItemDetails(item.id);
-            }
-        });
+        const form = document.getElementById('newItemForm');
+        if (form) {
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                this.createNewItem(e.target);
+            });
+        }
+
+        const cancelBtn = document.getElementById('cancelNewItem');
+        if (cancelBtn) {
+            cancelBtn.addEventListener('click', () => {
+                this.renderItemList();
+                const itemDetails = document.getElementById('itemDetails');
+                if (itemDetails) {
+                    itemDetails.innerHTML = '<p class="text-muted">Select an item to view details</p>';
+                }
+            });
+        }
     }
 
     showEditItemForm(itemId) {
@@ -558,12 +651,19 @@ export class LootManager {
     }
 
     setupItemListEventListeners() {
-        document.querySelectorAll('[data-item-id]').forEach(element => {
-            element.addEventListener('click', (e) => {
+        document.querySelectorAll('[data-item-id]').forEach(item => {
+            item.addEventListener('click', (e) => {
                 e.preventDefault();
-                const itemId = element.dataset.itemId;
-                this.showItemDetails(itemId);
+                const itemId = item.dataset.itemId;
+                if (itemId) {
+                    this.showItemDetails(itemId);
+                    // Highlight the selected item
+                    document.querySelectorAll('[data-item-id]').forEach(i => {
+                        i.classList.remove('active');
+                    });
+                    item.classList.add('active');
+                }
             });
         });
     }
-} 
+}
