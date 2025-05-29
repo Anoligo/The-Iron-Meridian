@@ -122,6 +122,10 @@ export class Quest extends Entity {
 export class QuestManager {
     constructor(dataManager, isTest = false) {
         this.dataManager = dataManager;
+        if (!this.dataManager.appState) {
+            console.error('DataManager does not have appState:', this.dataManager);
+            this.dataManager.appState = {...initialState};
+        }
         if (!this.dataManager.appState.quests) {
             this.dataManager.appState.quests = [];
         }
@@ -266,21 +270,28 @@ export class QuestManager {
         const questList = document.getElementById('questList');
         if (!questList) return;
 
-        questList.innerHTML = quests.map(quest => `
-            <a href="#" class="list-group-item list-group-item-action" data-quest-id="${quest.id}">
-                <div class="d-flex w-100 justify-content-between">
-                    <h5 class="mb-1">${quest.title}</h5>
-                    <small class="text-muted">${quest.type}</small>
-                </div>
-                <p class="mb-1">${quest.description}</p>
-                <div>
-                    <span class="badge bg-primary">${quest.type}</span>
-                    <span class="badge bg-secondary">${quest.status}</span>
-                    <span class="badge bg-info">${quest.journalEntries.length} Entries</span>
-                    <small class="text-muted ms-2">Last updated: ${quest.updatedAt.toLocaleDateString()}</small>
-                </div>
-            </a>
-        `).join('');
+        questList.innerHTML = quests.map(quest => {
+            // Ensure updatedAt is a Date object
+            const updatedAt = quest.updatedAt ? new Date(quest.updatedAt) : new Date();
+            const lastUpdated = updatedAt instanceof Date && !isNaN(updatedAt) 
+                ? updatedAt.toLocaleDateString() 
+                : 'Unknown';
+                
+            return `
+                <a href="#" class="list-group-item list-group-item-action" data-quest-id="${quest.id}">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">${quest.title || 'Untitled Quest'}</h5>
+                        <small class="text-muted">${quest.type || 'No Type'}</small>
+                    </div>
+                    <p class="mb-1">${quest.description || 'No description'}</p>
+                    <div>
+                        <span class="badge bg-primary">${quest.type || 'No Type'}</span>
+                        <span class="badge bg-secondary">${quest.status || 'No Status'}</span>
+                        <span class="badge bg-info">${quest.journalEntries?.length || 0} Entries</span>
+                        <small class="text-muted ms-2">Last updated: ${lastUpdated}</small>
+                    </div>
+                </a>`;
+        }).join('');
     }
 
     showQuestDetails(quest) {

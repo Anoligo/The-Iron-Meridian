@@ -10,7 +10,7 @@ describe('Location', () => {
 
     test('should create a new location with correct properties', () => {
         expect(location.name).toBe('Test Location');
-        expect(location.type).toBe(LocationType.CITY);
+        expect(location.type).toBe('CITY');
         expect(location.description).toBe('A test city');
         expect(location.isDiscovered).toBe(false);
         expect(location.relatedQuests).toEqual([]);
@@ -69,8 +69,8 @@ describe('Location', () => {
     });
 
     test('should update type', () => {
-        location.updateType(LocationType.DUNGEON);
-        expect(location.type).toBe(LocationType.DUNGEON);
+        location.updateType('dungeon');
+        expect(location.type).toBe('dungeon');
     });
 });
 
@@ -81,6 +81,23 @@ describe('LocationManager', () => {
     beforeEach(() => {
         mockDataManager = new MockDataManager();
         locationManager = new LocationManager(mockDataManager, true);
+        
+        // Create mock DOM elements
+        const locationsSection = document.createElement('div');
+        locationsSection.id = 'locations';
+        document.body.appendChild(locationsSection);
+        
+        const locationList = document.createElement('div');
+        locationList.id = 'locationList';
+        locationsSection.appendChild(locationList);
+    });
+
+    afterEach(() => {
+        // Clean up DOM elements
+        const locationsSection = document.getElementById('locations');
+        if (locationsSection) {
+            document.body.removeChild(locationsSection);
+        }
     });
 
     test('should initialize locations section', () => {
@@ -95,15 +112,15 @@ describe('LocationManager', () => {
         expect(mockDataManager.appState.locations).toHaveLength(1);
         const location = mockDataManager.appState.locations[0];
         expect(location.name).toBe('Test Location');
-        expect(location.type).toBe('A test city');
-        expect(location.description).toBe('city');
+        expect(location.type).toBe('CITY');
+        expect(location.description).toBe('A test city');
     });
 
     test('should filter locations by type', () => {
-        const location1 = testHelpers.createMockLocation({ type: LocationType.CITY, name: 'Location 1' });
-        const location2 = testHelpers.createMockLocation({ type: LocationType.DUNGEON, name: 'Location 2' });
+        const location1 = testHelpers.createMockLocation({ type: 'city', name: 'Location 1' });
+        const location2 = testHelpers.createMockLocation({ type: 'dungeon', name: 'Location 2' });
         mockDataManager.appState.locations.push(location1, location2);
-        locationManager.handleTypeFilter(LocationType.CITY);
+        locationManager.handleTypeFilter('city');
         const locationList = document.getElementById('locationList');
         expect(locationList.innerHTML).toContain('Location 1');
         expect(locationList.innerHTML).not.toContain('Location 2');
@@ -161,9 +178,11 @@ describe('LocationManager', () => {
     test('should update location type', () => {
         const location = testHelpers.createMockLocation();
         mockDataManager.appState.locations.push(location);
-        const form = testHelpers.createMockForm({ locationType: LocationType.DUNGEON });
+        const form = {
+            locationType: { value: 'dungeon' }
+        };
         locationManager.updateLocationType(location.id, form);
         const updatedLocation = mockDataManager.getLocationById(location.id);
-        expect(updatedLocation.type).toBe(LocationType.DUNGEON);
+        expect(updatedLocation.type).toBe('dungeon');
     });
 }); 

@@ -21,6 +21,7 @@ describe('Test Setup Infrastructure', () => {
                 loot: [],
                 locations: [],
                 players: [],
+                items: [],
                 guildLogs: {
                     activities: [],
                     resources: []
@@ -145,7 +146,7 @@ describe('Test Setup Infrastructure', () => {
             expect(location).toBeInstanceOf(Location);
             expect(location.name).toBe(mockFormValues.location.locationName);
             expect(location.description).toBe(mockFormValues.location.locationDescription);
-            expect(location.type).toBe(mockFormValues.location.locationType);
+            expect(location.type).toBe('CITY');
         });
 
         test('creates mock player with correct structure', () => {

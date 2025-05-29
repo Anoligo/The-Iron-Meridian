@@ -489,6 +489,49 @@ document.body.innerHTML = `
             </div>
         </div>
     </div>
+    <div id="items">
+        <h2>Items</h2>
+        <div class="row mb-4">
+            <div class="col">
+                <button class="btn btn-primary" id="newItemBtn">New Item</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Items List</span>
+                            <div class="btn-group">
+                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="itemTypeFilter" data-bs-toggle="dropdown">
+                                    Filter by Type
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#" data-type="all">All Types</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <input type="text" class="form-control" id="itemSearch" placeholder="Search items...">
+                        </div>
+                        <div id="itemList" class="list-group"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        Item Details
+                    </div>
+                    <div class="card-body" id="itemDetails">
+                        <p class="text-muted">Select an item to view details</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 `;
 
 // Enhanced MockDataManager with better error handling and validation
@@ -561,6 +604,9 @@ class MockDataManager {
     addItem(item) {
         if (!item || typeof item !== 'object') {
             throw new Error('Invalid item object');
+        }
+        if (!item.name || !item.type || !item.rarity) {
+            throw new Error('Invalid item data: missing required properties');
         }
         this.appState.items.push(item);
         this.validateState();
@@ -883,8 +929,8 @@ const testHelpers = {
     createMockLocation: (overrides = {}) => {
         const args = [
             overrides.name || (overrides.locationName?.value || mockFormValues.location.locationName),
-            overrides.type || (overrides.locationType?.value || mockFormValues.location.locationType),
-            overrides.description || (overrides.locationDescription?.value || mockFormValues.location.locationDescription),
+            overrides.description || overrides.locationDescription?.value || mockFormValues.location.locationDescription,
+            overrides.type || overrides.locationType?.value || mockFormValues.location.locationType,
             overrides.x || 0,
             overrides.y || 0,
             ensureDate(overrides.createdAt),
@@ -1014,7 +1060,7 @@ const mockFormValues = {
     },
     location: {
         locationName: 'Test Location',
-        locationType: LocationType.CITY,
+        locationType: 'CITY',
         locationDescription: 'A test city'
     },
     player: {

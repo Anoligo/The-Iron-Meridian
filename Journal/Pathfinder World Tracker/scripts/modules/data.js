@@ -1,9 +1,9 @@
 // Data Management Module
 import { Quest, QuestType, QuestStatus } from './quests.js';
-import { Note } from './notes.js';
+import { Note } from './notes.js'; // Updated to use the new module structure
 import { Item, ItemType, ItemRarity } from './loot.js';
 import { Location, LocationType } from './locations.js';
-import { Player, PlayerClass } from './players.js';
+import { Player, PlayerClass } from './players/index.js'; // Updated to use the new module structure
 import { GuildActivity, GuildActivityType, GuildResource, GuildResourceType } from './guild.js';
 
 // State Schema Definition
@@ -295,6 +295,30 @@ export class DataManager {
             const savedState = localStorage.getItem('appState');
             if (savedState) {
                 const parsedState = JSON.parse(savedState);
+                
+                // Ensure relatedEntities is properly initialized for all notes
+                if (parsedState.notes && Array.isArray(parsedState.notes)) {
+                    parsedState.notes.forEach(note => {
+                        if (note && typeof note === 'object') {
+                            // If relatedEntities doesn't exist or is not an object, initialize it
+                            if (!note.relatedEntities || typeof note.relatedEntities !== 'object') {
+                                note.relatedEntities = {
+                                    quests: [],
+                                    locations: [],
+                                    characters: [],
+                                    items: []
+                                };
+                            } else {
+                                // Ensure all required arrays exist in relatedEntities
+                                note.relatedEntities.quests = Array.isArray(note.relatedEntities.quests) ? note.relatedEntities.quests : [];
+                                note.relatedEntities.locations = Array.isArray(note.relatedEntities.locations) ? note.relatedEntities.locations : [];
+                                note.relatedEntities.characters = Array.isArray(note.relatedEntities.characters) ? note.relatedEntities.characters : [];
+                                note.relatedEntities.items = Array.isArray(note.relatedEntities.items) ? note.relatedEntities.items : [];
+                            }
+                        }
+                    });
+                }
+                
                 const errors = StateValidator.validateState(parsedState);
                 if (errors.length === 0) {
                     this._state = parsedState;
@@ -347,11 +371,141 @@ export class DataManager {
     }
 
     addNote(note) {
-        if (!(note instanceof Note)) {
-            throw new Error('Invalid note object');
+        console.group('DataManager.addNote');
+        try {
+            // Debug: Log the incoming note object
+            console.log('Input note:', JSON.parse(JSON.stringify(note)));
+            
+            // Validate the note object
+            if (!note || typeof note !== 'object') {
+                const error = new Error('Note must be a valid object');
+                console.error('Invalid note object:', note);
+                throw error;
+            }
+
+            // Check if it's an instance of Note or has required properties
+            const isNoteInstance = note instanceof Note;
+            const hasRequiredProps = note.title !== undefined && 
+                                  note.content !== undefined && 
+                                  note.category !== undefined;
+
+            if (!isNoteInstance && !hasRequiredProps) {
+                const error = new Error('Invalid note object: missing required properties (title, content, category)');
+                console.error('Missing required properties in note:', note);
+                throw error;
+            }
+
+            console.log('Creating new note instance...');
+            // Create a new note object with default values if needed
+            let newNote;
+            if (isNoteInstance) {
+                // If it's already a Note instance, create a new one with the same properties
+                newNote = new Note(
+                    note.title,
+                    note.content,
+                    note.category,
+                    note.createdAt,
+                    note.updatedAt
+                );
+                
+                // Copy over any additional properties
+                Object.keys(note).forEach(key => {
+                    if (!['id', 'createdAt', 'updatedAt'].includes(key)) {
+                        newNote[key] = note[key];
+                    }
+                });
+                
+                console.log('Created from Note instance');
+            } else {
+                // Create a new Note instance from plain object
+                newNote = new Note(
+                    note.title || 'Untitled Note',
+                    note.content || '',
+                    note.category || 'lore',
+                    note.createdAt,
+                    note.updatedAt
+                );
+                
+                // Copy over tags if they exist
+                if (Array.isArray(note.tags)) {
+                    newNote.tags = [...note.tags];
+                }
+                
+                console.log('Created from plain object');
+            }
+
+            // Ensure ID is set
+            if (!newNote.id) {
+                newNote.id = `note-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+                console.log('Generated new ID:', newNote.id);
+            }
+
+            console.log('New note before saving:', JSON.parse(JSON.stringify(newNote)));
+            
+            // Ensure relatedEntities exists and has all required arrays
+            if (!newNote.relatedEntities || typeof newNote.relatedEntities !== 'object') {
+                console.log('Initializing missing relatedEntities');
+                newNote.relatedEntities = {
+                    quests: [],
+                    locations: [],
+                    characters: [],
+                    items: []
+                };
+            } else {
+                console.log('Ensuring relatedEntities structure');
+                // Ensure all required arrays exist in relatedEntities
+                newNote.relatedEntities = {
+                    quests: Array.isArray(newNote.relatedEntities.quests) ? 
+                        [...newNote.relatedEntities.quests] : [],
+                    locations: Array.isArray(newNote.relatedEntities.locations) ? 
+                        [...newNote.relatedEntities.locations] : [],
+                    characters: Array.isArray(newNote.relatedEntities.characters) ? 
+                        [...newNote.relatedEntities.characters] : [],
+                    items: Array.isArray(newNote.relatedEntities.items) ? 
+                        [...newNote.relatedEntities.items] : []
+                };
+                
+                console.log('Final relatedEntities:', JSON.parse(JSON.stringify(newNote.relatedEntities)));
+            }
+            
+            // Ensure tags is an array
+            if (!Array.isArray(newNote.tags)) {
+                console.log('Initializing missing tags array');
+                newNote.tags = [];
+            }
+            
+            // Ensure timestamps
+            const now = new Date();
+            if (!newNote.createdAt || !(newNote.createdAt instanceof Date)) {
+                console.log('Setting missing/invalid createdAt');
+                newNote.createdAt = now;
+            }
+            newNote.updatedAt = now;
+            
+            // Add to state and save
+            console.log('Adding note to state...');
+            this._state.notes.push(newNote);
+            
+            try {
+                console.log('Saving data...');
+                this._saveData();
+                console.log('Data saved successfully');
+                console.groupEnd();
+                return newNote;
+            } catch (saveError) {
+                console.error('Error saving note:', saveError);
+                // Remove from state if save fails
+                const index = this._state.notes.indexOf(newNote);
+                if (index > -1) {
+                    this._state.notes.splice(index, 1);
+                }
+                throw new Error('Failed to save note. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error in addNote:', error);
+            console.groupEnd();
+            throw error;
         }
-        this._state.notes.push(note);
-        this._saveData();
     }
 
     addItem(item) {
@@ -406,6 +560,23 @@ export class DataManager {
         if (!id) throw new Error('Invalid note ID');
         const note = this._state.notes.find(n => n.id === id);
         if (!note) throw new Error(`Note with ID ${id} not found`);
+        
+        // Ensure relatedEntities is properly initialized
+        if (!note.relatedEntities || typeof note.relatedEntities !== 'object') {
+            note.relatedEntities = {
+                quests: [],
+                locations: [],
+                characters: [],
+                items: []
+            };
+        } else {
+            // Ensure all required arrays exist in relatedEntities
+            note.relatedEntities.quests = Array.isArray(note.relatedEntities.quests) ? note.relatedEntities.quests : [];
+            note.relatedEntities.locations = Array.isArray(note.relatedEntities.locations) ? note.relatedEntities.locations : [];
+            note.relatedEntities.characters = Array.isArray(note.relatedEntities.characters) ? note.relatedEntities.characters : [];
+            note.relatedEntities.items = Array.isArray(note.relatedEntities.items) ? note.relatedEntities.items : [];
+        }
+        
         return note;
     }
 
@@ -566,4 +737,4 @@ export class DataManager {
         this._state = this._initializeState();
         this._saveData();
     }
-} 
+}

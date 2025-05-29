@@ -24,7 +24,7 @@ export const DiscoveryStatus = {
 import { Entity } from './entity.js';
 
 export class Location extends Entity {
-    constructor(name, description, type = LocationType.CITY, x = 0, y = 0, createdAt = new Date(), updatedAt = new Date()) {
+    constructor(name, description, type = 'CITY', x = 0, y = 0, createdAt = new Date(), updatedAt = new Date()) {
         super(null, new Date(createdAt), new Date(updatedAt));
         this.name = name;
         this.description = description;
@@ -245,8 +245,8 @@ export class LocationManager {
         }
         const location = new Location(
             form.locationName.value,
-            form.locationType.value,
-            form.locationDescription.value
+            form.locationDescription.value,
+            form.locationType.value
         );
         this.dataManager.addLocation(location);
         this.renderLocationList();
@@ -542,11 +542,11 @@ export class LocationManager {
         const location = this.dataManager.appState.locations.find(l => l.id === locationId);
         if (!location) return;
 
-        const name = this.getFormValue(form, 'name') || form.name;
-        const description = this.getFormValue(form, 'description') || form.description;
-        const type = this.getFormValue(form, 'type') || form.type;
-        const x = parseInt(this.getFormValue(form, 'x')) || 0;
-        const y = parseInt(this.getFormValue(form, 'y')) || 0;
+        const name = this.getFormValue(form, 'name') || form.name?.value || form.name;
+        const description = this.getFormValue(form, 'description') || form.description?.value || form.description;
+        const type = this.getFormValue(form, 'type') || form.type?.value || 'CITY';
+        const x = parseInt(this.getFormValue(form, 'coordinates')?.split(',')[0]?.trim() || 0);
+        const y = parseInt(this.getFormValue(form, 'coordinates')?.split(',')[1]?.trim() || 0);
 
         if (!name || !description || !type) {
             console.error('Missing required fields');
@@ -634,11 +634,12 @@ export class LocationManager {
     }
 
     updateLocationType(locationId, form) {
-        if (!form || !form.locationType?.value) {
+        if (!form) {
             throw new Error('Invalid form data');
         }
         const location = this.dataManager.getLocationById(locationId);
-        location.type = form.locationType.value;
+        const type = this.getFormValue(form, 'locationType') || form.locationType?.value || 'CITY';
+        location.type = type;
         this.renderLocationList();
     }
 
