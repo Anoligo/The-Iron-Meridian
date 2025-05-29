@@ -1,4 +1,4 @@
-import { QuestManager } from './modules/quests.js';
+import { QuestsManager as QuestManager } from './modules/quests/index.js';
 import { PlayersManager as PlayerManager, Player } from './modules/players/index.js';
 import { LootManager } from './modules/loot.js';
 import { LocationManager } from './modules/locations.js';
@@ -450,7 +450,7 @@ class DataManager {
 
     // Export data as JSON
     exportData() {
-        const dataStr = JSON.stringify(appState, null, 2);
+        const dataStr = JSON.stringify(this.appState, null, 2);
         const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
         
         const exportFileDefaultName = 'iron-meridian-backup.json';
@@ -459,6 +459,14 @@ class DataManager {
         linkElement.setAttribute('href', dataUri);
         linkElement.setAttribute('download', exportFileDefaultName);
         linkElement.click();
+    }
+
+    // Get quest by ID
+    getQuestById(id) {
+        if (!id) throw new Error('Invalid quest ID');
+        const quest = this._state.quests.find(q => q.id === id);
+        if (!quest) throw new Error(`Quest with ID ${id} not found`);
+        return quest;
     }
 
     get appState() {

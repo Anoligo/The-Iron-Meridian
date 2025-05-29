@@ -1,10 +1,10 @@
 // Import real classes and enums for test helpers
-import { Quest, QuestType, QuestStatus } from '../scripts/modules/quests.js';
-import { Note } from '../scripts/modules/notes.js';
-import { Item, ItemType, ItemRarity } from '../scripts/modules/loot.js';
-import { Location, LocationType } from '../scripts/modules/locations.js';
-import { Player, PlayerClass } from '../scripts/modules/players.js';
-import { GuildActivity, GuildActivityType, GuildResource, GuildResourceType } from '../scripts/modules/guild.js';
+import { Quest, QuestType, QuestStatus } from '../scripts/modules/quests/index.js';
+import { Note } from '../scripts/modules/notes/index.js';
+import { Item, ItemType, ItemRarity } from '../scripts/modules/loot/index.js';
+import { Location, LocationType } from '../scripts/modules/locations/index.js';
+import { Player, PlayerClass } from '../scripts/modules/players/index.js';
+import { GuildActivity, GuildActivityType, GuildResource, GuildResourceType } from '../scripts/modules/guild/index.js';
 import { jest } from '@jest/globals';
 
 // Save the real Date

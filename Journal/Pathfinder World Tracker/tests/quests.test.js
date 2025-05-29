@@ -189,7 +189,7 @@ describe('Quest', () => {
     });
 });
 
-describe('QuestManager', () => {
+describe('QuestsManager', () => {
     let questManager;
     let mockDataManager;
 
