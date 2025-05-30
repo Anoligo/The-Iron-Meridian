@@ -11,6 +11,7 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/loot.css">
+    <link rel="stylesheet" href="styles/map.css">
 </head>
 <body>
     <div class="container-fluid">
@@ -132,41 +133,58 @@
 
                     <!-- Players Section -->
                     <div id="players" class="section">
-                        <h2>Players</h2>
-                        <!-- Player content will be added later -->
+                        <div class="row">
+                            <!-- Player List -->
+                            <div class="col-md-4">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h2 class="text-accent">Players</h2>
+                                    <button id="addPlayerBtn" class="btn btn-primary">
+                                        <i class="fas fa-plus"></i> Add Player
+                                    </button>
+                                </div>
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                    <input type="text" id="playerSearch" class="form-control" placeholder="Search players...">
+                                </div>
+                                <div id="playerList" class="list-group" style="max-height: 600px; overflow-y: auto;">
+                                    <!-- Players will be loaded here -->
+                                </div>
+                            </div>
+                            <!-- Player Details -->
+                            <div class="col-md-8">
+                                <div id="playerDetails" class="card h-100">
+                                    <div class="empty-state">
+                                        <i class="fas fa-user-friends fa-3x mb-3"></i>
+                                        <p class="empty-state-message">Select a player to view details</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Loot Section -->
                     <div id="loot" class="section">
-                        <div class="d-flex justify-content-between align-items-center mb-4">
-                            <h2>Loot & Curses</h2>
-                            <button id="addItemBtn" class="btn btn-primary">
-                                <i class="fas fa-plus"></i> Add Item
-                            </button>
-                        </div>
-                        
-                        <!-- Item List -->
                         <div class="row">
+                            <!-- Item List -->
                             <div class="col-md-4">
-                                <div class="card mb-3">
-                                    <div class="card-header bg-card">
-                                        <h5 class="mb-0">Item List</h5>
-                                    </div>
-                                    <div class="card-body p-0 bg-card">
-                                        <div class="input-group p-2 border-bottom">
-                                            <span class="input-group-text"><i class="fas fa-search"></i></span>
-                                            <input type="text" id="itemSearch" class="form-control" placeholder="Search items...">
-                                        </div>
-                                        <div id="itemList" class="list-group list-group-flush" style="max-height: 600px; overflow-y: auto;">
-                                            <!-- Item list will be populated here -->
-                                        </div>
-                                    </div>
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h2 class="text-accent">Loot & Curses</h2>
+                                    <button id="addItemBtn" class="btn btn-primary">
+                                        <i class="fas fa-plus"></i> Add Item
+                                    </button>
+                                </div>
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                    <input type="text" id="itemSearch" class="form-control" placeholder="Search items...">
+                                </div>
+                                <div id="itemList" class="list-group" style="max-height: 600px; overflow-y: auto;">
+                                    <!-- Items will be loaded here -->
                                 </div>
                             </div>
                             
                             <!-- Item Details -->
                             <div class="col-md-8">
-                                <div id="itemDetails" class="card h-100 bg-card">
+                                <div id="itemDetails" class="card h-100">
                                     <div class="empty-state">
                                         <i class="fas fa-coins fa-3x mb-3"></i>
                                         <p class="empty-state-message">Select an item to view details</p>
@@ -178,14 +196,64 @@
 
                     <!-- Locations Section -->
                     <div id="locations" class="section">
-                        <h2>World Map & Locations</h2>
-                        <!-- Locations content will be added later -->
+                        <div class="row">
+                            <!-- Location List -->
+                            <div class="col-md-4">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h2 class="text-accent">World Map & Locations</h2>
+                                    <button id="addLocationBtn" class="btn btn-primary">
+                                        <i class="fas fa-plus"></i> Add Location
+                                    </button>
+                                </div>
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                    <input type="text" id="locationSearch" class="form-control" placeholder="Search locations...">
+                                </div>
+                                <div id="locationList" class="list-group" style="max-height: 600px; overflow-y: auto;">
+                                    <!-- Locations will be loaded here -->
+                                </div>
+                            </div>
+                            <!-- Location Details -->
+                            <div class="col-md-8">
+                                <div id="locationDetails" class="card h-100">
+                                    <div class="empty-state">
+                                        <i class="fas fa-map-marker-alt fa-3x mb-3"></i>
+                                        <p class="empty-state-message">Select a location to view details</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Notes Section -->
                     <div id="notes" class="section">
-                        <h2>Backstories & Notes</h2>
-                        <!-- Notes content will be added later -->
+                        <div class="row">
+                            <!-- Notes List -->
+                            <div class="col-md-4">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h2 class="text-accent">Backstories & Notes</h2>
+                                    <button id="addNoteBtn" class="btn btn-primary">
+                                        <i class="fas fa-plus"></i> Add Note
+                                    </button>
+                                </div>
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                    <input type="text" id="noteSearch" class="form-control" placeholder="Search notes...">
+                                </div>
+                                <div id="noteList" class="list-group" style="max-height: 600px; overflow-y: auto;">
+                                    <!-- Notes will be loaded here -->
+                                </div>
+                            </div>
+                            <!-- Note Details -->
+                            <div class="col-md-8">
+                                <div id="noteDetails" class="card h-100">
+                                    <div class="empty-state">
+                                        <i class="fas fa-book fa-3x mb-3"></i>
+                                        <p class="empty-state-message">Select a note to view details</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Guild Section -->
@@ -196,46 +264,30 @@
 
                     <!-- Characters Section -->
                     <div id="characters" class="section">
-                        <div class="d-flex justify-content-between align-items-center mb-4">
-                            <h2>Characters</h2>
-                            <button id="addCharacterBtn" class="btn btn-primary">
-                                <i class="fas fa-plus"></i> Add Character
-                            </button>
-                        </div>
-                        
-                        <!-- Character List -->
                         <div class="row">
+                            <!-- Character List -->
                             <div class="col-md-4">
-                                <div class="card mb-3">
-                                    <div class="card-header">
-                                        <h5 class="mb-0">Character List</h5>
-                                    </div>
-                                    <div class="card-body p-0">
-                                        <div class="input-group p-2 border-bottom">
-                                            <span class="input-group-text"><i class="fas fa-search"></i></span>
-                                            <input type="text" id="characterSearch" class="form-control" placeholder="Search characters...">
-                                        </div>
-                                        <div id="characterList" class="list-group list-group-flush" style="max-height: 600px; overflow-y: auto;">
-                                            <!-- Character list will be populated here -->
-                                            <div class="text-center p-3 text-muted">
-                                                No characters found. Click "Add Character" to create one.
-                                            </div>
-                                        </div>
-                                    </div>
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h2 class="text-accent">Characters</h2>
+                                    <button id="addCharacterBtn" class="btn btn-primary">
+                                        <i class="fas fa-plus"></i> Add Character
+                                    </button>
+                                </div>
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                    <input type="text" id="characterSearch" class="form-control" placeholder="Search characters...">
+                                </div>
+                                <div id="characterList" class="list-group" style="max-height: 600px; overflow-y: auto;">
+                                    <!-- Characters will be loaded here -->
                                 </div>
                             </div>
                             
                             <!-- Character Details -->
                             <div class="col-md-8">
                                 <div id="characterDetails" class="card h-100">
-                                    <div class="card-header">
-                                        <h5 class="mb-0">Character Details</h5>
-                                    </div>
-                                    <div class="card-body text-center text-muted" style="display: flex; align-items: center; justify-content: center; min-height: 200px;">
-                                        <div>
-                                            <i class="fas fa-user fa-3x mb-3"></i>
-                                            <p class="mb-0">Select a character to view or edit details</p>
-                                        </div>
+                                    <div class="empty-state">
+                                        <i class="fas fa-user-shield fa-3x mb-3"></i>
+                                        <p class="empty-state-message">Select a character to view details</p>
                                     </div>
                                 </div>
                             </div>

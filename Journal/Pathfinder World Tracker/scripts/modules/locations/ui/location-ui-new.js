@@ -7,6 +7,7 @@
 import { BaseUI } from '../../../components/base-ui.js';
 import { createListItem, createDetailsPanel, showToast } from '../../../components/ui-components.js';
 import { LocationType, DiscoveryStatus } from '../enums/location-enums.js';
+import { InteractiveMap } from './interactive-map.js';
 
 export class LocationUI extends BaseUI {
     /**
@@ -31,11 +32,188 @@ export class LocationUI extends BaseUI {
         
         this.locationService = locationService;
         this.dataManager = dataManager;
+        this.map = null; // Will be initialized in init()
         
         // Bind additional methods
         this.getLocationIcon = this.getLocationIcon.bind(this);
         this.formatLocationType = this.formatLocationType.bind(this);
         this.renderRelatedQuests = this.renderRelatedQuests.bind(this);
+        this.handleMapLocationClick = this.handleMapLocationClick.bind(this);
+        this.handleMapClick = this.handleMapClick.bind(this);
+        this.renderMapView = this.renderMapView.bind(this);
+    }
+    
+    /**
+     * Initialize the UI
+     */
+    init() {
+        // Call the parent init method
+        super.init();
+        
+        // Create the map view
+        this.renderMapView();
+    }
+    
+    /**
+     * Refresh the UI
+     * @param {string} entityId - Optional ID of entity to select after refresh
+     */
+    refresh(entityId = null) {
+        super.refresh(entityId);
+        
+        // Update map locations if map exists
+        if (this.map) {
+            this.map.updateLocations(this.getAll());
+            
+            // If a location is selected, highlight it on the map
+            if (entityId) {
+                this.map.selectLocation(entityId);
+                this.map.centerOnLocation(entityId);
+            }
+        }
+    }
+    
+    /**
+     * Render the map view
+     */
+    renderMapView() {
+        console.log('Attempting to render map view');
+        // Get the locations container
+        const locationsSection = document.getElementById('locations');
+        console.log('Locations section:', locationsSection);
+        if (!locationsSection) {
+            console.error('Locations section not found, cannot render map');
+            return;
+        }
+        
+        // Check if map container already exists
+        let mapContainer = document.getElementById('worldMapContainer');
+        if (!mapContainer) {
+            // Create map container
+            mapContainer = document.createElement('div');
+            mapContainer.id = 'worldMapContainer';
+            mapContainer.className = 'mb-4';
+            
+            // Add map container before the locations list/details row
+            const locationsRow = locationsSection.querySelector('.row');
+            locationsSection.insertBefore(mapContainer, locationsRow);
+        }
+        
+        // Create the map
+        this.map = new InteractiveMap({
+            container: mapContainer,
+            mapImagePath: './WorldMap.png',
+            locations: this.getAll(),
+            onLocationClick: this.handleMapLocationClick,
+            onMapClick: this.handleMapClick
+        });
+    }
+    
+    /**
+     * Handle click on a location pin in the map
+     * @param {Object} location - The clicked location
+     */
+    handleMapLocationClick(location) {
+        // Select the location in the list
+        this.handleSelect(location.id);
+    }
+    
+    /**
+     * Handle click on the map (for adding new locations)
+     * @param {number} x - X coordinate on the map
+     * @param {number} y - Y coordinate on the map
+     */
+    handleMapClick(x, y) {
+        // Show the add location form with pre-filled coordinates
+        this.showAddLocationForm(x, y);
+    }
+    
+    /**
+     * Show the add location form with optional pre-filled coordinates
+     * @param {number} x - Optional X coordinate
+     * @param {number} y - Optional Y coordinate
+     */
+    showAddLocationForm(x, y) {
+        // Create a form for adding a new location
+        const formContainer = document.createElement('div');
+        formContainer.className = 'card';
+        
+        formContainer.innerHTML = `
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Add New Location</h5>
+                <button type="button" class="btn-close" id="close-form-btn" aria-label="Close"></button>
+            </div>
+            <div class="card-body">
+                <form id="location-form">
+                    <div class="mb-3">
+                        <label for="location-name" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="location-name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="location-type" class="form-label">Type</label>
+                        <select class="form-select" id="location-type" required>
+                            ${Object.values(LocationType).map(type => `
+                                <option value="${type}">${this.formatLocationType(type)}</option>
+                            `).join('')}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="location-status" class="form-label">Status</label>
+                        <select class="form-select" id="location-status">
+                            <option value="true">Discovered</option>
+                            <option value="false">Undiscovered</option>
+                        </select>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="location-x" class="form-label">X Coordinate</label>
+                            <input type="number" class="form-control" id="location-x" value="${x || 0}">
+                        </div>
+                        <div class="col">
+                            <label for="location-y" class="form-label">Y Coordinate</label>
+                            <input type="number" class="form-control" id="location-y" value="${y || 0}">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="location-description" class="form-label">Description</label>
+                        <textarea class="form-control" id="location-description" rows="3"></textarea>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-secondary me-2" id="cancel-location-btn">
+                            Cancel
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i> Save Location
+                        </button>
+                    </div>
+                </form>
+            </div>
+        `;
+        
+        // Add form to details panel
+        this.detailsElement.innerHTML = '';
+        this.detailsElement.appendChild(formContainer);
+        
+        // Set up event listeners
+        const form = document.getElementById('location-form');
+        const cancelBtn = document.getElementById('cancel-location-btn');
+        const closeBtn = document.getElementById('close-form-btn');
+        
+        if (form) {
+            form.addEventListener('submit', (e) => this.handleLocationFormSubmit(e, false));
+        }
+        
+        if (cancelBtn) {
+            cancelBtn.addEventListener('click', () => {
+                this.clearDetails();
+            });
+        }
+        
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => {
+                this.clearDetails();
+            });
+        }
     }
     
     /**

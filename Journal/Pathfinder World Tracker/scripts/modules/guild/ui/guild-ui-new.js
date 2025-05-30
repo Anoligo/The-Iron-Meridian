@@ -47,7 +47,7 @@ export class GuildUI extends BaseUI {
      * Initialize the UI
      */
     initialize() {
-        super.initialize();
+        super.init();
         
         // Set up resource UI elements
         this.resourceListElement = document.getElementById('resourceList');

@@ -103,6 +103,9 @@ export class Note extends Entity {
         if (!questId) return false;
         
         try {
+            let changed = false;
+            
+            // Handle removal from the new format (relatedEntities.quests)
             // Ensure relatedEntities is properly initialized
             const relatedEntities = this.initializeRelatedEntities();
             
@@ -110,11 +113,33 @@ export class Note extends Entity {
             const initialLength = relatedEntities.quests.length;
             relatedEntities.quests = relatedEntities.quests.filter(id => id !== questId);
             
-            // If the length changed, update the timestamp
+            // Check if the length changed
             if (relatedEntities.quests.length !== initialLength) {
+                changed = true;
+            }
+            
+            // Handle removal from the legacy format (relatedQuests array)
+            if (this.relatedQuests && Array.isArray(this.relatedQuests)) {
+                const initialLegacyLength = this.relatedQuests.length;
+                this.relatedQuests = this.relatedQuests.filter(quest => quest.id !== questId);
+                
+                // Check if the length changed
+                if (this.relatedQuests.length !== initialLegacyLength) {
+                    changed = true;
+                }
+            }
+            
+            // If anything changed, update the timestamp
+            if (changed) {
                 this.updatedAt = new Date();
+                console.log('Quest removed successfully:', questId);
+                console.log('Updated relatedEntities.quests:', relatedEntities.quests);
+                if (this.relatedQuests) {
+                    console.log('Updated relatedQuests:', this.relatedQuests);
+                }
                 return true;
             }
+            
             return false;
         } catch (error) {
             console.error('Error removing related quest:', error);
@@ -144,14 +169,36 @@ export class Note extends Entity {
         if (!locationId) return false;
         
         try {
+            let changed = false;
+            
+            // Handle removal from the new format (relatedEntities.locations)
             const relatedEntities = this.initializeRelatedEntities();
             const initialLength = relatedEntities.locations.length;
             relatedEntities.locations = relatedEntities.locations.filter(id => id !== locationId);
             
+            // Check if the length changed
             if (relatedEntities.locations.length !== initialLength) {
+                changed = true;
+            }
+            
+            // Handle removal from the legacy format (relatedLocations array)
+            if (this.relatedLocations && Array.isArray(this.relatedLocations)) {
+                const initialLegacyLength = this.relatedLocations.length;
+                this.relatedLocations = this.relatedLocations.filter(location => location.id !== locationId);
+                
+                // Check if the length changed
+                if (this.relatedLocations.length !== initialLegacyLength) {
+                    changed = true;
+                }
+            }
+            
+            // If anything changed, update the timestamp
+            if (changed) {
                 this.updatedAt = new Date();
+                console.log('Location removed successfully:', locationId);
                 return true;
             }
+            
             return false;
         } catch (error) {
             console.error('Error removing related location:', error);
@@ -181,14 +228,36 @@ export class Note extends Entity {
         if (!characterId) return false;
         
         try {
+            let changed = false;
+            
+            // Handle removal from the new format (relatedEntities.characters)
             const relatedEntities = this.initializeRelatedEntities();
             const initialLength = relatedEntities.characters.length;
             relatedEntities.characters = relatedEntities.characters.filter(id => id !== characterId);
             
+            // Check if the length changed
             if (relatedEntities.characters.length !== initialLength) {
+                changed = true;
+            }
+            
+            // Handle removal from the legacy format (relatedCharacters array)
+            if (this.relatedCharacters && Array.isArray(this.relatedCharacters)) {
+                const initialLegacyLength = this.relatedCharacters.length;
+                this.relatedCharacters = this.relatedCharacters.filter(character => character.id !== characterId);
+                
+                // Check if the length changed
+                if (this.relatedCharacters.length !== initialLegacyLength) {
+                    changed = true;
+                }
+            }
+            
+            // If anything changed, update the timestamp
+            if (changed) {
                 this.updatedAt = new Date();
+                console.log('Character removed successfully:', characterId);
                 return true;
             }
+            
             return false;
         } catch (error) {
             console.error('Error removing related character:', error);
@@ -218,14 +287,36 @@ export class Note extends Entity {
         if (!itemId) return false;
         
         try {
+            let changed = false;
+            
+            // Handle removal from the new format (relatedEntities.items)
             const relatedEntities = this.initializeRelatedEntities();
             const initialLength = relatedEntities.items.length;
             relatedEntities.items = relatedEntities.items.filter(id => id !== itemId);
             
+            // Check if the length changed
             if (relatedEntities.items.length !== initialLength) {
+                changed = true;
+            }
+            
+            // Handle removal from the legacy format (relatedItems array)
+            if (this.relatedItems && Array.isArray(this.relatedItems)) {
+                const initialLegacyLength = this.relatedItems.length;
+                this.relatedItems = this.relatedItems.filter(item => item.id !== itemId);
+                
+                // Check if the length changed
+                if (this.relatedItems.length !== initialLegacyLength) {
+                    changed = true;
+                }
+            }
+            
+            // If anything changed, update the timestamp
+            if (changed) {
                 this.updatedAt = new Date();
+                console.log('Item removed successfully:', itemId);
                 return true;
             }
+            
             return false;
         } catch (error) {
             console.error('Error removing related item:', error);

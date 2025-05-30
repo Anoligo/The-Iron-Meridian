@@ -1,4 +1,9 @@
 /* Iron Meridian UI - Polished Dark Theme */
+
+/* Import additional stylesheets */
+@import url('forms.css');
+@import url('components.css');
+@import url('input-fix.css'); /* Fix for input text color */
 :root {
     --bg-dark: #1c1c1c;      /* Full-page backdrop, calm matte black */
     --bg-card: #2a2a2a;      /* Surface panels for text/interactive content */
@@ -178,11 +183,6 @@ p {
 .form-group {
     margin-bottom: 1rem;
 }
-
-/* Import form styles from forms.css */
-@import url('forms.css');
-@import url('components.css');
-@import url('input-fix.css'); /* Fix for input text color */
 
 .modal-content, .popover, .dropdown-menu {
     background-color: var(--bg-card);

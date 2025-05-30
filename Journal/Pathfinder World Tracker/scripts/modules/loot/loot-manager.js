@@ -133,7 +133,7 @@ export class LootManager {
                 this.lootUI.container = lootSection;
             }
             
-            this.lootUI.render();
+            this.lootUI.refresh();
             this.isRendered = true;
         }
     }

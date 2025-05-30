@@ -101,10 +101,10 @@ export class GuildManager {
         `;
         
         // Setup event listeners after recreating the DOM elements
-        this.guildUI.setupEventListeners();
+        this.guildUI.setupResourceEventListeners();
         
         // Initialize the UI
-        this.guildUI.initializeUI();
+        this.guildUI.initialize();
     }
 
     // Activity Methods

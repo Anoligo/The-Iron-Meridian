@@ -71,17 +71,32 @@ export class CharacterUI extends BaseUI {
      * @returns {HTMLElement} The created list item
      */
     createListItem(character) {
-        return createListItem({
-            id: character.id,
-            title: character.name,
-            subtitle: `${character.race || 'Unknown Race'} ${character.classType || 'Unknown Class'} (Level ${character.level || 1})`,
-            icon: 'fas fa-user-shield',
-            isSelected: this.currentEntity && this.currentEntity.id === character.id,
-            metadata: {
-                'Status': character.status || 'Active'
-            },
-            onClick: (id) => this.handleSelect(id)
+        const listItem = document.createElement('a');
+        listItem.href = '#';
+        listItem.className = 'list-group-item list-group-item-action d-flex justify-content-between align-items-center';
+        listItem.dataset.id = character.id;
+        
+        if (this.currentEntity && this.currentEntity.id === character.id) {
+            listItem.classList.add('active');
+        }
+        
+        listItem.innerHTML = `
+            <div class="d-flex flex-column">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-user-shield me-2"></i>
+                    <strong>${character.name}</strong>
+                </div>
+                <small>${character.race || 'Unknown Race'} ${character.classType || 'Unknown Class'} (Level ${character.level || 1})</small>
+            </div>
+            <span class="badge bg-secondary rounded-pill">${character.status || 'Active'}</span>
+        `;
+        
+        listItem.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.handleSelect(character.id);
         });
+        
+        return listItem;
     }
     
     /**
@@ -89,6 +104,18 @@ export class CharacterUI extends BaseUI {
      * @param {Object} character - Character to render details for
      */
     renderDetails(character) {
+        if (!this.detailsElement) return;
+        
+        if (!character) {
+            this.detailsElement.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-user-shield fa-3x mb-3"></i>
+                    <p class="empty-state-message">Select a character to view details</p>
+                </div>
+            `;
+            return;
+        }
+        
         // Create sections for the details panel
         const sections = [
             {
@@ -101,7 +128,7 @@ export class CharacterUI extends BaseUI {
                             <p><strong>Level:</strong> ${character.level || 1}</p>
                         </div>
                         <div class="col-md-6">
-                            <p><strong>Status:</strong> ${character.status || 'Active'}</p>
+                            <p><strong>Status:</strong> <span class="badge bg-secondary">${character.status || 'Active'}</span></p>
                             <p><strong>Alignment:</strong> ${character.alignment || 'Unknown'}</p>
                             <p><strong>Deity:</strong> ${character.deity || 'None'}</p>
                         </div>
@@ -141,30 +168,41 @@ export class CharacterUI extends BaseUI {
             }
         ];
         
-        // Create the details panel
-        const detailsPanel = createDetailsPanel({
-            title: character.name,
-            data: character,
-            actions: [
-                {
-                    label: 'Edit',
-                    icon: 'fas fa-edit',
-                    type: 'primary',
-                    onClick: () => this.handleEdit(character)
-                },
-                {
-                    label: 'Delete',
-                    icon: 'fas fa-trash',
-                    type: 'danger',
-                    onClick: () => this.handleDelete(character.id)
-                }
-            ],
-            sections: sections
+        // Create the details panel content
+        let detailsContent = `
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">${character.name}</h5>
+                <div>
+                    <button class="btn btn-sm btn-primary me-2" id="edit-character-btn">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                    <button class="btn btn-sm btn-danger" id="delete-character-btn">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+        `;
+        
+        // Add each section to the details content
+        sections.forEach(section => {
+            detailsContent += `
+                <div class="mb-4">
+                    <h6 class="text-accent mb-3">${section.title}</h6>
+                    ${section.content}
+                </div>
+            `;
         });
         
-        // Clear the details element and append the new details panel
-        this.detailsElement.innerHTML = '';
-        this.detailsElement.appendChild(detailsPanel);
+        // Close the card body
+        detailsContent += `</div>`;
+        
+        // Add the details panel to the DOM
+        this.detailsElement.innerHTML = detailsContent;
+        
+        // Add event listeners
+        document.getElementById('edit-character-btn').addEventListener('click', () => this.handleEdit(character));
+        document.getElementById('delete-character-btn').addEventListener('click', () => this.handleDelete(character.id));
     }
     
     /**
@@ -266,7 +304,7 @@ export class CharacterUI extends BaseUI {
                             <select class="form-select" id="character-class">
                                 <option value="">Select Class</option>
                                 ${Object.entries(PlayerClass).map(([key, value]) => 
-                                    `<option value="${value}">${formatEnumValue(value)}</option>`
+                                    `<option value="${value}">${value.charAt(0).toUpperCase() + value.slice(1)}</option>`
                                 ).join('')}
                             </select>
                         </div>

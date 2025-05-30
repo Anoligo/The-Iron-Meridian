@@ -1,5 +1,5 @@
 import { PlayerService } from './services/player-service.js';
-import { PlayerUI } from './ui/player-ui.js';
+import { PlayerUI } from './ui/player-ui-new.js';
 import { PlayerForms } from './ui/player-forms.js';
 
 export class PlayersManager {
@@ -10,28 +10,46 @@ export class PlayersManager {
         this.forms = new PlayerForms(this);
         
         if (!isTest) {
+            // Create sample players if none exist
+            if (this.service.getAllPlayers().length === 0) {
+                this.createSamplePlayers();
+            }
+            
             this.initialize();
         }
     }
+    
+    /**
+     * Create sample players for testing
+     */
+    createSamplePlayers() {
+        const samplePlayers = [
+            { name: 'Thordak', class: 'fighter', level: 5 },
+            { name: 'Elara', class: 'wizard', level: 4 },
+            { name: 'Grimm', class: 'rogue', level: 3 },
+            { name: 'Seraphina', class: 'cleric', level: 4 }
+        ];
+        
+        samplePlayers.forEach(player => {
+            this.service.createPlayer(player.name, player.class, player.level);
+        });
+        
+        console.log('Created sample players');
+    }
 
     initialize() {
-        this.ui.initializePlayersSection();
+        // The new PlayerUI class extends BaseUI which handles initialization
+        // No need to call initializePlayersSection anymore
         this.setupEventListeners();
-        this.ui.renderPlayerList();
+        this.ui.renderList();  // Use renderList instead of renderPlayerList
     }
 
     setupEventListeners() {
-        // Event delegation for player list items
+        // The BaseUI class now handles most of the event listeners
+        // We only need to set up custom event listeners here
+        
+        // Handle class filter clicks
         document.addEventListener('click', (e) => {
-            // Handle player list item clicks
-            const playerItem = e.target.closest('[data-player-id]');
-            if (playerItem) {
-                e.preventDefault();
-                const playerId = playerItem.getAttribute('data-player-id');
-                this.ui.showPlayerDetails(playerId);
-            }
-            
-            // Handle class filter clicks
             const classFilterItem = e.target.closest('[data-class]');
             if (classFilterItem) {
                 e.preventDefault();
@@ -40,20 +58,11 @@ export class PlayersManager {
             }
             
             // Handle new player button
-            if (e.target.matches('#newPlayerBtn')) {
+            if (e.target.matches('#addPlayerBtn')) {
                 e.preventDefault();
                 this.forms.showNewPlayerForm();
             }
         });
-        
-        // Search functionality
-        const searchInput = document.getElementById('playerSearch');
-        if (searchInput) {
-            searchInput.addEventListener('input', (e) => {
-                const searchTerm = e.target.value.toLowerCase();
-                this.searchPlayers(searchTerm);
-            });
-        }
     }
 
     // Player CRUD Operations
@@ -69,8 +78,8 @@ export class PlayersManager {
                 parseInt(form.playerLevel?.value) || 1
             );
             
-            this.ui.renderPlayerList();
-            this.ui.showPlayerDetails(player.id);
+            this.ui.renderList();
+            this.ui.handleSelect(player.id);
             
             // Reset the form
             form.reset();
@@ -94,8 +103,8 @@ export class PlayersManager {
             };
             
             this.service.updatePlayer(playerId, updates);
-            this.ui.renderPlayerList();
-            this.ui.showPlayerDetails(playerId);
+            this.ui.renderList();
+            this.ui.handleSelect(playerId);
             
         } catch (error) {
             console.error('Error updating player:', error);
@@ -107,12 +116,9 @@ export class PlayersManager {
         try {
             const success = this.service.deletePlayer(playerId);
             if (success) {
-                this.ui.renderPlayerList();
-                // Clear player details
-                const details = document.getElementById('playerDetails');
-                if (details) {
-                    details.innerHTML = '<p class="text-muted">Select a player to view details</p>';
-                }
+                this.ui.renderList();
+                // Clear player details - the BaseUI class will handle showing the empty state
+                this.ui.clearDetails();
             }
         } catch (error) {
             console.error('Error deleting player:', error);
@@ -123,25 +129,25 @@ export class PlayersManager {
     // Helper Methods
     filterPlayersByClass(className) {
         if (className === 'all') {
-            this.ui.renderPlayerList();
+            this.ui.renderList();
             return;
         }
         
         const filteredPlayers = this.service.getAllPlayers().filter(
             player => player.class === className
         );
-        this.ui.renderPlayerList(filteredPlayers);
+        this.ui.renderList(filteredPlayers);
     }
 
     searchPlayers(term) {
         if (!term) {
-            this.ui.renderPlayerList();
+            this.ui.renderList();
             return;
         }
         
         const filteredPlayers = this.service.getAllPlayers().filter(
             player => player.name.toLowerCase().includes(term.toLowerCase())
         );
-        this.ui.renderPlayerList(filteredPlayers);
+        this.ui.renderList(filteredPlayers);
     }
 }

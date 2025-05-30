@@ -119,6 +119,10 @@ export class NotesService {
         if (!category) return this.dataManager.appState.notes || [];
         return (this.dataManager.appState.notes || []).filter(note => note.category === category);
     }
+    
+    getAllNotes() {
+        return this.dataManager.appState.notes || [];
+    }
 
     // Tag management
     addTagToNote(noteId, tag) {
@@ -164,8 +168,23 @@ export class NotesService {
     }
 
     removeRelatedEntity(noteId, entityType, entityId) {
+        console.log(`NotesService.removeRelatedEntity called with noteId: ${noteId}, entityType: ${entityType}, entityId: ${entityId}`);
+        
+        // Get the note from the data manager's state
+        const noteIndex = this.dataManager.appState.notes.findIndex(n => n.id === noteId);
+        if (noteIndex === -1) {
+            console.error('Note not found:', noteId);
+            return false;
+        }
+        
+        // Get the note using our getNoteById to ensure it's a proper Note instance
         const note = this.getNoteById(noteId);
-        if (!note) return false;
+        if (!note) {
+            console.error('Failed to get note instance:', noteId);
+            return false;
+        }
+        
+        console.log('Current note before removal:', JSON.parse(JSON.stringify(note)));
 
         const methodMap = {
             'quest': 'removeRelatedQuest',
@@ -175,11 +194,24 @@ export class NotesService {
         };
 
         if (methodMap[entityType] && typeof note[methodMap[entityType]] === 'function') {
+            // Call the remove method on the note instance
             const result = note[methodMap[entityType]](entityId);
+            
             if (result) {
+                console.log('Entity removed from note model:', note);
+                
+                // IMPORTANT: Update the note in the data manager's state
+                this.dataManager.appState.notes[noteIndex] = note;
+                
+                // Save the changes to persistent storage
                 this.dataManager.saveData();
+                
+                console.log('Note after removal:', JSON.parse(JSON.stringify(note)));
+                console.log('Updated appState.notes[noteIndex]:', JSON.parse(JSON.stringify(this.dataManager.appState.notes[noteIndex])));
+                
+                return true;
             }
-            return result;
+            return false;
         }
         return false;
     }

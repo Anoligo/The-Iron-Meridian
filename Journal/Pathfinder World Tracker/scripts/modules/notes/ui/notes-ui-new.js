@@ -37,6 +37,13 @@ export class NotesUI extends BaseUI {
         this.getCategoryColor = this.getCategoryColor.bind(this);
         this.formatRelatedEntities = this.formatRelatedEntities.bind(this);
         this.formatTags = this.formatTags.bind(this);
+        this.handleRemoveRelatedEntity = this.handleRemoveRelatedEntity.bind(this);
+        
+        // Add event listener for the removeRelatedEntity custom event
+        document.addEventListener('removeRelatedEntity', (e) => {
+            const { noteId, entityType, entityId } = e.detail;
+            this.handleRemoveRelatedEntity(noteId, entityType, entityId);
+        });
     }
     
     /**
@@ -86,31 +93,115 @@ export class NotesUI extends BaseUI {
         }
         
         // Add related entities sections
+        // Handle both the legacy format (note.relatedQuests) and the new format (note.relatedEntities.quests)
+        
+        // Process related quests
+        const relatedQuests = [];
+        // Add from legacy format if available
         if (note.relatedQuests && note.relatedQuests.length > 0) {
+            relatedQuests.push(...note.relatedQuests);
+        }
+        // Add from new format if available
+        if (note.relatedEntities && note.relatedEntities.quests && note.relatedEntities.quests.length > 0) {
+            // For each quest ID in relatedEntities.quests, add it to relatedQuests if it's not already there
+            note.relatedEntities.quests.forEach(questId => {
+                if (!relatedQuests.some(q => q.id === questId)) {
+                    // Try to find the quest in the app state
+                    const quest = this.dataManager.appState.quests?.find(q => q.id === questId);
+                    if (quest) {
+                        relatedQuests.push({
+                            id: questId,
+                            name: quest.name || quest.title || `Quest ${questId.substring(0, 6)}`
+                        });
+                    }
+                }
+            });
+        }
+        if (relatedQuests.length > 0) {
             sections.push({
                 title: 'Related Quests',
-                content: this.formatRelatedEntities(note.relatedQuests, 'quest')
+                content: this.formatRelatedEntities(relatedQuests, 'quest')
             });
         }
         
+        // Process related locations
+        const relatedLocations = [];
+        // Add from legacy format if available
         if (note.relatedLocations && note.relatedLocations.length > 0) {
+            relatedLocations.push(...note.relatedLocations);
+        }
+        // Add from new format if available
+        if (note.relatedEntities && note.relatedEntities.locations && note.relatedEntities.locations.length > 0) {
+            note.relatedEntities.locations.forEach(locationId => {
+                if (!relatedLocations.some(l => l.id === locationId)) {
+                    const location = this.dataManager.appState.locations?.find(l => l.id === locationId);
+                    if (location) {
+                        relatedLocations.push({
+                            id: locationId,
+                            name: location.name || `Location ${locationId.substring(0, 6)}`
+                        });
+                    }
+                }
+            });
+        }
+        if (relatedLocations.length > 0) {
             sections.push({
                 title: 'Related Locations',
-                content: this.formatRelatedEntities(note.relatedLocations, 'location')
+                content: this.formatRelatedEntities(relatedLocations, 'location')
             });
         }
         
+        // Process related characters
+        const relatedCharacters = [];
+        // Add from legacy format if available
         if (note.relatedCharacters && note.relatedCharacters.length > 0) {
+            relatedCharacters.push(...note.relatedCharacters);
+        }
+        // Add from new format if available
+        if (note.relatedEntities && note.relatedEntities.characters && note.relatedEntities.characters.length > 0) {
+            note.relatedEntities.characters.forEach(characterId => {
+                if (!relatedCharacters.some(c => c.id === characterId)) {
+                    const character = this.dataManager.appState.characters?.find(c => c.id === characterId);
+                    if (character) {
+                        relatedCharacters.push({
+                            id: characterId,
+                            name: character.name || `Character ${characterId.substring(0, 6)}`
+                        });
+                    }
+                }
+            });
+        }
+        if (relatedCharacters.length > 0) {
             sections.push({
                 title: 'Related Characters',
-                content: this.formatRelatedEntities(note.relatedCharacters, 'character')
+                content: this.formatRelatedEntities(relatedCharacters, 'character')
             });
         }
         
+        // Process related items
+        const relatedItems = [];
+        // Add from legacy format if available
         if (note.relatedItems && note.relatedItems.length > 0) {
+            relatedItems.push(...note.relatedItems);
+        }
+        // Add from new format if available
+        if (note.relatedEntities && note.relatedEntities.items && note.relatedEntities.items.length > 0) {
+            note.relatedEntities.items.forEach(itemId => {
+                if (!relatedItems.some(i => i.id === itemId)) {
+                    const item = this.dataManager.appState.loot?.find(i => i.id === itemId);
+                    if (item) {
+                        relatedItems.push({
+                            id: itemId,
+                            name: item.name || item.title || `Item ${itemId.substring(0, 6)}`
+                        });
+                    }
+                }
+            });
+        }
+        if (relatedItems.length > 0) {
             sections.push({
                 title: 'Related Items',
-                content: this.formatRelatedEntities(note.relatedItems, 'item')
+                content: this.formatRelatedEntities(relatedItems, 'item')
             });
         }
         
@@ -186,16 +277,92 @@ export class NotesUI extends BaseUI {
             item: 'fas fa-coins'
         };
         
+        // Get the current note ID if we have one selected
+        const currentNoteId = this.currentEntity ? this.currentEntity.id : null;
+        
+        // Create a unique function name for this note to handle removals
+        const functionName = `removeRelatedEntity_${Date.now()}`;
+        
+        // Add the function to the window object so it can be called from onclick
+        window[functionName] = (noteId, entityType, entityId) => {
+            console.log('Removing related entity:', noteId, entityType, entityId);
+            
+            // Call the NotesService directly to remove the entity
+            const success = this.notesService.removeRelatedEntity(noteId, entityType, entityId);
+            console.log('Remove operation result:', success);
+            
+            if (success) {
+                // Force a complete refresh of the data
+                const updatedNote = this.notesService.getNoteById(noteId);
+                console.log('Updated note:', updatedNote);
+                
+                // Clear the current entity cache
+                this.currentEntity = null;
+                
+                // Reselect the note to force a complete UI refresh
+                this.handleSelect(noteId);
+                
+                // Show success message
+                showToast({
+                    message: 'Related entity removed successfully',
+                    type: 'success'
+                });
+            } else {
+                // Show error message
+                showToast({
+                    message: 'Failed to remove related entity',
+                    type: 'error'
+                });
+            }
+        };
+        
+        // Generate the HTML with onclick attributes
         return `
             <div class="list-group">
                 ${entities.map(entity => `
-                    <a href="#" class="list-group-item list-group-item-action bg-card" data-${type}-id="${entity.id}">
-                        <i class="${icons[type] || 'fas fa-link'} me-2"></i>
-                        ${entity.name || entity.title}
-                    </a>
+                    <div class="list-group-item bg-card d-flex justify-content-between align-items-center">
+                        <a href="#" class="flex-grow-1 text-decoration-none text-reset" data-${type}-id="${entity.id}">
+                            <i class="${icons[type] || 'fas fa-link'} me-2"></i>
+                            ${entity.name || entity.title}
+                        </a>
+                        <button class="btn btn-sm btn-outline-danger" 
+                                title="Remove this related entity"
+                                onclick="${functionName}('${currentNoteId}', '${type}', '${entity.id}'); return false;">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
                 `).join('')}
             </div>
         `;
+    }
+    
+    /**
+     * Handle removing a related entity from a note
+     * @param {string} noteId - ID of the note to remove the entity from
+     * @param {string} entityType - Type of entity to remove (quest, location, character, item)
+     * @param {string} entityId - ID of the entity to remove
+     */
+    handleRemoveRelatedEntity(noteId, entityType, entityId) {
+        const note = this.getById(noteId);
+        if (!note) return;
+        
+        // Use the NotesService to remove the related entity
+        const success = this.notesService.removeRelatedEntity(noteId, entityType, entityId);
+        
+        if (success) {
+            // Refresh the note to show the updated related entities
+            this.refresh(noteId);
+            
+            showToast({
+                message: 'Related entity removed successfully',
+                type: 'success'
+            });
+        } else {
+            showToast({
+                message: 'Failed to remove related entity',
+                type: 'error'
+            });
+        }
     }
     
     /**
@@ -450,47 +617,319 @@ export class NotesUI extends BaseUI {
         const note = this.getById(noteId);
         if (!note) return;
         
-        // Create a dropdown to select entity type
-        const entityType = prompt('Select entity type to add (quest, location, character, item):');
-        if (!entityType) return;
+        // Create a modal with buttons for each entity type
+        const modalId = 'relatedEntityModal';
+        const modalHtml = `
+            <div class="modal fade" id="${modalId}" tabindex="-1" aria-labelledby="${modalId}Label" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content bg-card">
+                        <div class="modal-header">
+                            <h5 class="modal-title text-accent" id="${modalId}Label">Add Related Entity</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-4">
+                                <h6 class="mb-3">Select Entity Type:</h6>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <button class="btn btn-outline-primary entity-type-btn" data-type="quest">
+                                        <i class="fas fa-scroll me-2"></i>Quests
+                                    </button>
+                                    <button class="btn btn-outline-primary entity-type-btn" data-type="location">
+                                        <i class="fas fa-map-marker-alt me-2"></i>Locations
+                                    </button>
+                                    <button class="btn btn-outline-primary entity-type-btn" data-type="character">
+                                        <i class="fas fa-user-shield me-2"></i>Characters
+                                    </button>
+                                    <button class="btn btn-outline-primary entity-type-btn" data-type="item">
+                                        <i class="fas fa-coins me-2"></i>Items
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div id="entityListContainer" class="d-none">
+                                <h6 class="mb-3">Select Entity:</h6>
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                    <input type="text" id="entitySearchInput" class="form-control" placeholder="Search entities...">
+                                </div>
+                                <div id="entityList" class="list-group" style="max-height: 300px; overflow-y: auto;">
+                                    <!-- Entities will be loaded here -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary" id="addEntityBtn" disabled>Add Selected Entity</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
         
-        const validTypes = ['quest', 'location', 'character', 'item'];
-        if (!validTypes.includes(entityType.toLowerCase())) {
+        // Add modal to the DOM if it doesn't exist
+        if (!document.getElementById(modalId)) {
+            const modalContainer = document.createElement('div');
+            modalContainer.innerHTML = modalHtml;
+            document.body.appendChild(modalContainer.firstElementChild);
+        }
+        
+        // Get modal elements
+        const modal = document.getElementById(modalId);
+        const entityListContainer = document.getElementById('entityListContainer');
+        const entityList = document.getElementById('entityList');
+        const entitySearchInput = document.getElementById('entitySearchInput');
+        const addEntityBtn = document.getElementById('addEntityBtn');
+        
+        // Initialize modal
+        const bsModal = new bootstrap.Modal(modal);
+        // Define these variables in the outer scope so they can be accessed by all event handlers
+        window.noteRelatedEntityVars = {
+            selectedEntityType: null,
+            selectedEntityId: null,
+            currentNoteId: noteId
+        };
+        
+        // Set up event listeners for entity type buttons
+        const entityTypeBtns = modal.querySelectorAll('.entity-type-btn');
+        entityTypeBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Reset selected state
+                entityTypeBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                // Get entity type
+                window.noteRelatedEntityVars.selectedEntityType = btn.getAttribute('data-type');
+                
+                // Load entities of the selected type
+                this.loadEntitiesOfType(window.noteRelatedEntityVars.selectedEntityType, entityList);
+                
+                // Show entity list container
+                entityListContainer.classList.remove('d-none');
+                
+                // Reset search input
+                entitySearchInput.value = '';
+                
+                // Disable add button until an entity is selected
+                addEntityBtn.disabled = true;
+            });
+        });
+        
+        // Set up event listener for entity search input
+        entitySearchInput.addEventListener('input', () => {
+            const searchTerm = entitySearchInput.value.toLowerCase();
+            const entityItems = entityList.querySelectorAll('.list-group-item');
+            
+            entityItems.forEach(item => {
+                const entityName = item.textContent.toLowerCase();
+                if (entityName.includes(searchTerm)) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+        
+        // Set up event listener for add entity button
+        addEntityBtn.addEventListener('click', () => {
+            if (window.noteRelatedEntityVars.selectedEntityType && window.noteRelatedEntityVars.selectedEntityId) {
+                this.addRelatedEntityToNote(noteId, window.noteRelatedEntityVars.selectedEntityType, window.noteRelatedEntityVars.selectedEntityId);
+                bsModal.hide();
+            }
+        });
+        
+        // Show modal
+        bsModal.show();
+    }
+    
+    /**
+     * Load entities of the specified type into the entity list
+     * @param {string} entityType - Type of entity to load (quest, location, character, item)
+     * @param {HTMLElement} entityList - The list element to populate
+     */
+    loadEntitiesOfType(entityType, entityList) {
+        // Get the current note ID from the window variable
+        const noteId = window.noteRelatedEntityVars.currentNoteId;
+        if (!noteId) return;
+        
+        // Get the current note to check for already related entities
+        const currentNote = this.getById(noteId);
+        if (!currentNote) return;
+        
+        // Clear the entity list
+        entityList.innerHTML = '';
+        
+        // Get entities of the specified type
+        let entities = [];
+        switch (entityType) {
+            case 'quest':
+                if (this.dataManager.appState.quests) {
+                    entities = this.dataManager.appState.quests;
+                }
+                break;
+            case 'location':
+                if (this.dataManager.appState.locations) {
+                    entities = this.dataManager.appState.locations;
+                }
+                break;
+            case 'character':
+                if (this.dataManager.appState.characters) {
+                    entities = this.dataManager.appState.characters;
+                }
+                break;
+            case 'item':
+                if (this.dataManager.appState.loot) {
+                    entities = this.dataManager.appState.loot;
+                }
+                break;
+        }
+        
+        // Check which entities are already related to the note
+        const alreadyRelatedIds = new Set();
+        
+        // Check in the legacy format
+        const legacyKey = `related${entityType.charAt(0).toUpperCase() + entityType.slice(1)}s`;
+        if (currentNote[legacyKey] && Array.isArray(currentNote[legacyKey])) {
+            currentNote[legacyKey].forEach(entity => {
+                if (entity && entity.id) {
+                    alreadyRelatedIds.add(entity.id);
+                }
+            });
+        }
+        
+        // Check in the new format
+        const newFormatKey = `${entityType}s`;
+        if (currentNote.relatedEntities && Array.isArray(currentNote.relatedEntities[newFormatKey])) {
+            currentNote.relatedEntities[newFormatKey].forEach(id => {
+                alreadyRelatedIds.add(id);
+            });
+        }
+        
+        // Filter out already related entities
+        const availableEntities = entities.filter(entity => !alreadyRelatedIds.has(entity.id));
+        
+        // Add entities to the list
+        if (availableEntities.length === 0) {
+            const emptyItem = document.createElement('div');
+            emptyItem.className = 'list-group-item bg-card text-center';
+            emptyItem.textContent = alreadyRelatedIds.size > 0 
+                ? `All available ${entityType}s are already related to this note.` 
+                : `No ${entityType}s found. Create some first.`;
+            entityList.appendChild(emptyItem);
+        } else {
+            availableEntities.forEach(entity => {
+                const item = document.createElement('a');
+                item.href = '#';
+                item.className = 'list-group-item list-group-item-action bg-card';
+                item.setAttribute('data-entity-id', entity.id);
+                item.textContent = entity.name || entity.title || `${entityType} ${entity.id.substring(0, 6)}`;
+                
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    
+                    // Remove selected class from all items
+                    entityList.querySelectorAll('.list-group-item').forEach(i => {
+                        i.classList.remove('active');
+                    });
+                    
+                    // Add selected class to clicked item
+                    item.classList.add('active');
+                    
+                    // Set selected entity ID
+                    window.noteRelatedEntityVars.selectedEntityId = entity.id;
+                    
+                    // Enable add button
+                    document.getElementById('addEntityBtn').disabled = false;
+                });
+                
+                entityList.appendChild(item);
+            });
+        }
+    }
+    
+    /**
+     * Add a related entity to a note
+     * @param {string} noteId - ID of the note to add the entity to
+     * @param {string} entityType - Type of entity to add (quest, location, character, item)
+     * @param {string} entityId - ID of the entity to add
+     */
+    addRelatedEntityToNote(noteId, entityType, entityId) {
+        const note = this.getById(noteId);
+        if (!note) return;
+        
+        // Get the entity details
+        let entity = null;
+        switch (entityType) {
+            case 'quest':
+                if (this.dataManager.appState.quests) {
+                    entity = this.dataManager.appState.quests.find(q => q.id === entityId);
+                }
+                break;
+            case 'location':
+                if (this.dataManager.appState.locations) {
+                    entity = this.dataManager.appState.locations.find(l => l.id === entityId);
+                }
+                break;
+            case 'character':
+                if (this.dataManager.appState.characters) {
+                    entity = this.dataManager.appState.characters.find(c => c.id === entityId);
+                }
+                break;
+            case 'item':
+                if (this.dataManager.appState.loot) {
+                    entity = this.dataManager.appState.loot.find(i => i.id === entityId);
+                }
+                break;
+        }
+        
+        if (!entity) {
             showToast({
-                message: 'Invalid entity type',
+                message: `${entityType.charAt(0).toUpperCase() + entityType.slice(1)} not found`,
                 type: 'error'
             });
             return;
         }
         
-        // This is a simplified implementation - in a real application, you would show a modal with a dropdown of available entities
-        const entityId = prompt(`Enter the ID of the ${entityType} to add:`);
-        if (!entityId) return;
+        // Use the NotesService to add the related entity
+        const success = this.notesService.addRelatedEntity(noteId, entityType, entityId);
         
-        // Update the note with the new related entity
-        const relatedEntitiesKey = `related${entityType.charAt(0).toUpperCase() + entityType.slice(1)}s`;
-        const relatedEntities = note[relatedEntitiesKey] || [];
-        
-        if (relatedEntities.some(entity => entity.id === entityId)) {
+        if (!success) {
             showToast({
-                message: 'Entity already related to this note',
-                type: 'warning'
+                message: 'Failed to add related entity',
+                type: 'error'
             });
             return;
         }
         
-        // In a real implementation, you would fetch the entity details and add them to the note
-        // For this example, we'll just add a placeholder
-        relatedEntities.push({
-            id: entityId,
-            name: `${entityType.charAt(0).toUpperCase() + entityType.slice(1)} ${entityId.substring(0, 6)}`
-        });
+        // Refresh the note to show the updated related entities
+        const updatedNote = this.getById(noteId);
         
-        const update = {};
-        update[relatedEntitiesKey] = relatedEntities;
+        // Make sure the related entity appears in the UI
+        // First, check if we need to add the entity name for display purposes
+        const relatedEntitiesKey = `relatedEntities`;
+        const entityTypeKey = `${entityType}s`;
         
-        this.update(noteId, update);
-        this.refresh(noteId);
+        if (updatedNote.relatedEntities && 
+            updatedNote.relatedEntities[entityTypeKey] && 
+            updatedNote.relatedEntities[entityTypeKey].includes(entityId)) {
+            
+            // Create the display property if it doesn't exist
+            if (!updatedNote[`related${entityType.charAt(0).toUpperCase() + entityType.slice(1)}s`]) {
+                updatedNote[`related${entityType.charAt(0).toUpperCase() + entityType.slice(1)}s`] = [];
+            }
+            
+            // Check if the entity is already in the display array
+            const displayArray = updatedNote[`related${entityType.charAt(0).toUpperCase() + entityType.slice(1)}s`];
+            if (!displayArray.some(e => e.id === entityId)) {
+                // Add the entity to the display array
+                displayArray.push({
+                    id: entityId,
+                    name: entity.name || entity.title || `${entityType.charAt(0).toUpperCase() + entityType.slice(1)} ${entityId.substring(0, 6)}`
+                });
+            }
+        }
+        
+        // Refresh the UI
+        this.renderDetails(updatedNote);
         
         showToast({
             message: 'Related entity added successfully',
