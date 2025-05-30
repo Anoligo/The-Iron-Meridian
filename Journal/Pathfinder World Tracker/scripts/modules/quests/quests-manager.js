@@ -1,5 +1,5 @@
 import { QuestService } from './services/quest-service.js';
-import { QuestUI } from './ui/quest-ui.js';
+import { QuestUI } from './ui/quest-ui-new.js';
 
 /**
  * QuestsManager coordinates between the UI and the QuestService
@@ -13,12 +13,14 @@ export class QuestsManager {
     constructor(dataManager) {
         this.dataManager = dataManager;
         this.questService = new QuestService(dataManager);
-        this.questUI = new QuestUI(this);
-
+        
         // Initialize quests array if it doesn't exist
         if (!dataManager.appState.quests) {
             dataManager.appState.quests = [];
         }
+
+        // Create the UI with the service and data manager
+        this.questUI = new QuestUI(this.questService, dataManager);
 
         // Initialize the UI when the DOM is ready
         if (document.readyState === 'loading') {
@@ -32,11 +34,51 @@ export class QuestsManager {
      * Initialize the quests manager
      */
     initialize() {
+        console.log('Initializing QuestsManager');
+        
+        // Ensure quests array exists
+        if (!this.dataManager.appState.quests) {
+            this.dataManager.appState.quests = [];
+        }
+        
+        // Get all quests from the service
+        let quests = this.questService.getAllQuests();
+        console.log('Loaded quests:', quests);
+        
+        // Create a sample quest if none exist
+        if (!quests || quests.length === 0) {
+            console.log('No quests found, creating a sample quest');
+            this.createSampleQuest();
+            quests = this.questService.getAllQuests();
+        }
+        
         // Initialize the UI
-        this.questUI.initializeUI();
-
-        // Initial render of quests
-        this.questUI.renderQuestList(this.questService.getAllQuests());
+        this.questUI.init();
+    }
+    
+    /**
+     * Create a sample quest for demonstration purposes
+     */
+    createSampleQuest() {
+        const sampleQuest = {
+            name: 'The Iron Meridian',
+            description: 'Investigate the mysterious artifact known as the Iron Meridian and discover its connection to the ancient civilization.',
+            type: 'MAIN',
+            status: 'ONGOING',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            journalEntries: [
+                {
+                    date: new Date(),
+                    content: 'Found a reference to the Iron Meridian in an old tome at the library. It seems to be an ancient artifact with powerful magical properties.'
+                }
+            ],
+            items: [],
+            locations: [],
+            characters: []
+        };
+        
+        this.createQuest(sampleQuest);
     }
 
     /**

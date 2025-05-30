@@ -1,9 +1,15 @@
 import { QuestsManager as QuestManager } from './modules/quests/index.js';
 import { PlayersManager as PlayerManager, Player } from './modules/players/index.js';
-import { LootManager } from './modules/loot.js';
-import { LocationManager } from './modules/locations.js';
+import { LootManager } from './modules/loot/index.js';
+import { LocationManager } from './modules/locations/index.js';
 import { NotesManager } from './modules/notes/index.js';
-import { GuildManager } from './modules/guild.js';
+import { GuildManager } from './modules/guild/index.js';
+import { CharactersManager } from './modules/characters/index.js';
+import { CharacterService } from './modules/characters/services/character-service.js';
+import { CharacterUI } from './modules/characters/ui/character-ui-new.js';
+import { applyGlobalStyles } from './global-styles.js';
+import { applyIronMeridianStyling } from './utils/form-styling.js';
+import './characters.js';
 // Local Storage Management
 const StorageManager = {
     save: (key, data) => {
@@ -77,6 +83,7 @@ const initialState = {
     loot: [],
     locations: [],
     notes: [],
+    characters: [],
     guildLogs: {
         activities: [],
         resources: []
@@ -110,6 +117,8 @@ class NavigationManager {
     }
 
     navigateToSection(sectionId) {
+        console.log(`Navigating to section: ${sectionId}`);
+        
         // Update navigation links
         document.querySelectorAll('.nav-link').forEach(link => {
             link.classList.remove('active');
@@ -118,39 +127,89 @@ class NavigationManager {
             }
         });
 
-        // Update content sections
+        // Hide all sections first and clean up
         document.querySelectorAll('.section').forEach(section => {
             section.classList.remove('active');
+            section.style.display = 'none';
+            
+            // Clean up any location containers that might be left behind
+            if (section.id !== 'locations' && section.id !== sectionId) {
+                const locationContainer = section.querySelector('.locations-module');
+                if (locationContainer && locationContainer.parentNode) {
+                    locationContainer.parentNode.removeChild(locationContainer);
+                }
+            }
         });
 
-        const targetSection = document.getElementById(sectionId);
-        if (targetSection) {
-            targetSection.classList.add('active');
-            // Initialize section content if it exists
-            switch(sectionId) {
-                case 'quests':
-                    questManager.initializeQuestsSection();
-                    break;
-                case 'players':
-                    playerManager.initialize();
-                    break;
-                case 'loot':
-                    lootManager.initializeLootSection();
-                    break;
-                case 'locations':
-                    locationManager.initializeLocationsSection();
-                    break;
-                case 'notes':
-                    notesManager.initialize();
-                    break;
-                case 'guild':
-                    guildManager.initializeGuildSection();
-                    break;
+        // Show the target section
+        let targetSection = document.getElementById(sectionId);
+        
+        // If the section doesn't exist, try to create it
+        if (!targetSection) {
+            console.log(`Section ${sectionId} not found, creating it...`);
+            const mainContent = document.querySelector('main .content-area');
+            if (mainContent) {
+                targetSection = document.createElement('div');
+                targetSection.id = sectionId;
+                targetSection.className = 'section';
+                targetSection.innerHTML = `<h2>${sectionId.charAt(0).toUpperCase() + sectionId.slice(1)}</h2>`;
+                mainContent.appendChild(targetSection);
+            } else {
+                console.error('Main content area not found');
+                return;
             }
         }
 
-        // Update URL hash
-        window.location.hash = sectionId;
+        targetSection.classList.add('active');
+        targetSection.style.display = 'block';
+        
+        // Initialize section content if it exists
+        switch(sectionId) {
+            case 'quests':
+                questManager.initialize();
+                break;
+            case 'players':
+                playerManager.initialize();
+                break;
+            case 'loot':
+                if (lootManager) {
+                    if (!lootManager.initialized) {
+                        lootManager.initialize();
+                    }
+                    lootManager.render();
+                } else {
+                    console.error('Loot manager not initialized');
+                }
+                break;
+            case 'locations':
+                // Let the location manager handle its own rendering
+                locationManager.initialize();
+                locationManager.render();
+                break;
+            case 'notes':
+                notesManager.initialize();
+                break;
+            case 'guild':
+                guildManager.initializeGuildSection();
+                break;
+            case 'characters':
+                if (window.charactersManager) {
+                    charactersManager.initialize();
+                }
+                break;
+        }
+
+        // Clean up any lingering location containers in the body
+        document.querySelectorAll('body > .locations-module').forEach(container => {
+            if (container.parentNode) {
+                container.parentNode.removeChild(container);
+            }
+        });
+
+        // Update URL hash without page reload
+        if (window.location.hash.substring(1) !== sectionId) {
+            history.pushState(null, null, `#${sectionId}`);
+        }
     }
 }
 
@@ -169,6 +228,7 @@ class DataManager {
             loot: [],
             locations: [],
             notes: [],
+            characters: [],
             guildLogs: { activities: [], resources: [] },
             guildResources: []
         };
@@ -333,7 +393,7 @@ class DataManager {
             this.subscribers = new Set();
             
             // Ensure all arrays exist and are valid
-            const arrayFields = ['quests', 'players', 'loot', 'locations', 'notes', 'guildResources'];
+            const arrayFields = ['quests', 'players', 'loot', 'locations', 'notes', 'characters', 'guildResources'];
             arrayFields.forEach(field => {
                 if (!Array.isArray(this._state[field])) {
                     console.warn(`Initializing empty array for ${field}`);
@@ -364,9 +424,59 @@ class DataManager {
     }
 
     loadData() {
-        const loadedState = StorageManager.load('appState');
-        console.log('Loading state:', loadedState);
-        this._state = loadedState || {...initialState};
+        try {
+            const loadedState = StorageManager.load('appState');
+            console.log('Loading state:', loadedState);
+            
+            if (loadedState) {
+                // Ensure characters array exists and is properly formatted
+                const characters = Array.isArray(loadedState.characters) ? 
+                    loadedState.characters.map(char => ({
+                        ...char,
+                        // Ensure required fields exist
+                        id: char.id || `char-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+                        name: char.name || 'Unnamed Character',
+                        race: char.race || 'Unknown',
+                        classType: char.classType || 'Adventurer',
+                        level: typeof char.level === 'number' ? char.level : 1,
+                        attributes: {
+                            strength: typeof char.attributes?.strength === 'number' ? char.attributes.strength : 10,
+                            dexterity: typeof char.attributes?.dexterity === 'number' ? char.attributes.dexterity : 10,
+                            constitution: typeof char.attributes?.constitution === 'number' ? char.attributes.constitution : 10,
+                            intelligence: typeof char.attributes?.intelligence === 'number' ? char.attributes.intelligence : 10,
+                            wisdom: typeof char.attributes?.wisdom === 'number' ? char.attributes.wisdom : 10,
+                            charisma: typeof char.attributes?.charisma === 'number' ? char.attributes.charisma : 10
+                        },
+                        skills: Array.isArray(char.skills) ? char.skills : [],
+                        inventory: Array.isArray(char.inventory) ? char.inventory : [],
+                        quests: Array.isArray(char.quests) ? char.quests : [],
+                        bio: typeof char.bio === 'string' ? char.bio : '',
+                        notes: typeof char.notes === 'string' ? char.notes : '',
+                        createdAt: char.createdAt || new Date().toISOString(),
+                        updatedAt: char.updatedAt || new Date().toISOString()
+                    })) : [];
+                
+                // Update the state with the loaded data
+                this._state = {
+                    ...initialState, // Start with default values
+                    ...loadedState,  // Override with loaded values
+                    characters      // Ensure characters is properly formatted
+                };
+            } else {
+                // No saved state, use initial state
+                this._state = { ...initialState };
+            }
+            
+            // Ensure characters array exists
+            if (!Array.isArray(this._state.characters)) {
+                this._state.characters = [];
+            }
+            
+            console.log('State after loading:', this._state);
+        } catch (error) {
+            console.error('Error loading state:', error);
+            this._state = { ...initialState };
+        }
     }
 
     // State management methods
@@ -390,12 +500,33 @@ class DataManager {
     }
 
     saveData() {
-        StorageManager.save('appState', this._state);
-        this.notifySubscribers();
-        // Save all data to localStorage
-        Object.keys(this._state).forEach(key => {
-            StorageManager.save(key, this._state[key]);
-        });
+        try {
+            // First save the entire state
+            const stateToSave = {
+                ...this._state,
+                // Ensure characters is properly serialized
+                characters: Array.isArray(this._state.characters) ? 
+                    this._state.characters.map(char => ({
+                        ...char,
+                        // Ensure dates are properly serialized
+                        createdAt: char.createdAt || new Date().toISOString(),
+                        updatedAt: new Date().toISOString()
+                    })) : []
+            };
+            
+            console.log('Saving state:', stateToSave);
+            StorageManager.save('appState', stateToSave);
+            
+            // Also save individual keys for backward compatibility
+            Object.keys(stateToSave).forEach(key => {
+                StorageManager.save(key, stateToSave[key]);
+            });
+            
+            this.notifySubscribers();
+            console.log('State saved successfully');
+        } catch (error) {
+            console.error('Error saving state:', error);
+        }
     }
 
     addQuest(quest) {
@@ -476,6 +607,25 @@ class DataManager {
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', () => {
+    // Apply global styles
+    applyGlobalStyles();
+    
+    // Apply Iron Meridian styling to form elements
+    applyIronMeridianStyling();
+    
+    // Set up a MutationObserver to apply styling to dynamically added elements
+    const bodyObserver = new MutationObserver((mutations) => {
+        mutations.forEach(mutation => {
+            if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                // Apply styling to newly added nodes
+                applyIronMeridianStyling();
+            }
+        });
+    });
+    
+    // Start observing the body for changes
+    bodyObserver.observe(document.body, { childList: true, subtree: true });
+
     // Initialize data manager
     const dataManager = new DataManager();
     
@@ -485,21 +635,56 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize managers with DataManager
     questManager = new QuestManager(dataManager);
     playerManager = new PlayerManager(dataManager);
+    
+    // Initialize the loot manager with the data manager
     lootManager = new LootManager(dataManager);
-    locationManager = new LocationManager(dataManager);
+    
+    // Make sure the loot section is hidden by default
+    const lootSection = document.getElementById('loot');
+    if (lootSection) {
+        lootSection.style.display = 'none';
+    } else {
+        console.error('Loot section not found in the DOM');
+    }
+    
+    // Initialize LocationManager with container
+    const locationsContainer = document.getElementById('locations') || document.createElement('div');
+    locationsContainer.id = 'locations';
+    if (!document.getElementById('locations')) {
+        document.body.appendChild(locationsContainer);
+    }
+    locationManager = new LocationManager(dataManager, locationsContainer);
+    
     notesManager = new NotesManager(dataManager);
     guildManager = new GuildManager(dataManager);
+    
+    // Initialize Characters components
+    const characterService = new CharacterService(dataManager);
+    const characterUI = new CharacterUI(characterService, dataManager);
+    const charactersManager = new CharactersManager(dataManager);
+    
+    // Make them available globally for debugging
+    window.characterService = characterService;
+    window.characterUI = characterUI;
+    window.charactersManager = charactersManager;
 
     // Initialize navigation
     const navigationManager = new NavigationManager();
     
     // Initialize all sections
-    questManager.initializeQuestsSection();
+    questManager.initialize();
     playerManager.initialize();
-    lootManager.initializeLootSection();
-    locationManager.initializeLocationsSection();
+    
+    // LootManager will initialize itself when the loot section becomes visible
+    
+    locationManager.initialize();
     notesManager.initialize();
     guildManager.initializeGuildSection();
+    
+    // Initialize characters module and handle any errors
+    charactersManager.initialize().catch(error => {
+        console.error('Error initializing characters module:', error);
+    });
 
     // Subscribe to state changes for dashboard updates
     dataManager.subscribe(state => {

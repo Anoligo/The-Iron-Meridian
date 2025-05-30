@@ -1,8 +1,8 @@
 import { QuestType, QuestStatus } from '../../quests/index.js';
 import { ItemType, ItemRarity } from '../../loot.js';
-import { LocationType } from '../../locations.js';
+import { LocationType } from '../../locations/index.js';
 import { PlayerClass } from '../../players/index.js';
-import { GuildActivityType, GuildResourceType } from '../../guild.js';
+import { GuildActivityType, GuildResourceType } from '../../guild/index.js';
 
 export const STATE_SCHEMA = {
     quests: {

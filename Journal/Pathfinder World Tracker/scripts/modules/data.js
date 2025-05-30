@@ -9,9 +9,9 @@
 export { Quest, QuestType, QuestStatus } from './quests/index.js';
 export { Note } from './notes.js';
 export { Item, ItemType, ItemRarity } from './loot.js';
-export { Location, LocationType } from './locations.js';
+export { Location, LocationType, DiscoveryStatus } from './locations/index.js';
 export { Player, PlayerClass } from './players/index.js';
-export { GuildActivity, GuildActivityType, GuildResource, GuildResourceType } from './guild.js';
+export { GuildActivity, GuildActivityType, GuildResource, GuildResourceType } from './guild/index.js';
 
 // Import the new DataService as DataManager for backward compatibility
 import { DataService as DataManager, StateValidator } from './data/index.js';

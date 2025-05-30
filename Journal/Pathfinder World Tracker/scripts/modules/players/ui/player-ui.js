@@ -22,19 +22,20 @@ export class PlayerUI {
         
         // Set the inner HTML for the players section
         playersSection.innerHTML = `
-            <div class="row">
-                <div class="col-12">
-                    <h2>Players</h2>
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <h2 class="text-accent">Players</h2>
+                    </div>
                 </div>
-            </div>
             <div class="row">
                 <div class="col-md-4">
                     <div class="card">
-                        <div class="card-header">
+                        <div class="card-header bg-card">
                             <div class="d-flex justify-content-between align-items-center">
-                                <span>Players List</span>
+                                <span class="text-accent">Players List</span>
                                 <div class="btn-group">
-                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" 
+                                    <button class="button dropdown-toggle" type="button" 
                                             id="classFilter" data-bs-toggle="dropdown">
                                         Filter by Class
                                     </button>
@@ -45,9 +46,9 @@ export class PlayerUI {
                                 </div>
                             </div>
                         </div>
-                        <div class="card-body">
+                        <div class="card-body bg-card">
                             <div class="mb-3">
-                                <input type="text" class="form-control" id="playerSearch" placeholder="Search players..." />
+                                <input type="text" class="form-control bg-card text" id="playerSearch" placeholder="Search players..." />
                             </div>
                             <div id="playerList" class="list-group"></div>
                         </div>
@@ -55,20 +56,21 @@ export class PlayerUI {
                 </div>
                 <div class="col-md-8">
                     <div class="card">
-                        <div class="card-header">
-                            Player Details
+                        <div class="card-header bg-card">
+                            <span class="text-accent">Player Details</span>
                         </div>
-                        <div class="card-body" id="playerDetails">
-                            <p class="text-muted">Select a player to view details</p>
+                        <div class="card-body bg-card" id="playerDetails">
+                            <p>Select a player to view details</p>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="row mt-3">
                 <div class="col-12">
-                    <button class="btn btn-primary" id="newPlayerBtn">New Player</button>
+                    <button class="button" id="newPlayerBtn">New Player</button>
                 </div>
-            </div>`;
+            </div>
+        </div>`;
             
         // Log initialization status
         console.log('Player section initialized');
@@ -101,15 +103,15 @@ export class PlayerUI {
         }
 
         playerList.innerHTML = playersToRender.map(player => `
-            <a href="#" class="list-group-item list-group-item-action" data-player-id="${player.id}">
+            <a href="#" class="card mb-2 p-2" data-player-id="${player.id}">
                 <div class="d-flex w-100 justify-content-between">
-                    <h5 class="mb-1">${player.name || 'Unnamed Player'}</h5>
-                    <small class="text-muted">Level ${player.level || 1} ${this.formatClassName(player.class) || ''}</small>
+                    <h5 class="mb-1 text-accent">${player.name || 'Unnamed Player'}</h5>
+                    <small>Level ${player.level || 1} ${this.formatClassName(player.class) || ''}</small>
                 </div>
                 <div>
-                    <span class="badge bg-primary">${this.formatClassName(player.class) || 'No Class'}</span>
-                    <span class="badge bg-secondary">Level ${player.level || 1}</span>
-                    <small class="text-muted ms-2">Last updated: ${player.updatedAt ? new Date(player.updatedAt).toLocaleDateString() : 'Never'}</small>
+                    <span class="badge bg-accent">${this.formatClassName(player.class) || 'No Class'}</span>
+                    <span class="badge bg-card">Level ${player.level || 1}</span>
+                    <small class="ms-2">Last updated: ${player.updatedAt ? new Date(player.updatedAt).toLocaleDateString() : 'Never'}</small>
                 </div>
             </a>
         `).join('');

@@ -5,7 +5,7 @@ export { QuestService } from './services/quest-service.js';
 export { QuestsManager } from './quests-manager.js';
 
 // Export UI components
-export { QuestUI } from './ui/quest-ui.js';
+export { QuestUI } from './ui/quest-ui-new.js';
 
 // Constants
 export const QUEST_TYPES = {

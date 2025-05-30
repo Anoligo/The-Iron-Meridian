@@ -1,0 +1,74 @@
+/**
+ * Input text color fix
+ * Ensures text in form inputs is visible regardless of background color
+ */
+
+/* Default state - dark theme (light text on dark background) */
+input, textarea, select {
+    background-color: var(--bg-card);
+    color: var(--text) !important; /* Light text for dark backgrounds */
+    border: 1px solid var(--border-light);
+}
+
+/* Editing/focus state - light theme (dark text on light background) */
+input:focus, textarea:focus, select:focus,
+input:active, textarea:active, select:active {
+    background-color: white !important;
+    color: #333 !important; /* Dark text for light backgrounds */
+    border-color: var(--accent);
+    box-shadow: 0 0 0 0.2rem rgba(255, 217, 102, 0.25);
+}
+
+/* Fix for placeholder text */
+input::placeholder, textarea::placeholder {
+    color: rgba(187, 187, 187, 0.7) !important;
+    opacity: 1;
+}
+
+input:focus::placeholder, textarea:focus::placeholder {
+    color: #777 !important;
+    opacity: 1;
+}
+
+/* Fix for select options */
+option {
+    background-color: white;
+    color: #333;
+}
+
+/* Fix for modal inputs - keep them consistent with the form style */
+.modal input, .modal textarea, .modal select {
+    background-color: var(--bg-card);
+    color: var(--text) !important;
+}
+
+.modal input:focus, .modal textarea:focus, .modal select:focus {
+    background-color: white !important;
+    color: #333 !important;
+}
+
+/* Ensure consistent styling for form controls in all contexts */
+.form-control, .form-select {
+    background-color: var(--bg-card);
+    color: var(--text) !important;
+}
+
+.form-control:focus, .form-select:focus {
+    background-color: white !important;
+    color: #333 !important;
+}
+
+/* Ensure dropdown menus have proper contrast */
+.dropdown-menu {
+    background-color: var(--bg-card);
+    color: var(--text);
+}
+
+.dropdown-item {
+    color: var(--text);
+}
+
+.dropdown-item:hover, .dropdown-item:focus {
+    background-color: var(--accent-hover);
+    color: var(--accent);
+}

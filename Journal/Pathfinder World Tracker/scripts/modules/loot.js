@@ -1,669 +1,126 @@
-// Item types
-export const ItemType = {
-    WEAPON: 'weapon',
-    ARMOR: 'armor',
-    MAGIC: 'magic',
-    CONSUMABLE: 'consumable',
-    CURRENCY: 'currency',
-    MISC: 'misc'
-};
+/**
+ * @file Loot module compatibility layer
+ * @deprecated Please use the new modular structure from ./loot/
+ * This file provides backward compatibility with the old implementation.
+ */
 
-// Rarity levels
-export const ItemRarity = {
-    COMMON: 'common',
-    UNCOMMON: 'uncommon',
-    RARE: 'rare',
-    VERY_RARE: 'very_rare',
-    LEGENDARY: 'legendary'
-};
+// Import the new modular components
+import { LootManager as NewLootManager, Item, LootEnums } from './loot/index.js';
 
-import { Entity } from './entity.js';
+// Re-export enums for backward compatibility
+export const ItemType = LootEnums.ItemType;
+export const ItemRarity = LootEnums.ItemRarity;
 
-export class Item extends Entity {
-    constructor(name, description, type = ItemType.WEAPON, rarity = ItemRarity.COMMON, createdAt = new Date(), updatedAt = new Date()) {
-        super(null, new Date(createdAt), new Date(updatedAt));
-        this.name = name;
-        this.description = description;
-        this.type = type;
-        this.rarity = rarity;
-        this.effects = [];
-        this.curseEffects = [];
-        this.isCursed = false;
-        this.owner = null;
-        this.questSource = null;
-    }
-
-    addCurseEffect(effect) {
-        if (!this.curseEffects.includes(effect)) {
-            this.isCursed = true;
-            this.curseEffects.push(effect);
-            this.updatedAt = new Date();
-        }
-    }
-
-    removeCurseEffect(effect) {
-        this.curseEffects = this.curseEffects.filter(e => e !== effect);
-        if (this.curseEffects.length === 0) {
-            this.isCursed = false;
-        }
-        this.updatedAt = new Date();
-    }
-
-    assignOwner(ownerId) {
-        this.owner = ownerId;
-        this.updatedAt = new Date();
-    }
-
-    setQuestSource(questId) {
-        this.questSource = questId;
-        this.updatedAt = new Date();
-    }
-
-    updateName(newName) {
-        this.name = newName;
-        this.updatedAt = new Date();
-    }
-
-    updateDescription(newDescription) {
-        this.description = newDescription;
-        this.updatedAt = new Date();
-    }
-
-    updateRarity(rarity) {
-        if (Object.values(ItemRarity).includes(rarity)) {
-            this.rarity = rarity;
-            this.updatedAt = new Date();
-        }
-    }
-}
-
+/**
+ * @deprecated Please use the new modular structure from ./loot/
+ * This class is a compatibility layer that delegates to the new implementation.
+ */
 export class LootManager {
+    /**
+     * Create a new LootManager instance
+     * @param {Object} dataManager - The application's data manager
+     */
     constructor(dataManager) {
-        this.dataManager = dataManager;
-        this.lootSection = document.getElementById('loot');
-        if (!this.dataManager.appState.loot) {
-            this.dataManager.appState.loot = [];
-        }
-        this.initializeLootSection();
-        
-        // Use setTimeout to ensure the DOM is ready before setting up event listeners
-        setTimeout(() => {
-            this.setupEventListeners();
-            // Initial render of the item list
-            this.renderItemList();
-        }, 0);
+        console.warn('The LootManager class is deprecated. Please use the new modular structure from ./loot/');
+        this._impl = new NewLootManager(dataManager, document.getElementById('loot'));
     }
 
+    /**
+     * Initialize the loot manager
+     * @returns {void}
+     */
+    initialize() {
+        return this._impl.initialize();
+    }
+
+    /**
+     * Initialize the loot section (legacy method)
+     * @deprecated Use initialize() instead
+     * @returns {void}
+     */
     initializeLootSection() {
-        this.lootSection.innerHTML = `
-            <h2>Loot & Curses</h2>
-            <div class="row mb-4">
-                <div class="col">
-                    <button class="btn btn-primary" id="newItemBtn">New Item</button>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span>Items List</span>
-                                <div class="btn-group">
-                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="itemTypeFilter" data-bs-toggle="dropdown">
-                                        Filter by Type
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="#" data-type="all">All Types</a></li>
-                                        <li><a class="dropdown-item" href="#" data-type="weapon">Weapon</a></li>
-                                        <li><a class="dropdown-item" href="#" data-type="armor">Armor</a></li>
-                                        <li><a class="dropdown-item" href="#" data-type="magic">Magic</a></li>
-                                        <li><a class="dropdown-item" href="#" data-type="consumable">Consumable</a></li>
-                                        <li><a class="dropdown-item" href="#" data-type="currency">Currency</a></li>
-                                        <li><a class="dropdown-item" href="#" data-type="misc">Misc</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="mb-3">
-                                <input type="text" class="form-control" id="itemSearch" placeholder="Search items...">
-                            </div>
-                            <div id="itemList" class="list-group"></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-8">
-                    <div class="card">
-                        <div class="card-header">
-                            Item Details
-                        </div>
-                        <div class="card-body" id="itemDetails">
-                            <p class="text-muted">Select an item to view details</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
+        console.warn('initializeLootSection() is deprecated. Use initialize() instead.');
+        return this.initialize();
     }
 
-    setupEventListeners() {
-        const newItemBtn = document.getElementById('newItemBtn');
-        const itemTypeFilter = document.getElementById('itemTypeFilter');
-        const itemSearch = document.getElementById('itemSearch');
-        
-        if (newItemBtn) {
-            console.log('Adding click event to newItemBtn');
-            newItemBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                console.log('New Item button clicked');
-                this.showNewItemForm();
-            });
-        } else {
-            console.error('Could not find newItemBtn');
-        }
-        
-        if (itemTypeFilter) {
-            itemTypeFilter.addEventListener('click', (e) => {
-                e.preventDefault();
-                const type = e.target.dataset.type;
-                if (type) {
-                    this.handleTypeFilter(type);
-                }
-            });
-        }
-        
-        if (itemSearch) {
-            itemSearch.addEventListener('input', (e) => {
-                this.handleSearch(e.target.value);
-            });
-        }
+    /**
+     * Render the loot interface
+     * @returns {void}
+     */
+    render() {
+        return this._impl.render();
     }
 
-    createNewItem(form) {
-        const item = new Item(
-            form.itemName.value,
-            form.itemDescription.value,
-            form.itemType.value,
-            form.itemRarity.value,
-            new Date(),
-            new Date()
-        );
-        
-        // Set cursed status if checked
-        item.isCursed = form.isCursed.checked;
-        
-        this.dataManager.appState.loot.push(item);
-        this.dataManager.saveData();
-        
-        // Show the new item in the list and select it
-        this.renderItemList();
-        this.showItemDetails(item.id);
-        
-        // Show success message
-        const itemList = document.getElementById('itemList');
-        if (itemList) {
-            const successMsg = document.createElement('div');
-            successMsg.className = 'alert alert-success alert-dismissible fade show';
-            successMsg.role = 'alert';
-            successMsg.innerHTML = `
-                Item "${item.name}" created successfully!
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            `;
-            itemList.parentNode.insertBefore(successMsg, itemList);
-            
-            // Auto-dismiss after 3 seconds
-            setTimeout(() => {
-                successMsg.classList.remove('show');
-                setTimeout(() => successMsg.remove(), 150);
-            }, 3000);
-        }
+    /**
+     * Get the root element
+     * @returns {HTMLElement} The root element
+     */
+    getElement() {
+        return this._impl.getElement();
     }
 
-    handleFilter(filter) {
-        const items = this.dataManager.appState.loot;
-        const filteredItems = filter === 'all' 
-            ? items 
-            : items.filter(item => item.isCursed);
-        this.renderItemList(filteredItems);
+    /**
+     * Refresh the loot interface
+     * @returns {void}
+     */
+    refresh() {
+        return this._impl.refresh();
     }
 
-    handleSearch(searchTerm) {
-        const items = this.dataManager.appState.loot;
-        const filteredItems = searchTerm
-            ? items.filter(item => 
-                item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                item.description.toLowerCase().includes(searchTerm.toLowerCase()))
-            : items;
-        this.renderItemList(filteredItems);
-    }
-
-    addEffect(itemId, effect) {
-        const item = this.dataManager.appState.loot.find(i => i.id === itemId);
-        if (!item) return;
-
-        if (!item.effects.includes(effect)) {
-            item.effects.push(effect);
-            item.updatedAt = new Date();
-            this.dataManager.saveData();
-            this.showItemDetails(itemId);
-        }
-    }
-
-    updateItemLocation(itemId, location) {
-        const item = this.dataManager.appState.loot.find(i => i.id === itemId);
-        if (!item) return;
-
-        item.location = location;
-        item.updatedAt = new Date();
-        this.dataManager.saveData();
-        this.showItemDetails(itemId);
-    }
-
-    updateItemOwner(itemId, owner) {
-        const item = this.dataManager.appState.loot.find(i => i.id === itemId);
-        if (!item) return;
-
-        item.owner = owner;
-        item.updatedAt = new Date();
-        this.dataManager.saveData();
-        this.showItemDetails(itemId);
-    }
-
-    renderItemList(items = null) {
-        const itemList = document.getElementById('itemList');
-        if (!itemList) return;
-
-        // If no items provided, use all items from the data manager
-        const itemsToRender = items || this.dataManager.appState.loot || [];
-        
-        if (itemsToRender.length === 0) {
-            itemList.innerHTML = '<div class="text-muted p-3">No items found</div>';
-            return;
-        }
-
-        itemList.innerHTML = itemsToRender.map(item => `
-            <a href="#" class="list-group-item list-group-item-action" data-item-id="${item.id}">
-                <div class="d-flex w-100 justify-content-between">
-                    <h5 class="mb-1">${item.name}</h5>
-                    <small class="text-muted">${item.type}</small>
-                </div>
-                <p class="mb-1">${item.description.substring(0, 100)}${item.description.length > 100 ? '...' : ''}</p>
-                <div>
-                    <span class="badge bg-${this.getRarityColor(item.rarity)}">${item.rarity.replace('_', ' ')}</span>
-                    ${item.isCursed ? '<span class="badge bg-danger ms-1">Cursed</span>' : ''}
-                    ${item.effects?.length > 0 ? 
-                        `<span class="badge bg-warning ms-1">${item.effects.length} effect${item.effects.length !== 1 ? 's' : ''}</span>` : 
-                        ''}
-                </div>
-            </a>
-        `).join('');
-
-        this.setupItemListEventListeners();
-    }
-
-    showItemDetails(itemId) {
-        const item = this.dataManager.appState.loot.find(i => i.id === itemId);
-        if (!item) return;
-
-        const itemDetails = document.getElementById('itemDetails');
-        itemDetails.innerHTML = `
-            <h3>${item.name}</h3>
-            <p class="text-muted">Type: ${item.type}</p>
-            <div class="mb-3">
-                <h5>Description</h5>
-                <p>${item.description}</p>
-            </div>
-            <div class="mb-3">
-                <h5>Rarity</h5>
-                <p>${item.rarity}</p>
-            </div>
-            <div class="mb-3">
-                <h5>Effects</h5>
-                <div>
-                    ${item.effects.map(effect => `
-                        <span class="badge bg-warning me-1">
-                            ${effect}
-                            <button class="btn-close btn-close-white" data-effect="${effect}"></button>
-                        </span>
-                    `).join('')}
-                    <button class="btn btn-sm btn-outline-warning" id="addEffectBtn">Add Effect</button>
-                </div>
-            </div>
-            <div class="mb-3">
-                <h5>Curses</h5>
-                <div>
-                    ${item.curseEffects.map(curse => `
-                        <span class="badge bg-danger me-1">
-                            ${curse}
-                            <button class="btn-close btn-close-white" data-curse="${curse}"></button>
-                        </span>
-                    `).join('')}
-                    <button class="btn btn-sm btn-outline-danger" id="addCurseBtn">Add Curse</button>
-                </div>
-            </div>
-            <div class="mb-3">
-                <h5>Owner</h5>
-                <p>${item.owner || 'None'}</p>
-            </div>
-            <div class="mb-3">
-                <h5>Quest Source</h5>
-                <p>${item.questSource || 'None'}</p>
-            </div>
-            <div class="mt-3">
-                <button class="btn btn-primary" id="editItemBtn">Edit Item</button>
-            </div>
-        `;
-
-        this.setupItemDetailsEventListeners(item);
-    }
-
-    setupItemDetailsEventListeners(item) {
-        const addEffectBtn = document.getElementById('addEffectBtn');
-        if (addEffectBtn) {
-            addEffectBtn.addEventListener('click', () => {
-                const effect = prompt('Enter effect:');
-                if (effect) {
-                    this.addEffect(item.id, effect);
-                }
-            });
-        }
-
-        const editItemBtn = document.getElementById('editItemBtn');
-        if (editItemBtn) {
-            editItemBtn.addEventListener('click', () => {
-                this.showEditItemForm(item.id);
-            });
-        }
-
-        document.querySelectorAll('[data-effect]').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const effect = btn.dataset.effect;
-                item.effects = item.effects.filter(e => e !== effect);
-                item.updatedAt = new Date();
-                this.dataManager.saveData();
-                this.showItemDetails(item.id);
-            });
-        });
-    }
-
+    /**
+     * Show the new item form
+     * @returns {void}
+     */
     showNewItemForm() {
-        const itemDetails = document.getElementById('itemDetails');
-        if (!itemDetails) return;
-        
-        itemDetails.innerHTML = `
-            <div class="card">
-                <div class="card-header">
-                    <h3>Create New Item</h3>
-                </div>
-                <div class="card-body">
-                    <form id="newItemForm">
-                        <div class="mb-3">
-                            <label for="itemName" class="form-label">Name</label>
-                            <input type="text" class="form-control" id="itemName" name="itemName" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="itemDescription" class="form-label">Description</label>
-                            <textarea class="form-control" id="itemDescription" name="itemDescription" rows="3" required></textarea>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="itemType" class="form-label">Type</label>
-                                    <select class="form-select" id="itemType" name="itemType" required>
-                                        <option value="weapon">Weapon</option>
-                                        <option value="armor">Armor</option>
-                                        <option value="magic">Magic</option>
-                                        <option value="consumable">Consumable</option>
-                                        <option value="currency">Currency</option>
-                                        <option value="misc">Misc</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="itemRarity" class="form-label">Rarity</label>
-                                    <select class="form-select" id="itemRarity" name="itemRarity" required>
-                                        <option value="common">Common</option>
-                                        <option value="uncommon">Uncommon</option>
-                                        <option value="rare">Rare</option>
-                                        <option value="very_rare">Very Rare</option>
-                                        <option value="legendary">Legendary</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="isCursed" name="isCursed">
-                                <label class="form-check-label" for="isCursed">Cursed Item</label>
-                            </div>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-plus me-1"></i> Create Item
-                            </button>
-                            <button type="button" class="btn btn-outline-secondary" id="cancelNewItem">
-                                <i class="fas fa-times me-1"></i> Cancel
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        `;
-
-        const form = document.getElementById('newItemForm');
-        if (form) {
-            form.addEventListener('submit', (e) => {
-                e.preventDefault();
-                this.createNewItem(e.target);
-            });
-        }
-
-        const cancelBtn = document.getElementById('cancelNewItem');
-        if (cancelBtn) {
-            cancelBtn.addEventListener('click', () => {
-                this.renderItemList();
-                const itemDetails = document.getElementById('itemDetails');
-                if (itemDetails) {
-                    itemDetails.innerHTML = '<p class="text-muted">Select an item to view details</p>';
-                }
-            });
-        }
+        return this._impl.lootUI?.showAddItemForm();
     }
 
-    showEditItemForm(itemId) {
-        const item = this.dataManager.appState.loot.find(i => i.id === itemId);
-        if (!item) return;
-
-        const itemDetails = document.getElementById('itemDetails');
-        itemDetails.innerHTML = `
-            <form id="editItemForm">
-                <div class="mb-3">
-                    <label for="name" class="form-label">Name</label>
-                    <input type="text" class="form-control" id="name" name="name" value="${item.name}" required>
-                </div>
-                <div class="mb-3">
-                    <label for="description" class="form-label">Description</label>
-                    <textarea class="form-control" id="description" name="description" rows="3" required>${item.description}</textarea>
-                </div>
-                <div class="mb-3">
-                    <label for="type" class="form-label">Type</label>
-                    <select class="form-select" id="type" name="type" required>
-                        <option value="weapon" ${item.type === 'weapon' ? 'selected' : ''}>Weapon</option>
-                        <option value="armor" ${item.type === 'armor' ? 'selected' : ''}>Armor</option>
-                        <option value="potion" ${item.type === 'potion' ? 'selected' : ''}>Potion</option>
-                        <option value="scroll" ${item.type === 'scroll' ? 'selected' : ''}>Scroll</option>
-                        <option value="ring" ${item.type === 'ring' ? 'selected' : ''}>Ring</option>
-                        <option value="wand" ${item.type === 'wand' ? 'selected' : ''}>Wand</option>
-                        <option value="other" ${item.type === 'other' ? 'selected' : ''}>Other</option>
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <label for="rarity" class="form-label">Rarity</label>
-                    <select class="form-select" id="rarity" name="rarity" required>
-                        <option value="common" ${item.rarity === 'common' ? 'selected' : ''}>Common</option>
-                        <option value="uncommon" ${item.rarity === 'uncommon' ? 'selected' : ''}>Uncommon</option>
-                        <option value="rare" ${item.rarity === 'rare' ? 'selected' : ''}>Rare</option>
-                        <option value="very_rare" ${item.rarity === 'very_rare' ? 'selected' : ''}>Very Rare</option>
-                        <option value="legendary" ${item.rarity === 'legendary' ? 'selected' : ''}>Legendary</option>
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="isCursed" name="isCursed" ${item.isCursed ? 'checked' : ''}>
-                        <label class="form-check-label" for="isCursed">Cursed Item</label>
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-primary">Update Item</button>
-            </form>
-        `;
-
-        document.getElementById('editItemForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            this.updateItem(itemId, e.target);
-            this.showItemDetails(itemId);
-        });
+    /**
+     * Add an effect to an item
+     * @param {string} itemId - The ID of the item
+     * @param {string} effect - The effect to add
+     * @returns {void}
+     */
+    addEffect(itemId, effect) {
+        return this._impl.lootService?.addEffect(itemId, effect);
     }
 
-    updateItem(itemId, form) {
-        const item = this.dataManager.appState.loot.find(i => i.id === itemId);
-        if (!item) return;
-
-        const name = this.getFormValue(form, 'name');
-        const description = this.getFormValue(form, 'description');
-        const type = this.getFormValue(form, 'type');
-        const rarity = this.getFormValue(form, 'rarity');
-        const isCursed = form.isCursed?.checked || form.isCursed;
-
-        if (!name || !description || !type || !rarity) {
-            console.error('Missing required fields');
-            return;
-        }
-
-        item.name = name;
-        item.description = description;
-        item.type = type;
-        item.rarity = rarity;
-        item.isCursed = isCursed;
-        item.updatedAt = new Date();
-
-        this.dataManager.saveData();
-        this.renderItemList();
+    /**
+     * Update an item's location
+     * @param {string} itemId - The ID of the item
+     * @param {string} location - The new location
+     * @returns {void}
+     */
+    updateItemLocation(itemId, location) {
+        return this._impl.lootService?.updateItemLocation(itemId, location);
     }
 
-    addCurseEffect(itemId, effect) {
-        const item = this.dataManager.appState.loot.find(i => i.id === itemId);
-        if (!item) return;
-
-        item.addCurseEffect(effect);
-        this.dataManager.saveData();
-        this.showItemDetails(itemId);
+    /**
+     * Get the ItemType enum
+     * @static
+     * @returns {Object} The ItemType enum
+     */
+    static get ItemType() {
+        return ItemType;
     }
 
-    removeCurseEffect(itemId, effect) {
-        const item = this.dataManager.appState.loot.find(i => i.id === itemId);
-        if (!item) return;
-
-        item.removeCurseEffect(effect);
-        this.dataManager.saveData();
-        this.showItemDetails(itemId);
-    }
-
-    assignOwner(itemId, owner) {
-        const item = this.dataManager.appState.loot.find(i => i.id === itemId);
-        if (!item) return;
-
-        item.assignOwner(owner);
-        this.dataManager.saveData();
-        this.showItemDetails(itemId);
-    }
-
-    setQuestSource(itemId, quest) {
-        const item = this.dataManager.appState.loot.find(i => i.id === itemId);
-        if (!item) return;
-
-        item.setQuestSource(quest);
-        this.dataManager.saveData();
-        this.showItemDetails(itemId);
-    }
-
-    updateItemName(itemId, form) {
-        const item = this.dataManager.appState.loot.find(i => i.id === itemId);
-        if (!item) return;
-
-        const newName = form.itemName.value;
-        if (newName) {
-            item.updateName(newName);
-            this.dataManager.saveData();
-            this.showItemDetails(itemId);
-        }
-    }
-
-    updateItemDescription(itemId, form) {
-        const item = this.dataManager.appState.loot.find(i => i.id === itemId);
-        if (!item) return;
-
-        const newDescription = form.itemDescription.value;
-        if (newDescription) {
-            item.updateDescription(newDescription);
-            this.dataManager.saveData();
-            this.showItemDetails(itemId);
-        }
-    }
-
-    updateItemRarity(itemId, form) {
-        const item = this.dataManager.appState.loot.find(i => i.id === itemId);
-        if (!item) return;
-
-        const newRarity = form.itemRarity.value;
-        if (newRarity && Object.values(ItemRarity).includes(newRarity)) {
-            item.updateRarity(newRarity);
-            this.dataManager.saveData();
-            this.showItemDetails(itemId);
-        }
-    }
-
-    handleTypeFilter(type) {
-        const items = type === 'all' 
-            ? this.dataManager.appState.loot 
-            : this.dataManager.appState.loot.filter(item => item.type === type);
-        
-        this.renderItemList(items);
-    }
-
-    getFormValue(form, fieldName) {
-        if (form instanceof HTMLFormElement) {
-            const input = form.elements[fieldName];
-            return input ? input.value : null;
-        }
-        return form[fieldName]?.value || form[fieldName];
-    }
-
-    getRarityColor(rarity) {
-        switch (rarity) {
-            case ItemRarity.COMMON: return 'secondary';
-            case ItemRarity.UNCOMMON: return 'success';
-            case ItemRarity.RARE: return 'primary';
-            case ItemRarity.VERY_RARE: return 'info';
-            case ItemRarity.LEGENDARY: return 'warning';
-            default: return 'secondary';
-        }
-    }
-
-    setupItemListEventListeners() {
-        document.querySelectorAll('[data-item-id]').forEach(item => {
-            item.addEventListener('click', (e) => {
-                e.preventDefault();
-                const itemId = item.dataset.itemId;
-                if (itemId) {
-                    this.showItemDetails(itemId);
-                    // Highlight the selected item
-                    document.querySelectorAll('[data-item-id]').forEach(i => {
-                        i.classList.remove('active');
-                    });
-                    item.classList.add('active');
-                }
-            });
-        });
+    /**
+     * Get the ItemRarity enum
+     * @static
+     * @returns {Object} The ItemRarity enum
+     */
+    static get ItemRarity() {
+        return ItemRarity;
     }
 }
+
+// Re-export the Item class for backward compatibility
+export { Item };
+
+// Default export for backward compatibility
+export default {
+    LootManager,
+    Item,
+    ItemType,
+    ItemRarity
+};

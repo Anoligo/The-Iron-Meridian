@@ -12,20 +12,21 @@ export class NotesUI {
         if (!notesSection) return;
 
         notesSection.innerHTML = `
-            <h2>Backstories &amp; Notes</h2>
-            <div class="row mb-4">
-                <div class="col">
-                    <button class="btn btn-primary" id="newNoteBtn">New Note</button>
+            <div class="container">
+                <h2 class="text-accent">Backstories &amp; Notes</h2>
+                <div class="row mb-4">
+                    <div class="col">
+                        <button class="button" id="newNoteBtn">New Note</button>
+                    </div>
                 </div>
-            </div>
             <div class="row">
                 <div class="col-md-4">
                     <div class="card">
-                        <div class="card-header">
+                        <div class="card-header bg-card">
                             <div class="d-flex justify-content-between align-items-center">
-                                <span>Notes List</span>
+                                <span class="text-accent">Notes List</span>
                                 <div class="btn-group">
-                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="categoryFilter" data-bs-toggle="dropdown">
+                                    <button class="button dropdown-toggle" type="button" id="categoryFilter" data-bs-toggle="dropdown">
                                         Filter by Category
                                     </button>
                                     <ul class="dropdown-menu">
@@ -37,9 +38,9 @@ export class NotesUI {
                                 </div>
                             </div>
                         </div>
-                        <div class="card-body">
+                        <div class="card-body bg-card">
                             <div class="mb-3">
-                                <input type="text" class="form-control" id="noteSearch" placeholder="Search notes...">
+                                <input type="text" class="form-control bg-card text" id="noteSearch" placeholder="Search notes...">
                             </div>
                             <div id="noteList" class="list-group"></div>
                         </div>
@@ -47,11 +48,11 @@ export class NotesUI {
                 </div>
                 <div class="col-md-8">
                     <div class="card">
-                        <div class="card-header">
-                            Note Details
+                        <div class="card-header bg-card">
+                            <span class="text-accent">Note Details</span>
                         </div>
-                        <div class="card-body" id="noteDetails">
-                            <p class="text-muted">Select a note to view details</p>
+                        <div class="card-body bg-card" id="noteDetails">
+                            <p>Select a note to view details</p>
                         </div>
                     </div>
                 </div>
@@ -100,13 +101,13 @@ export class NotesUI {
         }
 
         noteList.innerHTML = notesToRender.map(note => `
-            <a href="#" class="list-group-item list-group-item-action" data-note-id="${note.id}">
-                <div class="d-flex w-100 justify-content-between">
-                    <h6 class="mb-1">${this.escapeHtml(note.title)}</h6>
+            <a href="#" class="card mb-2" data-note-id="${note.id}">
+                <div class="d-flex w-100 justify-content-between p-2">
+                    <h6 class="mb-1 text-accent">${this.escapeHtml(note.title)}</h6>
                     <small class="badge ${this.getCategoryBadgeClass(note.category)}">${note.category}</small>
                 </div>
-                <p class="mb-1 text-truncate">${this.escapeHtml(note.content.substring(0, 100))}${note.content.length > 100 ? '...' : ''}</p>
-                <small>Last updated: ${new Date(note.updatedAt).toLocaleString()}</small>
+                <p class="mb-1 text-truncate p-2">${this.escapeHtml(note.content.substring(0, 100))}${note.content.length > 100 ? '...' : ''}</p>
+                <small class="p-2">Last updated: ${new Date(note.updatedAt).toLocaleString()}</small>
             </a>
         `).join('');
 
@@ -141,68 +142,104 @@ export class NotesUI {
         };
 
         noteDetails.innerHTML = `
-            <div class="mb-3">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h4>${this.escapeHtml(note.title)}</h4>
-                    <div>
-                        <button class="btn btn-sm btn-outline-primary me-1" id="editNoteBtn">Edit</button>
-                        <button class="btn btn-sm btn-outline-danger" id="deleteNoteBtn">Delete</button>
-                    </div>
-                </div>
-                <p class="text-muted">
-                    <small>
-                        Created: ${new Date(note.createdAt).toLocaleString()} | 
-                        Updated: ${new Date(note.updatedAt).toLocaleString()} | 
-                        Category: <span class="badge ${this.getCategoryBadgeClass(note.category)}">${note.category}</span>
-                    </small>
-                </p>
-            </div>
-            
-            <div class="mb-3">
-                <h5>Content</h5>
-                <div class="p-3 bg-light rounded">
-                    ${this.escapeHtml(note.content).replace(/\n/g, '<br>')}
-                </div>
-            </div>
-            
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="card mb-3">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <span>Tags</span>
-                            <button class="btn btn-sm btn-outline-secondary" id="addTagBtn">+ Add Tag</button>
-                        </div>
-                        <div class="card-body">
-                            <div id="noteTags">${formatTags(note.tags)}</div>
+            <div class="card">
+                <div class="card-header bg-card">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="text-accent mb-0">${this.escapeHtml(note.title)}</h4>
+                        <div>
+                            <button class="button me-1" id="editNoteBtn">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="button" id="deleteNoteBtn">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
                         </div>
                     </div>
+                    <p class="text-muted mb-0">
+                        <small>
+                            Created: ${new Date(note.createdAt).toLocaleString()} | 
+                            Updated: ${new Date(note.updatedAt).toLocaleString()} | 
+                            Category: <span class="badge ${this.getCategoryBadgeClass(note.category)}">${note.category}</span>
+                        </small>
+                    </p>
                 </div>
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-header">Related Entities</div>
-                        <div class="card-body">
-                            <h6>Quests</h6>
-                            <div class="mb-2" id="relatedQuests">
-                                ${formatRelatedEntities(note.relatedEntities?.quests, 'quest')}
-                                <button class="btn btn-sm btn-outline-secondary" id="addQuestBtn">+</button>
+                
+                <div class="card-body bg-card">
+                    <div class="mb-4">
+                        <h5 class="text-accent">Content</h5>
+                        <div class="p-3 bg-card rounded border border-secondary text">
+                            ${this.escapeHtml(note.content).replace(/\n/g, '<br>')}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card mb-3">
+                                <div class="card-header bg-card d-flex justify-content-between align-items-center">
+                                    <span class="text-accent">Tags</span>
+                                    <button class="button btn-sm" id="addTagBtn">
+                                        <i class="fas fa-plus"></i> Add Tag
+                                    </button>
+                                </div>
+                                <div class="card-body bg-card">
+                                    <div id="noteTags">${formatTags(note.tags)}</div>
+                                </div>
                             </div>
-                            
-                            <h6>Locations</h6>
-                            <div class="mb-2" id="relatedLocations">
-                                ${formatRelatedEntities(note.relatedEntities?.locations, 'location')}
-                                <button class="btn btn-sm btn-outline-secondary" id="addLocationBtn">+</button>
-                            </div>
-                            
-                            <h6>Characters</h6>
-                            <div class="mb-2" id="relatedCharacters">
-                                ${formatRelatedEntities(note.relatedEntities?.characters, 'character')}
-                                <button class="btn btn-sm btn-outline-secondary" id="addCharacterBtn">+</button>
-                            </div>
-                            
-                            <h6>Items</h6>
-                            <div id="relatedItems">
-                                ${formatRelatedEntities(note.relatedEntities?.items, 'item')}
-                                <button class="btn btn-sm btn-outline-secondary" id="addItemBtn">+</button>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header bg-card">
+                                    <span class="text-accent">Related Entities</span>
+                                </div>
+                                <div class="card-body bg-card">
+                                    <div class="mb-3">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <h6 class="text-accent mb-0">Quests</h6>
+                                            <button class="button btn-sm" id="addQuestBtn">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </div>
+                                        <div id="relatedQuests" class="d-flex flex-wrap gap-1">
+                                            ${formatRelatedEntities(note.relatedEntities?.quests, 'quest')}
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <h6 class="text-accent mb-0">Locations</h6>
+                                            <button class="button btn-sm" id="addLocationBtn">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </div>
+                                        <div id="relatedLocations" class="d-flex flex-wrap gap-1">
+                                            ${formatRelatedEntities(note.relatedEntities?.locations, 'location')}
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <h6 class="text-accent mb-0">Characters</h6>
+                                            <button class="button btn-sm" id="addCharacterBtn">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </div>
+                                        <div id="relatedCharacters" class="d-flex flex-wrap gap-1">
+                                            ${formatRelatedEntities(note.relatedEntities?.characters, 'character')}
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <h6 class="text-accent mb-0">Items</h6>
+                                            <button class="button btn-sm" id="addItemBtn">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </div>
+                                        <div id="relatedItems" class="d-flex flex-wrap gap-1">
+                                            ${formatRelatedEntities(note.relatedEntities?.items, 'item')}
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -227,29 +264,35 @@ export class NotesUI {
         if (!noteDetails) return;
 
         noteDetails.innerHTML = `
-            <h4>Create New Note</h4>
-            <form id="newNoteForm">
-                <div class="mb-3">
-                    <label for="noteTitle" class="form-label">Title</label>
-                    <input type="text" class="form-control" id="noteTitle" required>
+            <div class="card">
+                <div class="card-header bg-card">
+                    <h4 class="text-accent mb-0">Create New Note</h4>
                 </div>
-                <div class="mb-3">
-                    <label for="noteCategory" class="form-label">Category</label>
-                    <select class="form-select" id="noteCategory" required>
-                        ${Object.entries(NoteCategory).map(([key, value]) => 
-                            `<option value="${value}">${key.charAt(0) + key.slice(1).toLowerCase()}</option>`
-                        ).join('')}
-                    </select>
+                <div class="card-body bg-card">
+                    <form id="newNoteForm">
+                        <div class="mb-3">
+                            <label for="noteTitle" class="form-label">Title</label>
+                            <input type="text" class="form-control bg-card text" id="noteTitle" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="noteCategory" class="form-label">Category</label>
+                            <select class="form-select bg-card text searchable-select" id="noteCategory" required>
+                                ${Object.entries(NoteCategory).map(([key, value]) => 
+                                    `<option value="${value}">${key.charAt(0) + key.slice(1).toLowerCase()}</option>`
+                                ).join('')}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="noteContent" class="form-label">Content</label>
+                            <textarea class="form-control bg-card text" id="noteContent" rows="8" required></textarea>
+                        </div>
+                        <div class="d-flex justify-content-end gap-2">
+                            <button type="button" class="button" id="cancelNoteBtn">Cancel</button>
+                            <button type="submit" class="button">Save Note</button>
+                        </div>
+                    </form>
                 </div>
-                <div class="mb-3">
-                    <label for="noteContent" class="form-label">Content</label>
-                    <textarea class="form-control" id="noteContent" rows="8" required></textarea>
-                </div>
-                <div class="d-flex justify-content-end">
-                    <button type="button" class="btn btn-secondary me-2" id="cancelNoteBtn">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save Note</button>
-                </div>
-            </form>
+            </div>
         `;
 
         // Add form submission handler
@@ -260,6 +303,18 @@ export class NotesUI {
                 this.notesManager.createNewNote(form);
             });
         }
+
+        // Initialize Tom Select for searchable dropdown
+        setTimeout(() => {
+            const selectElement = document.getElementById('noteCategory');
+            if (selectElement) {
+                new TomSelect(selectElement, {
+                    create: false,
+                    sortField: { field: 'text', direction: 'asc' },
+                    plugins: ['dropdown_input']
+                });
+            }
+        }, 100);
 
         // Add cancel button handler
         const cancelBtn = document.getElementById('cancelNoteBtn');
@@ -278,31 +333,37 @@ export class NotesUI {
         if (!noteDetails) return;
 
         noteDetails.innerHTML = `
-            <h4>Edit Note</h4>
-            <form id="editNoteForm">
-                <div class="mb-3">
-                    <label for="editNoteTitle" class="form-label">Title</label>
-                    <input type="text" class="form-control" id="editNoteTitle" value="${this.escapeHtml(note.title)}" required>
+            <div class="card">
+                <div class="card-header bg-card">
+                    <h4 class="text-accent mb-0">Edit Note</h4>
                 </div>
-                <div class="mb-3">
-                    <label for="editNoteCategory" class="form-label">Category</label>
-                    <select class="form-select" id="editNoteCategory" required>
-                        ${Object.entries(NoteCategory).map(([key, value]) => 
-                            `<option value="${value}" ${note.category === value ? 'selected' : ''}>
-                                ${key.charAt(0) + key.slice(1).toLowerCase()}
-                            </option>`
-                        ).join('')}
-                    </select>
+                <div class="card-body bg-card">
+                    <form id="editNoteForm">
+                        <div class="mb-3">
+                            <label for="editNoteTitle" class="form-label">Title</label>
+                            <input type="text" class="form-control bg-card text" id="editNoteTitle" value="${this.escapeHtml(note.title)}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editNoteCategory" class="form-label">Category</label>
+                            <select class="form-select bg-card text searchable-select" id="editNoteCategory" required>
+                                ${Object.entries(NoteCategory).map(([key, value]) => 
+                                    `<option value="${value}" ${note.category === value ? 'selected' : ''}>
+                                        ${key.charAt(0) + key.slice(1).toLowerCase()}
+                                    </option>`
+                                ).join('')}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editNoteContent" class="form-label">Content</label>
+                            <textarea class="form-control bg-card text" id="editNoteContent" rows="8" required>${this.escapeHtml(note.content)}</textarea>
+                        </div>
+                        <div class="d-flex justify-content-end gap-2">
+                            <button type="button" class="button" id="cancelEditBtn">Cancel</button>
+                            <button type="submit" class="button">Save Changes</button>
+                        </div>
+                    </form>
                 </div>
-                <div class="mb-3">
-                    <label for="editNoteContent" class="form-label">Content</label>
-                    <textarea class="form-control" id="editNoteContent" rows="8" required>${this.escapeHtml(note.content)}</textarea>
-                </div>
-                <div class="d-flex justify-content-end">
-                    <button type="button" class="btn btn-secondary me-2" id="cancelEditBtn">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save Changes</button>
-                </div>
-            </form>
+            </div>
         `;
 
         // Add form submission handler
@@ -310,11 +371,21 @@ export class NotesUI {
         if (form) {
             form.addEventListener('submit', (e) => {
                 e.preventDefault();
-                console.log('Form elements:', form.elements);
-                console.log('Selected category:', form.elements.editNoteCategory?.value);
                 this.notesManager.updateNote(note.id, form);
             });
         }
+
+        // Initialize Tom Select for searchable dropdown
+        setTimeout(() => {
+            const selectElement = document.getElementById('editNoteCategory');
+            if (selectElement) {
+                new TomSelect(selectElement, {
+                    create: false,
+                    sortField: { field: 'text', direction: 'asc' },
+                    plugins: ['dropdown_input']
+                });
+            }
+        }, 100);
 
         // Add cancel button handler
         const cancelBtn = document.getElementById('cancelEditBtn');
