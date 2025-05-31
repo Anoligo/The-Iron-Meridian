@@ -43,6 +43,7 @@ export class LocationUI extends BaseUI {
         this.handleMapLocationClick = this.handleMapLocationClick.bind(this);
         this.handleMapClick = this.handleMapClick.bind(this);
         this.renderMapView = this.renderMapView.bind(this);
+        this.escapeHtml = this.escapeHtml.bind(this);
     }
     
     /**
@@ -525,7 +526,10 @@ export class LocationUI extends BaseUI {
         
         console.log('Rendering locations list with', locations.length, 'locations');
         
-        if (locations.length === 0) {
+        // Clear the list
+        this.listElement.innerHTML = '';
+        
+        if (!locations || locations.length === 0) {
             this.listElement.innerHTML = `
                 <div class="alert alert-info p-2">
                     <i class="fas fa-info-circle me-1"></i>
@@ -538,69 +542,20 @@ export class LocationUI extends BaseUI {
         // Sort locations by name
         const sortedLocations = [...locations].sort((a, b) => a.name.localeCompare(b.name));
         
-        // Create list items
-        this.listElement.innerHTML = `
-            <div class="list-group">
-                ${sortedLocations.map(location => {
-                    const isSelected = this.selectedId === location.id;
-                    const type = this.formatLocationType(location.type);
-                    const status = location.discovered ? 'Discovered' : 'Undiscovered';
-                    const statusClass = location.discovered ? 'text-success' : 'text-warning';
-                    
-                    return `
-                        <div class="list-group-item list-group-item-action location-card ${isSelected ? 'active' : ''}" data-id="${location.id}">
-                            <div class="d-flex w-100 justify-content-between">
-                                <h5 class="mb-1">
-                                    <i class="fas ${this.getLocationIcon(location.type)} me-2"></i>
-                                    ${location.name}
-                                </h5>
-                                <small class="text-muted">(${location.x || 0}, ${location.y || 0})</small>
-                            </div>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <span class="badge bg-secondary me-2">${type}</span>
-                                    <span class="badge ${statusClass === 'text-success' ? 'bg-success' : 'bg-warning'}">
-                                        <i class="fas ${status === 'Discovered' ? 'fa-check-circle' : 'fa-question-circle'} me-1"></i>
-                                        ${status}
-                                    </span>
-                                </div>
-                                <div class="btn-group btn-group-sm">
-                                    <button class="btn btn-outline-primary" data-action="edit" data-id="${location.id}" title="Edit">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-outline-danger" data-action="delete" data-id="${location.id}" title="Delete">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            ${location.description ? `
-                                <p class="mb-0 mt-2 small text-muted">
-                                    ${location.description.substring(0, 100)}${location.description.length > 100 ? '...' : ''}
-                                </p>
-                            ` : ''}
-                        </div>
-                    `;
-                }).join('')}
-            </div>
-        `;
+        // Create a container for the list
+        const listContainer = document.createElement('div');
+        listContainer.className = 'list-group';
         
-        // Add event listeners to action buttons
-        this.listElement.querySelectorAll('[data-action]').forEach(button => {
-            const action = button.dataset.action;
-            const id = button.dataset.id;
-            
-            button.addEventListener('click', (e) => {
-                e.stopPropagation();
-                
-                if (action === 'edit') {
-                    this.handleEdit(id);
-                } else if (action === 'delete') {
-                    if (confirm('Are you sure you want to delete this location?')) {
-                        this.handleDelete(id);
-                    }
-                }
-            });
+        // Create list items
+        sortedLocations.forEach(location => {
+            const card = this.createLocationCard(location);
+            if (card) {
+                listContainer.appendChild(card);
+            }
         });
+        
+        // Add the list to the DOM
+        this.listElement.appendChild(listContainer);
         
         // Add click handlers to location cards
         this.listElement.querySelectorAll('.location-card').forEach(card => {
@@ -608,13 +563,21 @@ export class LocationUI extends BaseUI {
             if (id) {
                 card.addEventListener('click', () => {
                     console.log('Location card clicked:', id);
-                    const location = this.locations.find(loc => loc.id === id);
+                    const location = this.locationService.getLocationById(id);
                     if (location) {
                         this.renderDetails(location);
                         
-                        // Update map selection if map exists
+                        // Update map selection and center on the location if map exists
                         if (this.map) {
                             this.map.selectLocation(id);
+                            this.map.centerOnLocation(id);
+                            
+                            // Zoom in slightly to make the location more visible
+                            const mapContainer = this.map.container.querySelector('.interactive-map-container');
+                            if (mapContainer) {
+                                const rect = mapContainer.getBoundingClientRect();
+                                this.map.zoom(0.5, rect.width / 2, rect.height / 2);
+                            }
                         }
                     }
                 });
@@ -623,46 +586,79 @@ export class LocationUI extends BaseUI {
     }
     
     /**
-     * Create a list item for a location
-     * @param {Object} location - Location to create list item for
-     * @returns {HTMLElement} The created list item
+     * Create a location card element
+     * @param {Object} location - The location data
+     * @returns {HTMLElement} The created location card element
      */
-    createListItem(location) {
-        console.log('Creating list item for location:', location);
+    createLocationCard(location) {
+        if (!location) return null;
         
-        // Create a list item element
-        const listItem = document.createElement('div');
-        listItem.className = 'list-group-item entity-card';
-        if (this.currentEntity && this.currentEntity.id === location.id) {
-            listItem.classList.add('entity-card-selected');
-        }
-        listItem.setAttribute('data-entity-id', location.id);
+        const card = document.createElement('div');
+        card.className = 'card mb-2 location-card';
+        card.dataset.id = location.id;
         
-        // Add click handler
-        listItem.addEventListener('click', () => this.handleSelect(location.id));
+        const status = location.discovered ? 'Discovered' : 'Undiscovered';
+        const statusClass = location.discovered ? 'text-success' : 'text-warning';
+        const type = this.formatLocationType(location.type);
         
-        // Create the content
-        listItem.innerHTML = `
-            <div class="d-flex align-items-center">
-                <div class="entity-icon">
-                    <i class="fas ${this.getLocationIcon(location.type)}"></i>
-                </div>
-                <div class="entity-info">
-                    <h5 class="entity-title mb-1">${location.name}</h5>
-                    <p class="entity-subtitle mb-1">${this.formatLocationType(location.type)}</p>
-                    <div class="entity-metadata">
-                        <span class="badge ${location.discovered ? 'bg-success' : 'bg-secondary'}">
-                            ${location.discovered ? 'Discovered' : 'Undiscovered'}
-                        </span>
-                        <span class="badge bg-info">
+        card.innerHTML = `
+            <div class="card-body p-2">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title mb-1">
+                            <i class="fas ${this.getLocationIcon(location.type)} me-2"></i>
+                            ${this.escapeHtml(location.name)}
+                        </h5>
+                        <div class="d-flex align-items-center mb-1">
+                            <span class="badge bg-secondary me-2">${type}</span>
+                            <span class="badge ${statusClass}">
+                                <i class="fas ${location.discovered ? 'fa-check-circle' : 'fa-question-circle'} me-1"></i>
+                                ${status}
+                            </span>
+                        </div>
+                        <div class="text-muted small">
+                            <i class="fas fa-map-marker-alt me-1"></i>
                             (${location.x || 0}, ${location.y || 0})
-                        </span>
+                        </div>
+                    </div>
+                    <div class="btn-group btn-group-sm">
+                        <button class="btn btn-outline-primary btn-edit" data-id="${location.id}" title="Edit">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-outline-danger btn-delete" data-id="${location.id}" title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </button>
                     </div>
                 </div>
+                ${location.description ? `
+                    <p class="card-text mt-2 mb-0 small text-muted">
+                        ${this.escapeHtml(location.description).substring(0, 100)}${location.description.length > 100 ? '...' : ''}
+                    </p>
+                ` : ''}
             </div>
         `;
         
-        return listItem;
+        // Add event listeners to action buttons
+        const editBtn = card.querySelector('.btn-edit');
+        const deleteBtn = card.querySelector('.btn-delete');
+        
+        if (editBtn) {
+            editBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.handleEdit(location.id);
+            });
+        }
+        
+        if (deleteBtn) {
+            deleteBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (confirm(`Are you sure you want to delete ${location.name}?`)) {
+                    this.handleDelete(location.id);
+                }
+            });
+        }
+        
+        return card;
     }
     
     /**
@@ -712,19 +708,7 @@ export class LocationUI extends BaseUI {
             this.handleEdit(location);
         });
         
-        const deleteBtn = document.createElement('button');
-        deleteBtn.className = 'btn btn-sm btn-outline-danger';
-        deleteBtn.innerHTML = '<i class="fas fa-trash me-1"></i> Delete';
-        deleteBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            if (confirm(`Are you sure you want to delete ${location.name}?`)) {
-                this.handleDelete(location.id);
-            }
-        });
-        
         actions.appendChild(editBtn);
-        actions.appendChild(deleteBtn);
-        
         header.appendChild(title);
         header.appendChild(actions);
         
@@ -761,7 +745,7 @@ export class LocationUI extends BaseUI {
                 <h5 class="mb-0">Description</h5>
             </div>
             <div class="card-body">
-                ${location.description ? `<p>${location.description}</p>` : '<p class="text-muted fst-italic">No description available.</p>'}
+                ${location.description ? `<p>${this.escapeHtml(location.description)}</p>` : '<p class="text-muted fst-italic">No description available.</p>'}
             </div>
         `;
         
@@ -955,18 +939,32 @@ export class LocationUI extends BaseUI {
     }
 
     /**
+     * Escape HTML special characters to prevent XSS
+     * @param {string} unsafe - The string to escape
+     * @returns {string} The escaped string
+     */
+    escapeHtml(unsafe) {
+        if (!unsafe) return '';
+        return unsafe
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    /**
      * Handle editing a location
      * @param {Object|string} location - Location object or ID to edit
      */
     handleEdit(location) {
         // If location is an ID, try to find the location
         if (typeof location === 'string') {
-            const loc = this.locations.find(l => l.id === location);
-            if (!loc) {
+            location = this.locationService.getLocationById(location);
+            if (!location) {
                 console.error('Location not found:', location);
                 return;
             }
-            location = loc;
         }
 
         console.log('Editing location:', location);
@@ -1273,5 +1271,20 @@ export class LocationUI extends BaseUI {
         return type.split('_')
             .map(word => word.charAt(0) + word.slice(1).toLowerCase())
             .join(' ');
+    }
+    
+    /**
+     * Escape HTML special characters to prevent XSS
+     * @param {string} unsafe - The unsafe string to escape
+     * @returns {string} The escaped string
+     */
+    escapeHtml(unsafe) {
+        if (!unsafe) return '';
+        return unsafe
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
     }
 }
