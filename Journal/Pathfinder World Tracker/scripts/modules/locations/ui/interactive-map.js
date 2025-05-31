@@ -50,6 +50,9 @@ export class InteractiveMap {
         console.log('Container:', this.container);
         console.log('Map image path:', this.mapImagePath);
         
+        // Track which path we're trying
+        this.currentPathIndex = 0;
+        
         // Create map container
         this.mapContainer = document.createElement('div');
         this.mapContainer.className = 'interactive-map-container';
@@ -72,68 +75,74 @@ export class InteractiveMap {
         this.mapImage.style.pointerEvents = 'none'; // Prevent image from capturing events
         this.mapImage.draggable = false;
         
+        // Define all possible paths to find the image
+        const possiblePaths = [
+            './WorldMap.png',
+            '../WorldMap.png',
+            '../../WorldMap.png',
+            '../../../WorldMap.png',
+            './images/WorldMap.png',
+            '../images/WorldMap.png',
+            '../../images/WorldMap.png',
+            './assets/WorldMap.png',
+            '../assets/WorldMap.png',
+            '../../assets/WorldMap.png',
+            './assets/images/WorldMap.png',
+            '../assets/images/WorldMap.png',
+            '../../assets/images/WorldMap.png',
+            '/assets/images/WorldMap.png',
+            '/images/WorldMap.png',
+            '/WorldMap.png',
+            'WorldMap.png'
+        ];
+        
+        // Set up path tracking
+        this.currentPathIndex = 0;
+        
+        // Use a placeholder grid background if we can't load the actual map
+        this.mapContainer.style.backgroundImage = 'linear-gradient(#ccc 1px, transparent 1px), linear-gradient(90deg, #ccc 1px, transparent 1px)';
+        this.mapContainer.style.backgroundSize = '20px 20px';
+        
+        // Set up path tracking
+        this.currentPathIndex = 0;
+        
+        // Try the first path
+        console.log('Setting map image source to:', possiblePaths[this.currentPathIndex]);
+        this.mapImage.src = possiblePaths[this.currentPathIndex];
+        
         // Add event listeners for image loading
         this.mapImage.onload = () => {
             console.log('Map image loaded successfully:', this.mapImagePath);
             this.render(); // Render the map once the image is loaded
         };
         
-        this.mapImage.onerror = (error) => {
-            console.error('Error loading map image:', error);
+        this.mapImage.onerror = () => {
+            console.error('Error loading map image:', this.mapImagePath);
             console.error('Image path attempted:', this.mapImagePath);
             
-            // Show error message in map container
-            const errorMsg = document.createElement('div');
-            errorMsg.className = 'alert alert-danger';
-            errorMsg.style.position = 'absolute';
-            errorMsg.style.top = '50%';
-            errorMsg.style.left = '50%';
-            errorMsg.style.transform = 'translate(-50%, -50%)';
-            errorMsg.style.zIndex = '100';
-            errorMsg.innerHTML = `<strong>Error:</strong> Could not load map image.<br>Path: ${this.mapImagePath}`;
-            this.mapContainer.appendChild(errorMsg);
-        };
-        
-        // Try multiple paths to find the image
-        const possiblePaths = [
-            './WorldMap.png',
-            '../WorldMap.png',
-            '../../WorldMap.png',
-            '../../../WorldMap.png',
-            '/WorldMap.png',
-            'WorldMap.png'
-        ];
-        
-        // Use a placeholder grid background if we can't load the actual map
-        this.mapContainer.style.backgroundImage = 'linear-gradient(#ccc 1px, transparent 1px), linear-gradient(90deg, #ccc 1px, transparent 1px)';
-        this.mapContainer.style.backgroundSize = '20px 20px';
-        
-        // Try the first path
-        console.log('Setting map image source to:', possiblePaths[0]);
-        this.mapImage.src = possiblePaths[0];
-        
-        // If that fails, try the next path, and so on
-        let pathIndex = 1;
-        this.mapImage.onerror = () => {
-            if (pathIndex < possiblePaths.length) {
-                console.log('Trying alternate path:', possiblePaths[pathIndex]);
-                this.mapImage.src = possiblePaths[pathIndex];
-                pathIndex++;
+            // Try the next path in our list of possible paths
+            if (this.currentPathIndex < possiblePaths.length - 1) {
+                this.currentPathIndex++;
+                this.mapImagePath = possiblePaths[this.currentPathIndex];
+                console.log('Trying alternative path:', this.mapImagePath);
+                this.mapImage.src = this.mapImagePath;
             } else {
-                console.error('Could not load map image from any path');
-                // Show a message to the user
+                // If we've tried all paths, show error and create a fallback grid background
+                console.error('All image paths failed, using fallback grid');
+                
+                // Show error message in map container
                 const errorMsg = document.createElement('div');
-                errorMsg.className = 'alert alert-warning';
+                errorMsg.className = 'alert alert-danger';
                 errorMsg.style.position = 'absolute';
                 errorMsg.style.top = '10px';
                 errorMsg.style.left = '10px';
                 errorMsg.style.right = '10px';
                 errorMsg.style.zIndex = '100';
-                errorMsg.innerHTML = `<strong>Note:</strong> Using placeholder grid. Map image could not be loaded.`;
+                errorMsg.innerHTML = `<strong>Map Error:</strong> Could not load map image. Using fallback grid.`;
                 this.mapContainer.appendChild(errorMsg);
                 
-                // Still render the pins on the placeholder grid
-                this.render();
+                // Create a fallback grid background
+                this.createFallbackGrid();
             }
         };
         
@@ -162,10 +171,8 @@ export class InteractiveMap {
         document.addEventListener('mouseup', this.handleMouseUp);
         this.mapContainer.addEventListener('click', this.handleMapClick);
         
-        // Wait for image to load before rendering pins
-        this.mapImage.onload = () => {
-            this.render();
-        };
+        // Note: onload handler is already set above
+        // No need to set it again here
     }
     
     /**
@@ -459,6 +466,60 @@ export class InteractiveMap {
         };
         
         return icons[type] || 'fa-map-marker-alt';
+    }
+    
+    /**
+     * Create a fallback grid background when map image can't be loaded
+     */
+    createFallbackGrid() {
+        // Create a canvas element to draw the grid
+        const canvas = document.createElement('canvas');
+        canvas.width = 1000;
+        canvas.height = 1000;
+        canvas.style.position = 'absolute';
+        canvas.style.top = '0';
+        canvas.style.left = '0';
+        canvas.style.pointerEvents = 'none';
+        
+        const ctx = canvas.getContext('2d');
+        
+        // Fill with light background
+        ctx.fillStyle = '#f0f0f0';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Draw grid lines
+        ctx.strokeStyle = '#cccccc';
+        ctx.lineWidth = 1;
+        
+        // Draw vertical lines
+        for (let x = 0; x <= canvas.width; x += 50) {
+            ctx.beginPath();
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x, canvas.height);
+            ctx.stroke();
+        }
+        
+        // Draw horizontal lines
+        for (let y = 0; y <= canvas.height; y += 50) {
+            ctx.beginPath();
+            ctx.moveTo(0, y);
+            ctx.lineTo(canvas.width, y);
+            ctx.stroke();
+        }
+        
+        // Add some reference coordinates
+        ctx.fillStyle = '#999999';
+        ctx.font = '12px Arial';
+        
+        for (let x = 0; x <= canvas.width; x += 100) {
+            for (let y = 0; y <= canvas.height; y += 100) {
+                ctx.fillText(`(${x},${y})`, x + 5, y + 15);
+            }
+        }
+        
+        // Use the canvas as our map image
+        this.mapImage.src = canvas.toDataURL();
+        this.mapContainer.appendChild(canvas);
     }
     
     /**

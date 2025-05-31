@@ -71,30 +71,44 @@ export class LocationService {
      * @returns {Location|undefined} The updated location or undefined if not found
      */
     updateLocation(id, updates) {
+        console.log('Updating location with ID:', id, 'Updates:', updates);
         const location = this.getLocationById(id);
-        if (!location) return undefined;
-
-        // Apply updates
-        if (updates.name !== undefined) location.updateName(updates.name);
-        if (updates.description !== undefined) location.updateDescription(updates.description);
-        if (updates.type !== undefined) location.updateType(updates.type);
-        if (updates.x !== undefined || updates.y !== undefined) {
-            location.updateCoordinates({
-                x: updates.x !== undefined ? updates.x : location.x,
-                y: updates.y !== undefined ? updates.y : location.y
-            });
+        if (!location) {
+            console.error('Location not found with ID:', id);
+            return undefined;
         }
-        if (updates.discovered !== undefined) {
-            if (updates.discovered) {
-                location.markAsDiscovered();
-            } else {
-                location.discovered = false;
-                location.updatedAt = new Date();
+
+        // Apply updates directly to the location object
+        try {
+            // Update basic properties directly
+            if (updates.name !== undefined) {
+                location.name = updates.name;
             }
+            if (updates.description !== undefined) {
+                location.description = updates.description;
+            }
+            if (updates.type !== undefined) {
+                location.type = updates.type;
+            }
+            if (updates.x !== undefined || updates.y !== undefined) {
+                location.x = updates.x !== undefined ? updates.x : location.x;
+                location.y = updates.y !== undefined ? updates.y : location.y;
+            }
+            if (updates.discovered !== undefined) {
+                location.discovered = Boolean(updates.discovered);
+            }
+            
+            // Update timestamp
+            location.updatedAt = new Date();
+            
+            // Save changes
+            this.dataManager.saveData();
+            console.log('Location updated successfully:', location);
+            return location;
+        } catch (error) {
+            console.error('Error updating location:', error);
+            return undefined;
         }
-
-        this.dataManager.saveData();
-        return location;
     }
 
     /**

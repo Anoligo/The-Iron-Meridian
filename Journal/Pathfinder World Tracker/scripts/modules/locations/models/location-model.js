@@ -174,7 +174,7 @@ export class Location extends Entity {
 
     /**
      * Update the location's type
-     * @param {string} type - The new type (from LocationType)
+     * @param {string} type - The new location type
      */
     updateType(type) {
         if (type && type !== this.type) {

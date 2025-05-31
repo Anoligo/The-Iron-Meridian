@@ -12,24 +12,25 @@ export class LocationManager {
      * @param {HTMLElement} container - The container element for the UI
      */
     constructor(dataManager, container) {
+        console.log('LocationManager constructor called');
         this.dataManager = dataManager;
-        this.container = container || document.createElement('div');
+        this.container = document.createElement('div');
         this.container.className = 'locations-module';
+        this.initialized = false;
         
-        // Initialize services and UI
+        // Initialize services
         this.locationService = new LocationService(dataManager);
-        this.locationUI = new LocationUI(this.locationService, dataManager);
-        
-        // Initialize the UI
-        this.locationUI.init();
         
         // Create some sample locations if none exist
         if (this.locationService.getAllLocations().length === 0) {
             this.createSampleLocations();
         }
         
-        // Initial render
-        this.initialize();
+        // Add event listener for hash changes to handle navigation
+        window.addEventListener('hashchange', () => this.handleHashChange());
+        
+        // Initial check for current hash
+        this.handleHashChange();
     }
     
     /**
@@ -37,78 +38,246 @@ export class LocationManager {
      */
     initialize() {
         console.log('Initializing LocationManager');
-        // Create the locations section if it doesn't exist
+        
+        // Only initialize if we're on the locations page
+        if (window.location.hash !== '#locations') {
+            console.log('Not on locations page, skipping initialization');
+            return;
+        }
+        
+        // Check if already initialized to prevent duplicate initialization
+        if (this.initialized) {
+            console.log('LocationManager already initialized, refreshing UI');
+            if (this.locationUI) {
+                this.locationUI.refresh();
+            }
+            return;
+        }
+        
+        // Get the locations section
         let locationsSection = document.getElementById('locations');
         if (!locationsSection) {
             console.log('Creating locations section');
             locationsSection = document.createElement('div');
             locationsSection.id = 'locations';
-            document.body.appendChild(locationsSection);
+            locationsSection.className = 'section';
+            const mainContent = document.querySelector('main .content-area');
+            if (mainContent) {
+                mainContent.appendChild(locationsSection);
+            } else {
+                document.body.appendChild(locationsSection);
+            }
         }
         
-        // Ensure the container is visible
+        // Ensure the section is visible
         locationsSection.style.display = 'block';
+        locationsSection.classList.add('active');
         
-        // Render the locations module
-        this.render();
+        // Get all locations and log them for debugging
+        const allLocations = this.locationService.getAllLocations();
+        console.log('All locations from service:', allLocations);
         
-        // Explicitly initialize the UI
+        // Check if we have any locations, create samples if not
+        if (allLocations.length === 0) {
+            console.log('No locations found, creating sample locations');
+            this.createSampleLocations();
+        }
+        
+        // DO NOT clear the section content here, as it might remove the map container
+        // Instead, create the structure first
+        this.setupLocationSection(locationsSection);
+        
+        // Create the UI if it doesn't exist yet
+        if (!this.locationUI) {
+            console.log('Creating LocationUI');
+            this.locationUI = new LocationUI(this.locationService, this.dataManager);
+        }
+        
+        // Initialize the UI after the DOM structure is ready
+        console.log('Initializing LocationUI');
         this.locationUI.init();
         
-        // Force a refresh to ensure everything is rendered properly
+        // Set up a multi-stage initialization to ensure everything loads properly
+        // Stage 1: Initial refresh
+        console.log('Stage 1: Initial refresh');
+        this.locationUI.refresh();
+        
+        // Stage 2: Check map initialization after a short delay
         setTimeout(() => {
-            console.log('Forcing UI refresh');
-            this.locationUI.refresh();
+            console.log('Stage 2: Checking map initialization');
+            if (this.locationUI && !this.locationUI.map) {
+                console.log('Map not initialized, attempting to render map view');
+                this.locationUI.renderMapView();
+            }
+            
+            // Stage 3: Final check and force refresh if needed
+            setTimeout(() => {
+                console.log('Stage 3: Final check and refresh');
+                
+                // Log locations again to ensure they're still available
+                const locationsAfterDelay = this.locationService.getAllLocations();
+                console.log('Locations after delay:', locationsAfterDelay);
+                
+                // Check if map was initialized properly
+                if (this.locationUI && !this.locationUI.map) {
+                    console.log('Map still not initialized, final attempt to render map view');
+                    this.locationUI.renderMapView();
+                }
+                
+                // Check if locations list is populated
+                const locationsList = document.getElementById('locations-list');
+                if (locationsList && locationsList.children.length === 0 && locationsAfterDelay.length > 0) {
+                    console.log('Locations list is empty but we have locations, forcing list render');
+                    if (this.locationUI.renderList) {
+                        this.locationUI.renderList(locationsAfterDelay);
+                    } else {
+                        console.log('renderList method not found, using refresh instead');
+                        this.locationUI.refresh();
+                    }
+                }
+                
+                // Add a manual refresh button in case all else fails
+                const refreshButton = document.createElement('button');
+                refreshButton.id = 'manual-refresh-btn';
+                refreshButton.className = 'btn btn-sm btn-outline-primary mt-2';
+                refreshButton.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh Map & Locations';
+                refreshButton.style.position = 'absolute';
+                refreshButton.style.top = '10px';
+                refreshButton.style.right = '10px';
+                refreshButton.style.zIndex = '1000';
+                refreshButton.addEventListener('click', () => {
+                    console.log('Manual refresh requested');
+                    this.locationUI.renderMapView();
+                    this.locationUI.refresh();
+                });
+                
+                // Only add if it doesn't already exist
+                if (!document.getElementById('manual-refresh-btn')) {
+                    const mapContainer = document.getElementById('worldMapContainer');
+                    if (mapContainer) {
+                        mapContainer.appendChild(refreshButton);
+                    } else {
+                        locationsSection.appendChild(refreshButton);
+                    }
+                }
+                
+            }, 1500);
+            
         }, 500);
+        
+        // Mark as initialized
+        this.initialized = true;
+    }
+    
+    /**
+     * Set up the location section with the basic structure
+     * @param {HTMLElement} locationsSection - The locations section element
+     */
+    setupLocationSection(locationsSection) {
+        console.log('Setting up location section structure');
+        
+        // Check if the section header already exists to prevent duplication
+        const existingHeader = locationsSection.querySelector('.section-header');
+        if (existingHeader) {
+            console.log('Section header already exists, skipping creation');
+        } else {
+            // Create a section header
+            const sectionHeader = document.createElement('div');
+            sectionHeader.className = 'section-header d-flex justify-content-between align-items-center mb-3';
+            sectionHeader.innerHTML = `
+                <h2 class="text-accent">Locations</h2>
+                <button class="btn btn-primary" id="addLocationBtn">
+                    <i class="fas fa-plus"></i> Add Location
+                </button>
+            `;
+            
+            // Insert at the beginning of the locations section
+            if (locationsSection.firstChild) {
+                locationsSection.insertBefore(sectionHeader, locationsSection.firstChild);
+            } else {
+                locationsSection.appendChild(sectionHeader);
+            }
+        }
+        
+        // Check if map container already exists
+        let mapContainer = document.getElementById('worldMapContainer');
+        if (!mapContainer) {
+            console.log('Creating map container');
+            mapContainer = document.createElement('div');
+            mapContainer.id = 'worldMapContainer';
+            mapContainer.className = 'mb-4';
+            // Insert after the header
+            const header = locationsSection.querySelector('.section-header');
+            if (header && header.nextSibling) {
+                locationsSection.insertBefore(mapContainer, header.nextSibling);
+            } else {
+                locationsSection.appendChild(mapContainer);
+            }
+        } else {
+            console.log('Map container already exists');
+        }
+        
+        // Create a row for the locations list and details
+        const row = document.createElement('div');
+        row.className = 'row';
+        row.innerHTML = `
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Locations</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush" id="locations-list"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body" id="location-details">
+                        <div class="empty-state">
+                            <i class="fas fa-map-marker-alt fa-3x mb-3"></i>
+                            <p class="empty-state-message">Select a location to view details</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        locationsSection.appendChild(row);
+        
+        // Append our container to the locations section
+        locationsSection.appendChild(this.container);
+        
+        console.log('Location section structure set up');
     }
     
     /**
      * Render the locations module
      */
     render() {
+        console.log('LocationManager render called');
+        
+        // Only render if we're on the locations page
+        if (window.location.hash !== '#locations') {
+            console.log('Not on locations page, skipping render');
+            return;
+        }
+        
+        // Get the locations section
         let locationsSection = document.getElementById('locations');
-        
-        // Create the locations section if it doesn't exist
         if (!locationsSection) {
-            console.log('Locations section not found, creating it...');
-            const mainContent = document.querySelector('main .content-area');
-            if (!mainContent) {
-                console.error('Main content area not found');
-                return;
-            }
-            
-            locationsSection = document.createElement('div');
-            locationsSection.id = 'locations';
-            locationsSection.className = 'section';
-            mainContent.appendChild(locationsSection);
-        }
-
-        // Clear any existing content in our container
-        this.container.innerHTML = '';
-        
-        // Important: Check if the container is the same as locationsSection to avoid circular reference
-        if (this.container === locationsSection) {
-            console.warn('Container is the same as locationsSection, creating a new container');
-            // Create a new container to avoid circular reference
-            this.container = document.createElement('div');
-            this.container.className = 'locations-module';
+            console.error('Locations section not found, cannot render');
+            return;
         }
         
-        // Always render the locations content when this method is called
-        // Make sure the container is inside the locations section
-        if (this.container.parentElement !== locationsSection) {
-            locationsSection.appendChild(this.container);
-        }
-        
-        // Set the section as active
-        document.querySelectorAll('.section').forEach(section => {
-            section.classList.remove('active');
-        });
+        // Make sure the section is visible
+        locationsSection.style.display = 'block';
         locationsSection.classList.add('active');
         
         // Refresh the UI to render the location list
-        this.locationUI.refresh();
-        console.log('Rendered locations list with', this.locationService.getAllLocations().length, 'locations');
+        if (this.locationUI) {
+            this.locationUI.refresh();
+            console.log('Rendered locations list with', this.locationService.getAllLocations().length, 'locations');
+        }
     }
     
     /**
@@ -174,10 +343,66 @@ export class LocationManager {
     }
     
     /**
+     * Handle hash change events to show/hide the locations section
+     */
+    handleHashChange() {
+        console.log('Hash changed, current hash:', window.location.hash);
+        
+        // Check if we're on the locations page
+        const isLocationsPage = window.location.hash === '#locations';
+        
+        // Get all sections
+        const sections = document.querySelectorAll('.section');
+        
+        // Find the locations section
+        const locationsSection = document.getElementById('locations');
+        
+        if (isLocationsPage) {
+            console.log('On locations page, showing locations section');
+            
+            // Initialize if not already initialized
+            if (!this.initialized) {
+                this.initialize();
+            } else {
+                // Just render if already initialized
+                this.render();
+            }
+            
+            // Make sure the section is visible
+            if (locationsSection) {
+                locationsSection.style.display = 'block';
+                locationsSection.classList.add('active');
+            }
+        } else {
+            console.log('Not on locations page, hiding locations section');
+            
+            // Hide the locations section
+            if (locationsSection) {
+                locationsSection.style.display = 'none';
+                locationsSection.classList.remove('active');
+            }
+            
+            // Remove any locations modules from other sections
+            sections.forEach(section => {
+                if (section.id !== 'locations') {
+                    const locationModules = section.querySelectorAll('.locations-module');
+                    locationModules.forEach(module => {
+                        if (module.parentNode) {
+                            module.parentNode.removeChild(module);
+                        }
+                    });
+                }
+            });
+        }
+    }
+    
+    /**
      * Refresh the UI with the latest data
      */
     refresh() {
-        this.locationUI.refresh();
+        if (this.locationUI) {
+            this.locationUI.refresh();
+        }
     }
     
     /**
@@ -186,5 +411,8 @@ export class LocationManager {
     destroy() {
         // Clean up any event listeners or resources
         this.container.innerHTML = '';
+        
+        // Remove hash change event listener
+        window.removeEventListener('hashchange', this.handleHashChange);
     }
 }
