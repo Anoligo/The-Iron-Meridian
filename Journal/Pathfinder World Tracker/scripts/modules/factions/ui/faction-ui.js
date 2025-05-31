@@ -1,4 +1,5 @@
 import { FactionManager } from '../faction-manager.js';
+import { Faction } from '../models/faction.js';
 
 /**
  * Handles the UI for managing factions

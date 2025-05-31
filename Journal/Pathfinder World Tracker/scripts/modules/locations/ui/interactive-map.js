@@ -380,10 +380,11 @@ export class InteractiveMap {
     }
     
     /**
-     * Center the map on a specific location
+     * Center the map on a specific location with a fixed zoom level
      * @param {string} locationId - ID of the location to center on
+     * @param {number} [targetScale=1.5] - The target zoom level (1.0 = 100%)
      */
-    centerOnLocation(locationId) {
+    centerOnLocation(locationId, targetScale = 1.5) {
         const location = this.locations.find(loc => loc.id === locationId);
         if (!location) return;
         
@@ -391,6 +392,10 @@ export class InteractiveMap {
         const containerWidth = this.mapContainer.clientWidth;
         const containerHeight = this.mapContainer.clientHeight;
         
+        // Set the scale to the target zoom level
+        this.scale = targetScale;
+        
+        // Calculate the new offset to center the location
         this.offsetX = containerWidth / 2 - location.x * this.scale;
         this.offsetY = containerHeight / 2 - location.y * this.scale;
         

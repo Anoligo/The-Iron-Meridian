@@ -568,16 +568,10 @@ export class LocationUI extends BaseUI {
                         this.renderDetails(location);
                         
                         // Update map selection and center on the location if map exists
+                        // The centerOnLocation method now handles setting a consistent zoom level
                         if (this.map) {
                             this.map.selectLocation(id);
-                            this.map.centerOnLocation(id);
-                            
-                            // Zoom in slightly to make the location more visible
-                            const mapContainer = this.map.container.querySelector('.interactive-map-container');
-                            if (mapContainer) {
-                                const rect = mapContainer.getBoundingClientRect();
-                                this.map.zoom(0.5, rect.width / 2, rect.height / 2);
-                            }
+                            this.map.centerOnLocation(id); // Uses default 1.5x zoom
                         }
                     }
                 });
