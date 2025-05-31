@@ -88,11 +88,39 @@ export class FactionManager {
         }
     }
 
+    // Create a new faction (alias for createFaction for backward compatibility)
+    addFaction(data = {}) {
+        console.log('addFaction called with data:', data);
+        // Ensure we don't have an ID to force creation of a new one
+        const { id, ...factionData } = data;
+        const faction = this.createFaction(factionData);
+        console.log('New faction created:', faction);
+        
+        // Save the updated factions list
+        this.saveFactions();
+        console.log('Factions saved after add');
+        
+        return faction;
+    }
+    
     // Create a new faction
     createFaction(data = {}) {
+        console.log('createFaction called with data:', data);
         const faction = new Faction(data);
+        console.log('New Faction instance created:', faction);
+        
+        // Add to the factions map
         this.factions.set(faction.id, faction);
+        console.log('Faction added to factions map with ID:', faction.id);
+        
+        // Save the factions
         this.saveFactions();
+        console.log('Factions saved');
+        
+        // Verify the faction was saved
+        const savedFaction = this.getFaction(faction.id);
+        console.log('Faction retrieved after save:', savedFaction);
+        
         return faction;
     }
 
@@ -113,12 +141,20 @@ export class FactionManager {
 
     // Update a faction
     updateFaction(id, data) {
+        console.log('Updating faction:', id, 'with data:', data);
         const faction = this.factions.get(id);
-        if (!faction) return null;
+        if (!faction) {
+            console.error('Faction not found:', id);
+            return null;
+        }
 
+        console.log('Current faction data:', faction);
         const updatedFaction = new Faction({ ...faction.toJSON(), ...data, id });
+        console.log('Updated faction data:', updatedFaction);
+        
         this.factions.set(id, updatedFaction);
         this.saveFactions();
+        console.log('Faction updated and saved');
         return updatedFaction;
     }
 

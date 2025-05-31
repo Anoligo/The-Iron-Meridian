@@ -73,7 +73,7 @@ export class FactionUI {
                     </div>
                     
                     <!-- Faction Details -->
-                    <div class="faction-details" id="faction-details">
+                    <div class="faction-details" id="faction-details" style="display: none;">
                         <div class="empty-state">
                             <i class="fas fa-hand-point-left fa-3x"></i>
                             <p>Select a faction to view details</p>
@@ -83,7 +83,74 @@ export class FactionUI {
                 
                 <!-- Faction Form (initially hidden) -->
                 <div id="faction-form-container" style="display: none;">
-                    <!-- Form will be inserted here -->
+                    <div class="faction-form">
+                        <div class="faction-form-header">
+                            <h2 id="faction-form-title">Add New Faction</h2>
+                            <button type="button" class="btn-close" id="close-faction-form"></button>
+                        </div>
+                        <form id="faction-form">
+                            <div class="mb-3">
+                                <label for="faction-name" class="form-label">Name</label>
+                                <input type="text" class="form-control" id="faction-name" name="name" required>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="faction-type" class="form-label">Type</label>
+                                        <select class="form-select" id="faction-type" name="type" required>
+                                            <option value="">Select a type...</option>
+                                            <option value="guild">Guild</option>
+                                            <option value="noble">Noble House</option>
+                                            <option value="religious">Religious</option>
+                                            <option value="criminal">Criminal</option>
+                                            <option value="political">Political</option>
+                                            <option value="military">Military</option>
+                                            <option value="merchant">Merchant</option>
+                                            <option value="other">Other</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="faction-attitude" class="form-label">Attitude</label>
+                                        <select class="form-select" id="faction-attitude" name="attitude" required>
+                                            <option value="Allied">Allied</option>
+                                            <option value="Cautiously Allied">Cautiously Allied</option>
+                                            <option value="Friendly">Friendly</option>
+                                            <option value="Friendly Rivals">Friendly Rivals</option>
+                                            <option value="Neutral" selected>Neutral</option>
+                                            <option value="Suspicious">Suspicious</option>
+                                            <option value="Hostile">Hostile</option>
+                                            <option value="Bitter Enemies">Bitter Enemies</option>
+                                            <option value="Kill on Sight">Kill on Sight</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="faction-description" class="form-label">Description</label>
+                                <textarea class="form-control" id="faction-description" name="description" rows="3"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="faction-headquarters" class="form-label">Headquarters</label>
+                                <input type="text" class="form-control" id="faction-headquarters" name="headquarters">
+                            </div>
+                            <div class="mb-3">
+                                <label for="faction-tags" class="form-label">Tags (comma-separated)</label>
+                                <input type="text" class="form-control" id="faction-tags" name="tags">
+                            </div>
+                            <div class="mb-3">
+                                <label for="faction-influence" class="form-label">Influence: <span id="influence-value">50</span>%</label>
+                                <input type="range" class="form-range" id="faction-influence" name="influence" min="0" max="100" value="50">
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <button type="button" class="btn btn-outline-secondary" id="cancel-faction-form">Cancel</button>
+                                <div>
+                                    <button type="submit" class="btn btn-primary" id="save-faction-btn">Save Faction</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         `;
@@ -94,8 +161,14 @@ export class FactionUI {
             factionSearch: this.container.querySelector('#faction-search'),
             factionDetails: this.container.querySelector('#faction-details'),
             factionFormContainer: this.container.querySelector('#faction-form-container'),
+            factionForm: this.container.querySelector('#faction-form'),
             addFactionBtn: this.container.querySelector('#add-faction-btn'),
-            typeFilter: this.container.querySelector('#faction-type-filter')
+            typeFilter: this.container.querySelector('#faction-type-filter'),
+            saveFactionBtn: this.container.querySelector('#save-faction-btn'),
+            cancelFactionBtn: this.container.querySelector('#cancel-faction-form'),
+            closeFactionBtn: this.container.querySelector('#close-faction-form'),
+            influenceSlider: this.container.querySelector('#faction-influence'),
+            influenceValue: this.container.querySelector('#influence-value')
         };
         
         // Initialize event listeners
@@ -116,73 +189,10 @@ export class FactionUI {
             this.showFactionDetails(this.currentFaction.id);
         }
     }
-
+    
     /**
-     * Render the list of factions with optional filtering
-     * @param {string} searchTerm - Optional search term to filter factions by name or description
+     * Initialize event listeners for the UI
      */
-    renderFactionsList(searchTerm = '') {
-        try {
-            if (!this.manager.initialized) {
-                console.log('Faction manager not yet initialized, waiting...');
-                setTimeout(() => this.renderFactionsList(searchTerm), 100);
-                return;
-            }
-
-            const factions = Array.from(this.manager.factions.values());
-            const searchLower = searchTerm ? searchTerm.toLowerCase() : '';
-            const selectedType = this.elements.typeFilter ? this.elements.typeFilter.value : '';
-
-            const filteredFactions = factions.filter(faction => {
-                // Filter by search term if provided
-                const matchesSearch = !searchLower || 
-                    (faction.name && faction.name.toLowerCase().includes(searchLower)) ||
-                    (faction.description && faction.description.toLowerCase().includes(searchLower));
-                
-                // Filter by type if selected
-                const matchesType = !selectedType || faction.type === selectedType;
-                
-                return matchesSearch && matchesType;
-            });
-
-            // Clear the current list
-            this.elements.factionsList.innerHTML = '';
-
-            // Show empty state if no factions match the filters
-            if (filteredFactions.length === 0) {
-                this.elements.factionsList.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-flag fa-3x"></i>
-                        <p>${searchTerm || selectedType ? 'No matching factions found.' : 'No factions found. Create your first faction to get started!'}</p>
-                    </div>
-                `;
-                return;
-            }
-
-            // Sort factions by name
-            const sortedFactions = [...filteredFactions].sort((a, b) => 
-                a.name.localeCompare(b.name)
-            );
-
-            // Render each faction card
-            sortedFactions.forEach(faction => {
-                const factionCard = this.createFactionCard(faction);
-                if (factionCard) {
-                    this.elements.factionsList.appendChild(factionCard);
-                }
-            });
-        } catch (error) {
-            console.error('Error rendering factions list:', error);
-            this.elements.factionsList.innerHTML = `
-                <div class="error-state">
-                    <i class="fas fa-exclamation-triangle fa-3x"></i>
-                    <p>Error loading factions. Please try refreshing the page.</p>
-                </div>
-            `;
-        }
-    }
-
-    // Initialize event listeners
     initEventListeners() {
         // Search functionality
         if (this.elements.factionSearch) {
@@ -190,364 +200,642 @@ export class FactionUI {
                 this.renderFactionsList(e.target.value);
             });
         }
-
+        
         // Type filter
         if (this.elements.typeFilter) {
-            this.elements.typeFilter.addEventListener('change', (e) => {
-                this.renderFactionsList();
+            this.elements.typeFilter.addEventListener('change', () => {
+                this.renderFactionsList(this.elements.factionSearch?.value || '');
             });
         }
-
+        
         // Add faction button
         if (this.elements.addFactionBtn) {
-            this.elements.addFactionBtn.addEventListener('click', (e) => {
-                e.preventDefault();
+            this.elements.addFactionBtn.addEventListener('click', () => {
                 this.showFactionForm();
             });
         }
-
-        // Save faction
+        
+        // Save faction form
         if (this.elements.factionForm) {
             this.elements.factionForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 this.saveFaction();
             });
         }
-
-        // Delete faction
-        if (this.elements.deleteFactionBtn) {
-            this.elements.deleteFactionBtn.addEventListener('click', () => {
-                if (this.currentFaction) {
-                    if (confirm(`Are you sure you want to delete ${this.currentFaction.name}?`)) {
-                        this.deleteFaction(this.currentFaction.id);
-                    }
-                }
+        
+        // Cancel/close form buttons
+        if (this.elements.cancelFactionBtn) {
+            this.elements.cancelFactionBtn.addEventListener('click', () => {
+                this.hideFactionForm();
             });
         }
-
+        
+        if (this.elements.closeFactionBtn) {
+            this.elements.closeFactionBtn.addEventListener('click', () => {
+                this.hideFactionForm();
+            });
+        }
+        
         // Influence slider
-        if (this.elements.influenceSlider) {
+        if (this.elements.influenceSlider && this.elements.influenceValue) {
             this.elements.influenceSlider.addEventListener('input', (e) => {
-                const value = e.target.value;
-                this.elements.influenceValue.textContent = value;
-                if (this.currentFaction) {
-                    this.currentFaction.influence = parseInt(value, 10);
-                }
+                this.elements.influenceValue.textContent = e.target.value;
             });
         }
-    }
-
-    // Render the factions list
-    renderFactionsList(searchTerm = '') {
-        if (!this.elements.factionsList) return;
-
-        let factions = searchTerm 
-            ? this.manager.searchFactions(searchTerm)
-            : this.manager.getAllFactions();
-
-        // Sort by name by default
-        factions.sort((a, b) => a.name.localeCompare(b.name));
-
-        this.elements.factionsList.innerHTML = factions.length > 0
-            ? factions.map(faction => this.createFactionCard(faction)).join('')
-            : '<div class="empty-state">No factions found. Click "Add Faction" to create one.</div>';
-
-        // Add click handlers to faction cards
-        document.querySelectorAll('.faction-card').forEach(card => {
-            card.addEventListener('click', (e) => {
-                const factionId = card.dataset.id;
-                this.showFactionDetails(factionId);
-            });
-        });
-    }
-
-    // Create a faction card element
-    createFactionCard(faction) {
-        const influenceClass = this.getInfluenceClass(faction.influence);
-        const alignment = this.getAlignmentBadge(faction.alignment);
-        const tags = faction.tags.map(tag => `<span class="tag">${tag}</span>`).join('');
         
-        return `
-            <div class="faction-card" data-id="${faction.id}">
-                <div class="faction-header">
-                    <h3>${faction.name}</h3>
-                    <span class="faction-type">${faction.type}</span>
-                    ${alignment}
-                </div>
-                <div class="faction-influence">
-                    <div class="influence-bar ${influenceClass}" style="width: ${faction.influence}%"></div>
-                    <span class="influence-text">${faction.influence}%</span>
-                </div>
-                <div class="faction-tags">${tags}</div>
-                <div class="faction-description">${faction.description.substring(0, 100)}${faction.description.length > 100 ? '...' : ''}</div>
-            </div>
-        `;
-    }
-
-    // Show the faction form (for add/edit)
-    showFactionForm(faction = null) {
-        this.currentFaction = faction || new Faction();
-        
-        // Populate the form
-        if (this.elements.factionForm) {
-            this.elements.factionForm.elements['name'].value = this.currentFaction.name || '';
-            this.elements.factionForm.elements['type'].value = this.currentFaction.type || '';
-            this.elements.factionForm.elements['alignment'].value = this.currentFaction.alignment || 'N';
-            this.elements.factionForm.elements['description'].value = this.currentFaction.description || '';
-            this.elements.factionForm.elements['headquarters'].value = this.currentFaction.headquarters || '';
-            this.elements.factionForm.elements['notes'].value = this.currentFaction.notes || '';
-            this.elements.factionForm.elements['tags'].value = this.currentFaction.tags.join(', ');
-            this.elements.influenceSlider.value = this.currentFaction.influence;
-            this.elements.influenceValue.textContent = this.currentFaction.influence;
-
-            // Show the form and hide the details
-            if (this.elements.factionDetails) {
-                this.elements.factionDetails.style.display = 'none';
-            }
-            this.elements.factionForm.style.display = 'block';
-            
-            // Update button text based on add/edit mode
-            if (this.elements.saveFactionBtn) {
-                this.elements.saveFactionBtn.textContent = faction ? 'Update Faction' : 'Create Faction';
-            }
-        }
-    }
-
-    // Show faction details
-    showFactionDetails(factionId) {
-        const faction = this.manager.getFaction(factionId);
-        if (!faction) return;
-
-        this.currentFaction = faction;
-        
-        if (this.elements.factionDetails) {
-            const influenceClass = this.getInfluenceClass(faction.influence);
-            const alignment = this.getAlignmentBadge(faction.alignment);
-            const tags = faction.tags.map(tag => `<span class="tag">${tag}</span>`).join('');
-            
-            this.elements.factionDetails.innerHTML = `
-                <div class="faction-details-header">
-                    <h2>${faction.name}</h2>
-                    <div class="faction-meta">
-                        <span class="faction-type">${faction.type}</span>
-                        ${alignment}
-                        <span class="faction-status ${faction.isActive ? 'active' : 'inactive'}">
-                            ${faction.isActive ? 'Active' : 'Inactive'}
-                        </span>
-                    </div>
-                    <div class="faction-tags">${tags}</div>
-                </div>
-                
-                <div class="faction-details-body">
-                    <div class="faction-section">
-                        <h3>Influence</h3>
-                        <div class="influence-display">
-                            <div class="influence-bar ${influenceClass}" style="width: ${faction.influence}%"></div>
-                            <span class="influence-text">${faction.influence}%</span>
-                        </div>
-                        <input type="range" id="influence-slider" min="0" max="100" value="${faction.influence}">
-                        <span id="influence-value">${faction.influence}</span>
-                    </div>
-                    
-                    <div class="faction-section">
-                        <h3>Description</h3>
-                        <p>${faction.description || 'No description provided.'}</p>
-                    </div>
-                    
-                    ${faction.headquarters ? `
-                        <div class="faction-section">
-                            <h3>Headquarters</h3>
-                            <p>${faction.headquarters}</p>
-                        </div>
-                    ` : ''}
-                    
-                    ${faction.leaders.length > 0 ? `
-                        <div class="faction-section">
-                            <h3>Leaders</h3>
-                            <ul>
-                                ${faction.leaders.map(leader => `<li>${leader}</li>`).join('')}
-                            </ul>
-                        </div>
-                    ` : ''}
-                    
-                    ${faction.goals.length > 0 ? `
-                        <div class="faction-section">
-                            <h3>Goals</h3>
-                            <ul>
-                                ${faction.goals.map(goal => `<li>${goal}</li>`).join('')}
-                            </ul>
-                        </div>
-                    ` : ''}
-                    
-                    ${faction.assets.length > 0 ? `
-                        <div class="faction-section">
-                            <h3>Assets</h3>
-                            <ul>
-                                ${faction.assets.map(asset => `<li>${asset}</li>`).join('')}
-                            </ul>
-                        </div>
-                    ` : ''}
-                    
-                    ${faction.notes ? `
-                        <div class="faction-section">
-                            <h3>Notes</h3>
-                            <p>${faction.notes}</p>
-                        </div>
-                    ` : ''}
-                </div>
-                
-                <div class="faction-details-footer">
-                    <button id="edit-faction-btn" class="btn btn-edit">Edit</button>
-                    <button id="toggle-active-btn" class="btn ${faction.isActive ? 'btn-warning' : 'btn-success'}">
-                        ${faction.isActive ? 'Deactivate' : 'Activate'}
-                    </button>
-                    <button id="delete-faction-btn" class="btn btn-danger">Delete</button>
-                </div>
-            `;
-            
-            // Show the details and hide the form
-            this.elements.factionForm.style.display = 'none';
-            this.elements.factionDetails.style.display = 'block';
-            
-            // Add event listeners for the action buttons
-            const editBtn = document.getElementById('edit-faction-btn');
-            const toggleBtn = document.getElementById('toggle-active-btn');
-            const deleteBtn = document.getElementById('delete-faction-btn');
-            
+        // Delegate events for dynamic content
+        this.container.addEventListener('click', (e) => {
+            // Handle edit button clicks
+            const editBtn = e.target.closest('.btn-edit');
             if (editBtn) {
-                editBtn.addEventListener('click', () => this.showFactionForm(faction));
+                const factionId = editBtn.dataset.id;
+                if (factionId) {
+                    this.showFactionForm(factionId);
+                }
+                return;
             }
             
-            if (toggleBtn) {
-                toggleBtn.addEventListener('click', () => this.toggleFactionActive(faction.id));
-            }
-            
+            // Handle delete button clicks
+            const deleteBtn = e.target.closest('.btn-delete');
             if (deleteBtn) {
-                deleteBtn.addEventListener('click', () => {
-                    if (confirm(`Are you sure you want to delete ${faction.name}?`)) {
-                        this.deleteFaction(faction.id);
-                    }
-                });
+                const factionId = deleteBtn.dataset.id;
+                if (factionId) {
+                    this.confirmDeleteFaction(factionId);
+                }
+                return;
             }
             
-            // Update the influence slider
-            const influenceSlider = document.getElementById('influence-slider');
-            const influenceValue = document.getElementById('influence-value');
+            // Handle toggle active button clicks
+            const toggleBtn = e.target.closest('.btn-toggle');
+            if (toggleBtn) {
+                const factionId = toggleBtn.dataset.id;
+                if (factionId) {
+                    this.toggleFactionActive(factionId);
+                }
+                return;
+            }
             
-            if (influenceSlider) {
-                influenceSlider.addEventListener('input', (e) => {
-                    const value = e.target.value;
-                    influenceValue.textContent = value;
-                    this.manager.updateFaction(faction.id, { influence: parseInt(value, 10) });
-                    this.renderFactionsList(this.elements.factionSearch?.value || '');
-                });
+            // Handle log influence button clicks
+            const logBtn = e.target.closest('.btn-log-influence');
+            if (logBtn) {
+                const factionId = logBtn.dataset.id;
+                if (factionId) {
+                    this.showInfluenceLogForm(factionId);
+                }
+                return;
             }
-        }
-    }
-
-    // Save the current faction
-    saveFaction() {
-        if (!this.elements.factionForm) return;
-        
-        const formData = new FormData(this.elements.factionForm);
-        const factionData = {
-            name: formData.get('name') || 'Unnamed Faction',
-            type: formData.get('type') || '',
-            alignment: formData.get('alignment') || 'N',
-            description: formData.get('description') || '',
-            headquarters: formData.get('headquarters') || '',
-            notes: formData.get('notes') || '',
-            tags: formData.get('tags') ? formData.get('tags').split(',').map(tag => tag.trim()).filter(tag => tag) : [],
-            influence: parseInt(this.elements.influenceSlider?.value || '50', 10)
-        };
-        
-        if (this.currentFaction && this.currentFaction.id) {
-            // Update existing faction
-            this.manager.updateFaction(this.currentFaction.id, factionData);
-        } else {
-            // Create new faction
-            this.manager.createFaction(factionData);
-        }
-        
-        // Refresh the UI
-        this.renderFactionsList(this.elements.factionSearch?.value || '');
-        
-        // Show the details for the updated/created faction
-        if (this.currentFaction && this.currentFaction.id) {
-            this.showFactionDetails(this.currentFaction.id);
-        } else if (this.currentFaction) {
-            // If it's a new faction, find it by name (this is a bit of a hack)
-            const allFactions = this.manager.getAllFactions();
-            const newFaction = allFactions.find(f => f.name === factionData.name);
-            if (newFaction) {
-                this.showFactionDetails(newFaction.id);
+            
+            // Handle faction card clicks (for showing details)
+            const factionCard = e.target.closest('.faction-card');
+            if (factionCard) {
+                const factionId = factionCard.dataset.id;
+                if (factionId) {
+                    this.showFactionDetails(factionId);
+                }
             }
-        }
-        
-        // Hide the form
-        this.elements.factionForm.style.display = 'none';
-        if (this.elements.factionDetails) {
-            this.elements.factionDetails.style.display = 'block';
-        }
-    }
-
-    // Delete a faction
-    deleteFaction(factionId) {
-        if (this.manager.deleteFaction(factionId)) {
-            // Clear the current faction
-            this.currentFaction = null;
             
             // Refresh the UI
-            this.renderFactionsList(this.elements.factionSearch?.value || '');
+            this.renderFactionsList();
             
-            // Clear the details panel
+            return true;
+        });
+    }
+    
+    /**
+     * Render the list of factions with optional filtering
+     * @param {string} searchTerm - Optional search term to filter factions by name or description
+     */
+    renderFactionsList(searchTerm = '') {
+        if (!this.elements.factionsList) return;
+        
+        try {
+            // Hide any open faction details
             if (this.elements.factionDetails) {
                 this.elements.factionDetails.style.display = 'none';
             }
             
-            // Show the empty state if no factions left
-            if (this.manager.getAllFactions().length === 0) {
-                this.elements.factionsList.innerHTML = '<div class="empty-state">No factions found. Click "Add Faction" to create one.</div>';
+            // Show the factions list
+            this.elements.factionsList.style.display = 'block';
+            
+            // Get all factions
+            const allFactions = this.manager.getAllFactions();
+            
+            // Filter factions by search term and type
+            const filteredFactions = allFactions.filter(faction => {
+                const matchesSearch = !searchTerm || 
+                    faction.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    (faction.description && faction.description.toLowerCase().includes(searchTerm.toLowerCase()));
+                
+                const typeFilter = this.elements.typeFilter?.value;
+                const matchesType = !typeFilter || faction.type === typeFilter;
+                
+                return matchesSearch && matchesType;
+            });
+            
+            // Clear the list container
+            this.elements.factionsList.innerHTML = '';
+            
+            // If no factions found, show a message
+            if (filteredFactions.length === 0) {
+                this.elements.factionsList.innerHTML = `
+                    <div class="col-12">
+                        <div class="alert alert-info mb-0">
+                            <i class="fas fa-info-circle me-2"></i>
+                            No factions found. Try adjusting your search or filters.
+                        </div>
+                    </div>
+                `;
+                return;
             }
             
-            return true;
+            // Create a row to contain all faction cards
+            const row = document.createElement('div');
+            row.className = 'row g-4';
+            
+            // Render each faction as a card
+            filteredFactions.forEach((faction) => {
+                const col = document.createElement('div');
+                col.className = 'col-12 col-md-6 col-lg-4';
+                
+                // Get influence class for styling
+                const influenceClass = this.getInfluenceClass(faction.influence);
+                const statusBadge = faction.isActive 
+                    ? '<span class="badge bg-success">Active</span>'
+                    : '<span class="badge bg-secondary">Inactive</span>';
+                
+                // Format tags
+                const tagsHtml = faction.tags && faction.tags.length > 0 
+                    ? `<div class="mt-2">${faction.tags.map(tag => 
+                        `<span class="badge bg-secondary me-1 mb-1">${tag}</span>`
+                    ).join('')}</div>`
+                    : '';
+                
+                col.innerHTML = `
+                    <div class="card h-100 faction-card" data-id="${faction.id}">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0">${faction.name}</h5>
+                            ${statusBadge}
+                        </div>
+                        <div class="card-body">
+                            ${faction.description ? `<p class="card-text text-muted">${faction.description}</p>` : ''}
+                            
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <span class="badge bg-primary">${faction.type || 'No Type'}</span>
+                                <span class="badge ${influenceClass}">
+                                    <i class="fas fa-chart-line me-1"></i>
+                                    ${faction.influence || 0}% Influence
+                                </span>
+                            </div>
+                            
+                            ${tagsHtml}
+                        </div>
+                        <div class="card-footer bg-transparent border-top-0">
+                            <div class="d-flex flex-wrap gap-2">
+                                <button class="btn btn-sm btn-outline-primary view-faction" data-id="${faction.id}">
+                                    <i class="fas fa-eye me-1"></i> View
+                                </button>
+                                <button class="btn btn-sm btn-outline-secondary edit-faction" data-id="${faction.id}">
+                                    <i class="fas fa-edit me-1"></i> Edit
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger delete-faction" data-id="${faction.id}">
+                                    <i class="fas fa-trash me-1"></i> Delete
+                                </button>
+                                <button class="btn btn-sm btn-outline-info log-influence" data-id="${faction.id}">
+                                    <i class="fas fa-chart-line me-1"></i> Log
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                row.appendChild(col);
+            });
+            
+            // Add the row to the factions list
+            this.elements.factionsList.appendChild(row);
+            
+            // Add event delegation for action buttons
+            this.elements.factionsList.addEventListener('click', (e) => {
+                const button = e.target.closest('button');
+                if (!button) return;
+                
+                const factionId = button.dataset.id;
+                if (!factionId) return;
+                
+                const faction = this.manager.getFaction(factionId);
+                if (!faction) return;
+                
+                if (button.classList.contains('view-faction')) {
+                    this.showFactionDetails(factionId);
+                } else if (button.classList.contains('edit-faction')) {
+                    this.showFactionForm(faction);
+                } else if (button.classList.contains('delete-faction')) {
+                    this.confirmDeleteFaction(faction);
+                } else if (button.classList.contains('log-influence')) {
+                    this.showInfluenceLogForm(factionId);
+                }
+            });
+        } catch (error) {
+            console.error('Error rendering factions list:', error);
         }
-        return false;
     }
-
-    // Toggle faction active status
-    toggleFactionActive(factionId) {
+    
+    /**
+     * Show a form to log influence changes for a faction
+     * @param {string} factionId - The ID of the faction to log influence for
+     */
+    showInfluenceLogForm(factionId) {
         const faction = this.manager.getFaction(factionId);
         if (!faction) return;
         
-        const isActive = this.manager.toggleFactionActive(factionId);
+        const modalId = 'influence-log-modal';
         
-        // Update the UI
-        const toggleBtn = document.getElementById('toggle-active-btn');
-        if (toggleBtn) {
-            toggleBtn.textContent = isActive ? 'Deactivate' : 'Activate';
-            toggleBtn.className = isActive ? 'btn btn-warning' : 'btn btn-success';
+        // Remove any existing modals to prevent stacking
+        const existingModal = document.getElementById(modalId);
+        if (existingModal) {
+            const bsModal = bootstrap.Modal.getInstance(existingModal);
+            if (bsModal) bsModal.dispose();
+            existingModal.remove();
         }
         
-        // Update the status in the details header if it exists
-        const statusElement = document.querySelector('.faction-status');
-        if (statusElement) {
-            statusElement.textContent = isActive ? 'Active' : 'Inactive';
-            statusElement.className = `faction-status ${isActive ? 'active' : 'inactive'}`;
+        // Create the modal container
+        const modal = document.createElement('div');
+        modal.id = modalId;
+        modal.className = 'modal fade';
+        modal.tabIndex = -1;
+        modal.setAttribute('role', 'dialog');
+        modal.setAttribute('aria-labelledby', 'influenceLogModalLabel');
+        modal.setAttribute('aria-hidden', 'false');
+        modal.style.display = 'block';
+        
+        // Create modal content
+        modal.innerHTML = `
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content bg-dark text-light border border-primary">
+                    <div class="modal-header border-primary">
+                        <h5 class="modal-title text-primary">
+                            <i class="fas fa-chart-line me-2"></i>
+                            Log Influence Change
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="influence-log-form">
+                            <div class="mb-3">
+                                <label for="influence-change" class="form-label">Influence Change</label>
+                                <div class="input-group">
+                                    <button class="btn btn-outline-primary" type="button" id="decrease-influence">-</button>
+                                    <input type="number" class="form-control text-center" id="influence-change" 
+                                           name="influenceChange" value="0" min="-100" max="100" required>
+                                    <button class="btn btn-outline-primary" type="button" id="increase-influence">+</button>
+                                </div>
+                                <div class="form-text">Current: ${faction.influence}% → New: <span id="new-influence">${faction.influence}</span>%</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="log-reason" class="form-label">Reason for Change</label>
+                                <textarea class="form-control bg-dark text-light" id="log-reason" 
+                                          name="reason" rows="3" required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="log-date" class="form-label">Date</label>
+                                <input type="datetime-local" class="form-control bg-dark text-light" 
+                                       id="log-date" name="date" required>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer border-top-0">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" id="save-influence-log">Save Changes</button>
+                    </div>
+                </div>
+            </div>`;
+            
+        // Add modal to the DOM first
+        document.body.appendChild(modal);
+        
+        // Set current date/time as default
+        const now = new Date();
+        const timezoneOffset = now.getTimezoneOffset() * 60000;
+        const localISOTime = (new Date(now - timezoneOffset)).toISOString().slice(0, 16);
+        const dateInput = modal.querySelector('#log-date');
+        if (dateInput) {
+            dateInput.value = localISOTime;
         }
         
-        // Refresh the list to update the status
-        this.renderFactionsList(this.elements.factionSearch?.value || '');
+        // Get references to UI elements
+        const influenceInput = modal.querySelector('#influence-change');
+        const newInfluenceSpan = modal.querySelector('#new-influence');
+        const increaseBtn = modal.querySelector('#increase-influence');
+        const decreaseBtn = modal.querySelector('#decrease-influence');
+        const form = modal.querySelector('#influence-log-form');
+        const saveButton = modal.querySelector('#save-influence-log');
+        
+        // Update the new influence value when input changes
+        const updateInfluenceDisplay = () => {
+            const change = parseInt(influenceInput.value) || 0;
+            let newInfluence = faction.influence + change;
+            
+            // Clamp between 0 and 100
+            newInfluence = Math.max(0, Math.min(100, newInfluence));
+            newInfluenceSpan.textContent = newInfluence;
+            
+            // Update input value if it was clamped
+            if (newInfluence !== faction.influence + change) {
+                influenceInput.value = newInfluence - faction.influence;
+            }
+        };
+        
+        // Handle + and - buttons
+        const updateInfluenceValue = (increment) => {
+            const currentValue = parseInt(influenceInput.value) || 0;
+            influenceInput.value = increment ? currentValue + 1 : currentValue - 1;
+            updateInfluenceDisplay();
+        };
+        
+        // Event listeners
+        increaseBtn.addEventListener('click', () => updateInfluenceValue(true));
+        decreaseBtn.addEventListener('click', () => updateInfluenceValue(false));
+        influenceInput.addEventListener('input', updateInfluenceDisplay);
+        
+        // Initialize Bootstrap modal with proper options
+        const modalInstance = new bootstrap.Modal(modal, {
+            backdrop: true,  // Changed from 'static' to allow clicking outside
+            keyboard: true,
+            focus: true
+        });
+        
+        // Store the modal instance for cleanup
+        this._currentInfluenceModal = modalInstance;
+        
+        // Store reference to this for use in callbacks
+        const self = this;
+        
+        // Show the modal and handle shown event
+        const onShown = () => {
+            // Focus the reason textarea
+            const reasonInput = modal.querySelector('#log-reason');
+            if (reasonInput) {
+                reasonInput.focus();
+            }
+            
+            // Add click handler to prevent modal from closing when clicking inside
+            const modalContent = modal.querySelector('.modal-content');
+            if (modalContent) {
+                modalContent.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                });
+            }
+        };
+        
+        // Show the modal
+        modalInstance.show();
+        modal.addEventListener('shown.bs.modal', onShown, { once: true });
+        
+        // Handle form submission
+        const handleSave = async (e) => {
+            e && e.preventDefault();
+            
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return false;
+            }
+            
+            const formData = new FormData(form);
+            const change = parseInt(formData.get('influenceChange')) || 0;
+            const reason = formData.get('reason');
+            const date = formData.get('date');
+            
+            if (!reason || !date) {
+                self.showNotification('Please fill in all required fields', 'warning');
+                return false;
+            }
+            
+            try {
+                // Update faction influence
+                const newInfluence = Math.max(0, Math.min(100, faction.influence + change));
+                await this.manager.updateFaction(factionId, { 
+                    influence: newInfluence,
+                    updatedAt: new Date().toISOString()
+                });
+                
+                // Add to influence log
+                const logEntry = {
+                    id: Date.now().toString(),
+                    factionId,
+                    change,
+                    newInfluence,
+                    reason,
+                    date: new Date(date).toISOString(),
+                    createdAt: new Date().toISOString()
+                };
+                
+                if (this.manager.addInfluenceLogEntry) {
+                    await this.manager.addInfluenceLogEntry(logEntry);
+                }
+                
+                self.showNotification(`Influence updated to ${newInfluence}%`, 'success');
+                modalInstance.hide();
+                
+                // Refresh the UI
+                self.renderFactionsList();
+                
+                if (self.currentFaction?.id === factionId) {
+                    self.showFactionDetails(factionId);
+                }
+                
+            } catch (error) {
+                console.error('Error updating influence:', error);
+                self.showNotification(`Failed to update influence: ${error.message}`, 'error');
+            }
+        };
+        
+        // Set up form submission
+        form.addEventListener('submit', handleSave);
+        saveButton.addEventListener('click', handleSave);
+        
+        // Clean up when modal is closed
+        const handleHidden = (e) => {
+            // Ensure we're handling the correct modal
+            if (e && e.target !== modal) return;
+            
+            // Remove event listeners
+            modal.removeEventListener('shown.bs.modal', onShown);
+            
+            // Clean up the modal instance
+            try {
+                if (modalInstance && typeof modalInstance.dispose === 'function') {
+                    modalInstance.hide();
+                    modalInstance.dispose();
+                }
+            } catch (error) {
+                console.error('Error disposing modal:', error);
+            }
+            
+            // Remove the modal from DOM
+            if (modal && modal.parentNode) {
+                modal.remove();
+            }
+            
+            // Clear the reference
+            if (self._currentInfluenceModal === modalInstance) {
+                self._currentInfluenceModal = null;
+            }
+        };
+        
+        // Use the 'hidden.bs.modal' event for cleanup
+        modal.addEventListener('hidden.bs.modal', handleHidden, { once: true });
     }
 
-    // Helper: Get CSS class for influence level
+    /**
+     * Get the CSS class for an influence level
+     * @param {number} influence - The influence percentage (0-100)
+     * @returns {string} The CSS class for the influence level
+     */
     getInfluenceClass(influence) {
-        if (influence >= 75) return 'influence-high';
+        if (influence >= 90) return 'influence-very-high';
+        if (influence >= 70) return 'influence-high';
         if (influence >= 50) return 'influence-medium';
-        if (influence >= 25) return 'influence-low';
+        if (influence >= 30) return 'influence-low';
         return 'influence-very-low';
     }
 
+    /**
+     * Show a notification to the user
+     * @param {string} message - The message to display
+     * @param {string} type - The type of notification ('success', 'error', 'info', 'warning')
+     * @param {number} [duration=3000] - How long to show the notification in ms
+     */
+    showNotification(message, type = 'info', duration = 3000) {
+        // Create notification container if it doesn't exist
+        let container = document.getElementById('notification-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'notification-container';
+            container.style.position = 'fixed';
+            container.style.top = '20px';
+            container.style.right = '20px';
+            container.style.zIndex = '9999';
+            document.body.appendChild(container);
+        }
+
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = `alert alert-${type} alert-dismissible fade show`;
+        notification.role = 'alert';
+        notification.style.marginBottom = '10px';
+        notification.style.minWidth = '250px';
+        notification.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
+        
+        // Add message
+        notification.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        `;
+
+        // Add to container
+        container.appendChild(notification);
+
+        // Auto-remove after duration
+        if (duration > 0) {
+            setTimeout(() => {
+                notification.classList.remove('show');
+                notification.addEventListener('transitionend', () => {
+                    if (notification.parentNode === container) {
+                        container.removeChild(notification);
+                    }
+                    // Remove container if empty
+                    if (container.children.length === 0) {
+                        container.remove();
+                    }
+                }, { once: true });
+            }, duration);
+        }
+
+        return notification;
+    }
+
+    /**
+     * Render the influence log entries for a faction
+     * @param {string} factionId - The ID of the faction
+     * @returns {string} HTML string of the influence log entries
+     */
+    renderInfluenceLog(factionId) {
+        const faction = this.manager.getFaction(factionId);
+        if (!faction?.influenceLog?.length) {
+            return '<div class="text-muted">No influence changes logged yet.</div>';
+        }
+        
+        // Sort by date descending (newest first)
+        const sortedLogs = [...faction.influenceLog].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        
+        return `
+            <div class="list-group">
+                ${sortedLogs.map(entry => {
+                    const changeClass = entry.change > 0 ? 'text-success' : entry.change < 0 ? 'text-danger' : 'text-muted';
+                    const changeIcon = entry.change > 0 ? 'fa-arrow-up' : entry.change < 0 ? 'fa-arrow-down' : 'fa-equals';
+                    const changeText = entry.change > 0 ? `+${entry.change}` : entry.change;
+                    
+                    return `
+                        <div class="list-group-item bg-dark border-secondary">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="fw-bold">${new Date(entry.timestamp).toLocaleString()}</div>
+                                    <div class="small text-muted">${entry.reason || 'No reason provided'}</div>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <span class="badge ${changeClass} me-2">
+                                        <i class="fas ${changeIcon} me-1"></i>
+                                        ${changeText}% (${entry.newInfluence}% total)
+                                    </span>
+                                </div>
+                            </div>
+                        </div>`;
+                }).join('')}
+            </div>
+        `;
+    }
+    
+    /**
+     * Render the influence log entries for a faction
+     * @param {string} factionId - The ID of the faction
+     * @returns {string} HTML string of the influence log entries
+     */
+    renderInfluenceLog(factionId) {
+        const faction = this.manager.getFaction(factionId);
+        if (!faction?.influenceLog?.length) {
+            return '<div class="text-muted">No influence changes logged yet.</div>';
+        }
+        
+        // Sort by date descending (newest first)
+        const sortedLogs = [...faction.influenceLog].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        
+        return `
+            <div class="list-group">
+                ${sortedLogs.map(entry => {
+                    const changeClass = entry.change > 0 ? 'text-success' : entry.change < 0 ? 'text-danger' : 'text-muted';
+                    const changeIcon = entry.change > 0 ? 'fa-arrow-up' : entry.change < 0 ? 'fa-arrow-down' : 'fa-equals';
+                    const changeText = entry.change > 0 ? `+${entry.change}` : entry.change;
+                    
+                    return `
+                        <div class="list-group-item bg-dark border-secondary">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="fw-bold">${new Date(entry.timestamp).toLocaleString()}</div>
+                                    <div class="small text-muted">${entry.reason || 'No reason provided'}</div>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <span class="badge ${changeClass} me-2">
+                                        <i class="fas ${changeIcon} me-1"></i>
+                                        ${changeText}% (${entry.newInfluence}% total)
+                                    </span>
+                                </div>
+                            </div>
+                        </div>`;
+                }).join('')}
+            </div>
+        `;
+    }
+    
     // Helper: Get alignment badge HTML
     getAlignmentBadge(alignment) {
         if (!alignment) return '';
