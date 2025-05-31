@@ -53,18 +53,20 @@ export class LocationUI extends BaseUI {
         
         // Check if already initialized to prevent duplicate initialization
         if (this.initialized) {
-            console.log('LocationUI already initialized, skipping');
+            console.log('LocationUI already initialized, refreshing instead');
+            this.refresh();
             return;
         }
         
         // Set up references to DOM elements
-        this.listElement = document.getElementById('locations-list');
-        this.detailsElement = document.getElementById('location-details');
+        this.listElement = document.getElementById('locationList');
+        this.detailsElement = document.getElementById('locationDetails');
+        this.searchInput = document.getElementById('locationSearch');
         this.addButton = document.getElementById('addLocationBtn');
         
         // Check if required elements exist
-        if (!this.listElement || !this.detailsElement) {
-            console.error('Required DOM elements not found, retrying in 500ms');
+        if (!this.listElement) {
+            console.error('Location list element not found, retrying in 500ms');
             
             // Retry initialization after a short delay
             setTimeout(() => {
@@ -73,16 +75,11 @@ export class LocationUI extends BaseUI {
             return;
         }
         
-        // Add event listener for the add button
-        if (this.addButton) {
-            this.addButton.addEventListener('click', () => this.handleAdd());
-        } else {
-            console.warn('Add button not found');
-        }
+        // Set up event listeners
+        this.setupEventListeners();
         
-        // Create the map view only once
-        console.log('Initializing map view');
-        this.renderMapView();
+        // Initialize the map
+        this.initializeMap();
         
         // Initial render
         console.log('Performing initial render');
@@ -91,6 +88,73 @@ export class LocationUI extends BaseUI {
         // Mark as initialized
         this.initialized = true;
         console.log('LocationUI initialization complete');
+        
+        // Hide loading overlay after a short delay
+        setTimeout(() => {
+            const loadingOverlay = document.getElementById('mapLoadingOverlay');
+            if (loadingOverlay) {
+                loadingOverlay.style.display = 'none';
+            }
+        }, 1000);
+    }
+    
+    /**
+     * Set up event listeners
+     */
+    setupEventListeners() {
+        // Add button
+        if (this.addButton) {
+            this.addButton.addEventListener('click', () => this.handleAdd());
+        }
+        
+        // Search input
+        if (this.searchInput) {
+            this.searchInput.addEventListener('input', (e) => {
+                this.handleSearch(e.target.value);
+            });
+        }
+        
+        // List element click delegation
+        if (this.listElement) {
+            this.listElement.addEventListener('click', (e) => {
+                const listItem = e.target.closest('.location-card');
+                if (listItem) {
+                    const id = listItem.dataset.id;
+                    if (id) {
+                        this.handleSelect(id);
+                    }
+                }
+            });
+        }
+    }
+    
+    /**
+     * Initialize the interactive map
+     */
+    initializeMap() {
+        console.log('Initializing map view');
+        const mapContainer = document.getElementById('worldMapContainer');
+        if (!mapContainer) {
+            console.error('Map container not found');
+            return;
+        }
+        
+        try {
+            this.map = new InteractiveMap({
+                container: mapContainer,
+                onLocationClick: this.handleMapLocationClick,
+                onMapClick: this.handleMapClick
+            });
+            console.log('Map initialized successfully');
+        } catch (error) {
+            console.error('Failed to initialize map:', error);
+            mapContainer.innerHTML = `
+                <div class="alert alert-danger">
+                    Failed to load the map. Please refresh the page to try again.
+                    <div class="mt-2">${error.message}</div>
+                </div>
+            `;
+        }
     }
     
     /**
@@ -450,68 +514,111 @@ export class LocationUI extends BaseUI {
     }
     
     /**
-     * Render the locations list
+     * Render the list of locations
      * @param {Array} locations - Array of location objects to render
      */
     renderList(locations) {
-        console.log('Rendering locations list with', locations.length, 'locations');
-        
         if (!this.listElement) {
-            console.error('List element not found, cannot render list');
-            this.listElement = document.getElementById('locations-list');
-            
-            if (!this.listElement) {
-                console.error('Could not find locations-list element, creating it');
-                const locationsSection = document.getElementById('locations');
-                if (locationsSection) {
-                    // Try to find the list container
-                    let listContainer = locationsSection.querySelector('.list-container');
-                    if (!listContainer) {
-                        // Create list container if it doesn't exist
-                        listContainer = document.createElement('div');
-                        listContainer.className = 'list-container';
-                        locationsSection.appendChild(listContainer);
-                    }
-                    
-                    // Create the list element
-                    this.listElement = document.createElement('ul');
-                    this.listElement.id = 'locations-list';
-                    this.listElement.className = 'list-group';
-                    listContainer.appendChild(this.listElement);
-                } else {
-                    console.error('Locations section not found, cannot create list element');
-                    return;
-                }
-            }
-        }
-        
-        // Clear the list
-        this.listElement.innerHTML = '';
-        
-        if (locations.length === 0) {
-            // Show a message if there are no locations
-            const emptyMessage = document.createElement('li');
-            emptyMessage.className = 'list-group-item text-center text-muted';
-            emptyMessage.textContent = 'No locations found. Click the map to add a new location.';
-            this.listElement.appendChild(emptyMessage);
+            console.error('List element not found');
             return;
         }
         
-        // Add each location to the list
-        locations.forEach(location => {
-            const listItem = this.createListItem(location);
-            this.listElement.appendChild(listItem);
+        console.log('Rendering locations list with', locations.length, 'locations');
+        
+        if (locations.length === 0) {
+            this.listElement.innerHTML = `
+                <div class="alert alert-info p-2">
+                    <i class="fas fa-info-circle me-1"></i>
+                    No locations found. Click the map to add a new location.
+                </div>
+            `;
+            return;
+        }
+        
+        // Sort locations by name
+        const sortedLocations = [...locations].sort((a, b) => a.name.localeCompare(b.name));
+        
+        // Create list items
+        this.listElement.innerHTML = `
+            <div class="list-group">
+                ${sortedLocations.map(location => {
+                    const isSelected = this.selectedId === location.id;
+                    const type = this.formatLocationType(location.type);
+                    const status = location.discovered ? 'Discovered' : 'Undiscovered';
+                    const statusClass = location.discovered ? 'text-success' : 'text-warning';
+                    
+                    return `
+                        <div class="list-group-item list-group-item-action location-card ${isSelected ? 'active' : ''}" data-id="${location.id}">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">
+                                    <i class="fas ${this.getLocationIcon(location.type)} me-2"></i>
+                                    ${location.name}
+                                </h5>
+                                <small class="text-muted">(${location.x || 0}, ${location.y || 0})</small>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="badge bg-secondary me-2">${type}</span>
+                                    <span class="badge ${statusClass === 'text-success' ? 'bg-success' : 'bg-warning'}">
+                                        <i class="fas ${status === 'Discovered' ? 'fa-check-circle' : 'fa-question-circle'} me-1"></i>
+                                        ${status}
+                                    </span>
+                                </div>
+                                <div class="btn-group btn-group-sm">
+                                    <button class="btn btn-outline-primary" data-action="edit" data-id="${location.id}" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-outline-danger" data-action="delete" data-id="${location.id}" title="Delete">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            ${location.description ? `
+                                <p class="mb-0 mt-2 small text-muted">
+                                    ${location.description.substring(0, 100)}${location.description.length > 100 ? '...' : ''}
+                                </p>
+                            ` : ''}
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        `;
+        
+        // Add event listeners to action buttons
+        this.listElement.querySelectorAll('[data-action]').forEach(button => {
+            const action = button.dataset.action;
+            const id = button.dataset.id;
             
-            // Add click event to show details
-            listItem.addEventListener('click', () => {
-                console.log('Location clicked:', location.id);
-                this.renderDetails(location);
+            button.addEventListener('click', (e) => {
+                e.stopPropagation();
                 
-                // Update map selection if map exists
-                if (this.map) {
-                    this.map.selectLocation(location.id);
+                if (action === 'edit') {
+                    this.handleEdit(id);
+                } else if (action === 'delete') {
+                    if (confirm('Are you sure you want to delete this location?')) {
+                        this.handleDelete(id);
+                    }
                 }
             });
+        });
+        
+        // Add click handlers to location cards
+        this.listElement.querySelectorAll('.location-card').forEach(card => {
+            const id = card.dataset.id;
+            if (id) {
+                card.addEventListener('click', () => {
+                    console.log('Location card clicked:', id);
+                    const location = this.locations.find(loc => loc.id === id);
+                    if (location) {
+                        this.renderDetails(location);
+                        
+                        // Update map selection if map exists
+                        if (this.map) {
+                            this.map.selectLocation(id);
+                        }
+                    }
+                });
+            }
         });
     }
     
@@ -563,60 +670,134 @@ export class LocationUI extends BaseUI {
      * @param {Object} location - Location to render details for
      */
     renderDetails(location) {
-        // Create sections for the details panel
-        const sections = [
-            {
-                title: 'Basic Information',
-                content: `
-                    <div class="row">
-                        <div class="col-md-6">
-                            <p><strong>Type:</strong> ${this.formatLocationType(location.type)}</p>
-                            <p><strong>Status:</strong> ${location.discovered ? 'Discovered' : 'Undiscovered'}</p>
-                        </div>
-                        <div class="col-md-6">
-                            <p><strong>Coordinates:</strong> (${location.x || 0}, ${location.y || 0})</p>
-                        </div>
-                    </div>
-                `
-            },
-            {
-                title: 'Description',
-                content: `
-                    <div class="mb-3">
-                        <p>${location.description || 'No description available.'}</p>
-                    </div>
-                `
-            },
-            {
-                title: 'Related Quests',
-                content: this.renderRelatedQuests(location)
+        if (!location) {
+            console.error('No location provided to renderDetails');
+            return;
+        }
+        
+        console.log('Rendering details for location:', location);
+        
+        // Ensure the details element exists
+        if (!this.detailsElement) {
+            this.detailsElement = document.getElementById('locationDetails');
+            if (!this.detailsElement) {
+                console.error('Details element not found');
+                return;
             }
-        ];
+        }
+        
+        // Clear any existing content
+        this.detailsElement.innerHTML = '';
         
         // Create the details panel
-        const detailsPanel = createDetailsPanel({
-            title: location.name,
-            data: location,
-            actions: [
-                {
-                    label: 'Edit',
-                    icon: 'fas fa-edit',
-                    type: 'primary',
-                    onClick: () => this.handleEdit(location)
-                },
-                {
-                    label: 'Delete',
-                    icon: 'fas fa-trash',
-                    type: 'danger',
-                    onClick: () => this.handleDelete(location.id)
-                }
-            ],
-            sections: sections
+        const detailsPanel = document.createElement('div');
+        detailsPanel.className = 'location-details';
+        
+        // Create header with title and actions
+        const header = document.createElement('div');
+        header.className = 'd-flex justify-content-between align-items-center mb-3';
+        
+        const title = document.createElement('h3');
+        title.className = 'mb-0';
+        title.textContent = location.name;
+        
+        const actions = document.createElement('div');
+        actions.className = 'btn-group';
+        
+        const editBtn = document.createElement('button');
+        editBtn.className = 'btn btn-sm btn-primary';
+        editBtn.innerHTML = '<i class="fas fa-edit me-1"></i> Edit';
+        editBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.handleEdit(location);
         });
         
-        // Clear the details element and append the new details panel
-        this.detailsElement.innerHTML = '';
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'btn btn-sm btn-outline-danger';
+        deleteBtn.innerHTML = '<i class="fas fa-trash me-1"></i> Delete';
+        deleteBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (confirm(`Are you sure you want to delete ${location.name}?`)) {
+                this.handleDelete(location.id);
+            }
+        });
+        
+        actions.appendChild(editBtn);
+        actions.appendChild(deleteBtn);
+        
+        header.appendChild(title);
+        header.appendChild(actions);
+        
+        // Create basic info section
+        const basicInfo = document.createElement('div');
+        basicInfo.className = 'card mb-3';
+        basicInfo.innerHTML = `
+            <div class="card-header">
+                <h5 class="mb-0">Basic Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Type:</strong> ${this.formatLocationType(location.type)}</p>
+                        <p><strong>Status:</strong> 
+                            <span class="badge ${location.discovered ? 'bg-success' : 'bg-warning'}">
+                                ${location.discovered ? 'Discovered' : 'Undiscovered'}
+                            </span>
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Coordinates:</strong> (${location.x || 0}, ${location.y || 0})</p>
+                        <p><strong>Created:</strong> ${new Date(location.createdAt || Date.now()).toLocaleDateString()}</p>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Create description section
+        const description = document.createElement('div');
+        description.className = 'card mb-3';
+        description.innerHTML = `
+            <div class="card-header">
+                <h5 class="mb-0">Description</h5>
+            </div>
+            <div class="card-body">
+                ${location.description ? `<p>${location.description}</p>` : '<p class="text-muted fst-italic">No description available.</p>'}
+            </div>
+        `;
+        
+        // Create related quests section
+        const relatedQuests = document.createElement('div');
+        relatedQuests.className = 'card';
+        relatedQuests.innerHTML = `
+            <div class="card-header">
+                <h5 class="mb-0">Related Quests</h5>
+            </div>
+            <div class="card-body">
+                ${this.renderRelatedQuests(location)}
+            </div>
+        `;
+        
+        // Assemble the panel
+        detailsPanel.appendChild(header);
+        detailsPanel.appendChild(basicInfo);
+        detailsPanel.appendChild(description);
+        detailsPanel.appendChild(relatedQuests);
+        
+        // Add to the DOM
         this.detailsElement.appendChild(detailsPanel);
+        
+        // Scroll to the details panel if it's not fully visible
+        this.detailsElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        
+        // Update the selected location in the list
+        if (typeof this.updateSelectedLocation === 'function') {
+            this.updateSelectedLocation(location.id);
+        }
+        
+        // Update the map selection
+        if (this.map && typeof this.map.selectLocation === 'function') {
+            this.map.selectLocation(location.id);
+        }
     }
     
     /**
@@ -756,47 +937,94 @@ export class LocationUI extends BaseUI {
     }
     
     /**
+     * Location types enum
+     */
+    static get LocationType() {
+        return {
+            TOWN: 'TOWN',
+            CITY: 'CITY',
+            DUNGEON: 'DUNGEON',
+            FOREST: 'FOREST',
+            MOUNTAIN: 'MOUNTAIN',
+            CAVE: 'CAVE',
+            TEMPLE: 'TEMPLE',
+            RUINS: 'RUINS',
+            CAMP: 'CAMP',
+            OTHER: 'OTHER'
+        };
+    }
+
+    /**
      * Handle editing a location
-     * @param {Object} location - Location to edit
+     * @param {Object|string} location - Location object or ID to edit
      */
     handleEdit(location) {
+        // If location is an ID, try to find the location
+        if (typeof location === 'string') {
+            const loc = this.locations.find(l => l.id === location);
+            if (!loc) {
+                console.error('Location not found:', location);
+                return;
+            }
+            location = loc;
+        }
+
         console.log('Editing location:', location);
         
         // Set edit mode flags
         this.isEditMode = true;
         this.editingLocationId = location.id;
         
+        // Ensure details element exists
+        if (!this.detailsElement) {
+            this.detailsElement = document.getElementById('locationDetails');
+            if (!this.detailsElement) {
+                console.error('Details element not found');
+                return;
+            }
+        }
+        
         // Create form container
         const formContainer = document.createElement('div');
         formContainer.id = 'location-form-container';
         formContainer.className = 'card';
         
+        // Get location types
+        const locationTypes = LocationUI.LocationType || {};
+        
         // Create form content
         formContainer.innerHTML = `
-            <div class="card-header">
-                <h5 class="card-title mb-0">Edit Location: ${location.name}</h5>
+            <div class="card-header bg-dark text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-edit me-2"></i>Edit Location: ${location.name || 'New Location'}
+                </h5>
             </div>
             <div class="card-body">
                 <div class="alert alert-info mb-3">
-                    <small><i class="fas fa-info-circle me-1"></i> Click on the map to update the location's coordinates</small>
+                    <i class="fas fa-info-circle me-1"></i>
+                    <small>Click on the map to update the location's coordinates</small>
                 </div>
-                <form id="location-form" data-location-id="${location.id}">
+                <form id="location-form" data-location-id="${location.id || ''}" class="needs-validation" novalidate>
                     <div class="row mb-3">
-                        <div class="col-md-12">
-                            <label for="location-name" class="form-label">Name</label>
-                            <input type="text" class="form-control" id="location-name" value="${location.name || ''}" required>
+                        <div class="col-12">
+                            <label for="location-name" class="form-label">Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="location-name" 
+                                   value="${this.escapeHtml(location.name || '')}" required>
+                            <div class="invalid-feedback">Please provide a name for the location.</div>
                         </div>
                     </div>
-                    
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label for="location-type" class="form-label">Type</label>
+                            <label for="location-type" class="form-label">Type <span class="text-danger">*</span></label>
                             <select class="form-select" id="location-type" required>
-                                <option value="">Select Type</option>
-                                ${Object.values(LocationType).map(type => 
-                                    `<option value="${type}" ${location.type === type ? 'selected' : ''}>${this.formatLocationType(type)}</option>`
+                                <option value="" ${!location.type ? 'selected' : ''}>-- Select Type --</option>
+                                ${Object.entries(locationTypes).map(([key, value]) => 
+                                    `<option value="${value}" ${location.type === value ? 'selected' : ''}>
+                                        ${this.formatLocationType(value)}
+                                    </option>`
                                 ).join('')}
                             </select>
+                            <div class="invalid-feedback">Please select a location type.</div>
                         </div>
                         <div class="col-md-6">
                             <label for="location-status" class="form-label">Status</label>
@@ -810,29 +1038,39 @@ export class LocationUI extends BaseUI {
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="location-x" class="form-label">X Coordinate</label>
-                            <input type="number" class="form-control" id="location-x" value="${location.x || 0}">
+                            <div class="input-group">
+                                <span class="input-group-text">X</span>
+                                <input type="number" class="form-control" id="location-x" 
+                                       value="${location.x || 0}" min="0" step="1">
+                            </div>
                         </div>
                         <div class="col-md-6">
                             <label for="location-y" class="form-label">Y Coordinate</label>
-                            <input type="number" class="form-control" id="location-y" value="${location.y || 0}">
+                            <div class="input-group">
+                                <span class="input-group-text">Y</span>
+                                <input type="number" class="form-control" id="location-y" 
+                                       value="${location.y || 0}" min="0" step="1">
+                            </div>
                         </div>
                     </div>
                     
                     <div class="mb-3">
                         <label for="location-description" class="form-label">Description</label>
-                        <textarea class="form-control" id="location-description" rows="4">${location.description || ''}</textarea>
+                        <textarea class="form-control" id="location-description" rows="4" 
+                                  placeholder="Enter a detailed description of this location...">${this.escapeHtml(location.description || '')}</textarea>
                     </div>
                     
-                    <div class="d-flex justify-content-between">
-                        <button type="button" class="btn btn-secondary" id="cancel-location-btn">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <button type="button" class="btn btn-outline-secondary" id="cancel-location-btn">
                             <i class="fas fa-times me-1"></i> Cancel
                         </button>
-                        <div>
-                            <button type="button" class="btn btn-danger me-2" id="delete-location-btn">
-                                <i class="fas fa-trash me-1"></i> Delete
-                            </button>
+                        <div class="btn-group">
+                            ${location.id ? `
+                            <button type="button" class="btn btn-outline-danger me-2" id="delete-location-btn">
+                                <i class="fas fa-trash-alt me-1"></i> Delete
+                            </button>` : ''}
                             <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save me-1"></i> Save Changes
+                                <i class="fas fa-save me-1"></i> ${location.id ? 'Save Changes' : 'Create Location'}
                             </button>
                         </div>
                     </div>
@@ -840,53 +1078,92 @@ export class LocationUI extends BaseUI {
             </div>
         `;
         
-        // Add form to details panel
-        if (this.detailsElement) {
-            this.detailsElement.innerHTML = '';
-            this.detailsElement.appendChild(formContainer);
+        // Clear and append the form
+        this.detailsElement.innerHTML = '';
+        this.detailsElement.appendChild(formContainer);
+        
+        // Set up form validation
+        const form = document.getElementById('location-form');
+        if (form) {
+            form.addEventListener('submit', (e) => this.handleLocationFormSubmit(e, !!location.id));
             
-            // Set up event listeners
-            const form = document.getElementById('location-form');
+            // Add cancel button handler
             const cancelBtn = document.getElementById('cancel-location-btn');
-            const deleteBtn = document.getElementById('delete-location-btn');
-            
-            if (form) {
-                console.log('Setting up form submit handler for edit');
-                form.addEventListener('submit', (e) => {
-                    console.log('Edit form submitted');
-                    this.handleLocationFormSubmit(e, true);
-                });
-            } else {
-                console.error('Location form not found');
-            }
-            
             if (cancelBtn) {
                 cancelBtn.addEventListener('click', () => {
-                    console.log('Cancel button clicked');
-                    // Reset edit mode flags
-                    this.isEditMode = false;
-                    this.editingLocationId = null;
-                    this.refresh(location.id);
+                    if (location.id) {
+                        // If editing existing location, show its details
+                        this.renderDetails(location);
+                    } else {
+                        // If adding new location, clear the details
+                        this.clearDetails();
+                    }
                 });
             }
             
-            if (deleteBtn) {
-                deleteBtn.addEventListener('click', () => {
-                    console.log('Delete button clicked');
-                    // Reset edit mode flags
-                    this.isEditMode = false;
-                    this.editingLocationId = null;
-                    this.handleDelete(location.id);
+            // Add delete button handler if this is an existing location
+            if (location.id) {
+                const deleteBtn = document.getElementById('delete-location-btn');
+                if (deleteBtn) {
+                    deleteBtn.addEventListener('click', () => {
+                        if (confirm(`Are you sure you want to delete "${location.name}"? This action cannot be undone.`)) {
+                            this.handleDelete(location.id);
+                        }
+                    });
+                }
+            }
+            
+            // Add map click handler to update coordinates
+            if (this.map && typeof this.map.on === 'function') {
+                // Remove any existing click handlers to prevent duplicates
+                this.map.off('click');
+                
+                this.map.on('click', (e) => {
+                    const x = Math.round(e.offsetX);
+                    const y = Math.round(e.offsetY);
+                    
+                    const xInput = document.getElementById('location-x');
+                    const yInput = document.getElementById('location-y');
+                    
+                    if (xInput) xInput.value = x;
+                    if (yInput) yInput.value = y;
+                    
+                    // Show feedback to user
+                    const feedback = document.createElement('div');
+                    feedback.className = 'position-absolute bg-primary text-white px-2 py-1 rounded';
+                    feedback.style.left = `${e.offsetX + 10}px`;
+                    feedback.style.top = `${e.offsetY + 10}px`;
+                    feedback.textContent = `(${x}, ${y})`;
+                    feedback.style.zIndex = '1000';
+                    
+                    const mapContainer = document.getElementById('map-container');
+                    if (mapContainer) {
+                        mapContainer.appendChild(feedback);
+                        
+                        // Remove feedback after animation
+                        setTimeout(() => {
+                            feedback.style.transition = 'opacity 1s';
+                            feedback.style.opacity = '0';
+                            
+                            setTimeout(() => {
+                                if (feedback.parentNode) {
+                                    feedback.parentNode.removeChild(feedback);
+                                }
+                            }, 1000);
+                        }, 1000);
+                    }
                 });
             }
             
-            // Center the map on this location
-            if (this.map) {
-                this.map.centerOnLocation(location.id);
-                this.map.selectLocation(location.id);
+            // Center the map on this location if it exists
+            if (this.map && location.id) {
+                if (typeof this.map.centerOnLocation === 'function') {
+                    this.map.centerOnLocation(location.id);
+                }
+                if (typeof this.map.selectLocation === 'function') {
+                    this.map.selectLocation(location.id);
+                }
             }
-        } else {
-            console.error('Details element not found');
         }
     }
     

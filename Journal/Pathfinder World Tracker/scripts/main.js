@@ -7,6 +7,7 @@ import { GuildManager } from './modules/guild/index.js';
 import { CharactersManager } from './modules/characters/index.js';
 import { CharacterService } from './modules/characters/services/character-service.js';
 import { CharacterUI } from './modules/characters/ui/character-ui-new.js';
+import { FactionUI } from './modules/factions/ui/faction-ui.js';
 import { applyGlobalStyles } from './global-styles.js';
 import { applyIronMeridianStyling } from './utils/form-styling.js';
 import './characters.js';
@@ -88,11 +89,34 @@ const initialState = {
         activities: [],
         resources: []
     },
-    guildResources: []
+    guildResources: [],
+    factions: []
 };
 
 // Initialize managers with DataManager
-let questManager, playerManager, lootManager, locationManager, notesManager, guildManager;
+let questManager, playerManager, lootManager, locationManager, notesManager, guildManager, factionUI, dataManager;
+
+/**
+ * Initialize the Factions UI
+ * @returns {FactionUI|null} The initialized FactionUI instance or null if initialization fails
+ */
+const initFactionsUI = () => {
+    try {
+        const factionsContainer = document.getElementById('factions-container');
+        if (factionsContainer) {
+            // Clear any existing content to prevent duplicates
+            factionsContainer.innerHTML = '';
+            
+            // Initialize the Faction UI
+            factionUI = new FactionUI(factionsContainer, dataManager);
+            console.log('Factions module initialized successfully');
+            return factionUI;
+        }
+    } catch (error) {
+        console.error('Failed to initialize Factions module:', error);
+    }
+    return null;
+};
 
 // Navigation Management
 class NavigationManager {
@@ -102,13 +126,42 @@ class NavigationManager {
     }
 
     setupEventListeners() {
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const sectionId = e.target.getAttribute('href').substring(1);
-                this.navigateToSection(sectionId);
-            });
+        console.log('[Navigation] Setting up event listeners');
+        
+        // Use event delegation for better performance and reliability
+        document.addEventListener('click', (e) => {
+            // Find the closest nav-link ancestor of the clicked element
+            const navLink = e.target.closest('.nav-link');
+            if (!navLink) {
+                console.log('[Navigation] Click was not on a nav link');
+                return;
+            }
+            
+            e.preventDefault();
+            
+            // Get the href and extract the section ID
+            const href = navLink.getAttribute('href');
+            console.log('[Navigation] Nav link clicked, href:', href);
+            
+            if (!href || !href.startsWith('#')) {
+                console.log('[Navigation] Invalid href or not a hash link:', href);
+                return;
+            }
+            
+            const sectionId = href.substring(1);
+            console.log(`[Navigation] Navigating to section: ${sectionId}`);
+            
+            this.navigateToSection(sectionId);
         });
+        
+        // Also handle popstate for back/forward navigation
+        window.addEventListener('popstate', () => {
+            const sectionId = window.location.hash.substring(1) || 'dashboard';
+            console.log(`[Navigation] Popstate detected, navigating to: ${sectionId}`);
+            this.navigateToSection(sectionId);
+        });
+        
+        console.log('[Navigation] Event listeners set up');
     }
 
     loadInitialSection() {
@@ -117,27 +170,33 @@ class NavigationManager {
     }
 
     navigateToSection(sectionId) {
-        console.log(`Navigating to section: ${sectionId}`);
+        console.log(`[Navigation] Attempting to navigate to: ${sectionId}`);
+        
+        // Default to dashboard if no section is specified
+        if (!sectionId) {
+            sectionId = 'dashboard';
+            window.location.hash = '#' + sectionId;
+        }
         
         // Update navigation links
         document.querySelectorAll('.nav-link').forEach(link => {
-            link.classList.remove('active');
-            if (link.getAttribute('href') === `#${sectionId}`) {
+            const href = link.getAttribute('href');
+            if (!href || !href.startsWith('#')) return;
+            
+            const linkSection = href.substring(1);
+            if (linkSection === sectionId) {
                 link.classList.add('active');
+            } else {
+                link.classList.remove('active');
             }
         });
 
-        // Hide all sections first and clean up
-        document.querySelectorAll('.section').forEach(section => {
-            section.classList.remove('active');
-            section.style.display = 'none';
-            
-            // Clean up any location containers that might be left behind
-            if (section.id !== 'locations' && section.id !== sectionId) {
-                const locationContainer = section.querySelector('.locations-module');
-                if (locationContainer && locationContainer.parentNode) {
-                    locationContainer.parentNode.removeChild(locationContainer);
-                }
+        // Hide all sections first
+        const sections = document.querySelectorAll('.section');
+        sections.forEach(section => {
+            if (section.id !== sectionId) {
+                section.classList.remove('active');
+                section.style.display = 'none';
             }
         });
 
@@ -146,8 +205,8 @@ class NavigationManager {
         
         // If the section doesn't exist, try to create it
         if (!targetSection) {
-            console.log(`Section ${sectionId} not found, creating it...`);
-            const mainContent = document.querySelector('main .content-area');
+            console.log(`[Navigation] Section ${sectionId} not found, creating it...`);
+            const mainContent = document.querySelector('main .content-area') || document.querySelector('main');
             if (mainContent) {
                 targetSection = document.createElement('div');
                 targetSection.id = sectionId;
@@ -155,48 +214,86 @@ class NavigationManager {
                 targetSection.innerHTML = `<h2>${sectionId.charAt(0).toUpperCase() + sectionId.slice(1)}</h2>`;
                 mainContent.appendChild(targetSection);
             } else {
-                console.error('Main content area not found');
+                console.error('[Navigation] Main content area not found');
                 return;
             }
         }
 
+        // Show the target section
         targetSection.classList.add('active');
         targetSection.style.display = 'block';
         
+        console.log(`[Navigation] Showing section: ${sectionId}`);
+        
         // Initialize section content if it exists
-        switch(sectionId) {
-            case 'quests':
-                questManager.initialize();
-                break;
-            case 'players':
-                playerManager.initialize();
-                break;
-            case 'loot':
-                if (lootManager) {
-                    if (!lootManager.initialized) {
-                        lootManager.initialize();
+        try {
+            switch(sectionId) {
+                case 'dashboard':
+                    // Dashboard doesn't need special initialization
+                    break;
+                case 'quests':
+                    if (questManager && typeof questManager.initialize === 'function') {
+                        questManager.initialize();
                     }
-                    lootManager.render();
-                } else {
-                    console.error('Loot manager not initialized');
-                }
-                break;
-            case 'locations':
-                // Let the location manager handle its own rendering
-                locationManager.initialize();
-                locationManager.render();
-                break;
-            case 'notes':
-                notesManager.initialize();
-                break;
-            case 'guild':
-                guildManager.initializeGuildSection();
-                break;
-            case 'characters':
-                if (window.charactersManager) {
-                    charactersManager.initialize();
-                }
-                break;
+                    break;
+                case 'players':
+                    if (playerManager && typeof playerManager.initialize === 'function') {
+                        playerManager.initialize();
+                    }
+                    break;
+                case 'loot':
+                    if (lootManager) {
+                        if (typeof lootManager.initialize === 'function' && !lootManager.initialized) {
+                            lootManager.initialize();
+                        }
+                        if (typeof lootManager.render === 'function') {
+                            lootManager.render();
+                        }
+                    }
+                    break;
+                case 'locations':
+                    if (locationManager) {
+                        if (typeof locationManager.initialize === 'function') {
+                            locationManager.initialize();
+                        }
+                        if (typeof locationManager.render === 'function') {
+                            locationManager.render();
+                        }
+                    }
+                    break;
+                case 'notes':
+                    if (notesManager && typeof notesManager.initialize === 'function') {
+                        notesManager.initialize();
+                    }
+                    break;
+                case 'guild':
+                    if (guildManager && typeof guildManager.initializeGuildSection === 'function') {
+                        guildManager.initializeGuildSection();
+                    }
+                    break;
+                case 'characters':
+                    if (window.charactersManager && typeof window.charactersManager.initialize === 'function') {
+                        window.charactersManager.initialize();
+                    }
+                    break;
+                case 'factions':
+                    // Initialize or reinitialize the Factions UI
+                    if (!factionUI) {
+                        factionUI = initFactionsUI();
+                    } else if (typeof factionUI.refresh === 'function') {
+                        factionUI.refresh();
+                    }
+                    break;
+                default:
+                    console.warn(`[Navigation] No handler for section: ${sectionId}`);
+            }
+        } catch (error) {
+            console.error(`[Navigation] Error initializing section ${sectionId}:`, error);
+        }
+        
+        // Update URL hash without triggering navigation
+        if (window.location.hash.substring(1) !== sectionId) {
+            history.pushState(null, '', `#${sectionId}`);
         }
 
         // Clean up any lingering location containers in the body
@@ -230,7 +327,8 @@ class DataManager {
             notes: [],
             characters: [],
             guildLogs: { activities: [], resources: [] },
-            guildResources: []
+            guildResources: [],
+            factions: []
         };
         
         // Function to safely clone an object
@@ -393,7 +491,7 @@ class DataManager {
             this.subscribers = new Set();
             
             // Ensure all arrays exist and are valid
-            const arrayFields = ['quests', 'players', 'loot', 'locations', 'notes', 'characters', 'guildResources'];
+            const arrayFields = ['quests', 'players', 'loot', 'locations', 'notes', 'characters', 'guildResources', 'factions'];
             arrayFields.forEach(field => {
                 if (!Array.isArray(this._state[field])) {
                     console.warn(`Initializing empty array for ${field}`);
@@ -632,20 +730,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // Make dataManager available globally for debugging
     window.dataManager = dataManager;
 
+    // Initialize the navigation first
+    const navigationManager = new NavigationManager();
+    
     // Initialize managers with DataManager
     questManager = new QuestManager(dataManager);
     playerManager = new PlayerManager(dataManager);
     
     // Initialize the loot manager with the data manager
     lootManager = new LootManager(dataManager);
-    
-    // Make sure the loot section is hidden by default
-    const lootSection = document.getElementById('loot');
-    if (lootSection) {
-        lootSection.style.display = 'none';
-    } else {
-        console.error('Loot section not found in the DOM');
-    }
     
     // Initialize LocationManager with container
     const locationsContainer = document.getElementById('locations') || document.createElement('div');
@@ -655,6 +748,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     locationManager = new LocationManager(dataManager, locationsContainer);
     
+    // Initialize other managers
     notesManager = new NotesManager(dataManager);
     guildManager = new GuildManager(dataManager);
     
@@ -667,9 +761,12 @@ document.addEventListener('DOMContentLoaded', () => {
     window.characterService = characterService;
     window.characterUI = characterUI;
     window.charactersManager = charactersManager;
-
-    // Initialize navigation
-    const navigationManager = new NavigationManager();
+    window.navigationManager = navigationManager;
+    
+    // Initialize Factions UI if we're on the factions page or section
+    if (window.location.pathname.endsWith('factions.html') || window.location.hash === '#factions') {
+        initFactionsUI();
+    }
     
     // Initialize all sections
     questManager.initialize();
