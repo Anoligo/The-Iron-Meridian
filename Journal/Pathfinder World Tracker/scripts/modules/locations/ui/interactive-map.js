@@ -47,8 +47,14 @@ export class InteractiveMap {
      */
     init() {
         console.log('Initializing interactive map');
-        console.log('Container:', this.container);
+        console.log('Container element:', this.container);
+        console.log('Container exists:', !!this.container);
         console.log('Map image path:', this.mapImagePath);
+        
+        if (!this.container) {
+            console.error('Cannot initialize map: No container element provided');
+            throw new Error('No container element provided for the map');
+        }
         
         // Track which path we're trying
         this.currentPathIndex = 0;

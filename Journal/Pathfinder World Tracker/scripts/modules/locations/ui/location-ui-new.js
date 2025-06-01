@@ -249,12 +249,17 @@ export class LocationUI extends BaseUI {
     renderMapView() {
         console.log('Attempting to render map view');
         
+        // Debug: Log the current state of the map and container
+        console.log('Current map instance:', this.map);
+        
         // Check if map is already initialized to prevent duplicate rendering
         if (this.map) {
             console.log('Map already initialized, updating locations');
             // Just update the locations if the map already exists
             try {
-                this.map.updateLocations(this.getAll ? this.getAll() : []);
+                const locations = this.getAll ? this.getAll() : [];
+                console.log(`Updating ${locations.length} locations on the map`);
+                this.map.updateLocations(locations);
                 return;
             } catch (error) {
                 console.error('Error updating map locations:', error);

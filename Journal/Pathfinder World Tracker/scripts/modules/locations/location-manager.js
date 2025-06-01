@@ -34,27 +34,80 @@ export class LocationManager {
     }
     
     /**
+     * Handle hash changes to show/hide the locations section
+     */
+    handleHashChange() {
+        const isLocationsPage = window.location.hash === '#locations';
+        const locationsSection = document.getElementById('locations');
+        
+        if (!locationsSection) {
+            console.error('Locations section not found in the DOM');
+            return;
+        }
+        
+        if (isLocationsPage) {
+            console.log('Navigated to locations page');
+            locationsSection.style.display = 'block';
+            locationsSection.classList.add('active');
+            
+            // Ensure the UI is initialized
+            if (!this.initialized) {
+                console.log('Locations UI not initialized, initializing now');
+                this.initialize();
+            } else if (this.locationUI) {
+                // If already initialized, just refresh the UI
+                console.log('Refreshing locations UI');
+                this.locationUI.refresh();
+                
+                // Ensure the map is rendered with a small delay to allow DOM updates
+                if (this.locationUI.renderMapView) {
+                    console.log('Scheduling map view render');
+                    // Use setTimeout to ensure the DOM is ready
+                    setTimeout(() => {
+                        console.log('Rendering map view');
+                        try {
+                            this.locationUI.renderMapView();
+                        } catch (error) {
+                            console.error('Error rendering map view:', error);
+                        }
+                    }, 100);
+                }
+            }
+        } else {
+            // Hide the section if we're not on the locations page
+            locationsSection.style.display = 'none';
+            locationsSection.classList.remove('active');
+        }
+    }
+    
+    /**
      * Initialize the location manager
      */
     initialize() {
         console.log('Initializing LocationManager');
         
-        // Only initialize if we're on the locations page
-        if (window.location.hash !== '#locations') {
-            console.log('Not on locations page, skipping initialization');
-            return;
-        }
-        
         // Check if already initialized to prevent duplicate initialization
         if (this.initialized) {
             console.log('LocationManager already initialized, refreshing UI');
             if (this.locationUI) {
+                console.log('Refreshing LocationUI');
                 this.locationUI.refresh();
+                
+                // Ensure the map is rendered if we're on the locations page
+                if (window.location.hash === '#locations' && this.locationUI.renderMapView) {
+                    console.log('Ensuring map is rendered');
+                    // Use setTimeout to ensure the DOM is ready
+                    setTimeout(() => {
+                        this.locationUI.renderMapView();
+                    }, 100);
+                }
             }
+            // Make sure we handle the current hash
+            this.handleHashChange();
             return;
         }
         
-        // Get the locations section
+        // Get or create the locations section
         let locationsSection = document.getElementById('locations');
         if (!locationsSection) {
             console.log('Creating locations section');
@@ -67,6 +120,8 @@ export class LocationManager {
             } else {
                 document.body.appendChild(locationsSection);
             }
+        } else {
+            console.log('Using existing locations section');
         }
         
         // Ensure the section is visible
