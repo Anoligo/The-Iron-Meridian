@@ -10,7 +10,6 @@ import { CharacterUI } from './modules/characters/ui/character-ui-new.js';
 import { FactionUI } from './modules/factions/ui/faction-ui.js';
 import { applyGlobalStyles } from './global-styles.js';
 import { applyIronMeridianStyling } from './utils/form-styling.js';
-import './characters.js';
 // Local Storage Management
 const StorageManager = {
     save: (key, data) => {

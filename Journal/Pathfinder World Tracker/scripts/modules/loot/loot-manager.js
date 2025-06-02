@@ -118,7 +118,7 @@ export class LootManager {
                                             <span class="input-group-text">
                                                 <i class="fas fa-search"></i>
                                             </span>
-                                            <input type="text" id="itemSearch" class="form-control" placeholder="Search items...">
+                                            <input type="text" id="lootManagerItemSearch" class="form-control" placeholder="Search items..." data-search-type="loot-manager">
                                         </div>
                                         <div id="itemList" class="list-group list-group-flush" style="max-height: 70vh; overflow-y: auto;">
                                             <!-- Items will be rendered here -->

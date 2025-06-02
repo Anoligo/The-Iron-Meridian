@@ -195,25 +195,36 @@ export class InteractiveMap {
         this.controlsContainer.style.display = 'flex';
         this.controlsContainer.style.flexDirection = 'column';
         this.controlsContainer.style.gap = '5px';
+        this.controlsContainer.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
+        this.controlsContainer.style.borderRadius = '4px';
+        this.controlsContainer.style.overflow = 'hidden';
         
         // Zoom in button
         const zoomInBtn = document.createElement('button');
         zoomInBtn.className = 'btn btn-sm btn-light';
+        zoomInBtn.style.borderRadius = '0';
+        zoomInBtn.style.border = 'none';
+        zoomInBtn.style.borderBottom = '1px solid #dee2e6';
         zoomInBtn.innerHTML = '<i class="fas fa-search-plus"></i>';
         zoomInBtn.title = 'Zoom In';
-        zoomInBtn.addEventListener('click', () => this.zoom(0.1));
+        zoomInBtn.addEventListener('click', () => this.zoom(0.2));
         
         // Zoom out button
         const zoomOutBtn = document.createElement('button');
         zoomOutBtn.className = 'btn btn-sm btn-light';
+        zoomOutBtn.style.borderRadius = '0';
+        zoomOutBtn.style.border = 'none';
+        zoomOutBtn.style.borderBottom = '1px solid #dee2e6';
         zoomOutBtn.innerHTML = '<i class="fas fa-search-minus"></i>';
         zoomOutBtn.title = 'Zoom Out';
-        zoomOutBtn.addEventListener('click', () => this.zoom(-0.1));
+        zoomOutBtn.addEventListener('click', () => this.zoom(-0.2));
         
         // Reset button
         const resetBtn = document.createElement('button');
         resetBtn.className = 'btn btn-sm btn-light';
-        resetBtn.innerHTML = '<i class="fas fa-sync-alt"></i>';
+        resetBtn.style.borderRadius = '0';
+        resetBtn.style.border = 'none';
+        resetBtn.innerHTML = '<i class="fas fa-expand"></i>';
         resetBtn.title = 'Reset View';
         resetBtn.addEventListener('click', () => this.resetView());
         
@@ -248,8 +259,8 @@ export class InteractiveMap {
         // Get current dimensions
         const oldScale = this.scale;
         
-        // Calculate new scale (with limits)
-        this.scale = Math.max(0.5, Math.min(3, this.scale + factor));
+        // Calculate new scale (with limits) - increased max zoom to 10x
+        this.scale = Math.max(0.1, Math.min(10, this.scale + factor));
         
         // If coordinates are provided, zoom around that point
         if (x !== undefined && y !== undefined) {
@@ -259,9 +270,34 @@ export class InteractiveMap {
             // Adjust offset to keep the point under the cursor
             this.offsetX = x - (x - this.offsetX) * scaleChange;
             this.offsetY = y - (y - this.offsetY) * scaleChange;
+            
+            // Ensure the map stays within bounds
+            this.constrainMapBounds();
         }
         
         this.render();
+    }
+    
+    /**
+     * Constrain the map offset to keep it within bounds
+     */
+    constrainMapBounds() {
+        if (!this.mapImage) return;
+        
+        const container = this.mapContainer;
+        const img = this.mapImage;
+        
+        // Calculate the scaled dimensions of the map image
+        const scaledWidth = img.naturalWidth * this.scale;
+        const scaledHeight = img.naturalHeight * this.scale;
+        
+        // Calculate the maximum allowed offset to keep the map within the container
+        const maxOffsetX = Math.max(0, (scaledWidth - container.offsetWidth) / 2);
+        const maxOffsetY = Math.max(0, (scaledHeight - container.offsetHeight) / 2);
+        
+        // Constrain the offsets
+        this.offsetX = Math.max(-maxOffsetX, Math.min(maxOffsetX, this.offsetX));
+        this.offsetY = Math.max(-maxOffsetY, Math.min(maxOffsetY, this.offsetY));
     }
     
     /**
@@ -386,75 +422,132 @@ export class InteractiveMap {
     }
     
     /**
-     * Center the map on a specific location with a fixed zoom level
-     * @param {string} locationId - ID of the location to center on
-     * @param {number} [targetScale=1.5] - The target zoom level (1.0 = 100%)
+     * Center the map on a specific location
+     * @param {string} locationId - The ID of the location to center on
+     * @param {number} zoomLevel - Optional zoom level (defaults to 1.5)
      */
-    centerOnLocation(locationId, targetScale = 1.5) {
+    centerOnLocation(locationId, zoomLevel = 1.5) {
         const location = this.locations.find(loc => loc.id === locationId);
-        if (!location) return;
+        if (!location || location.x === undefined || location.y === undefined) {
+            console.warn('Location not found or missing coordinates:', locationId);
+            return;
+        }
         
-        // Calculate center position
-        const containerWidth = this.mapContainer.clientWidth;
-        const containerHeight = this.mapContainer.clientHeight;
+        // Ensure zoom level is within bounds
+        const newZoom = Math.max(0.1, Math.min(10, zoomLevel));
         
-        // Set the scale to the target zoom level
-        this.scale = targetScale;
+        // Calculate the center point in container coordinates
+        const containerCenterX = this.container.offsetWidth / 2;
+        const containerCenterY = this.container.offsetHeight / 2;
         
-        // Calculate the new offset to center the location
-        this.offsetX = containerWidth / 2 - location.x * this.scale;
-        this.offsetY = containerHeight / 2 - location.y * this.scale;
+        // Calculate the location's position in container coordinates at the new zoom level
+        const locationX = location.x * newZoom;
+        const locationY = location.y * newZoom;
         
+        // Calculate the offset needed to center the location
+        this.offsetX = containerCenterX - locationX;
+        this.offsetY = containerCenterY - locationY;
+        
+        // Apply the new scale
+        this.scale = newZoom;
+        
+        // Ensure the map stays within bounds
+        this.constrainMapBounds();
+        
+        // Update the selected location
+        this.selectedLocationId = locationId;
+        
+        // Re-render
         this.render();
+        
+        console.log(`Centered on location ${locationId} at (${location.x}, ${location.y}) with zoom ${newZoom}`);
     }
     
     /**
-     * Render the map and location pins
+     * Render the map and pins
      */
     render() {
-        // Update map image transform
-        this.mapImage.style.transform = `translate(${this.offsetX}px, ${this.offsetY}px) scale(${this.scale})`;
+        if (!this.mapImage || !this.pinsContainer) {
+            console.error('Map image or pins container not found');
+            return;
+        }
         
-        // Clear existing pins
-        this.pinsContainer.innerHTML = '';
+        console.log(`Rendering map at scale ${this.scale} with offset (${this.offsetX}, ${this.offsetY})`);
         
-        // Render each location pin
-        this.locations.forEach(location => {
-            // Skip locations with no coordinates
-            if (location.x === undefined || location.y === undefined) return;
+        try {
+            // Update map image transform
+            this.mapImage.style.transform = `translate(${this.offsetX}px, ${this.offsetY}px) scale(${this.scale})`;
             
-            // Create pin element
-            const pin = document.createElement('div');
-            pin.className = 'map-pin';
-            pin.style.position = 'absolute';
-            pin.style.left = `${this.offsetX + location.x * this.scale}px`;
-            pin.style.top = `${this.offsetY + location.y * this.scale}px`;
-            pin.style.transform = 'translate(-50%, -100%)';
-            pin.style.pointerEvents = 'auto'; // Make pin clickable
+            // Clear existing pins
+            this.pinsContainer.innerHTML = '';
             
-            // Determine pin style based on location type and selection state
-            const isSelected = location.id === this.selectedLocationId;
-            const iconClass = this.getLocationIcon(location.type);
-            const discoveredClass = location.discovered ? 'text-primary' : 'text-secondary';
+            console.log(`Rendering ${this.locations.length} locations`);
             
-            // Create pin content
-            pin.innerHTML = `
-                <div class="pin-icon ${isSelected ? 'selected' : ''}" title="${location.name}">
-                    <i class="fas ${iconClass} ${discoveredClass}"></i>
-                    ${isSelected ? `<div class="pin-label">${location.name}</div>` : ''}
-                </div>
-            `;
-            
-            // Add click event
-            pin.addEventListener('click', (e) => {
-                e.stopPropagation();
-                this.selectLocation(location.id);
-                this.onLocationClick(location);
+            // Add pins for each location
+            this.locations.forEach((location, index) => {
+                if (location.x === undefined || location.y === undefined) {
+                    console.warn(`Location ${location.name || 'unnamed'} (${location.id}) is missing coordinates`);
+                    return;
+                }
+                
+                const pin = document.createElement('div');
+                pin.className = 'map-pin';
+                pin.style.position = 'absolute';
+                pin.style.left = `${this.offsetX + location.x * this.scale}px`;
+                pin.style.top = `${this.offsetY + location.y * this.scale}px`;
+                pin.style.transform = 'translate(-50%, -100%)';
+                pin.style.pointerEvents = 'auto';
+                pin.style.zIndex = '5'; // Ensure pins are above the map
+                
+                // Add selected class if this is the selected location
+                const isSelected = location.id === this.selectedLocationId;
+                const iconClass = this.getLocationIcon(location.type);
+                const discoveredClass = location.discovered ? 'text-primary' : 'text-secondary';
+                
+                // Add data attributes for debugging
+                pin.dataset.locationId = location.id;
+                pin.dataset.locationName = location.name;
+                pin.dataset.x = location.x;
+                pin.dataset.y = location.y;
+                
+                pin.innerHTML = `
+                    <div class="pin-icon ${isSelected ? 'selected' : ''}" style="position: relative; z-index: 10;" title="${this.escapeHtml(location.name)}">
+                        <i class="fas ${iconClass} ${discoveredClass} fa-2x" style="filter: drop-shadow(0 0 2px rgba(0,0,0,0.7));"></i>
+                        ${isSelected ? `<div class="pin-label" style="
+                            position: absolute;
+                            bottom: 100%;
+                            left: 50%;
+                            transform: translateX(-50%);
+                            background: rgba(0, 0, 0, 0.8);
+                            color: white;
+                            padding: 4px 8px;
+                            border-radius: 4px;
+                            white-space: nowrap;
+                            font-size: 12px;
+                            margin-bottom: 5px;
+                        ">${this.escapeHtml(location.name)}</div>` : ''}
+                    </div>
+                `;
+                
+                // Add click event to select the location
+                pin.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    console.log(`Clicked on location: ${location.name} (${location.id})`);
+                    this.selectLocation(location.id);
+                    if (typeof this.onLocationClick === 'function') {
+                        this.onLocationClick(location);
+                    }
+                });
+                
+                this.pinsContainer.appendChild(pin);
+                console.log(`Added pin for ${location.name} at (${location.x}, ${location.y})`);
             });
             
-            // Add pin to container
-            this.pinsContainer.appendChild(pin);
-        });
+            // Ensure pins container is above the map
+            this.pinsContainer.style.zIndex = '5';
+        } catch (error) {
+            console.error('Error rendering map:', error);
+        }
     }
     
     /**
@@ -477,6 +570,21 @@ export class InteractiveMap {
         };
         
         return icons[type] || 'fa-map-marker-alt';
+    }
+    
+    /**
+     * Escape HTML special characters to prevent XSS
+     * @param {string} unsafe - The string to escape
+     * @returns {string} The escaped string
+     */
+    escapeHtml(unsafe) {
+        if (typeof unsafe !== 'string') return '';
+        return unsafe
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
     }
     
     /**

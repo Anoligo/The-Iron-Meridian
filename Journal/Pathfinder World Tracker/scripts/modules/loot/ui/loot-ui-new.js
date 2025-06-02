@@ -17,10 +17,10 @@ export class LootUI extends BaseUI {
      */
     constructor(lootService, dataManager) {
         super({
-            containerId: 'loot-container',
+            containerId: 'loot',
             listId: 'itemList',
             detailsId: 'itemDetails',
-            searchId: 'itemSearch',
+            searchId: 'lootItemSearch',
             addButtonId: 'addItemBtn',
             entityName: 'item',
             getAll: () => lootService.getAllItems(),
@@ -38,7 +38,23 @@ export class LootUI extends BaseUI {
         this.getRarityColor = this.getRarityColor.bind(this);
         this.toggleAttunementSection = this.toggleAttunementSection.bind(this);
         
+        // Set up event listeners for the new buttons
+        this.setupEventListeners();
+        
         console.log('LootUI initialized with container:', this.container);
+    }
+    
+    /**
+     * Set up event listeners for the loot UI
+     */
+    setupEventListeners() {
+        // Add event listener for the "Add First Item" button
+        const addFirstItemBtn = document.getElementById('addFirstItemBtn');
+        if (addFirstItemBtn) {
+            addFirstItemBtn.addEventListener('click', () => {
+                this.handleAdd();
+            });
+        }
     }
     
     /**
@@ -47,18 +63,61 @@ export class LootUI extends BaseUI {
      * @returns {HTMLElement} The created list item
      */
     createListItem(item) {
-        return createListItem({
-            id: item.id,
-            title: item.name,
-            subtitle: `${formatEnumValue(item.type)} ${item.attunedTo ? '(Attuned)' : ''}`,
-            icon: 'fas fa-coins',
-            isSelected: this.currentEntity && this.currentEntity.id === item.id,
-            metadata: {
-                'Rarity': formatEnumValue(item.rarity),
-                'Value': this.formatCurrency(item.value)
-            },
-            onClick: (id) => this.handleSelect(id)
+        const itemElement = document.createElement('div');
+        itemElement.className = `loot-item ${this.currentEntity && this.currentEntity.id === item.id ? 'loot-item--selected' : ''}`;
+        itemElement.dataset.id = item.id;
+        
+        // Format metadata
+        const rarityClass = item.rarity ? item.rarity.toLowerCase().replace(/\s+/g, '-') : 'common';
+        const rarityBadge = item.rarity ? 
+            `<span class="rarity-badge rarity-badge--${rarityClass}">${formatEnumValue(item.rarity)}</span>` : '';
+        
+        itemElement.innerHTML = `
+            <div class="loot-item__info">
+                <h4 class="loot-item__name">${item.name || 'Unnamed Item'}</h4>
+                <div class="loot-item__meta">
+                    <span>${formatEnumValue(item.type)}</span>
+                    ${item.attunedTo ? '<span><i class="fas fa-link"></i> Attuned</span>' : ''}
+                    <span>${this.formatCurrency(item.value || 0)}</span>
+                </div>
+            </div>
+            <div class="loot-item__actions">
+                ${rarityBadge}
+                <button class="btn btn-sm btn-outline-secondary edit-item" data-id="${item.id}">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-danger delete-item" data-id="${item.id}">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        `;
+        
+        // Add click handler for the item
+        itemElement.addEventListener('click', (e) => {
+            if (!e.target.closest('.edit-item') && !e.target.closest('.delete-item')) {
+                this.handleSelect(item.id);
+            }
         });
+        
+        // Add click handlers for action buttons
+        const editBtn = itemElement.querySelector('.edit-item');
+        const deleteBtn = itemElement.querySelector('.delete-item');
+        
+        if (editBtn) {
+            editBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.handleEdit(item.id);
+            });
+        }
+        
+        if (deleteBtn) {
+            deleteBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.handleDelete(item.id);
+            });
+        }
+        
+        return itemElement;
     }
     
     /**
@@ -66,43 +125,129 @@ export class LootUI extends BaseUI {
      * @param {Object} item - Item to render details for
      */
     renderDetails(item) {
-        // Create sections for the details panel
-        const sections = [
-            {
-                title: 'Basic Information',
-                content: `
-                    <div class="row">
-                        <div class="col-md-6">
-                            <p><strong>Type:</strong> ${formatEnumValue(item.type)}</p>
-                            <p><strong>Rarity:</strong> <span class="badge bg-${getRarityBadgeClass(item.rarity)}">${formatEnumValue(item.rarity)}</span></p>
-                        </div>
-                        <div class="col-md-6">
-                            <p><strong>Value:</strong> ${this.formatCurrency(item.value)}</p>
-                            <p><strong>Condition:</strong> ${formatEnumValue(item.condition)}</p>
-                        </div>
-                    </div>
-                `
-            },
-            {
-                title: 'Description',
-                content: `
-                    <div class="mb-3">
-                        <p>${item.description || 'No description available.'}</p>
-                    </div>
-                `
-            }
+        if (!item) {
+            this.detailsElement.innerHTML = `
+                <div class="loot-empty">
+                    <i class="fas fa-coins fa-3x mb-3"></i>
+                    <p class="loot-empty__message">Select an item to view details</p>
+                </div>
+            `;
+            return;
+        }
+        
+        // Format rarity class
+        const rarityClass = item.rarity ? item.rarity.toLowerCase().replace(/\s+/g, '-') : 'common';
+        const rarityBadge = item.rarity ? 
+            `<span class="rarity-badge rarity-badge--${rarityClass}">${formatEnumValue(item.rarity)}</span>` : '';
+        
+        // Format attunement status
+        const attunementStatus = item.requiresAttunement ? 
+            (item.attunedTo ? 
+                `<span class="text-success"><i class="fas fa-check-circle"></i> Attuned to ${item.attunedTo || 'someone'}</span>` : 
+                '<span class="text-warning"><i class="fas fa-exclamation-circle"></i> Requires attunement</span>') : 
+            '<span class="text-muted"><i class="fas fa-times-circle"></i> No attunement required</span>';
+        
+        // Format properties
+        const properties = [
+            { label: 'Type', value: formatEnumValue(item.type) },
+            { label: 'Rarity', value: rarityBadge, isHtml: true },
+            { label: 'Value', value: this.formatCurrency(item.value) },
+            { label: 'Weight', value: item.weight ? `${item.weight} lbs` : 'N/A' },
+            { label: 'Condition', value: formatEnumValue(item.condition) },
+            { label: 'Attunement', value: attunementStatus, isHtml: true }
         ];
         
-        // Add attunement section if applicable
+        // Create HTML for properties
+        const propertiesHtml = properties.map(prop => `
+            <div class="loot-detail__property">
+                <span class="loot-detail__label">${prop.label}:</span>
+                <span class="loot-detail__value">${prop.isHtml ? prop.value : (prop.value || 'N/A')}</span>
+            </div>
+        `).join('');
+        
+        // Create HTML for description
+        const descriptionHtml = item.description ? `
+            <div class="loot-detail__section">
+                <h3 class="loot-detail__section-title">Description</h3>
+                <div class="loot-detail__content">
+                    <p>${item.description}</p>
+                </div>
+            </div>
+        ` : '';
+        
+        // Create HTML for properties section
+        const propertiesSection = `
+            <div class="loot-detail__section">
+                <h3 class="loot-detail__section-title">Properties</h3>
+                <div class="loot-detail__properties">
+                    ${propertiesHtml}
+                </div>
+            </div>
+        `;
+        
+        // Create HTML for attunement section if applicable
+        let attunementSection = '';
         if (item.requiresAttunement) {
-            sections.push({
-                title: 'Attunement',
-                content: `
-                    <div class="mb-3">
-                        <p><strong>Requires Attunement:</strong> Yes</p>
-                        <p><strong>Attuned To:</strong> ${item.attunedTo || 'Not attuned'}</p>
+            attunementSection = `
+                <div class="loot-detail__section">
+                    <h3 class="loot-detail__section-title">Attunement</h3>
+                    <div class="loot-detail__content">
+                        <p>${item.attunementNotes || 'No additional attunement requirements specified.'}</p>
                     </div>
-                `
+                </div>
+            `;
+        }
+        
+        // Create HTML for notes section if available
+        let notesSection = '';
+        if (item.notes) {
+            notesSection = `
+                <div class="loot-detail__section">
+                    <h3 class="loot-detail__section-title">Notes</h3>
+                    <div class="loot-detail__content">
+                        <p>${item.notes}</p>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Combine all sections
+        this.detailsElement.innerHTML = `
+            <div class="loot-detail">
+                <div class="loot-detail__header">
+                    <h2 class="loot-detail__title">${item.name || 'Unnamed Item'}</h2>
+                    <div class="loot-detail__actions">
+                        <button class="btn btn-outline-primary btn-sm edit-item" data-id="${item.id}">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn btn-outline-danger btn-sm delete-item" data-id="${item.id}">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+                
+                ${propertiesSection}
+                ${descriptionHtml}
+                ${attunementSection}
+                ${notesSection}
+            </div>
+        `;
+        
+        // Add event listeners to the action buttons
+        const editBtn = this.detailsElement.querySelector('.edit-item');
+        const deleteBtn = this.detailsElement.querySelector('.delete-item');
+        
+        if (editBtn) {
+            editBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.handleEdit(item.id);
+            });
+        }
+        
+        if (deleteBtn) {
+            deleteBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.handleDelete(item.id);
             });
         }
         
@@ -122,30 +267,8 @@ export class LootUI extends BaseUI {
             });
         }
         
-        // Create the details panel
-        const detailsPanel = createDetailsPanel({
-            title: item.name,
-            data: item,
-            actions: [
-                {
-                    label: 'Edit',
-                    icon: 'fas fa-edit',
-                    type: 'primary',
-                    onClick: () => this.handleEdit(item)
-                },
-                {
-                    label: 'Delete',
-                    icon: 'fas fa-trash',
-                    type: 'danger',
-                    onClick: () => this.handleDelete(item.id)
-                }
-            ],
-            sections: sections
-        });
-        
-        // Clear the details element and append the new details panel
-        this.detailsElement.innerHTML = '';
-        this.detailsElement.appendChild(detailsPanel);
+        // The details are already rendered in the template above
+        // No need to create another details panel
     }
     
     /**
