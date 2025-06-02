@@ -703,8 +703,73 @@ class DataManager {
     }
 }
 
+// Data Management Functions
+class DataManagement {
+    /**
+     * Export all application data to a JSON file
+     * @param {Object} data - The data to export
+     */
+    static exportData(data) {
+        try {
+            // Create a blob with the data
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            
+            // Create a download link
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+            
+            a.href = url;
+            a.download = `iron-meridian-backup-${timestamp}.json`;
+            document.body.appendChild(a);
+            a.click();
+            
+            // Clean up
+            setTimeout(() => {
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, 0);
+            
+            return true;
+        } catch (error) {
+            console.error('Error exporting data:', error);
+            return false;
+        }
+    }
+    
+    /**
+     * Import data from a file
+     * @param {File} file - The file to import
+     * @returns {Promise<Object>} - The parsed data or null if there was an error
+     */
+    static importData(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            
+            reader.onload = (event) => {
+                try {
+                    const data = JSON.parse(event.target.result);
+                    resolve(data);
+                } catch (error) {
+                    console.error('Error parsing JSON file:', error);
+                    reject(new Error('Invalid JSON file'));
+                }
+            };
+            
+            reader.onerror = () => {
+                reject(new Error('Error reading file'));
+            };
+            
+            reader.readAsText(file);
+        });
+    }
+}
+
+// Global variables will be declared at the module level
+// to avoid polluting the global scope
+
 // Initialize the application
-document.addEventListener('DOMContentLoaded', () => {
+function initializeApplication() {
     // Apply global styles
     applyGlobalStyles();
     
@@ -724,123 +789,235 @@ document.addEventListener('DOMContentLoaded', () => {
     // Start observing the body for changes
     bodyObserver.observe(document.body, { childList: true, subtree: true });
 
-    // Initialize data manager
-    const dataManager = new DataManager();
-    
-    // Make dataManager available globally for debugging
-    window.dataManager = dataManager;
+    try {
+        // Initialize data manager
+        const dataManager = new DataManager();
+        window.dataManager = dataManager; // Make it globally available
 
-    // Initialize the navigation first
-    const navigationManager = new NavigationManager();
-    
-    // Initialize managers with DataManager
-    questManager = new QuestManager(dataManager);
-    playerManager = new PlayerManager(dataManager);
-    
-    // Initialize the loot manager with the data manager
-    lootManager = new LootManager(dataManager);
-    
-    // Initialize LocationManager with container
-    const locationsContainer = document.getElementById('locations') || document.createElement('div');
-    locationsContainer.id = 'locations';
-    if (!document.getElementById('locations')) {
-        document.body.appendChild(locationsContainer);
+        // Initialize navigation manager
+        const navigationManager = new NavigationManager();
+        window.navigationManager = navigationManager;
+
+        // Initialize quest manager
+        const questManager = new QuestManager(dataManager);
+        window.questManager = questManager;
+
+        // Initialize player manager
+        const playerManager = new PlayerManager(dataManager);
+        window.playerManager = playerManager;
+
+        // Initialize loot manager
+        const lootManager = new LootManager(dataManager);
+        window.lootManager = lootManager;
+
+        // Initialize location manager
+        const locationManager = new LocationManager(dataManager);
+        window.locationManager = locationManager;
+
+        // Initialize notes manager
+        const notesManager = new NotesManager(dataManager);
+        window.notesManager = notesManager;
+
+        // Initialize guild manager
+        const guildManager = new GuildManager(dataManager);
+        window.guildManager = guildManager;
+
+        // Initialize data management UI
+        initializeDataManagement();
+
+        // Initialize Characters components
+        const characterService = new CharacterService(dataManager);
+        const characterUI = new CharacterUI(characterService, dataManager);
+        const charactersManager = new CharactersManager(dataManager);
+
+        // Make them available globally for debugging
+        window.characterService = characterService;
+        window.characterUI = characterUI;
+        window.charactersManager = charactersManager;
+
+        // Initialize Factions UI if we're on the factions page or section
+        if (window.location.pathname.endsWith('factions.html') || window.location.hash === '#factions') {
+            initFactionsUI();
+        }
+
+        // Initialize all sections
+        questManager.initialize();
+        playerManager.initialize();
+        lootManager.initialize(); // Initialize loot manager
+        locationManager.initialize();
+        notesManager.initialize();
+        guildManager.initializeGuildSection();
+
+        // Initialize characters module and handle any errors
+        charactersManager.initialize().catch(error => {
+            console.error('Error initializing characters module:', error);
+        });
+
+        // Single subscription to state changes for dashboard updates
+        dataManager.subscribe(updateDashboardCounters);
+        
+        // Initial dashboard update
+        updateDashboardCounters(dataManager.appState);
+
+    } catch (error) {
+        console.error('Error initializing application:', error);
+        showToast('Error initializing application. Please check the console for details.', 'danger');
     }
-    locationManager = new LocationManager(dataManager, locationsContainer);
+}
+
+// Helper function to show toast messages
+function showToast(message, type = 'info') {
+    const toastContainer = document.getElementById('toastContainer') || (() => {
+        const container = document.createElement('div');
+        container.id = 'toastContainer';
+        container.style.position = 'fixed';
+        container.style.top = '20px';
+        container.style.right = '20px';
+        container.style.zIndex = '9999';
+        document.body.appendChild(container);
+        return container;
+    })();
     
-    // Initialize other managers
-    notesManager = new NotesManager(dataManager);
-    guildManager = new GuildManager(dataManager);
+    const toast = document.createElement('div');
+    toast.className = `toast show align-items-center text-white bg-${type} border-0`;
+    toast.role = 'alert';
+    toast.setAttribute('aria-live', 'assertive');
+    toast.setAttribute('aria-atomic', 'true');
     
-    // Initialize Characters components
-    const characterService = new CharacterService(dataManager);
-    const characterUI = new CharacterUI(characterService, dataManager);
-    const charactersManager = new CharactersManager(dataManager);
+    toast.innerHTML = `
+        <div class="d-flex">
+            <div class="toast-body">
+                ${message}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    `;
     
-    // Make them available globally for debugging
-    window.characterService = characterService;
-    window.characterUI = characterUI;
-    window.charactersManager = charactersManager;
-    window.navigationManager = navigationManager;
+    toastContainer.appendChild(toast);
     
-    // Initialize Factions UI if we're on the factions page or section
-    if (window.location.pathname.endsWith('factions.html') || window.location.hash === '#factions') {
-        initFactionsUI();
+    // Auto-remove the toast after 5 seconds
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => {
+            if (toast.parentNode === toastContainer) {
+                toastContainer.removeChild(toast);
+            }
+        }, 300);
+    }, 5000);
+    
+    // Add click handler to close button
+    const closeBtn = toast.querySelector('.btn-close');
+    if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+            toast.classList.remove('show');
+            setTimeout(() => {
+                if (toast.parentNode === toastContainer) {
+                    toastContainer.removeChild(toast);
+                }
+            }, 300);
+        });
+    }
+}
+
+// Initialize data management after the DOM is fully loaded
+function initializeDataManagement() {
+    console.log('Initializing data management...');
+    
+    const exportBtn = document.getElementById('exportDataBtn');
+    const importBtn = document.getElementById('importDataBtn');
+    const importFileInput = document.getElementById('importFileInput');
+    const importStatus = document.getElementById('importStatus');
+    
+    console.log('Export button:', exportBtn);
+    console.log('Import button:', importBtn);
+    console.log('File input:', importFileInput);
+    
+    // Export button click handler
+    if (exportBtn) {
+        console.log('Adding export button click handler');
+        exportBtn.addEventListener('click', () => {
+            console.log('Export button clicked');
+            try {
+                const success = DataManagement.exportData(window.dataManager.appState);
+                console.log('Export result:', success ? 'success' : 'failed');
+                if (success) {
+                    showToast('Data exported successfully!', 'success');
+                } else {
+                    showToast('Failed to export data', 'danger');
+                }
+            } catch (error) {
+                console.error('Error in export handler:', error);
+                showToast('Error exporting data', 'danger');
+            }
+        });
+    } else {
+        console.error('Export button not found');
     }
     
-    // Initialize all sections
-    questManager.initialize();
-    playerManager.initialize();
+    // Enable/disable import button based on file selection
+    if (importFileInput && importBtn) {
+        importFileInput.addEventListener('change', (e) => {
+            importBtn.disabled = !e.target.files || e.target.files.length === 0;
+        });
+    }
     
-    // LootManager will initialize itself when the loot section becomes visible
-    
-    locationManager.initialize();
-    notesManager.initialize();
-    guildManager.initializeGuildSection();
-    
-    // Initialize characters module and handle any errors
-    charactersManager.initialize().catch(error => {
-        console.error('Error initializing characters module:', error);
-    });
+    // Import button click handler
+    if (importBtn) {
+        importBtn.addEventListener('click', async () => {
+            const file = importFileInput.files[0];
+            if (!file) return;
+            
+            try {
+                importBtn.disabled = true;
+                importStatus.textContent = 'Importing data...';
+                importStatus.className = 'text-info';
+                
+                const data = await DataManagement.importData(file);
+                
+                // Validate the imported data structure
+                if (!data || typeof data !== 'object') {
+                    throw new Error('Invalid data format');
+                }
+                
+                // Show confirmation dialog before importing
+                if (confirm('WARNING: This will overwrite all current data. Are you sure you want to continue?')) {
+                    // Update the app state with the imported data
+                    window.dataManager.appState = data;
+                    window.dataManager.saveData();
+                    
+                    // Show success message
+                    importStatus.textContent = 'Data imported successfully! Refreshing...';
+                    importStatus.className = 'text-success';
+                    
+                    // Refresh the page to apply changes
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    importStatus.textContent = 'Import cancelled';
+                    importStatus.className = 'text-muted';
+                }
+            } catch (error) {
+                console.error('Error in import handler:', error);
+                importStatus.textContent = `Error: ${error.message || 'Failed to import data'}`;
+                importStatus.className = 'text-danger';
+            } finally {
+                importBtn.disabled = false;
+            }
+        });
+    } else {
+        console.error('Import button not found');
+    }
+}
 
-    // Subscribe to state changes for dashboard updates
-    dataManager.subscribe(state => {
-        const activeQuests = state.quests.filter(q => q.status === 'ongoing').length;
-        const partyMembers = state.players.length;
-        const locations = state.locations.length;
+// Initialize application when DOM is loaded
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeApplication);
+} else {
+    initializeApplication();
+}
 
-        document.getElementById('activeQuestsCount').textContent = activeQuests;
-        document.getElementById('partyMembersCount').textContent = partyMembers;
-        document.getElementById('locationsCount').textContent = locations;
-    });
-
-    // Initialize the dashboard with default values
-    document.getElementById('activeQuestsCount').textContent = '0';
-    document.getElementById('partyMembersCount').textContent = '0';
-    document.getElementById('locationsCount').textContent = '0';
-
-    // Make managers available globally for debugging
-    window.questManager = questManager;
-    window.playerManager = playerManager;
-    window.lootManager = lootManager;
-    window.locationManager = locationManager;
-    window.notesManager = notesManager;
-    window.guildManager = guildManager;
-    window.navigationManager = navigationManager;
-
-    // Subscribe to state changes for dashboard updates
-    dataManager.subscribe(state => {
-        const activeQuests = state.quests.filter(q => q.status === 'ongoing').length;
-        const partyMembers = state.players.length;
-        const locations = state.locations.length;
-
-        document.getElementById('activeQuestsCount').textContent = activeQuests;
-        document.getElementById('partyMembersCount').textContent = partyMembers;
-        document.getElementById('locationsCount').textContent = locations;
-    });
-    
-    // Make managers available globally for debugging
-    window.dataManager = dataManager;
-    window.questManager = questManager;
-    window.playerManager = playerManager;
-    window.lootManager = lootManager;
-    window.locationManager = locationManager;
-    window.notesManager = notesManager;
-    window.guildManager = guildManager;
-
-    // Subscribe to state changes for dashboard updates
-    dataManager.subscribe(state => {
-        const activeQuests = state.quests.filter(q => q.status === 'ongoing').length;
-        const partyMembers = state.players.length;
-        const locations = state.locations.length;
-
-        document.getElementById('activeQuestsCount').textContent = activeQuests;
-        document.getElementById('partyMembersCount').textContent = partyMembers;
-        document.getElementById('locationsCount').textContent = locations;
-    });
-
-    // Initial dashboard update
-    const state = dataManager.appState;
+function updateDashboardCounters(state) {
     const activeQuests = state.quests.filter(q => q.status === 'ongoing').length;
     const partyMembers = state.players.length;
     const locations = state.locations.length;
@@ -848,4 +1025,4 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('activeQuestsCount').textContent = activeQuests;
     document.getElementById('partyMembersCount').textContent = partyMembers;
     document.getElementById('locationsCount').textContent = locations;
-}); 
+}

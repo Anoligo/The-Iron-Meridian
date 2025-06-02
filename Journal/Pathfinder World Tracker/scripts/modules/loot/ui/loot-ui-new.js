@@ -17,7 +17,7 @@ export class LootUI extends BaseUI {
      */
     constructor(lootService, dataManager) {
         super({
-            containerId: 'loot',
+            containerId: 'loot-container',
             listId: 'itemList',
             detailsId: 'itemDetails',
             searchId: 'itemSearch',
@@ -37,6 +37,8 @@ export class LootUI extends BaseUI {
         this.formatCurrency = this.formatCurrency.bind(this);
         this.getRarityColor = this.getRarityColor.bind(this);
         this.toggleAttunementSection = this.toggleAttunementSection.bind(this);
+        
+        console.log('LootUI initialized with container:', this.container);
     }
     
     /**

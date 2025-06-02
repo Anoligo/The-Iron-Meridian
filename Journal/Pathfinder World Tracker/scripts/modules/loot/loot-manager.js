@@ -79,23 +79,100 @@ export class LootManager {
      * Initialize the loot manager
      */
     initialize() {
-        if (this.initialized) return;
+        console.log('Initializing LootManager...');
+        if (this.initialized) {
+            console.log('LootManager already initialized');
+            return;
+        }
         
         this.initialized = true;
+        console.log('LootManager initialization started');
         
-        // Make sure the container has the correct class
-        this.container.classList.add('section');
-        
-        // Initialize the UI
-        this.lootUI = new LootUI(this.lootService, this.dataManager);
-        
-        // Set up event listeners
-        this.setupEventListeners();
-        
-        // Initial render
-        this.render();
-        
-        this.isRendered = true;
+        try {
+            // Get or create the container
+            let container = document.getElementById('loot-container');
+            if (!container) {
+                console.log('Creating loot container element');
+                container = document.createElement('div');
+                container.id = 'loot-container';
+                container.className = 'section';
+                
+                // Add the container to the main content area
+                const mainContent = document.querySelector('main') || document.body;
+                mainContent.appendChild(container);
+                
+                // Create the basic structure
+                container.innerHTML = `
+                    <div class="container-fluid p-0">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <div class="card h-100">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <h5 class="mb-0">Loot Items</h5>
+                                        <button id="addItemBtn" class="btn btn-sm btn-primary">
+                                            <i class="fas fa-plus me-1"></i> Add Item
+                                        </button>
+                                    </div>
+                                    <div class="card-body p-0">
+                                        <div class="input-group p-2">
+                                            <span class="input-group-text">
+                                                <i class="fas fa-search"></i>
+                                            </span>
+                                            <input type="text" id="itemSearch" class="form-control" placeholder="Search items...">
+                                        </div>
+                                        <div id="itemList" class="list-group list-group-flush" style="max-height: 70vh; overflow-y: auto;">
+                                            <!-- Items will be rendered here -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div id="itemDetails" class="card h-100">
+                                    <div class="card-body d-flex align-items-center justify-content-center" style="min-height: 200px;">
+                                        <div class="text-center text-muted">
+                                            <i class="fas fa-arrow-left me-2"></i>
+                                            Select an item to view or edit
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            this.container = container;
+            console.log('Loot container:', this.container);
+            
+            // Initialize the UI
+            console.log('Initializing LootUI...');
+            this.lootUI = new LootUI(this.lootService, this.dataManager);
+            
+            // Initialize the UI components
+            if (this.lootUI.init) {
+                this.lootUI.init();
+                console.log('LootUI initialized');
+                
+                // Force a refresh to load initial data
+                this.lootUI.refresh();
+            } else {
+                console.error('LootUI does not have an init method');
+            }
+            
+            // Set up event listeners
+            console.log('Setting up event listeners...');
+            this.setupEventListeners();
+            
+            // Initial render
+            console.log('Performing initial render...');
+            this.render();
+            
+            this.isRendered = true;
+            console.log('LootManager initialization completed successfully');
+        } catch (error) {
+            console.error('Error initializing LootManager:', error);
+            throw error;
+        }
     }
     
     /**
