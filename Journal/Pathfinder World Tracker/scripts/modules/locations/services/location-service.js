@@ -1,5 +1,5 @@
 import { Location } from '../models/location-model.js';
-import { LocationType } from '../enums/location-enums.js';
+import { LocationType } from '../constants/location-constants.js';
 
 /**
  * Service for handling location-related business logic

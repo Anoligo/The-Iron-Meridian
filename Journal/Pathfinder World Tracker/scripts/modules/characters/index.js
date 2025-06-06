@@ -5,7 +5,8 @@
 
 import { Character } from '../characters.js';
 import { CharacterService } from './services/character-service.js';
-import { CharacterUI } from './ui/character-ui-new.js';
+import { CharacterUI } from './ui/character-ui.js';
+import { initializeCharactersSection } from './characters-section.js';
 
 export class CharactersManager {
     constructor(dataManager) {
@@ -158,3 +159,6 @@ export class CharactersManager {
 
 // Export the Character class for use in other modules
 export { Character };
+
+// Export the section initializer
+export { initializeCharactersSection } from './characters-section.js';

@@ -1,0 +1,79 @@
+.npcForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-md);
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  
+  label {
+    font-weight: 500;
+    font-size: 0.875rem;
+    color: var(--text-primary);
+    
+    .required {
+      color: var(--danger);
+      margin-left: 0.25rem;
+    }
+  }
+  
+  input,
+  select,
+  textarea {
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9375rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    
+    &:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(var(--accent-rgb), 0.1);
+    }
+    
+    &:disabled {
+      background-color: var(--bg-tertiary);
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+  }
+  
+  textarea {
+    min-height: 100px;
+    resize: vertical;
+  }
+  
+  &.halfWidth {
+    grid-column: span 1;
+  }
+  
+  &.fullWidth {
+    grid-column: 1 / -1;
+  }
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding-top: 1.5rem;
+  margin-top: 1rem;
+  border-top: 1px solid var(--border-color);
+}

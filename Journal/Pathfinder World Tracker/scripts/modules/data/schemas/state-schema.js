@@ -1,6 +1,6 @@
 import { QuestType, QuestStatus } from '../../quests/index.js';
 import { ItemType, ItemRarity } from '../../loot.js';
-import { LocationType } from '../../locations/index.js';
+import { LocationType } from '../../locations/constants/location-constants.js';
 import { PlayerClass } from '../../players/index.js';
 import { GuildActivityType, GuildResourceType } from '../../guild/index.js';
 

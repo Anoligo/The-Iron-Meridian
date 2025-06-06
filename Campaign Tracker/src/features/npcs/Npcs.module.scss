@@ -1,0 +1,126 @@
+.npcsPage {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--spacing-md);
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  min-height: 100vh;
+
+  h1 {
+    margin-bottom: var(--spacing-xl);
+    color: var(--accent-light);
+    font-size: 2rem;
+    font-weight: 600;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .searchBar {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .npcsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-md);
+  }
+
+  .emptyState {
+    text-align: center;
+    padding: var(--spacing-xl) 0;
+    color: var(--text-secondary);
+  }
+
+  .loading {
+    display: flex;
+    justify-content: center;
+    padding: var(--spacing-xl) 0;
+  }
+}
+
+// Modal styles
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: var(--spacing-md);
+}
+
+.modalContent {
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+  color: var(--text-primary);
+  padding: var(--spacing-lg);
+
+  h2 {
+    margin: 0 0 var(--spacing-md) 0;
+    color: var(--accent-light);
+    font-size: 1.5rem;
+  }
+
+
+  .formGroup {
+    margin-bottom: var(--spacing-md);
+
+    label {
+      display: block;
+      margin-bottom: var(--spacing-xs);
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: var(--spacing-sm) var(--spacing-md);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      background-color: var(--bg-tertiary);
+      color: var(--text-primary);
+      font-size: 1rem;
+      transition: border-color var(--transition-fast);
+
+      &:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 2px rgba(var(--accent-rgb), 0.2);
+      }
+
+      &::placeholder {
+        color: var(--text-disabled);
+      }
+    }
+
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+  }
+
+  .formActions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-lg);
+  }
+}

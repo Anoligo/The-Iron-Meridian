@@ -1,5 +1,5 @@
 import { LocationService } from './services/location-service.js';
-import { LocationUI } from './ui/location-ui-new.js';
+import { LocationUI } from './location-ui.js';
 
 /**
  * Main manager for the Locations module
@@ -247,178 +247,178 @@ export class LocationManager {
      * Set up the location section with the basic structure
      * @param {HTMLElement} locationsSection - The locations section element
      */
+    /**
+     * Set up the location section with the basic structure
+     * @param {HTMLElement} locationsSection - The locations section element
+     */
     setupLocationSection(locationsSection) {
         console.log('Setting up location section structure');
         
-        // Create the main container for the location UI
-        const locationUIContainer = document.createElement('div');
-        locationUIContainer.id = 'locationUIContainer';
-        locationUIContainer.className = 'location-ui-container';
-        
-        // Create a section header
-        const sectionHeader = document.createElement('div');
-        sectionHeader.className = 'section-header d-flex justify-content-between align-items-center mb-3';
-        sectionHeader.innerHTML = `
-            <h2 class="text-accent">World Map</h2>
-            <div class="btn-group">
-                <button class="btn btn-primary" id="addLocationBtn">
-                    <i class="fas fa-plus"></i> Add Location
-                </button>
-                <button class="btn btn-secondary" id="refreshLocationsBtn">
-                    <i class="fas fa-sync-alt"></i> Refresh
-                </button>
-            </div>
-        `;
-        
-        // Create the map container (full width at the top)
-        const mapContainer = document.createElement('div');
-        mapContainer.id = 'worldMapContainer';
-        mapContainer.className = 'location-map-container mb-4';
-        mapContainer.style.width = '100%';
-        mapContainer.style.height = '500px';
-        mapContainer.style.border = '1px solid #444';
-        mapContainer.style.borderRadius = '4px';
-        mapContainer.style.overflow = 'hidden';
-        mapContainer.style.position = 'relative';
-        
-        // Add a loading overlay for the map
-        const loadingOverlay = document.createElement('div');
-        loadingOverlay.id = 'mapLoadingOverlay';
-        loadingOverlay.className = 'map-loading-overlay';
-        loadingOverlay.style.position = 'absolute';
-        loadingOverlay.style.top = '0';
-        loadingOverlay.style.left = '0';
-        loadingOverlay.style.width = '100%';
-        loadingOverlay.style.height = '100%';
-        loadingOverlay.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
-        loadingOverlay.style.display = 'flex';
-        loadingOverlay.style.justifyContent = 'center';
-        loadingOverlay.style.alignItems = 'center';
-        loadingOverlay.style.zIndex = '1000';
-        loadingOverlay.innerHTML = `
-            <div class="spinner-border text-light" role="status">
-                <span class="sr-only">Loading...</span>
-            </div>
-            <span class="ms-2 text-light">Loading map...</span>
-        `;
-        
-        // Add a refresh button for the map
-        const refreshButton = document.createElement('button');
-        refreshButton.className = 'btn btn-sm btn-outline-secondary position-absolute';
-        refreshButton.style.top = '10px';
-        refreshButton.style.right = '10px';
-        refreshButton.style.zIndex = '100';
-        refreshButton.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh Map';
-        refreshButton.addEventListener('click', () => {
-            console.log('Manual refresh requested');
-            if (this.locationUI && this.locationUI.refresh) {
-                this.locationUI.refresh();
-            }
-        });
-        
-        // Create the main content area for list and details
-        const mainContent = document.createElement('div');
-        mainContent.className = 'location-main-content';
-        
-        // Create a row for the locations list and details
-        const row = document.createElement('div');
-        row.className = 'row';
-        
-        // Locations list column
-        const listCol = document.createElement('div');
-        listCol.className = 'col-md-4';
-        
-        // Create the locations list card
-        const listCard = document.createElement('div');
-        listCard.className = 'card h-100';
-        listCard.innerHTML = `
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Locations</h5>
-                <button class="btn btn-sm btn-outline-secondary" id="refreshLocationsBtn">
-                    <i class="fas fa-sync-alt"></i>
-                </button>
-            </div>
-            <div class="card-body p-0">
-                <div class="input-group p-3">
-                    <span class="input-group-text"><i class="fas fa-search"></i></span>
-                    <input type="text" id="locationSearch" class="form-control" placeholder="Search locations...">
+        try {
+            // Clear the section first
+            locationsSection.innerHTML = '';
+            
+            // Create the main container for the location UI
+            const locationUIContainer = document.createElement('div');
+            locationUIContainer.id = 'locationUIContainer';
+            locationUIContainer.className = 'location-ui-container';
+            
+            // Create the map container
+            const mapContainer = document.createElement('div');
+            mapContainer.id = 'worldMapContainer';
+            mapContainer.className = 'location-map-container mb-4';
+            mapContainer.style.width = '100%';
+            mapContainer.style.height = '500px';
+            mapContainer.style.position = 'relative';
+            mapContainer.style.overflow = 'hidden';
+            mapContainer.style.border = '1px solid #444';
+            mapContainer.style.borderRadius = '4px';
+            
+            // Create the loading overlay for the map
+            const loadingOverlay = document.createElement('div');
+            loadingOverlay.id = 'mapLoadingOverlay';
+            loadingOverlay.className = 'map-loading-overlay';
+            loadingOverlay.style.position = 'absolute';
+            loadingOverlay.style.top = '0';
+            loadingOverlay.style.left = '0';
+            loadingOverlay.style.width = '100%';
+            loadingOverlay.style.height = '100%';
+            loadingOverlay.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+            loadingOverlay.style.display = 'flex';
+            loadingOverlay.style.justifyContent = 'center';
+            loadingOverlay.style.alignItems = 'center';
+            loadingOverlay.style.zIndex = '1000';
+            loadingOverlay.innerHTML = `
+                <div class="spinner-border text-light" role="status">
+                    <span class="visually-hidden">Loading...</span>
                 </div>
-                <div class="list-group list-group-flush" id="locationList" style="max-height: 500px; overflow-y: auto;">
-                    <div class="text-center p-3 text-muted">
-                        <i class="fas fa-map-marker-alt mb-2"></i>
-                        <p class="mb-0">Click on the map to add a location</p>
+                <p class="text-light ms-2 mb-0">Loading map...</p>
+            `;
+            
+            // Add the loading overlay to the map container
+            mapContainer.appendChild(loadingOverlay);
+            
+            // Create the main content area for list and details
+            const mainContent = document.createElement('div');
+            mainContent.className = 'location-main-content mt-3';
+            
+            // Create a row for the locations list and details
+            const row = document.createElement('div');
+            row.className = 'row';
+            
+            // Locations list column
+            const listCol = document.createElement('div');
+            listCol.className = 'col-md-4';
+            
+            // Create the locations list card
+            const listCard = document.createElement('div');
+            listCard.className = 'card h-100';
+            listCard.innerHTML = `
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Locations</h5>
+                    <button class="btn btn-sm btn-outline-secondary" id="refreshLocationsBtn">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+                <div class="card-body p-0">
+                    <div class="input-group p-3">
+                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                        <input type="text" id="locationSearch" class="form-control" placeholder="Search locations...">
+                    </div>
+                    <div class="list-group list-group-flush" id="locationList" style="max-height: 500px; overflow-y: auto;">
+                        <div class="text-center p-3 text-muted">
+                            <i class="fas fa-map-marker-alt mb-2"></i>
+                            <p class="mb-0">Click on the map to add a location</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-        `;
-        
-        // Details column
-        const detailsCol = document.createElement('div');
-        detailsCol.className = 'col-md-8';
-        
-        // Create the details card
-        const detailsCard = document.createElement('div');
-        detailsCard.className = 'card h-100';
-        detailsCard.innerHTML = `
-            <div class="card-header">
-                <h5 class="mb-0">Location Details</h5>
-            </div>
-            <div class="card-body" id="locationDetails">
-                <div class="empty-state text-center p-5">
-                    <i class="fas fa-map-marker-alt fa-3x mb-3 text-muted"></i>
-                    <p class="text-muted">Select a location to view details</p>
+            `;
+            
+            // Details column
+            const detailsCol = document.createElement('div');
+            detailsCol.className = 'col-md-8';
+            
+            // Create the details card
+            const detailsCard = document.createElement('div');
+            detailsCard.className = 'card h-100';
+            detailsCard.innerHTML = `
+                <div class="card-header">
+                    <h5 class="mb-0">Location Details</h5>
                 </div>
-            </div>
-        `;
-        
-        // Assemble the DOM
-        listCol.appendChild(listCard);
-        detailsCol.appendChild(detailsCard);
-        row.appendChild(listCol);
-        row.appendChild(detailsCol);
-        mainContent.appendChild(row);
-        
-        // Add elements to the container
-        locationUIContainer.appendChild(sectionHeader);
-        locationUIContainer.appendChild(mapContainer);
-        locationUIContainer.appendChild(mainContent);
-        
-        // Add the loading overlay to the map container
-        mapContainer.appendChild(loadingOverlay);
-        mapContainer.appendChild(refreshButton);
-        
-        // Clear and append to the section
-        locationsSection.innerHTML = '';
-        locationsSection.appendChild(locationUIContainer);
-        
-        // Add event listeners
-        const refreshBtn = document.getElementById('refreshLocationsBtn');
-        if (refreshBtn) {
-            refreshBtn.addEventListener('click', () => {
-                if (this.locationUI && this.locationUI.refresh) {
-                    this.locationUI.refresh();
-                }
-            });
+                <div class="card-body" id="locationDetails">
+                    <div class="empty-state text-center p-5">
+                        <i class="fas fa-map-marker-alt fa-3x mb-3 text-muted"></i>
+                        <p class="text-muted">Select a location to view details</p>
+                    </div>
+                </div>
+            `;
+            
+            // Assemble the columns
+            listCol.appendChild(listCard);
+            detailsCol.appendChild(detailsCard);
+            row.appendChild(listCol);
+            row.appendChild(detailsCol);
+            mainContent.appendChild(row);
+            
+            // Add elements to the container
+            locationUIContainer.appendChild(mapContainer);
+            locationUIContainer.appendChild(mainContent);
+            
+            // Add the container to the section
+            locationsSection.appendChild(locationUIContainer);
+            
+            // Set up event listeners
+            this.setupEventListeners();
+            
+            console.log('Location section structure set up');
+            return locationUIContainer;
+            
+        } catch (error) {
+            console.error('Error setting up location section:', error);
+            throw error;
         }
-        
-        // Add search functionality
-        const searchInput = document.getElementById('locationSearch');
-        if (searchInput) {
-            searchInput.addEventListener('input', (e) => {
-                const searchTerm = e.target.value.toLowerCase();
-                const locations = this.locationService.getAllLocations();
-                const filteredLocations = locations.filter(location => 
-                    location.name.toLowerCase().includes(searchTerm) ||
-                    (location.description && location.description.toLowerCase().includes(searchTerm))
-                );
-                
-                if (this.locationUI && this.locationUI.renderList) {
-                    this.locationUI.renderList(filteredLocations);
-                }
-            });
+    }
+    
+    /**
+     * Set up event listeners for the locations module
+     */
+    setupEventListeners() {
+        try {
+            // Add refresh button functionality
+            const refreshBtn = document.getElementById('refreshLocationsBtn');
+            if (refreshBtn) {
+                refreshBtn.addEventListener('click', () => {
+                    if (this.locationUI && typeof this.locationUI.refresh === 'function') {
+                        this.locationUI.refresh();
+                    }
+                });
+            }
+            
+            // Add search functionality
+            const searchInput = document.getElementById('locationSearch');
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    try {
+                        const searchTerm = e.target.value.toLowerCase();
+                        const locations = this.locationService.getAllLocations();
+                        const filteredLocations = locations.filter(location => 
+                            location && 
+                            location.name && 
+                            (location.name.toLowerCase().includes(searchTerm) ||
+                            (location.description && location.description.toLowerCase().includes(searchTerm)))
+                        );
+                        
+                        if (this.locationUI && typeof this.locationUI.renderList === 'function') {
+                            this.locationUI.renderList(filteredLocations);
+                        }
+                    } catch (error) {
+                        console.error('Error handling search input:', error);
+                    }
+                });
+            }
+        } catch (error) {
+            console.error('Error setting up event listeners:', error);
         }
-        
-        console.log('Location section structure set up');
     }
     
     /**
@@ -517,52 +517,65 @@ export class LocationManager {
      * Handle hash change events to manage the locations section
      */
     handleHashChange() {
-        const currentHash = window.location.hash;
-        console.log('[LocationManager] Hash changed, current hash:', currentHash);
-        
-        // Only proceed if this is the locations section
-        if (currentHash === '#locations') {
-            console.log('[LocationManager] Locations section active');
+        try {
+            const currentHash = window.location.hash;
+            console.log('[LocationManager] Hash changed, current hash:', currentHash);
             
-            // Initialize if not already initialized
-            if (!this.initialized) {
-                console.log('[LocationManager] Initializing...');
-                this.initialize();
-            } else {
-                console.log('[LocationManager] Already initialized, refreshing...');
-                this.refresh();
-            }
-            
-            // Make sure our container is in the DOM
-            const locationsSection = document.getElementById('locations');
-            if (locationsSection) {
-                // Only append if not already there
-                if (!locationsSection.contains(this.container)) {
-                    locationsSection.appendChild(this.container);
+            // Only proceed if this is the locations section
+            if (currentHash === '#locations') {
+                console.log('[LocationManager] Locations section active');
+                
+                // Initialize if not already initialized
+                if (!this.initialized) {
+                    console.log('[LocationManager] Initializing...');
+                    this.initialize();
+                } else {
+                    console.log('[LocationManager] Already initialized, refreshing...');
+                    this.refresh();
                 }
                 
-                // Ensure the section is visible (NavigationManager handles the actual display)
-                locationsSection.style.display = 'block';
-                locationsSection.classList.add('active');
+                // Make sure our container is in the DOM
+                const locationsSection = document.getElementById('locations');
+                if (locationsSection) {
+                    // Only append if not already there
+                    if (!locationsSection.contains(this.container)) {
+                        locationsSection.appendChild(this.container);
+                    }
+                    
+                    // Ensure the section is visible (NavigationManager handles the actual display)
+                    locationsSection.style.display = 'block';
+                    locationsSection.classList.add('active');
+                } else {
+                    console.error('[LocationManager] Could not find locations section');
+                }
             } else {
-                console.error('[LocationManager] Could not find locations section');
+                console.log('[LocationManager] Not on locations page, cleaning up...');
+                
+                // Remove our container from the DOM if it's there
+                if (this.container && this.container.parentNode) {
+                    this.container.parentNode.removeChild(this.container);
+                }
             }
-        } else {
-            console.log('[LocationManager] Not on locations page, cleaning up...');
-            
-            // Remove our container from the DOM if it's there
-            if (this.container.parentNode) {
-                this.container.parentNode.removeChild(this.container);
-            }
+        } catch (error) {
+            console.error('Error in handleHashChange:', error);
         }
     }
     
     /**
      * Refresh the UI with the latest data
      */
+    /**
+     * Refresh the UI with the latest data
+     */
     refresh() {
-        if (this.locationUI) {
-            this.locationUI.refresh();
+        try {
+            if (this.locationUI && typeof this.locationUI.refresh === 'function') {
+                this.locationUI.refresh();
+            } else {
+                console.warn('LocationUI not available or refresh method not found');
+            }
+        } catch (error) {
+            console.error('Error refreshing location UI:', error);
         }
     }
     

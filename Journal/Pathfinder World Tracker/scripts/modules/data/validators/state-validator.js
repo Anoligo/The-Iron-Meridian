@@ -1,6 +1,8 @@
 /**
  * State Validation
  */
+import { STATE_SCHEMA } from '../schemas/state-schema.js';
+
 export class StateValidator {
     /**
      * Validate the entire state against the schema
@@ -9,7 +11,7 @@ export class StateValidator {
      */
     static validateState(state) {
         const errors = [];
-        const schema = require('../schemas/state-schema').STATE_SCHEMA;
+        const schema = STATE_SCHEMA;
         
         for (const [key, sectionSchema] of Object.entries(schema)) {
             if (sectionSchema.required && !state[key]) {

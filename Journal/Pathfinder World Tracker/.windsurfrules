@@ -1,142 +1,59 @@
+# General Code Style & Formatting
 
-## 🎨 **Iron Meridian Web Style & UI Design Guide**
+* Visual philosophy: dark, clean, “arcane-terminal” look—light text on matte-black backgrounds with gold/yellow accents used only to guide the eye.
+* Palette definition: declare every colour as a CSS custom property in `_variables.scss` (e.g. `--bg-dark`, `--accent`) and use only those tokens—never hard-code hex values.
+* Surface rules:
 
----
+  * Cards: `.card`, `.report`, `.player-card`; `border-left: 3px solid #555`; no heavy glows; hover lift `transform: translateY(-2px)`.
+  * Buttons: `.btn` / `.button`; background `#2c2c2c`; border `var(--border-light)`; on hover `border-color: var(--accent)`.
+  * Sidebar: background `#1f1f1f`; active/hover `background-color: rgba(255,217,102,.15)`.
+* Typography:
 
-### 📁 1. **Visual Philosophy**
+  * Headings: `clamp(1.25rem, 2vw, 2rem)`; colour `--accent-light`; no all-caps.
+  * Body text: `--text` at `1rem` (desktop) / `0.95rem` (mobile); `line-height: 1.6`.
+  * Meta text: `.text-meta` `0.85rem`; `#bbbbbb` at 85 % opacity.
+  * Buttons: bold, sentence-case, size scales with viewport.
+* Accessibility baseline: WCAG AA 4.5 : 1 contrast, never colour-only cues, dropdowns and lists keyboard-navigable, hit areas ≥ 40 × 40 px.
+* **File-size limits & structure:**
 
-* **Dark, clean aesthetic** grounded in fantasy UI tone — similar to magical grimoires, arcane terminals, or guild archives.
-* Primary contrast through **light text on dark backgrounds**, not through color noise.
-* Accent colors (gold/yellow) used **sparingly for guidance**, not decoration.
+  * JS/TS modules ≤ 300 logical LOC; SCSS partials ≤ 250 LOC; HTML templates ≤ 250 LOC. Split the file once it reaches \~80 % of the limit.
+  * One **responsibility** per file: one component, one service, or one cohesive utility cluster—no “misc” catch-alls.
+  * Keep a flat folder when possible; deeply nested paths ( > 3 levels ) signal over-coupling.
+* SCSS syntax: max two-level nesting, one component per file, blank lines only between blocks—never inside a rule set.
 
----
+# Naming Conventions
 
-### 🌈 2. **Color Usage Guidelines**
+* **CSS/SCSS classes:** kebab-case (e.g. `.player-card`, `.quest-badge`).
+* **Utility classes:** prefix with `u-` (e.g. `.u-hidden`).
+* **CSS custom properties & SCSS variables:** kebab-case (`--bg-card`, `$z-index-modal`).
+* **JavaScript/TypeScript:** camelCase for variables & functions; PascalCase for classes; UPPER\_SNAKE for environment variables.
+* **Files & folders:**
 
-| Context          | Color Source            | Notes                                       |
-| ---------------- | ----------------------- | ------------------------------------------- |
-| Page Background  | `--bg-dark`             | Full-page backdrop, calm matte black        |
-| Card Backgrounds | `--bg-card`             | Surface panels for text/interactive content |
-| Primary Text     | `--text`                | Always highly legible, off-white/light grey |
-| Highlights/Focus | `--accent`              | Only for buttons, badge states, titles      |
-| Borders/Dividers | `--border-light`        | Low contrast edges, subtle lines            |
-| Muted Meta Text  | `#bbbbbb` @ 85% opacity | Used for timestamps, labels, soft info      |
+  * kebab-case only (`player-card.js`, `quest-details.scss`).
+  * File name must clearly describe its primary export—avoid vague names such as `helper.js`, `misc.scss`, `stuff.ts`.
+  * Conventional suffixes:
 
----
+    * `.component.js` / `.component.ts` for UI components
+    * `.service.js` / `.service.ts` for API or data services
+    * `.util.js` / `.util.ts` for stateless helpers
+    * `.store.js` / `.store.ts` for state containers
+  * `index.js` or `index.ts` files are reserved **solely** for re-export barrels—no logic inside.
+* Avoid magic numbers—store constants in `constants.js` or `_variables.scss`.
 
-### 🧱 3. **Structural Elements**
+# Functions & Logic
 
-#### ✅ Cards
+* Keep handlers/helpers short and single-purpose (< 20 lines); early-return to flatten nesting.
+* Arrow functions for simple tasks (< 3 statements), named functions otherwise.
+* Core UX rule: all relational additions (loot to quest, location to event, etc.) **must** use searchable dropdowns—never free-text IDs or modals. Wrap `<select>` elements with **Tom Select**, **Select2**, or **Choices.js**, enabling type-to-search, clearable tags, single/multi-select, optional grouping.
+* Prefer `map`, `filter`, `reduce` over imperative loops.
+* Encapsulate repeated DOM logic in utility modules.
+* Provide keyboard shortcuts and `aria-*` attributes alongside JS behaviour.
 
-* Use `.card`, `.report`, `.player-card`
-* `border-left: 3px solid #555` for grounded tone
-* **No strong glows or heavy shadows by default**
-* Hover lift: `transform: translateY(-2px);`
+# Data Handling
 
-#### ✅ Buttons
-
-* Use `.btn`, `.button`
-* Default background: `#2c2c2c`, border: `var(--border-light)`
-* Text: white always, no gradient
-* On hover: `border-color: var(--accent);`
-
-#### ✅ Sidebar
-
-* Use `#1f1f1f` background
-* Active or hover state: `background-color: rgba(255, 217, 102, 0.15);`
-* No abrupt color inversion
-
----
-
-### 🔎 4. **Typography Standards**
-
-| Element   | Rule                                                               |
-| --------- | ------------------------------------------------------------------ |
-| Headings  | `clamp(1.25rem, 2vw, 2rem)` — no all-caps, color: `--accent-light` |
-| Body Text | `--text` @ `1rem` or `0.95rem`, `line-height: 1.6`                 |
-| Meta Info | `.text-meta`: `0.85rem`, `#bbbbbb`, 85% opacity                    |
-| Buttons   | `bold`, `uppercase: false`, font-size consistent per screen size   |
-
----
-
-### 🔁 5. **Relational Inputs (Your Key UX Rule)**
-
-#### ✅ Linking Relational Items (e.g. Add Loot to Quest)
-
-**Absolutely follow this UI rule:**
-
-> “All relational additions (like attaching loot, assigning a location, selecting faction, etc.) **must** use a searchable dropdown input. Never use text input fields, ID codes, or modals.”
-
-#### Use:
-
-* `<select>` elements upgraded via **JavaScript-enhanced dropdowns**
-* Preferred Libraries: `Tom Select`, `Select2`, `Choices.js`
-* Must support:
-
-  * Type-to-search
-  * Clearable tags
-  * Multi-select where applicable
-  * Grouping or tagging (optional)
-
-#### Example (Tom Select):
-
-```html
-<select id="specialLoot" class="form-control" placeholder="Search or select cursed items...">
-  <option value="cursed-amulet">Cursed Amulet of Mirthless Sleep</option>
-  <option value="blackened-ring">Blackened Ring of Control</option>
-  <option value="blight-coin">Blight Coin</option>
-</select>
-<script>
-  new TomSelect("#specialLoot", {
-    create: false,
-    maxItems: 1,
-    allowEmptyOption: true,
-    placeholder: "Select an item...",
-  });
-</script>
-```
-
----
-
-### 🔧 6. **Form UX Preferences**
-
-* **Inputs** use `.form-control` with:
-
-  * Dark backgrounds (`--bg-card`)
-  * White text
-  * Gold border highlight on focus
-* **Dropdowns only** for linking structured data (players, items, locations)
-* **Text inputs** reserved for freeform notes or descriptions
-
----
-
-### 📌 7. **Component Rules**
-
-| Component        | Rules                                                               |
-| ---------------- | ------------------------------------------------------------------- |
-| Sidebar Nav      | Icon + label, consistent padding, no shrink on smaller screens      |
-| Player Panel     | `.player-card` style, left border highlight optional                |
-| Quest Cards      | Use `.badge` for status (Main, Guild, Side), with `badge-info` etc. |
-| Location Tracker | All dropdown assigned tags (not typed)                              |
-| Backstories      | Use `<textarea>` or Markdown input                                  |
-
----
-
-### 🪄 8. **Visual Accessibility Tips**
-
-* Minimum contrast ratio: **WCAG AA (4.5:1)** for all text elements
-* Never rely on **color alone** to convey information (e.g. use tags + icons)
-* Support keyboard navigation for all dropdown and list elements
-* Large hit areas: min `40x40px` for touch targets
-
----
-
-### 🧩 9. **Optional Nice-to-Haves**
-
-| Feature                    | Style Recommendation                                                |
-| -------------------------- | ------------------------------------------------------------------- |
-| Light/Dark toggle          | Preserve dark mode as default                                       |
-| Hover tooltips for icons   | Use `title=""` or JS tooltips for descriptions                      |
-| Tags for quests or players | Use `.badge` with `.badge-sm` and `.badge-accent` where relevant    |
-| “+ Add” actions            | Always show as `btn` with inline label/icon (never hidden or modal) |
-
+* Centralise colours, breakpoints, spacing, and z-indices in SCSS maps or JS config objects—no inline literals.
+* Treat theme tokens as immutable (`!default` in SCSS, `Object.freeze` in JS).
+* Store form state as structured objects; avoid passing ungrouped primitives.
+* Use `data-*` attributes to bind metadata to DOM elements instead of hidden inputs.
+* Perform validation in dedicated classes/components, not random helpers.
+* Follow RO-RO (Receive Object, Return Object) for multi-field parameters.

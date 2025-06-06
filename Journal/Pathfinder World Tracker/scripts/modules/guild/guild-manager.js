@@ -1,5 +1,5 @@
 import { GuildService } from './services/guild-service.js';
-import { GuildUI } from './ui/guild-ui-new.js';
+import { GuildUI } from './ui/guild-ui.js';
 
 /**
  * GuildManager coordinates between the UI and the GuildService
@@ -13,84 +13,237 @@ export class GuildManager {
     constructor(dataManager) {
         this.dataManager = dataManager;
         this.guildService = new GuildService(dataManager);
-        this.guildUI = new GuildUI(this.guildService, dataManager);
-        this.initializeGuildSection();
+        this.guildUI = null;
+        this.initialized = false;
     }
-
+    
     /**
      * Initialize the guild section
      */
-    initializeGuildSection() {
+    async initialize() {
+        if (this.initialized) {
+            console.log('Guild manager already initialized');
+            return;
+        }
+        
+        console.log('Initializing guild manager...');
+        
+        try {
+            // Initialize guild data if it doesn't exist
+            this.initializeGuildData();
+            
+            // Create the UI
+            this.guildUI = new GuildUI(this);
+            
+            this.initialized = true;
+            console.log('Guild manager initialized successfully');
+        } catch (error) {
+            console.error('Failed to initialize guild manager:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Initialize the guild data
+     */
+    initializeGuildData() {
         // Initialize guild data if it doesn't exist
         if (!this.dataManager.appState.guildLogs) {
+            console.log('Initializing guild data...');
             this.dataManager.appState.guildLogs = {
                 activities: [],
                 resources: []
             };
-        }
-        
-        // Create or get the guild section
-        let guildSection = document.getElementById('guild');
-        if (!guildSection) {
-            console.log('Guild section not found, creating it...');
-            const mainContent = document.querySelector('main .content-area');
-            if (!mainContent) {
-                console.error('Main content area not found');
-                return;
+            
+            // Add some sample data if the arrays are empty
+            if (this.dataManager.appState.guildLogs.activities.length === 0) {
+                console.log('Adding sample activities...');
+                this.dataManager.appState.guildLogs.activities = [
+                    {
+                        id: 'act1',
+                        name: 'First Guild Quest',
+                        description: 'A simple quest to get started',
+                        type: 'quest',
+                        status: 'in-progress',
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString()
+                    }
+                ];
             }
             
-            guildSection = document.createElement('div');
-            guildSection.id = 'guild';
-            guildSection.className = 'section';
-            mainContent.appendChild(guildSection);
+            if (this.dataManager.appState.guildLogs.resources.length === 0) {
+                console.log('Adding sample resources...');
+                this.dataManager.appState.guildLogs.resources = [
+                    {
+                        id: 'res1',
+                        name: 'Gold Coins',
+                        description: 'Standard currency',
+                        type: 'gold',
+                        quantity: 100,
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString()
+                    }
+                ];
+            }
+            
+            // Save the updated state
+            this.dataManager.saveState();
+        }
+    }
+    
+    /**
+     * Get all guild activities
+     * @returns {Array} Array of guild activities
+     */
+    getAllActivities() {
+        return this.guildService.getAllActivities();
+    }
+    
+    /**
+     * Get all guild resources
+     * @returns {Array} Array of guild resources
+     */
+    getAllResources() {
+        return this.guildService.getAllResources();
+    }
+    
+    /**
+     * Create a new guild activity
+     * @param {Object} activityData - The activity data
+     * @returns {Object} The created activity
+     */
+    createNewActivity(activityData) {
+        return this.guildService.createActivity(activityData);
+    }
+    
+    /**
+     * Create a new guild resource
+     * @param {Object} resourceData - The resource data
+     * @returns {Object} The created resource
+     */
+    createNewResource(resourceData) {
+        return this.guildService.createResource(resourceData);
+    }
+    
+    /**
+     * Update an existing guild activity
+     * @param {string} id - The activity ID
+     * @param {Object} updates - The updates to apply
+     * @returns {Object|null} The updated activity or null if not found
+     */
+    updateActivity(id, updates) {
+        return this.guildService.updateActivity(id, updates);
+    }
+    
+    /**
+     * Update an existing guild resource
+     * @param {string} id - The resource ID
+     * @param {Object} updates - The updates to apply
+     * @returns {Object|null} The updated resource or null if not found
+     */
+    updateResource(id, updates) {
+        return this.guildService.updateResource(id, updates);
+    }
+    
+    /**
+     * Delete a guild activity
+     * @param {string} id - The activity ID
+     * @returns {boolean} True if deleted, false otherwise
+     */
+    deleteActivity(id) {
+        return this.guildService.deleteActivity(id);
+    }
+    
+    /**
+     * Delete a guild resource
+     * @param {string} id - The resource ID
+     * @returns {boolean} True if deleted, false otherwise
+     */
+    deleteResource(id) {
+        return this.guildService.deleteResource(id);
+    }
+    
+    /**
+     * Initialize the guild UI
+     */
+    async initializeUI() {
+        const guildSection = document.getElementById('guild');
+        if (!guildSection) {
+            console.error('Guild section not found');
+            return;
         }
         
-        // Set the section as active and visible
-        document.querySelectorAll('.section').forEach(section => {
-            section.classList.remove('active');
-            section.style.display = 'none';
-        });
-        guildSection.classList.add('active');
-        guildSection.style.display = 'block';
-        
-        // Ensure the guild section has the necessary content
+        // Set up the guild section UI
         guildSection.innerHTML = `
             <div class="container">
-                <h2 class="text-accent mb-4">Guild Management</h2>
                 <div class="row">
-                    <div class="col-md-6">
-                        <div class="card mb-4">
-                            <div class="card-header bg-card">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <h3 class="mb-0 text-accent">Activities</h3>
-                                    <button class="button new-activity-btn">
-                                        <i class="fas fa-plus"></i> New Activity
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="card-body bg-card">
-                                <div class="activity-list">
-                                    <div class="empty-state p-3 text-center">
-                                        <p>No activities found. Create your first activity to get started!</p>
+                    <div class="col-12">
+                        <h2 class="text-accent mb-4">Guild Management</h2>
+                        
+                        <!-- Tabs -->
+                        <ul class="nav nav-tabs mb-4" id="guildTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="activities-tab" data-bs-toggle="tab" 
+                                    data-bs-target="#activities" type="button" role="tab" aria-controls="activities" 
+                                    aria-selected="true">Activities</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="resources-tab" data-bs-toggle="tab" 
+                                    data-bs-target="#resources" type="button" role="tab" aria-controls="resources" 
+                                    aria-selected="false">Resources</button>
+                            </li>
+                        </ul>
+                        
+                        <!-- Tab Content -->
+                        <div class="tab-content" id="guildTabsContent">
+                            <!-- Activities Tab -->
+                            <div class="tab-pane fade show active" id="activities" role="tabpanel" aria-labelledby="activities-tab">
+                                <div class="card mb-4">
+                                    <div class="card-header bg-card d-flex justify-content-between align-items-center">
+                                        <h3 class="mb-0">Guild Activities</h3>
+                                        <button class="button" id="add-activity-btn">
+                                            <i class="fas fa-plus"></i> Add Activity
+                                        </button>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control bg-card text" 
+                                                    id="activity-search" placeholder="Search activities...">
+                                                <button class="button" type="button" id="activity-search-btn">
+                                                    <i class="fas fa-search"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="activity-list">
+                                            <!-- Activities will be rendered here -->
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card mb-4">
-                            <div class="card-header bg-card">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <h3 class="mb-0 text-accent">Resources</h3>
-                                    <button class="button new-resource-btn">
-                                        <i class="fas fa-plus"></i> New Resource
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="card-body bg-card">
-                                <div class="resource-list">
-                                    <div class="empty-state p-3 text-center">
-                                        <p>No resources found. Add your first resource to get started!</p>
+                            
+                            <!-- Resources Tab -->
+                            <div class="tab-pane fade" id="resources" role="tabpanel" aria-labelledby="resources-tab">
+                                <div class="card">
+                                    <div class="card-header bg-card d-flex justify-content-between align-items-center">
+                                        <h3 class="mb-0">Guild Resources</h3>
+                                        <button class="button" id="add-resource-btn">
+                                            <i class="fas fa-plus"></i> Add Resource
+                                        </button>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control bg-card text" 
+                                                    id="resource-search" placeholder="Search resources...">
+                                                <button class="button" type="button" id="resource-search-btn">
+                                                    <i class="fas fa-search"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="resource-list">
+                                            <!-- Resources will be rendered here -->
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -100,11 +253,78 @@ export class GuildManager {
             </div>
         `;
         
-        // Setup event listeners after recreating the DOM elements
-        this.guildUI.setupResourceEventListeners();
+        // Initialize the guild UI
+        if (this.guildUI) {
+            this.guildUI.initializeUI();
+        }
         
-        // Initialize the UI
-        this.guildUI.initialize();
+        // Set up event listeners for the UI
+        this.setupEventListeners();
+        
+        // Setup event listeners after recreating the DOM elements
+        if (this.guildUI) {
+            this.guildUI.setupResourceEventListeners();
+            this.guildUI.initialize();
+        }
+    }
+    
+    /**
+     * Set up event listeners for the guild UI
+     */
+    setupEventListeners() {
+        // Add activity button
+        const addActivityBtn = document.getElementById('add-activity-btn');
+        if (addActivityBtn) {
+            addActivityBtn.addEventListener('click', () => {
+                if (this.guildUI) {
+                    this.guildUI.showNewActivityForm();
+                }
+            });
+        }
+        
+        // Add resource button
+        const addResourceBtn = document.getElementById('add-resource-btn');
+        if (addResourceBtn) {
+            addResourceBtn.addEventListener('click', () => {
+                if (this.guildUI) {
+                    this.guildUI.showNewResourceForm();
+                }
+            });
+        }
+        
+        // Activity search
+        const activitySearchBtn = document.getElementById('activity-search-btn');
+        const activitySearchInput = document.getElementById('activity-search');
+        if (activitySearchBtn && activitySearchInput) {
+            activitySearchBtn.addEventListener('click', () => {
+                if (this.guildUI) {
+                    this.guildUI.handleSearch(activitySearchInput.value);
+                }
+            });
+            
+            activitySearchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && this.guildUI) {
+                    this.guildUI.handleSearch(activitySearchInput.value);
+                }
+            });
+        }
+        
+        // Resource search
+        const resourceSearchBtn = document.getElementById('resource-search-btn');
+        const resourceSearchInput = document.getElementById('resource-search');
+        if (resourceSearchBtn && resourceSearchInput) {
+            resourceSearchBtn.addEventListener('click', () => {
+                if (this.guildUI) {
+                    this.guildUI.handleResourceSearch(resourceSearchInput.value);
+                }
+            });
+            
+            resourceSearchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && this.guildUI) {
+                    this.guildUI.handleResourceSearch(resourceSearchInput.value);
+                }
+            });
+        }
     }
 
     // Activity Methods

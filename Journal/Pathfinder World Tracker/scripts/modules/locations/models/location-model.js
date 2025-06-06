@@ -1,5 +1,5 @@
 import { Entity } from '../../entity.js';
-import { LocationType } from '../enums/location-enums.js';
+import { LocationType } from '../constants/location-constants.js';
 
 /**
  * Represents a location in the game world

@@ -9,7 +9,7 @@ export { GuildResource } from './models/guild-resource-model.js';
 export { GuildService } from './services/guild-service.js';
 
 // Export UI
-export { GuildUI } from './ui/guild-ui-new.js';
+export { GuildUI, initializeGuildSection } from './ui/guild-ui.js';
 
 // Export GuildManager (this must be last to avoid circular dependencies)
 import { GuildManager } from './guild-manager.js';

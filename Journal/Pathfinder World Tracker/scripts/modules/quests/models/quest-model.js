@@ -2,16 +2,24 @@ import { Entity } from '../../entity.js';
 import { QuestType, QuestStatus } from '../enums/quest-enums.js';
 
 export class Quest extends Entity {
-    constructor(name, description, type = QuestType.MAIN, createdAt = new Date(), updatedAt = new Date()) {
-        super(null, new Date(createdAt), new Date(updatedAt));
+    constructor(name, description, type = QuestType.MAIN, createdAt = new Date(), updatedAt = new Date(), status = QuestStatus.ONGOING, id = null) {
+        super(id, new Date(createdAt), new Date(updatedAt));
         this.name = name || 'Untitled Quest';
         this.description = description || '';
         this.type = type || QuestType.MAIN;
-        this.status = QuestStatus.ONGOING;
+        this.status = status || QuestStatus.ONGOING;
         this.journalEntries = [];
         this.relatedItems = [];
         this.relatedLocations = [];
         this.relatedCharacters = [];
+        
+        // Ensure dates are Date objects
+        if (this.createdAt && !(this.createdAt instanceof Date)) {
+            this.createdAt = new Date(this.createdAt);
+        }
+        if (this.updatedAt && !(this.updatedAt instanceof Date)) {
+            this.updatedAt = new Date(this.updatedAt);
+        }
     }
 
     addJournalEntry(entry) {

@@ -36,24 +36,33 @@ export class QuestsManager {
     initialize() {
         console.log('Initializing QuestsManager');
         
-        // Ensure quests array exists
+        // Ensure quests array exists in the state
         if (!this.dataManager.appState.quests) {
             this.dataManager.appState.quests = [];
+            console.log('Initialized empty quests array in appState');
+        } else {
+            console.log('Found existing quests in appState:', this.dataManager.appState.quests);
         }
         
         // Get all quests from the service
         let quests = this.questService.getAllQuests();
-        console.log('Loaded quests:', quests);
+        console.log('Loaded quests from service:', quests);
         
-        // Create a sample quest if none exist
+        // Create a sample quest if no quests exist
         if (!quests || quests.length === 0) {
             console.log('No quests found, creating a sample quest');
             this.createSampleQuest();
             quests = this.questService.getAllQuests();
+        } else {
+            console.log('Using existing quests from state');
         }
         
-        // Initialize the UI
-        this.questUI.init();
+        // Initialize the UI with the loaded quests
+        if (this.questUI && typeof this.questUI.init === 'function') {
+            this.questUI.init();
+        } else {
+            console.error('QuestUI is not properly initialized');
+        }
     }
     
     /**

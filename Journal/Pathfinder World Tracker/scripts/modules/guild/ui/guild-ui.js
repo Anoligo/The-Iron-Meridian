@@ -1,15 +1,113 @@
 import { GuildActivityType, GuildResourceType } from '../enums/guild-enums.js';
 
+// Initialize the guild section
+export async function initializeGuildSection() {
+    try {
+        console.log('Initializing guild section...');
+        
+        // Check if the guild container exists
+        const container = document.getElementById('guild');
+        if (!container) {
+            console.error('Guild container not found');
+            return;
+        }
+        
+        // Show loading state
+        container.innerHTML = `
+            <div class="d-flex justify-content-center align-items-center" style="height: 300px;">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <span class="ms-2">Loading guild data...</span>
+            </div>
+        `;
+        
+        // Import the data manager and guild manager
+        const { dataManager } = await import('../../../core/state/app-state.js');
+        const { GuildManager } = await import('../guild-manager.js');
+        
+        // Initialize the guild manager if it doesn't exist
+        if (!window.app) window.app = {};
+        
+        if (!window.app.guildManager) {
+            console.log('Initializing guild manager...');
+            try {
+                window.app.guildManager = new GuildManager(dataManager);
+                console.log('Guild manager initialized');
+            } catch (error) {
+                console.error('Failed to initialize guild manager:', error);
+                container.innerHTML = `
+                    <div class="alert alert-danger">
+                        Failed to initialize guild manager. Please check the console for details.
+                    </div>
+                `;
+                return;
+            }
+        } else {
+            console.log('Using existing guild manager instance');
+        }
+        
+        // Initialize the UI
+        try {
+            const guildUI = new GuildUI(window.app.guildManager);
+            guildUI.initializeUI();
+            console.log('Guild UI initialized');
+        } catch (error) {
+            console.error('Failed to initialize guild UI:', error);
+            container.innerHTML = `
+                <div class="alert alert-danger">
+                    Failed to initialize guild UI. Please check the console for details.
+                </div>
+            `;
+            return;
+        }
+        
+        console.log('Guild section initialized successfully');
+    } catch (error) {
+        console.error('Error initializing guild section:', error);
+        const container = document.getElementById('guild');
+        if (container) {
+            container.innerHTML = `
+                <div class="alert alert-danger">
+                    An error occurred while initializing the guild section. Please check the console for details.
+                </div>
+            `;
+        }
+    }
+}
+
 export class GuildUI {
     constructor(guildManager) {
         this.guildManager = guildManager;
         this.guildSection = document.getElementById('guild');
-        this.setupEventListeners();
+        this.initialized = false;
+        
+        // Initialize the UI
+        this.initializeUI();
     }
 
     initializeUI() {
-        this.renderActivityList();
-        this.renderResourceList();
+        if (this.initialized) {
+            console.log('Guild UI already initialized');
+            return;
+        }
+        
+        console.log('Initializing Guild UI...');
+        
+        try {
+            // Render the UI components
+            this.renderActivityList();
+            this.renderResourceList();
+            
+            // Set up event listeners
+            this.setupEventListeners();
+            
+            this.initialized = true;
+            console.log('Guild UI initialized successfully');
+        } catch (error) {
+            console.error('Error initializing Guild UI:', error);
+            throw error;
+        }
     }
 
     setupEventListeners() {

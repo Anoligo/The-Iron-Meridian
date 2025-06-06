@@ -1,0 +1,104 @@
+.settingsPage {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+
+  h1 {
+    margin-bottom: 2rem;
+    color: var(--accent-light);
+  }
+}
+
+.settingsSection {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+
+  &:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  h2 {
+    margin-bottom: 1.5rem;
+    font-size: 1.25rem;
+    color: var(--text-primary);
+  }
+}
+
+.formGroup {
+  margin-bottom: 1.5rem;
+
+  label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+  }
+}
+
+.themeOptions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.themeOption {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    border-color: var(--accent-light);
+  }
+
+  &.active {
+    background: var(--accent-light);
+    color: var(--bg-primary);
+    border-color: var(--accent-light);
+  }
+}
+
+.toggleGroup {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.toggle {
+  position: relative;
+  width: 50px;
+  height: 24px;
+  background: var(--border-color);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &.on {
+    background: var(--accent-light);
+  }
+}
+
+.toggleSwitch {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.2s;
+
+  .toggle.on & {
+    transform: translateX(26px);
+  }
+}
+
+button + button {
+  margin-left: 1rem;
+}
