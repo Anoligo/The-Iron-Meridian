@@ -1,19 +1,31 @@
 import { FactionUI } from './ui/faction-ui.js';
 
-// Initialize the Factions module when the DOM is fully loaded
-document.addEventListener('DOMContentLoaded', () => {
+/**
+ * Initialize the factions section when navigated to.
+ */
+export async function initializeFactionsSection() {
     try {
-        // Initialize the Faction UI
-        const factionUI = new FactionUI();
-        
-        // Make it available globally for debugging (remove in production)
-        window.factionUI = factionUI;
-        
-        console.log('Factions module initialized successfully');
+        const container = document.getElementById('factions-container');
+        if (!container) {
+            console.warn('Factions container not found');
+            return;
+        }
+
+        // Lazily create the UI instance
+        if (!window.app) window.app = {};
+        if (!window.app.factionUI) {
+            const { appState } = await import('../../core/state/app-state.js');
+            const dataManager = { appState };
+            window.app.factionUI = new FactionUI(container, dataManager);
+        } else {
+            window.app.factionUI.refresh?.();
+        }
+
+        console.log('Factions section initialized');
     } catch (error) {
-        console.error('Failed to initialize Factions module:', error);
+        console.error('Failed to initialize Factions section:', error);
     }
-});
+}
 
 // Export the FactionUI class for other modules to use
 export { FactionUI } from './ui/faction-ui.js';
