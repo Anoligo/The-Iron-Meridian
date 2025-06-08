@@ -170,17 +170,26 @@ export class AppInitializer {
             console.error('Failed to load quests module:', error);
         });
         
-        // Initialize other sections (characters, locations) if needed
-        // Example for characters (uncomment and update when ready):
-        /*
-        import('../../modules/characters').then(module => {
+        // Initialize Characters section
+        import('../../modules/characters/index.js').then(module => {
             if (module.initializeCharactersSection) {
                 navManager.registerSectionInitializer('characters', module.initializeCharactersSection);
             }
         }).catch(error => {
             console.error('Failed to load characters module:', error);
         });
-        
+
+        // Initialize Factions section
+        import('../../modules/factions/index.js').then(module => {
+            if (module.initializeFactionsSection) {
+                navManager.registerSectionInitializer('factions', module.initializeFactionsSection);
+            }
+        }).catch(error => {
+            console.error('Failed to load factions module:', error);
+        });
+
+        // Initialize other sections (locations) if needed
+        /*
         import('../../modules/locations').then(module => {
             if (module.initializeLocationsSection) {
                 navManager.registerSectionInitializer('locations', module.initializeLocationsSection);
