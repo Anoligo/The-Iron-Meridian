@@ -15,7 +15,10 @@ export async function initializeFactionsSection() {
         if (!window.app) window.app = {};
         if (!window.app.factionUI) {
             const { appState } = await import('../../core/state/app-state.js');
-            const dataManager = { appState };
+            const dataManager = {
+                appState,
+                saveData: () => appState.update({}, true)
+            };
             window.app.factionUI = new FactionUI(container, dataManager);
         } else {
             window.app.factionUI.refresh?.();

@@ -24,9 +24,16 @@ export async function initializeCharactersSection() {
         if (!window.app?.charactersManager) {
             console.log('Initializing characters manager...');
             try {
-                // Import the data manager dynamically to avoid circular dependencies
-                const { dataManager } = await import('../../core/state/app-state.js');
-                
+                // Import application state and create a simple data manager that
+                // exposes a saveData function. The previous code attempted to
+                // import a non-existent `dataManager` export and resulted in the
+                // manager receiving `undefined`.
+                const { appState } = await import('../../core/state/app-state.js');
+                const dataManager = {
+                    appState,
+                    saveData: () => appState.update({}, true)
+                };
+
                 // Initialize the characters manager
                 window.app = window.app || {};
                 window.app.charactersManager = new CharactersManager(dataManager);
@@ -51,7 +58,11 @@ export async function initializeCharactersSection() {
                     // Initialize event listeners
                     if (addCharacterBtn) {
                         addCharacterBtn.addEventListener('click', () => {
-                            window.app.characterUI.showNewCharacterForm();
+                            // CharacterUI exposes handleAddCharacter to display
+                            // the inline creation form. The previous call
+                            // referenced a non-existent method which caused the
+                            // button to fail silently.
+                            window.app.characterUI.handleAddCharacter();
                         });
                     }
                     
