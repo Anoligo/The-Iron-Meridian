@@ -1,52 +1,419 @@
 /**
  * Quest UI Component
  * Handles the rendering and interaction for quest-related UI elements
- * Uses the BaseUI class for consistent UI patterns
  */
 
 import { BaseUI } from '../../../components/base-ui.js';
-import { createListItem, createDetailsPanel, showToast, createFormField } from '../../../components/ui-components.js';
+import { showToast } from '../../../components/ui-components.js';
 import { QuestType, QuestStatus } from '../enums/quest-enums.js';
 import { formatDate } from '../../../utils/date-utils.js';
 
-// Re-export showToast for consistency
-const showToastMessage = (message, type = 'info', duration = 3000) => {
-    showToast({ message, type, duration });
-};
+// Helper function to format enum values for display
+function formatEnumValue(str) {
+    if (!str) return '';
+    return str
+        .split('_')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .join(' ');
+}
+
+// Helper function to get status badge class
+function getStatusBadgeClass(status) {
+    const statusMap = {
+        [QuestStatus.NOT_STARTED]: 'bg-secondary',
+        [QuestStatus.IN_PROGRESS]: 'bg-primary',
+        [QuestStatus.COMPLETED]: 'bg-success',
+        [QuestStatus.FAILED]: 'bg-danger',
+        [QuestStatus.ON_HOLD]: 'bg-warning',
+        [QuestStatus.ABANDONED]: 'bg-dark'
+    };
+    return statusMap[status] || 'bg-secondary';
+}
+
+// Helper function to get quest type badge class
+function getQuestTypeBadgeClass(type) {
+    const typeMap = {
+        [QuestType.MAIN]: 'bg-primary',
+        [QuestType.SIDE_QUEST]: 'bg-info',
+        [QuestType.PERSONAL]: 'bg-success',
+        [QuestType.FACTION]: 'bg-warning',
+        [QuestType.EVENT]: 'bg-purple',
+        [QuestType.OTHER]: 'bg-secondary'
+    };
+    return typeMap[type] || 'bg-secondary';
+}
 
 export class QuestUI extends BaseUI {
     /**
      * Create a new QuestUI instance
-     * @param {Object} questService - Instance of QuestService
+     * @param {Object} questService - The quest service instance
      * @param {Object} options - Configuration options
-     * @param {Object} options.container - Container elements
-     * @param {HTMLElement} options.container.list - List container element
-     * @param {HTMLElement} options.container.details - Details container element
-     * @param {HTMLElement} options.container.search - Search input element
-     * @param {HTMLElement} options.container.addButton - Add button element
-     * @param {HTMLElement} [options.container.editButton] - Edit button element
-     * @param {HTMLElement} [options.container.deleteButton] - Delete button element
-     * @param {Object} options.appState - Application state
      */
     constructor(questService, options = {}) {
-        super({
-            containerId: 'quests',
-            listId: 'questList',
-            detailsId: 'questDetails',
-            searchId: 'questSearch',
-            addButtonId: 'addQuestBtn',
-            editButtonId: 'editQuestBtn',
-            deleteButtonId: 'deleteQuestBtn',
-            entityName: 'quest',
-            getAll: () => questService.getAllQuests(),
-            getById: (id) => questService.getQuestById(id),
-            add: (quest) => questService.createQuest(quest),
-            update: (id, updates) => questService.updateQuest(id, updates),
-            delete: (id) => questService.deleteQuest(id)
-        });
-        
+        super();
         this.questService = questService;
-        this.dataManager = options.appState || {};
+        this.options = options;
+        this.currentQuest = null;
+        this.isEditing = false;
+        this.initialize();
+    }
+
+    /**
+     * Initialize the UI
+     */
+    initialize() {
+        this.cacheElements();
+        this.bindEvents();
+        this.render();
+    }
+
+    /**
+     * Cache DOM elements
+     */
+    cacheElements() {
+        this.elements = {
+            container: document.getElementById('quests-container') || document.createElement('div'),
+            list: document.getElementById('questList') || document.createElement('div'),
+            details: document.getElementById('questDetails') || document.createElement('div'),
+            search: document.getElementById('questSearch') || document.createElement('input'),
+            addButton: document.getElementById('addQuestBtn') || document.createElement('button'),
+            editButton: document.getElementById('editQuestBtn') || document.createElement('button'),
+            deleteButton: document.getElementById('deleteQuestBtn') || document.createElement('button')
+        };
+    }
+
+    /**
+     * Bind event listeners
+     */
+    bindEvents() {
+        const { addButton, editButton, deleteButton, search } = this.elements;
+
+        // Add button click
+        addButton.addEventListener('click', () => this.showQuestForm());
+
+        // Edit button click
+        editButton.addEventListener('click', () => {
+            if (this.currentQuest) {
+                this.showQuestForm(this.currentQuest);
+            }
+        });
+
+        // Delete button click
+        deleteButton.addEventListener('click', () => {
+            if (this.currentQuest) {
+                this.deleteQuest(this.currentQuest.id);
+            }
+        });
+
+        // Search input
+        search.addEventListener('input', (e) => {
+            this.filterQuests(e.target.value);
+        });
+    }
+
+    /**
+     * Render the quest UI
+     */
+    render() {
+        this.renderQuestList();
+        this.renderQuestDetails();
+    }
+
+    /**
+     * Filter quests based on search term
+     * @param {string} searchTerm - The search term to filter by
+     */
+    filterQuests(searchTerm) {
+        const quests = this.questService.getAllQuests();
+        const filtered = searchTerm 
+            ? quests.filter(quest => 
+                quest.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                (quest.description && quest.description.toLowerCase().includes(searchTerm.toLowerCase()))
+              )
+            : quests;
+        this.renderQuestList(filtered);
+    }
+
+    /**
+     * Render the quest list
+     * @param {Array} quests - Optional array of quests to display (uses all quests if not provided)
+     */
+    renderQuestList(quests) {
+        const { list } = this.elements;
+        quests = quests || this.questService.getAllQuests();
+        
+        list.innerHTML = '';
+        
+        if (quests.length === 0) {
+            list.innerHTML = `
+                <div class="text-center text-muted py-4">
+                    <i class="fas fa-scroll fa-3x mb-3"></i>
+                    <p>No quests found. Click "Add Quest" to get started.</p>
+                </div>`;
+            return;
+        }
+        
+        quests.forEach(quest => {
+            const item = this.createQuestItem(quest);
+            list.appendChild(item);
+        });
+    }
+
+    /**
+     * Create a quest list item element
+     * @param {Object} quest - The quest data
+     * @returns {HTMLElement} The created list item
+     */
+    createQuestItem(quest) {
+        const item = document.createElement('div');
+        item.className = 'quest-item';
+        item.dataset.id = quest.id;
+        
+        if (this.currentQuest && this.currentQuest.id === quest.id) {
+            item.classList.add('active');
+        }
+        
+        const statusClass = getStatusBadgeClass(quest.status);
+        const typeClass = getQuestTypeBadgeClass(quest.type);
+        
+        item.innerHTML = `
+            <div class="quest-item-header">
+                <h4>${quest.name}</h4>
+                <span class="quest-status ${statusClass}">${formatEnumValue(quest.status)}</span>
+            </div>
+            <div class="quest-item-meta">
+                <span class="quest-type ${typeClass}">${formatEnumValue(quest.type)}</span>
+                <span class="quest-date">${formatDate(quest.updatedAt)}</span>
+            </div>
+            <p class="quest-description">
+                ${quest.description ? quest.description.substring(0, 100) + (quest.description.length > 100 ? '...' : '') : 'No description'}
+            </p>
+        `;
+        
+        item.addEventListener('click', () => this.showQuestDetails(quest.id));
+        return item;
+    }
+
+    /**
+     * Show quest details
+     * @param {string} questId - The ID of the quest to show
+     */
+    async showQuestDetails(questId) {
+        try {
+            const quest = await this.questService.getQuestById(questId);
+            if (!quest) return;
+            
+            this.currentQuest = quest;
+            this.renderQuestDetails(quest);
+            
+            // Highlight selected quest in the list
+            document.querySelectorAll('.quest-item').forEach(item => {
+                item.classList.toggle('active', item.dataset.id === questId);
+            });
+            
+            // Enable edit and delete buttons
+            this.elements.editButton.disabled = false;
+            this.elements.deleteButton.disabled = false;
+            
+        } catch (error) {
+            console.error('Error loading quest details:', error);
+            showToast('Failed to load quest details', 'error');
+        }
+    }
+
+    /**
+     * Render quest details
+     * @param {Object} quest - The quest data to display
+     */
+    renderQuestDetails(quest) {
+        const { details } = this.elements;
+        
+        const statusClass = `status-${quest.status.toLowerCase().replace(/\s+/g, '-')}`;
+        const typeClass = `type-${quest.type.toLowerCase()}`;
+        
+        details.innerHTML = `
+            <div class="quest-details">
+                <div class="quest-header">
+                    <h2>${quest.name}</h2>
+                    <div class="quest-meta">
+                        <span class="quest-type ${typeClass}">${formatEnumValue(quest.type)}</span>
+                        <span class="quest-status ${statusClass}">${formatEnumValue(quest.status)}</span>
+                    </div>
+                </div>
+                <div class="quest-content">
+                    <h3>Description</h3>
+                    <p>${quest.description || 'No description provided.'}</p>
+                    
+                    <div class="quest-dates">
+                        <div class="date-item">
+                            <span class="date-label">Created:</span>
+                            <span class="date-value">${formatDate(quest.createdAt)}</span>
+                        </div>
+                        <div class="date-item">
+                            <span class="date-label">Last Updated:</span>
+                            <span class="date-value">${formatDate(quest.updatedAt)}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    /**
+     * Show quest form for adding/editing
+     * @param {Object} quest - Optional quest data for editing
+     */
+    showQuestForm(quest = null) {
+        this.isEditing = !!quest;
+        this.currentQuest = quest || null;
+        
+        const { details } = this.elements;
+        
+        const formHtml = `
+            <form id="questForm" class="quest-form">
+                <div class="form-group">
+                    <label for="questName">Quest Name *</label>
+                    <input type="text" id="questName" name="name" 
+                           value="${quest ? quest.name : ''}" required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="questType">Type</label>
+                        <select id="questType" name="type" required>
+                            ${Object.values(QuestType).map(type => 
+                                `<option value="${type}" ${quest && quest.type === type ? 'selected' : ''}>
+                                    ${formatEnumValue(type)}
+                                </option>`
+                            ).join('')}
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="questStatus">Status</label>
+                        <select id="questStatus" name="status" required>
+                            ${Object.values(QuestStatus).map(status => 
+                                `<option value="${status}" ${quest && quest.status === status ? 'selected' : ''}>
+                                    ${formatEnumValue(status)}
+                                </option>`
+                            ).join('')}
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="questDescription">Description</label>
+                    <textarea id="questDescription" name="description" rows="5">${quest ? quest.description : ''}</textarea>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelQuestBtn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        ${quest ? 'Update' : 'Create'} Quest
+                    </button>
+                </div>
+            </form>
+        `;
+        
+        details.innerHTML = formHtml;
+        
+        // Set up form submission
+        const form = document.getElementById('questForm');
+        form.addEventListener('submit', (e) => this.handleFormSubmit(e));
+        
+        // Set up cancel button
+        document.getElementById('cancelQuestBtn').addEventListener('click', () => {
+            if (this.currentQuest) {
+                this.showQuestDetails(this.currentQuest.id);
+            } else {
+                this.elements.details.innerHTML = '';
+            }
+        });
+    }
+
+    /**
+     * Handle form submission
+     * @param {Event} e - Form submit event
+     */
+    async handleFormSubmit(e) {
+        e.preventDefault();
+        
+        const form = e.target;
+        const formData = new FormData(form);
+        const questData = {
+            name: formData.get('name'),
+            type: formData.get('type'),
+            status: formData.get('status'),
+            description: formData.get('description')
+        };
+        
+        try {
+            if (this.isEditing && this.currentQuest) {
+                await this.questService.updateQuest(this.currentQuest.id, questData);
+                showToast('Quest updated successfully', 'success');
+            } else {
+                await this.questService.createQuest(questData);
+                showToast('Quest created successfully', 'success');
+            }
+            
+            await this.renderQuestList();
+            
+            // If editing, show the updated quest details
+            if (this.isEditing && this.currentQuest) {
+                this.showQuestDetails(this.currentQuest.id);
+            } else {
+                this.elements.details.innerHTML = '';
+            }
+            
+        } catch (error) {
+            console.error('Error saving quest:', error);
+            showToast(`Failed to save quest: ${error.message}`, 'error');
+        }
+    }
+
+    /**
+     * Delete a quest
+     * @param {string} questId - The ID of the quest to delete
+     */
+    async deleteQuest(questId) {
+        if (!confirm('Are you sure you want to delete this quest?')) {
+            return;
+        }
+        
+        try {
+            await this.questService.deleteQuest(questId);
+            showToast('Quest deleted successfully', 'success');
+            
+            // Clear the current quest if it was deleted
+            if (this.currentQuest && this.currentQuest.id === questId) {
+                this.currentQuest = null;
+                this.elements.details.innerHTML = `
+                    <div class="text-muted text-center py-5">
+                        <i class="fas fa-scroll fa-3x mb-3"></i>
+                        <p>Select a quest or create a new one</p>
+                    </div>`;
+                
+                // Disable edit and delete buttons
+                this.elements.editButton.disabled = true;
+                this.elements.deleteButton.disabled = true;
+            }
+            
+            await this.renderQuestList();
+            
+        } catch (error) {
+            console.error('Error deleting quest:', error);
+            showToast('Failed to delete quest', 'error');
+        }
+    }
+    /**
+     * Create a new QuestUI instance
+     * @param {Object} questService - Instance of QuestService
+     * @param {Object} dataManager - Application data manager
+     */
+    constructor(questService, dataManager = {}) {
+        super();
+        this.questService = questService;
+        this.dataManager = dataManager;
         this.currentEntity = null;
         this.isEditing = false;
         
@@ -60,17 +427,24 @@ export class QuestUI extends BaseUI {
      * Initialize UI elements
      */
     initializeElements() {
-        this.listContainer = document.getElementById(this.listId) || document.createElement('div');
-        this.detailsContainer = document.getElementById(this.detailsId) || document.createElement('div');
-        this.searchInput = document.getElementById(this.searchId) || document.createElement('input');
-        this.addButton = document.getElementById(this.addButtonId) || document.createElement('button');
-        this.editButton = document.getElementById(this.editButtonId) || document.createElement('button');
-        this.deleteButton = document.getElementById(this.deleteButtonId) || document.createElement('button');
+        // Main containers
+        this.listContainer = document.getElementById('questList') || document.createElement('div');
+        this.detailsContainer = document.getElementById('questDetails') || document.createElement('div');
         
-        // Create form container if it doesn't exist
+        // Form elements
+        this.searchInput = document.getElementById('questSearch') || document.createElement('input');
+        this.addButton = document.getElementById('addQuestBtn') || document.createElement('button');
+        this.editButton = document.getElementById('editQuestBtn') || document.createElement('button');
+        this.deleteButton = document.getElementById('deleteQuestBtn') || document.createElement('button');
+        
+        // Set up form container
         this.formContainer = document.createElement('div');
         this.formContainer.className = 'quest-form-container';
         this.detailsContainer.appendChild(this.formContainer);
+        
+        // Set initial button states
+        this.editButton.disabled = true;
+        this.deleteButton.disabled = true;
     }
     
     /**
@@ -78,22 +452,30 @@ export class QuestUI extends BaseUI {
      */
     bindEvents() {
         // Add button click
-        this.addButton.addEventListener('click', () => this.showQuestForm());
+        if (this.addButton) {
+            this.addButton.addEventListener('click', () => this.showQuestForm());
+        }
         
         // Edit button click
-        this.editButton.addEventListener('click', () => this.showQuestForm(this.currentEntity));
+        if (this.editButton) {
+            this.editButton.addEventListener('click', () => this.showQuestForm(this.currentEntity));
+        }
         
         // Delete button click
-        this.deleteButton.addEventListener('click', () => {
-            if (this.currentEntity) {
-                if (confirm('Are you sure you want to delete this quest?')) {
-                    this.deleteQuest(this.currentEntity.id);
+        if (this.deleteButton) {
+            this.deleteButton.addEventListener('click', () => {
+                if (this.currentEntity) {
+                    if (confirm('Are you sure you want to delete this quest?')) {
+                        this.deleteQuest(this.currentEntity.id);
+                    }
                 }
-            }
-        });
+            });
+        }
         
         // Search input
-        this.searchInput.addEventListener('input', (e) => this.filterQuests(e.target.value));
+        if (this.searchInput) {
+            this.searchInput.addEventListener('input', (e) => this.filterQuests(e.target.value));
+        }
     }
         this.elements = {
             container: options.container?.list?.parentElement || document.getElementById('quests'),
