@@ -133,17 +133,36 @@ export class AppInitializer {
                             window.app.questsManager = new module.QuestsManager(dataManager);
                         }
                         
-                        // Initialize quests UI
+                        // Get container elements
+                        const questListElement = document.getElementById('questList');
+                        const questDetailsElement = document.getElementById('questDetails');
+                        const searchInput = document.getElementById('questSearch');
+                        const addButton = document.getElementById('addQuestBtn');
+                        const editButton = document.getElementById('editQuestBtn');
+                        const deleteButton = document.getElementById('deleteQuestBtn');
+                        
+                        if (!questListElement || !questDetailsElement || !searchInput || !addButton) {
+                            console.error('Required quest UI elements not found');
+                            return;
+                        }
+                        
+                        // Initialize quests UI with container elements
                         if (!window.app.questsUI) {
-                            // Create a dataManager object with appState
-                            const dataManager = { appState: window.app.questsManager.dataManager.appState };
-                            // Initialize QuestUI with questService and dataManager
                             window.app.questsUI = new module.QuestUI(
                                 window.app.questsManager.questService,
-                                dataManager
+                                {
+                                    appState: window.app.questsManager.dataManager.appState,
+                                    container: {
+                                        list: questListElement,
+                                        details: questDetailsElement,
+                                        search: searchInput,
+                                        addButton: addButton,
+                                        editButton: editButton,
+                                        deleteButton: deleteButton
+                                    }
+                                }
                             );
                             
-                            // The QuestUI initializes itself in the constructor
                             console.log('QuestUI initialized successfully');
                         }
                         
@@ -152,11 +171,11 @@ export class AppInitializer {
                         if (questsSection) {
                             questsSection.style.display = 'block';
                             questsSection.classList.add('active');
-                        }
-                        
-                        // Refresh the quest list
-                        if (window.app.questsUI.renderQuestList) {
-                            window.app.questsUI.renderQuestList();
+                            
+                            // Trigger initial render
+                            if (window.app.questsUI.render) {
+                                window.app.questsUI.render();
+                            }
                         }
                     } catch (error) {
                         console.error('Error initializing quests section:', error);

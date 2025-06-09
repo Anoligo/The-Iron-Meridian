@@ -33,7 +33,7 @@ export class QuestsManager {
     /**
      * Initialize the quests manager
      */
-    initialize() {
+    async initialize() {
         console.log('Initializing QuestsManager');
         
         // Ensure quests array exists in the state
@@ -44,6 +44,9 @@ export class QuestsManager {
             console.log('Found existing quests in appState:', this.dataManager.appState.quests);
         }
         
+        // Create the UI with the service and data manager
+        this.questUI = new QuestUI(this.questService, this.dataManager);
+        
         // Get all quests from the service
         let quests = this.questService.getAllQuests();
         console.log('Loaded quests from service:', quests);
@@ -51,43 +54,71 @@ export class QuestsManager {
         // Create a sample quest if no quests exist
         if (!quests || quests.length === 0) {
             console.log('No quests found, creating a sample quest');
-            this.createSampleQuest();
+            await this.createSampleQuest();
             quests = this.questService.getAllQuests();
         } else {
             console.log('Using existing quests from state');
         }
         
         // Initialize the UI with the loaded quests
-        if (this.questUI && typeof this.questUI.init === 'function') {
-            this.questUI.init();
+        if (this.questUI) {
+            // Check if the UI has an initializeUI method (from our updated QuestUI)
+            if (typeof this.questUI.initializeUI === 'function') {
+                this.questUI.initializeUI();
+            } 
+            // Fallback to renderQuests if available
+            else if (typeof this.questUI.renderQuests === 'function') {
+                this.questUI.renderQuests(quests);
+            }
+            // Fallback to init if available
+            else if (typeof this.questUI.init === 'function') {
+                this.questUI.init();
+            } 
+            else {
+                console.error('QuestUI is missing required initialization methods');
+            }
+            
+            console.log('QuestUI initialized successfully');
         } else {
-            console.error('QuestUI is not properly initialized');
+            console.error('Failed to initialize QuestUI');
         }
     }
     
     /**
      * Create a sample quest for demonstration purposes
      */
-    createSampleQuest() {
-        const sampleQuest = {
-            name: 'The Iron Meridian',
-            description: 'Investigate the mysterious artifact known as the Iron Meridian and discover its connection to the ancient civilization.',
-            type: 'MAIN',
-            status: 'ONGOING',
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            journalEntries: [
-                {
-                    date: new Date(),
-                    content: 'Found a reference to the Iron Meridian in an old tome at the library. It seems to be an ancient artifact with powerful magical properties.'
-                }
-            ],
-            items: [],
-            locations: [],
-            characters: []
-        };
-        
-        this.createQuest(sampleQuest);
+    async createSampleQuest() {
+        try {
+            const sampleQuest = {
+                name: 'The Iron Meridian',
+                description: 'Investigate the mysterious artifact known as the Iron Meridian and discover its connection to the ancient civilization.',
+                type: 'MAIN',
+                status: 'ONGOING',
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                journalEntries: [
+                    {
+                        date: new Date(),
+                        content: 'Found a reference to the Iron Meridian in an old tome at the library. It seems to be an ancient artifact with powerful magical properties.'
+                    }
+                ],
+                items: [],
+                locations: [],
+                characters: []
+            };
+            
+            await this.questService.createQuest(sampleQuest);
+            
+            // Refresh the UI after creating the sample quest
+            if (this.questUI && typeof this.questUI.refresh === 'function') {
+                this.questUI.refresh();
+            } else if (this.questUI && typeof this.questUI.renderQuests === 'function') {
+                const quests = this.questService.getAllQuests();
+                this.questUI.renderQuests(quests);
+            }
+        } catch (error) {
+            console.error('Error creating sample quest:', error);
+        }
     }
 
     /**
