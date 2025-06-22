@@ -180,30 +180,84 @@
 <script>
 /* ---------- mission data ---------- */
 const missionData=[
-  /* expired */
-  {name:"Mossfang Hollow",types:["Exploration","Combat"],rank:"Bronze",
-   length:"Short-Medium",reward:"Resolved",status:"expired",
-   location:"Mossfang Hollow (Near Bramblebrook Woods)",
-   objective:"Aggressive plant life neutralised; no further flickering lights.",
-   steps:[],extra:"The crowned raccoon was never caught."},
-
-  {name:"Tending the Fallen",types:["Diplomatic"],rank:"Bronze",
-   length:"Short",reward:"Resolved",status:"expired",
-   location:"Pale Paladins' Stronghold",
-   objective:"Ceremonial support rendered successfully.",steps:[],extra:"Relics untouched. Barely."},
 
   /* completed */
-  {name:"The Emberdeep Cellar",types:["Exploration","Combat","Puzzle"],rank:"Bronze",
-   length:"Short-Medium",reward:"120g + Relic Dust",status:"completed",
-   location:"Cellar under Emberdeep Tavern",
-   objective:"Disturbance neutralised and site secured.",steps:[],extra:"Casks have stopped whispering."},
-
+{
+  name: "Shrine of the Hollow Watcher",
+  types: ["Exploration", "Combat", "Religious"],
+  rank: "Bronze",
+  length: "Medium",
+  reward: "200g + Blessing of Sudden Clarity",
+  status: "completed",
+  location: "Duskspine Ridge Cavern",
+  objective: "Anomaly neutralised; shrine sealed by collapse.",
+  steps: [],
+  extra: "The mountain is silent once more... but not empty."
+},
+   /* expired */
+{
+  name: "The Mad Sorcerer’s Last Trick",
+  types: ["Investigation", "Combat"],
+  rank: "Gold",
+  length: "Long",
+  reward: "Resolved",
+  status: "expired",
+  location: "Dismal Forest",
+  objective: "Anomalous zone collapsed before resolution; unstable echoes remain.",
+  steps: [],
+  extra: "The trees no longer argue... but they remember."
+},
+{
+  name: "A Thief in the Night",
+  types: ["Investigation", "Social"],
+  rank: "Bronze",
+  length: "Short",
+  reward: "Resolved",
+  status: "expired",
+  location: "Nearby Villages",
+  objective: "Thefts ceased. Guild provided compensation.",
+  steps: [],
+  extra: "The villagers never saw the culprit. The guild’s reputation remains intact."
+},
   /* active */
-  {name:"The Mad Sorcerer’s Last Trick",types:["Investigation","Combat"],rank:"Gold",length:"Long",
-   reward:"2000g + Sentient Trinket",status:"active",location:"Dismal Forest",
-   objective:"Investigate anomalies and neutralise the source.",
-   steps:["Enter anomalous zone","Track instability","Stop the cause","Report"],extra:"Trees may argue."},
 
+{
+  name: "Sinkhole Below Sable Row",
+  types: ["Salvage", "Hazard", "Aberration"],
+  rank: "Bronze",
+  length: "Medium",
+  reward: "300g + Free Potion Training",
+  status: "active",
+  location: "Collapsed cellar beneath Sable Row, Tradecity Verge",
+  objective: "Descend the sinkhole, assess the cause, and retrieve any surviving cargo or citizens.",
+  steps: ["Secure perimeter", "Descend the breach", "Map the unstable chasm", "Neutralize the lurking anomaly"],
+  extra: "Two retrieval teams already sent. None returned. Locals report a faint chittering under the cobblestones at night."
+},
+{
+  name: "Ashes at Watchpost Nine",
+  types: ["Investigation", "Combat", "Demonic"],
+  rank: "Bronze",
+  length: "Medium",
+  reward: "600g + Blackened Sigil Fragment",
+  status: "active",
+  location: "Watchpost Nine, Outer Ridgeline",
+  objective: "Investigate the loss of contact with Watchpost Nine and secure the site.",
+  steps: ["Travel to site", "Survey the remains", "Identify source of incursion", "Prevent spread"],
+  extra: "Ash drifts upward. No birds sing. Something scorched the ward runes *from the inside.*"
+},
+
+{
+  name: "Rot Beneath Rivermarket",
+  types: ["Combat", "Urban", "Infestation"],
+  rank: "Bronze",
+  length: "Medium",
+  reward: "100g + Guild Credit",
+  status: "active",
+  location: "Underbridge District, Rivermarket",
+  objective: "Purge the vermin nest causing structural collapse.",
+  steps: ["Secure entrance", "Explore tunnel network", "Eliminate broodmother", "Seal breach"],
+  extra: "Local cats have gone missing. One was returned... changed."
+},
   {name:"Demon Portal Shutdown",types:["Combat","Exploration"],rank:"Gold",length:"Long",
    reward:"4000g + Demon-Slaying Relic",status:"active",location:"Shadowlands Rift",
    objective:"Disable a growing portal breach.",
@@ -227,20 +281,18 @@ const missionData=[
    objective:"Investigate ruins of Subject Cluster #3.",
    steps:["Review notes","Secure site","Document anomalies","Recover relics"],extra:"Sigils may fire off enchantments."},
 
-  {name:"Shrine of the Hollow Watcher",types:["Exploration","Combat","Religious"],rank:"Bronze",length:"Medium",
-   reward:"200g + Blessing",status:"active",location:"Duskspine Ridge Cavern",
-   objective:"Investigate reawakening shrine.",
-   steps:["Descend","Survey site","Address guardians","Conclude reverently"],extra:"Whispering prayers heard at night."},
-
-  {name:"A Thief in the Night",types:["Investigation","Social"],rank:"Bronze",length:"Short",
-   reward:"100g + Local Favor",status:"active",location:"Nearby Villages",
-   objective:"Solve unexplained thefts.",steps:["Interview villagers","Search clues","Identify culprit","Recover goods"],extra:"Villagers blame the wind."},
-
-  {name:"Ashsmoke Recovery",types:["Exploration","Salvage"],rank:"Bronze",length:"Short",
-   reward:"120g + Salvage",status:"active",location:"Outpost near Ashsmoke Trail",
-   objective:"Salvage gear from landslide ruin.",
-   steps:["Navigate paths","Assess risk","Salvage","Avoid collapses"],extra:"Bring rope and fear of gravity."},
-
+{
+  name: "Ashsmoke Recovery",
+  types: ["Exploration", "Salvage"],
+  rank: "Bronze",
+  length: "Short",
+  reward: "Resolved",
+  status: "expired",
+  location: "Outpost near Ashsmoke Trail",
+  objective: "Path became impassable after further collapse; salvage inaccessible.",
+  steps: [],
+  extra: "Fear of gravity confirmed."
+},
   {name:"Mireborn Stirrings",types:["Investigation","Combat"],rank:"Bronze",length:"Medium",
    reward:"150g + Marshsilver",status:"active",location:"South of Veilfen Marsh",
    objective:"Probe eerie fogs and bubbling vents.",
