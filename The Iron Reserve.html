@@ -149,22 +149,13 @@
 /* ---------- unified data ---------- */
 const items = [
   {
-    "name": "The 'Velvet' Cloak",
-    "type": "Armour",
-    "description": "+1 item bonus to CHA checks/skills vs. goblins (they mistake it for 'real king stuff').",
-    "price": "30 gp",
-    "consumable": false,
-    "rented": "Yes (Brammle the Clever)",
-    "quantity": 0
-  },
-  {
     "name": "Potion of Spider Climb (Lesser)",
     "type": "Consumable",
     "description": "Grants spider climb effect for 1 minute.",
     "price": "12 gp",
     "consumable": true,
     "rented": "No",
-    "quantity": 2
+    "quantity": 3
   },
   {
     "name": "Scroll of Magic Missile (1st level)",
@@ -173,7 +164,7 @@ const items = [
     "price": "3 gp",
     "consumable": true,
     "rented": "No",
-    "quantity": 4
+    "quantity": 5
   },
   {
     "name": "Alchemist's Fire (Lesser)",
@@ -182,7 +173,7 @@ const items = [
     "price": "3 gp",
     "consumable": true,
     "rented": "No",
-    "quantity": 5
+    "quantity": 6
   },
   {
     "name": "Tanglefoot Bag (Lesser)",
@@ -191,25 +182,7 @@ const items = [
     "price": "3 gp",
     "consumable": true,
     "rented": "No",
-    "quantity": 4
-  },
-  {
-    "name": "Goggles of Night",
-    "type": "Wondrous",
-    "description": "Grant darkvision up to 60 ft.",
-    "price": "55 gp",
-    "consumable": false,
-    "rented": "Yes (Sister Felruin)",
-    "quantity": 0
-  },
-  {
-    "name": "Bracers of Armor +1",
-    "type": "Armour",
-    "description": "Protective bracers for robe lovers.",
-    "price": "160 gp",
-    "consumable": false,
-    "rented": "No",
-    "quantity": 1
+    "quantity": 5
   },
   {
     "name": "Feather Token (Ladder)",
@@ -221,31 +194,22 @@ const items = [
     "quantity": 2
   },
   {
-    "name": "Battlefield Bandolier",
-    "type": "Wondrous",
-    "description": "Carry potions and bombs for quick access.",
-    "price": "5 gp",
-    "consumable": false,
-    "rented": "Yes (Orvid Longarm)",
-    "quantity": 0
+    "name": "Potion of Healing (Minor)",
+    "type": "Consumable",
+    "description": "Restores 1d8 HP when consumed.",
+    "price": "4 gp",
+    "consumable": true,
+    "rented": "No",
+    "quantity": 6
   },
   {
-    "name": "Wand of Prestidigitation",
-    "type": "Wondrous",
-    "description": "Casts prestidigitation at will.",
-    "price": "60 gp",
-    "consumable": false,
+    "name": "Potion of Healing (Lesser)",
+    "type": "Consumable",
+    "description": "Restores 2d8+5 HP when consumed.",
+    "price": "12 gp",
+    "consumable": true,
     "rented": "No",
-    "quantity": 1
-  },
-  {
-    "name": "Shield Spikes (Steel)",
-    "type": "Attachment",
-    "description": "Turns shield into a poking hazard.",
-    "price": "5 gp",
-    "consumable": false,
-    "rented": "No",
-    "quantity": 2
+    "quantity": 5
   },
   {
     "name": "Potion of Antidote (Lesser)",
@@ -255,6 +219,42 @@ const items = [
     "consumable": true,
     "rented": "No",
     "quantity": 3
+  },
+  {
+    "name": "Antiplague (Lesser)",
+    "type": "Consumable",
+    "description": "+2 item bonus to Fortitude saves vs disease for 24 hours.",
+    "price": "3 gp",
+    "consumable": true,
+    "rented": "No",
+    "quantity": 3
+  },
+  {
+    "name": "Elixir of Life (Minor)",
+    "type": "Consumable",
+    "description": "Restores 1d6 HP and grants +1 bonus to saving throws vs disease/poison for 10 min.",
+    "price": "3 gp",
+    "consumable": true,
+    "rented": "No",
+    "quantity": 5
+  },
+  {
+    "name": "Barkskin Brew",
+    "type": "Consumable",
+    "description": "Gain +1 item bonus to AC for 10 minutes; skin toughens like bark.",
+    "price": "5 gp",
+    "consumable": true,
+    "rented": "No",
+    "quantity": 3
+  },
+  {
+    "name": "Bracers of Armor +1",
+    "type": "Armour",
+    "description": "Protective bracers for robe lovers.",
+    "price": "160 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 1
   },
   {
     "name": "Amberglow Pauldrons",
@@ -275,51 +275,97 @@ const items = [
     "quantity": 1
   },
   {
-    "name": "Potion of Healing (Minor)",
-    "type": "Consumable",
-    "description": "Restores 1d8 HP when consumed.",
-    "price": "4 gp",
-    "consumable": true,
+    "name": "Wand of Magic Missile (1st level)",
+    "type": "Wondrous",
+    "description": "Casts Magic Missile once per day at 1st level. Recharge on daily prep.",
+    "price": "60 gp",
+    "consumable": false,
     "rented": "No",
-    "quantity": 4
+    "quantity": 1
   },
   {
-    "name": "Potion of Healing (Lesser)",
-    "type": "Consumable",
-    "description": "Restores 2d8+5 HP when consumed.",
-    "price": "12 gp",
-    "consumable": true,
+    "name": "Thunderstrike Blade",
+    "type": "Weapon",
+    "description": "+1 striking longsword that deals 1d6 extra electricity damage on a crit. Emits a low hum when unsheathed.",
+    "price": "300 gp",
+    "consumable": false,
     "rented": "No",
-    "quantity": 4
+    "quantity": 1
   },
   {
-    "name": "Antiplague (Lesser)",
-    "type": "Consumable",
-    "description": "+2 item bonus to Fortitude saves vs disease for 24 hours.",
-    "price": "3 gp",
-    "consumable": true,
+    "name": "Flametongue Dagger",
+    "type": "Weapon",
+    "description": "+1 dagger that can ignite for 1 minute/day, dealing an extra 1d4 fire damage. Good for lighting torches *and* stabbing goblins.",
+    "price": "200 gp",
+    "consumable": false,
     "rented": "No",
-    "quantity": 2
+    "quantity": 1
   },
   {
-    "name": "Elixir of Life (Minor)",
-    "type": "Consumable",
-    "description": "Restores 1d6 HP and grants +1 bonus to saving throws vs disease/poison for 10 min.",
-    "price": "3 gp",
-    "consumable": true,
+    "name": "Spellguard Buckler",
+    "type": "Armour",
+    "description": "+1 buckler that grants a +1 circumstance bonus to saves vs. magic while raised.",
+    "price": "150 gp",
+    "consumable": false,
     "rented": "No",
-    "quantity": 4
+    "quantity": 1
   },
   {
-    "name": "Barkskin Brew",
-    "type": "Consumable",
-    "description": "Gain +1 item bonus to AC for 10 minutes; skin toughens like bark.",
-    "price": "5 gp",
-    "consumable": true,
+    "name": "Boots of Bounding",
+    "type": "Wondrous",
+    "description": "Grants +5 ft. status bonus to Speed and a +1 item bonus to Athletics for high/long jumps.",
+    "price": "110 gp",
+    "consumable": false,
     "rented": "No",
-    "quantity": 2
+    "quantity": 1
+  },
+    {
+    "name": "Cloak of the Bat",
+    "type": "Wondrous",
+    "description": "Grants a +2 item bonus to Stealth checks in dim light or darkness. Once per day, you can glide 30 ft as a reaction when falling.",
+    "price": "500 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 1
+  },
+  {
+    "name": "Sword of the Echoing Cry",
+    "type": "Weapon",
+    "description": "+1 striking longsword. On crit, emits a burst of sound that deafens all creatures within 10 ft (DC 18 Fort, 1 round). Once per day, shout to cast Fear (DC 19).",
+    "price": "480 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 1
+  },
+  {
+    "name": "Amulet of Quickened Casting",
+    "type": "Wondrous",
+    "description": "Once per day, reduce the casting time of a 2-action spell to 1 action. Must be worn for 24h before use.",
+    "price": "525 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 1
+  },
+  {
+    "name": "Sentinel’s Aegis",
+    "type": "Shield",
+    "description": "+1 sturdy steel shield. While raised, grants a +1 item bonus to Perception and can absorb 5 extra damage once per hour (reaction).",
+    "price": "510 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 1
+  },
+  {
+    "name": "Ring of the Distant Step",
+    "type": "Wondrous",
+    "description": "Once per day, spend 2 actions to teleport 30 feet to a space you can see. Recharges on daily prep.",
+    "price": "500 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 1
   }
 ]
+
 
 /* ---------- helpers ---------- */
 function goldValue(str){const m=/([0-9]+) gp/i.exec(str);return m?+m[1]:0;}
