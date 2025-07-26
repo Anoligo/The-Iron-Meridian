@@ -180,58 +180,48 @@
 <script>
 /* ---------- mission data ---------- */
 const missionData=[
-
-  /* completed */
 {
-  name: "Shrine of the Hollow Watcher",
-  types: ["Exploration", "Combat", "Religious"],
-  rank: "Bronze",
-  length: "Medium",
-  reward: "200g + Blessing of Sudden Clarity",
-  status: "completed",
-  location: "Duskspine Ridge Cavern",
-  objective: "Anomaly neutralised; shrine sealed by collapse.",
-  steps: [],
-  extra: "The mountain is silent once more... but not empty."
+  name: "Guild Priority: Echo Containment",
+  types: ["Combat", "Crisis", "Psychic"],
+  rank: "Silver",
+  length: "Medium-Long",
+  reward: "1600g + Access to Psionic Archive Tier I",
+  status: "active",
+  location: "Ashminster Verge, Re-education Outpost Theta",
+  objective: "Disrupt Templar beacon and contain psychic outbreak.",
+  steps: [
+    "Infiltrate the perimeter of Outpost Theta",
+    "Disable or corrupt the Templar beacon",
+    "Extract any affected Guild members or civilians",
+    "Prevent the psychic broadcast from spreading beyond Ashminster"
+  ],
+  extra: "Templars have established a permanent 're-education' station in the district. Several Guild assets report memory fog, sudden compliance, or harmonic speech. Expect resistance. Expect echoes."
 },
-   /* expired */
-{
-  name: "The Mad Sorcerer’s Last Trick",
-  types: ["Investigation", "Combat"],
-  rank: "Gold",
-  length: "Long",
-  reward: "Resolved",
-  status: "expired",
-  location: "Dismal Forest",
-  objective: "Anomalous zone collapsed before resolution; unstable echoes remain.",
-  steps: [],
-  extra: "The trees no longer argue... but they remember."
-},
-{
-  name: "A Thief in the Night",
-  types: ["Investigation", "Social"],
-  rank: "Bronze",
-  length: "Short",
-  reward: "Resolved",
-  status: "expired",
-  location: "Nearby Villages",
-  objective: "Thefts ceased. Guild provided compensation.",
-  steps: [],
-  extra: "The villagers never saw the culprit. The guild’s reputation remains intact."
-},
-  /* active */
-
 {
   name: "Sinkhole Below Sable Row",
   types: ["Salvage", "Hazard", "Aberration"],
   rank: "Bronze",
   length: "Medium",
   reward: "300g + Free Potion Training",
-  status: "active",
+  status: "completed",
   location: "Collapsed cellar beneath Sable Row, Tradecity Verge",
   objective: "Descend the sinkhole, assess the cause, and retrieve any surviving cargo or citizens.",
   steps: ["Secure perimeter", "Descend the breach", "Map the unstable chasm", "Neutralize the lurking anomaly"],
   extra: "Two retrieval teams already sent. None returned. Locals report a faint chittering under the cobblestones at night."
+},
+
+{
+  name: "Guild Priority: Cluster Echo",
+  types: ["Investigation"],
+  rank: "Bronze",
+  length: "Medium",
+  reward: "1500g + Archive Access",
+  status: "expired",
+  location: "Ashminster Wilds, Site 3",
+  objective: "Investigate ruins of Subject Cluster #3.",
+  steps: ["Review notes", "Secure site", "Document anomalies", "Recover relics"],
+  extra: "Sigils may fire off enchantments.",
+  impact: "Mission collapsed into emergency containment. Psychic influence spread beyond Site 3. Future action required—pending crisis response mission."
 },
 {
   name: "Ashes at Watchpost Nine",
@@ -275,12 +265,6 @@ const missionData=[
   {name:"The Mirrorpool Pact",types:["Diplomacy","Investigation"],rank:"Silver",length:"Short-Medium",
    reward:"450g + Renown",status:"active",location:"Mirrorpool Hamlet",
    objective:"Mediate dispute with pond spirit.",steps:["Investigate","Interview locals","Resolve"],extra:"Spirits may appear as koi."},
-
-  {name:"Guild Priority: Cluster Echo",types:["Investigation"],rank:"Bronze",length:"Medium",
-   reward:"1500g + Archive Access",status:"active",location:"Ashminster Wilds, Site 3",
-   objective:"Investigate ruins of Subject Cluster #3.",
-   steps:["Review notes","Secure site","Document anomalies","Recover relics"],extra:"Sigils may fire off enchantments."},
-
 {
   name: "Ashsmoke Recovery",
   types: ["Exploration", "Salvage"],
@@ -292,16 +276,7 @@ const missionData=[
   objective: "Path became impassable after further collapse; salvage inaccessible.",
   steps: [],
   extra: "Fear of gravity confirmed."
-},
-  {name:"Mireborn Stirrings",types:["Investigation","Combat"],rank:"Bronze",length:"Medium",
-   reward:"150g + Marshsilver",status:"active",location:"South of Veilfen Marsh",
-   objective:"Probe eerie fogs and bubbling vents.",
-   steps:["Meet marsh-runners","Survey vents","Identify threat","Neutralise"],extra:"The air hums if you’re quiet."},
-
-  {name:"The Turnip Trials",types:["Combat","Arcane"],rank:"Bronze",length:"Medium",
-   reward:"300g + Crate",status:"active",location:"Ashminster Farmlands",
-   objective:"Contain arcane crop phenomena.",
-   steps:["Meet agents","Assess instability","Investigate produce","Neutralise threats","Report"],extra:"Animated vegetables on the loose."}
+}
 ];
 
 
