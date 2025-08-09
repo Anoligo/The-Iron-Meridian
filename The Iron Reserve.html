@@ -146,17 +146,9 @@
 <div id="itemContainer" class="item-container"></div>
 
 <script>
-/* ---------- unified data ---------- */
+/* ---------- unified data (updated) ---------- */
 const items = [
-  {
-    "name": "Potion of Spider Climb (Lesser)",
-    "type": "Consumable",
-    "description": "Grants spider climb effect for 1 minute.",
-    "price": "12 gp",
-    "consumable": true,
-    "rented": "No",
-    "quantity": 3
-  },
+  /* --- Restocked & curated consumables --- */
   {
     "name": "Scroll of Magic Missile (1st level)",
     "type": "Scroll",
@@ -173,7 +165,7 @@ const items = [
     "price": "3 gp",
     "consumable": true,
     "rented": "No",
-    "quantity": 6
+    "quantity": 10
   },
   {
     "name": "Tanglefoot Bag (Lesser)",
@@ -182,7 +174,16 @@ const items = [
     "price": "3 gp",
     "consumable": true,
     "rented": "No",
-    "quantity": 5
+    "quantity": 8
+  },
+  {
+    "name": "Smokestick (Lesser)",
+    "type": "Alchemical",
+    "description": "Creates a 10‑ft square of smoke for cover for 1 minute.",
+    "price": "3 gp",
+    "consumable": true,
+    "rented": "No",
+    "quantity": 6
   },
   {
     "name": "Feather Token (Ladder)",
@@ -200,7 +201,7 @@ const items = [
     "price": "4 gp",
     "consumable": true,
     "rented": "No",
-    "quantity": 6
+    "quantity": 10
   },
   {
     "name": "Potion of Healing (Lesser)",
@@ -209,7 +210,7 @@ const items = [
     "price": "12 gp",
     "consumable": true,
     "rented": "No",
-    "quantity": 5
+    "quantity": 8
   },
   {
     "name": "Potion of Antidote (Lesser)",
@@ -218,7 +219,7 @@ const items = [
     "price": "3 gp",
     "consumable": true,
     "rented": "No",
-    "quantity": 3
+    "quantity": 6
   },
   {
     "name": "Antiplague (Lesser)",
@@ -227,7 +228,7 @@ const items = [
     "price": "3 gp",
     "consumable": true,
     "rented": "No",
-    "quantity": 3
+    "quantity": 6
   },
   {
     "name": "Elixir of Life (Minor)",
@@ -236,17 +237,10 @@ const items = [
     "price": "3 gp",
     "consumable": true,
     "rented": "No",
-    "quantity": 5
+    "quantity": 6
   },
-  {
-    "name": "Barkskin Brew",
-    "type": "Consumable",
-    "description": "Gain +1 item bonus to AC for 10 minutes; skin toughens like bark.",
-    "price": "5 gp",
-    "consumable": true,
-    "rented": "No",
-    "quantity": 3
-  },
+
+  /* --- Magic items (trimmed + new mid-tier options) --- */
   {
     "name": "Bracers of Armor +1",
     "type": "Armour",
@@ -284,33 +278,6 @@ const items = [
     "quantity": 1
   },
   {
-    "name": "Thunderstrike Blade",
-    "type": "Weapon",
-    "description": "+1 striking longsword that deals 1d6 extra electricity damage on a crit. Emits a low hum when unsheathed.",
-    "price": "300 gp",
-    "consumable": false,
-    "rented": "No",
-    "quantity": 1
-  },
-  {
-    "name": "Flametongue Dagger",
-    "type": "Weapon",
-    "description": "+1 dagger that can ignite for 1 minute/day, dealing an extra 1d4 fire damage. Good for lighting torches *and* stabbing goblins.",
-    "price": "200 gp",
-    "consumable": false,
-    "rented": "No",
-    "quantity": 1
-  },
-  {
-    "name": "Spellguard Buckler",
-    "type": "Armour",
-    "description": "+1 buckler that grants a +1 circumstance bonus to saves vs. magic while raised.",
-    "price": "150 gp",
-    "consumable": false,
-    "rented": "No",
-    "quantity": 1
-  },
-  {
     "name": "Boots of Bounding",
     "type": "Wondrous",
     "description": "Grants +5 ft. status bonus to Speed and a +1 item bonus to Athletics for high/long jumps.",
@@ -319,52 +286,142 @@ const items = [
     "rented": "No",
     "quantity": 1
   },
-    {
-    "name": "Cloak of the Bat",
-    "type": "Wondrous",
-    "description": "Grants a +2 item bonus to Stealth checks in dim light or darkness. Once per day, you can glide 30 ft as a reaction when falling.",
-    "price": "500 gp",
-    "consumable": false,
-    "rented": "No",
-    "quantity": 1
-  },
+
+  /* kept: a solid ~200 gp weapon */
   {
-    "name": "Sword of the Echoing Cry",
+    "name": "Flametongue Dagger",
     "type": "Weapon",
-    "description": "+1 striking longsword. On crit, emits a burst of sound that deafens all creatures within 10 ft (DC 18 Fort, 1 round). Once per day, shout to cast Fear (DC 19).",
-    "price": "480 gp",
+    "description": "+1 dagger that can ignite for 1 minute/day, dealing an extra 1d4 fire damage.",
+    "price": "200 gp",
     "consumable": false,
     "rented": "No",
     "quantity": 1
   },
+
+  /* new ~200 gp items */
   {
-    "name": "Amulet of Quickened Casting",
+    "name": "Traveler’s Camouflage Cloak",
     "type": "Wondrous",
-    "description": "Once per day, reduce the casting time of a 2-action spell to 1 action. Must be worn for 24h before use.",
-    "price": "525 gp",
+    "description": "+1 item bonus to Stealth in natural terrain; advantage on checks to Track you is negated while the cloak’s hood is up.",
+    "price": "200 gp",
     "consumable": false,
     "rented": "No",
     "quantity": 1
   },
   {
-    "name": "Sentinel’s Aegis",
-    "type": "Shield",
-    "description": "+1 sturdy steel shield. While raised, grants a +1 item bonus to Perception and can absorb 5 extra damage once per hour (reaction).",
-    "price": "510 gp",
-    "consumable": false,
-    "rented": "No",
-    "quantity": 1
-  },
-  {
-    "name": "Ring of the Distant Step",
+    "name": "Ring of Retrieval",
     "type": "Wondrous",
-    "description": "Once per day, spend 2 actions to teleport 30 feet to a space you can see. Recharges on daily prep.",
+    "description": "Once per day, Interact at range 20 ft to draw a unattended object of light Bulk to hand (line of effect required).",
+    "price": "200 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 1
+  },
+
+  /* new ~500 gp items */
+  {
+    "name": "Mirror of Second Chances",
+    "type": "Wondrous",
+    "description": "Once per day, after you fail a skill check, you can reroll it with a +1 item bonus.",
     "price": "500 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 1
+  },
+  {
+    "name": "Stormwarden’s Buckle",
+    "type": "Wondrous",
+    "description": "Belt buckle; grants electricity resistance 2 and once per day lets you ignore the ‘clumsy’ condition for 1 minute.",
+    "price": "500 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 1
+  },
+
+  /* --- Fundamental & property runes (priced) --- */
+  {
+    "name": "Weapon Potency Rune (+1)",
+    "type": "Rune",
+    "description": "Grants +1 item bonus to attack rolls when etched on a weapon.",
+    "price": "35 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 2
+  },
+  {
+    "name": "Striking Rune",
+    "type": "Rune",
+    "description": "Upgrades weapon damage dice to 2 dice.",
+    "price": "65 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 2
+  },
+  {
+    "name": "Weapon Potency Rune (+2)",
+    "type": "Rune",
+    "description": "Grants +2 item bonus to attack rolls when etched on a weapon.",
+    "price": "935 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 1
+  },
+  {
+    "name": "Armor Potency Rune (+1)",
+    "type": "Rune",
+    "description": "Grants +1 item bonus to AC",
+    "price": "160 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 2
+  },
+    {
+    "name": "Rune: Armor Potency (+2)",
+    "type": "Rune",
+    "description": "Increases the armor's item bonus to AC by 2 and allows for property runes.",
+    "price": "935 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 1
+  },
+  {
+    "name": "Resilient Rune",
+    "type": "Rune",
+    "description": "Grants +1 item bonus to all saves when etched on armor.",
+    "price": "340 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 1
+  },
+  {
+    "name": "Ghost Touch Rune",
+    "type": "Rune",
+    "description": "Weapon property rune; strike incorporeal creatures without the usual resistance.",
+    "price": "75 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 1
+  },
+  {
+    "name": "Returning Rune",
+    "type": "Rune",
+    "description": "Weapon property rune; thrown weapon flies back to your hand.",
+    "price": "55 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 1
+  },
+  {
+    "name": "Flaming Rune",
+    "type": "Rune",
+    "description": "Weapon property rune; deals +1d6 fire on hits while activated.",
+    "price": "140 gp",
     "consumable": false,
     "rented": "No",
     "quantity": 1
   }
-]
+];
+
 
 
 /* ---------- helpers ---------- */

@@ -15,185 +15,337 @@
       text-align: center;
       color: #4b2c20;
     }
+    .controls {
+      margin-bottom: 1em;
+      text-align: center;
+    }
+    select, input[type="text"] {
+      padding: 0.5em;
+      margin: 0.5em;
+      font-size: 1em;
+    }
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 2em;
+      margin-top: 1em;
     }
     th, td {
       border: 1px solid #4b2c20;
       padding: 0.75em;
       text-align: left;
+      vertical-align: top;
     }
     th {
       background-color: #d7cbbd;
+      cursor: pointer;
     }
     tr:nth-child(even) {
       background-color: #f8f6f2;
+    }
+    .details {
+      display: none;
+      white-space: pre-wrap;
+      font-size: 0.95em;
+      background-color: #fbf9f5;
+    }
+    .expandable:hover {
+      background-color: #eee4d9;
+    }
+    strong.item-name {
+      font-size: 1.1em;
+    }
+    .detail-label {
+      font-weight: bold;
+      color: #4b2c20;
     }
   </style>
 </head>
 <body>
   <h1>📘 Iron Meridian - Custom Magic Item Ledger</h1>
 
+  <div class="controls">
+    <label for="filter">Filter by Type:</label>
+    <select id="filter">
+      <option value="">All</option>
+      <option value="Worn">Worn</option>
+      <option value="Wondrous">Wondrous</option>
+      <option value="Consumable">Consumable</option>
+      <option value="Alchemical">Alchemical</option>
+      <option value="Weapon">Weapon</option>
+    </select>
+    <label for="search">Search:</label>
+    <input type="text" id="search" placeholder="Search item names...">
+  </div>
+
   <table>
     <thead>
       <tr>
-        <th>Item Name</th>
-        <th>Type</th>
-        <th>Level</th>
+        <th onclick="sortTable(0)">Item Name</th>
+        <th onclick="sortTable(1)">Type</th>
+        <th onclick="sortTable(2)">Level</th>
         <th>Effect Summary</th>
-        <th>Craft DC</th>
+        <th onclick="sortTable(4)">Craft DC</th>
       </tr>
     </thead>
-    <tbody id="item-table-body">
-    </tbody>
+    <tbody id="item-table-body"></tbody>
   </table>
 
   <script>
-  small obsidian coin, carved with a slit-eye mark
     const itemData = [
       {
-  "name": "Obsidian Coin of the Cloakmark",
-  "type": "Wondrous Item",
-  "level": 2,
-  "rarity": "Uncommon",
-  "material": "Polished volcanic obsidian",
-  "description": "A small, flat obsidian coin etched with a slit-pupil eye. Used by Iron Meridian covert agents as a mark of favor, training, or silent recognition. Said to originate from an old Nightwatcher sect, or possibly something far older and watchful.",
-  "traits": ["Invested", "Social", "Symbolic"],
-  "effect": [
-    "Functions as a badge of recognition among underground networks affiliated with the Iron Meridian.",
-    "Once per session, grants a +1 circumstance bonus to a Stealth or Deception check in an urban environment when used as a signal or proof of identity (GM's discretion).",
-    "Can be shown to certain NPCs to unlock secret dialogue, access, or missions."
-  ],
+        "name": "Whispershard Sabers",
+        "type": "Worn, Magical (Void Daggers)",
+        "level": 5,
+        "effect": `🧩 Twin Void Daggers\nTraits: Agile, Finesse, Twin, Aberration, Mental, Invested\nDamage (each): 1d6 slashing + 1d4 mental\n+3 item bonus to attacks\nSword Crit Spec: Target becomes Off-Guard\n\n🌀 While Dual-Wielding:\n• Resistance 2 to Mental\n• Hitting with both sabers: Flat-Footed until next turn\n• Crits emit psychic chittering (audible to Styx only)\n\n🔮 Synaptic Shear (1/day, 2 Actions):\nStrike with both sabers. If at least one hits, +1d4 mental and DC 17 Will Save:\nFail: Stupefied 1 (1 round)\nCrit Fail: Stupefied 2\nSuccess: No effect (still spooky)`,
+        "craftDC": 21
+      },
+      {
+        "name": "Obsidian Coin of the Cloakmark",
+        "type": "Wondrous Item",
+        "level": 2,
+        "effect": "Functions as a badge of recognition; +1 to Stealth or Deception once per session in urban environments; unlocks secret NPC interactions.",
+        "craftDC": 17
+      },
+      {
+        "name": "Ancient Dwarven Rug",
+        "type": "Wondrous Item (Unique)",
+        "level": "—",
+        "effect": "Encoded with hidden lore; may reveal secrets if studied. Can be restored to unlock powers.",
+        "craftDC": "—"
+      },
+      {
+        "name": "Echo Gem",
+        "type": "Wondrous, Consumable",
+        "level": 2,
+        "effect": "Records a whispered phrase and replays it once per day. Currently stores... flatulence.",
+        "craftDC": 14
+      },
+      {
+        "name": "Moonstone Pendant",
+        "type": "Worn, Magical",
+        "level": 2,
+        "effect": "Glows near undead; +1 vs mental/fear saves 1/day; reveals 1 spirit question if used in shrine (1/week).",
+        "craftDC": 15
+      },
+      {
+        "name": "Whispering Ring",
+        "type": "Worn, Magical",
+        "level": 3,
+        "effect": "Cast Message at will; Calm Emotions 1/day (DC 16); faint background whispers when inactive.",
+        "craftDC": 16
+      },
+      {
+        "name": "Copperleaf Journal",
+        "type": "Unique Lore Item (non-magical)",
+        "level": "—",
+        "effect": "–2 DC to Religion/Diplomacy checks vs Serelith; contains failed soul-retort ritual notes.",
+        "craftDC": "—"
+      },
+      {
+        "name": "Catalytic Core Shard",
+        "type": "Alchemical Reagent",
+        "level": 3,
+        "effect": "+1 item bonus to Crafting acid/fire bombs; worth 25 gp.",
+        "craftDC": 15
+      },
+      {
+        "name": "Intact Alchemical Heart",
+        "type": "Consumable, Alchemical Reagent",
+        "level": 4,
+        "effect": "Functions once as a Lesser Elemental Gem – Fire; worth 50 gp.",
+        "craftDC": 15
+      },
+      {
+        "name": "Branna’s Bakefire Biscuits",
+        "type": "Consumable, Alchemical, Food",
+        "level": 1,
+        "effect": "+1 to saves vs fatigue & fear for 1 hour; Crit = 1d8 healing.",
+        "craftDC": 15
+      },
+      {
+        "name": "Riverwarden's Aegis",
+        "type": "Worn, Magical (Abjuration)",
+        "level": 2,
+        "effect": "+1 saves vs Redwater corruption; once/day chime grants +1 vs negative conditions for 1 min.",
+        "craftDC": "—"
+      },
+      {
+        "name": "Dried Moonpetal",
+        "type": "Consumable, Herb (Non-magical)",
+        "level": 1,
+        "effect": "Brewed into tea grants +1 Will save vs fear for 1 hour.",
+        "craftDC": 14
+      },
+      {
+        "name": "Clockwork Bird with Shifting Plumage",
+        "type": "Wondrous, Magical",
+        "level": 2,
+        "effect": "Wound with Thievery DC 10; shifts colors for 1 min; nearby allies get +1 to overcome minor negative condition.",
+        "craftDC": 14
+      },
+{
+  "name": "Void-Eater's Greataxe",
+  "type": "Weapon, Magical (Evocation, Aberration, Mental)",
+  "level": 6,
+  "traits": ["Uncommon", "Evocation", "Aberration", "Invested", "Mental", "Weapon"],
+  "baseWeapon": "Greataxe",
+  "damage": "1d8 slashing + 1d6 mental",
+  "attackBonus": "+5 item bonus to attack rolls",
+  "proficiency": "Martial",
+  "group": "Axe",
+  "effect": `🪓 Psychic Void Greataxe
+Crafted from hardened Akata carapace, this greataxe hums with discordant psychic energy. Faint cosmic motes drift across its chitinous blades, and it emits low chittering when swung.
+
+Passive (Invested):
+• Gain Resistance 2 to Mental damage while wielded and invested.
+• All Strikes include an additional 1d6 mental damage from psychic resonance.
+
+🔮 Void Resonance Slash (1/day, 2 Actions):
+Make a Strike. If it hits, deal 1d8 slashing + 2d6 mental. Target must attempt a DC 16 Will save:
+• ❌ Fail: Stupefied 1 for 1 round
+• ❌ Crit Fail: Up to GM discretion
+• ✅ Success: No effect (still unsettling)
+
+Lore:
+Forged from petrified essence of a great Akata, this axe slumbered for millennia beneath Sable Row. Its reawakening distorted reality, triggered the sinkhole, and drew nearby Akata like a beacon.`,
+  "craftDC": 22,
+  "bulk": 2,
+  "usage": "Held in 2 hands",
   "lore": [
-    "Known among covert Iron Meridian operatives as a 'Cloakmark'.",
-    "Used by Kex of the Quiet Path to mark promising agents or quiet allies.",
-    "Its slit-eye marking is rumored to be borrowed from a long-defunct sect of dusk-born watchers or mimic cults."
+    "Crafted from ancient Akata remains, the axe was long buried beneath Sable Row in a forgotten Imperial vault.",
+    "Its reawakening caused a subtle warp in the land, leading to the collapse that revealed it.",
+    "Akata were drawn to its psychic hum across vast distances or planes."
   ],
-  "value": "2 gp (as raw obsidian); priceless to those who know its meaning",
-  "craftDC": 17,
-  "notableQuotes": [
-    "If Kex gives you one… it means he wants you to be seen by the right people, or not seen at all.",
-    "One-eyed coins for one-eyed lies."
+  "value": "Unknown — likely a priceless Akata relic"
+},
+{
+  "name": "Echo Cyst Familiar Core",
+  "type": "Familiar Upgrade, Magical (Void, Mental)",
+  "level": 4,
+  "traits": ["Magical", "Void", "Mental", "Custom", "Familiar", "Invested"],
+  "effect": `🌑 Void Echo Aura (Laszlo only)
+• 15-foot emanation from Laszlo (the familiar)
+• Enemies within take –1 to Will, Fortitude, and Reflex saves vs mental effects
+• Aura hums with whispered chimes—only audible to those with lingering guilt
+• Quirk: Laszlo has started mimicking ObsidianIvy's sinister laugh
+
+🛠️ Installed via cranial echo-socket and anchored bone-thread glyphs`,
+  "craftDC": 21,
+  "value": "125 gp (custom familiar core)",
+  "usage": "Familiar upgrade (requires bat or suitable cranial cavity)",
+  "bulk": "L (as installed item)",
+  "installation": {
+    "crafter": "ObsidianIvy",
+    "familiar": "Laszlo the Bat 🦇",
+    "location": "Iron Meridian Guild Workshop",
+    "timeSpent": "2 days",
+    "skillUsed": "Arcana +9",
+    "roll": "18 + 9 = 27",
+    "materials": [
+      "Residual whisperglass",
+      "Bat-safe cranial implant resin",
+      "Echo-threaded bone filament",
+      "Crystallized drop of ObsidianIvy’s voice"
+    ]
+  },
+  "lore": [
+    "Laszlo now contains an unstable yet non-hostile void symbiote.",
+    "The aura affects enemies’ mental defenses with subtle emotional resonance.",
+    "After awakening, Laszlo whispered: 'All things return to silence. I’m fine, thank you.'",
+    "Solen Telvair refused to enter the room for 24 hours."
   ]
 },
 {
-  "name": "Ancient Dwarven Rug",
-  "type": "Wondrous Item (Unique)",
-  "level": null,
-  "rarity": "Unique",
-  "bulk": 2,
-  "value": "8 gp (as artisan dwarfwork)",
-  "condition": "Cleaned",
-  "description": "A thick, geometric rug of ancient dwarven make, woven from deepvault wool and reinforced hide. The pattern includes interlocking chevrons and subtle knotwork, possibly encoded with clan secrets. It bears the signs of age and once-hidden metallic threading.",
-  "traits": ["Cultural", "Heirloom", "Encoded"],
+  "name": "Sommelier's Spectacles",
+  "type": "Wondrous Item (Divination)",
+  "level": 1,
+  "traits": ["Uncommon", "Divination", "Worn", "Consumable", "Crafting"],
+  "effect": `👓 Once per day, when worn:
+• Grants a +1 item bonus to Crafting checks
+• Applies only to tasks related to food, beverages, or alchemy
+• Lens shimmer when identifying rare wines or cursed chutneys`,
+  "craftDC": 14,
+  "value": "8 gp",
+  "usage": "Worn (eyewear)",
+  "bulk": "L",
   "lore": [
-    "The style is associated with the Stonebind Clan, believed wiped out in a siege-collapse nearly 200 years ago.",
-    "Such rugs were often woven as encoded family records or schematic maps, legible to those trained in Dwarven or Engineering Lore.",
-    "May contain elemental resonance from centuries near a dwarven forge."
+    "A staple among high-end guild tasters and culinary artificers.",
+    "Crafted by the eccentric diviner Gourmand Elvet, who claimed to 'taste the future through fermented fruit.'"
   ],
-  "effect": [
-    "No magical effect in current state.",
-    "May be deciphered via Crafting, Dwarven Lore, or Engineering Lore (DC 17) to reveal deeper purpose.",
-    "Could serve as a focus in future dwarven rituals, forgework, or restoration magic.",
-    "If properly restored or enchanted, it may become a functional magical item or ritual focus."
-  ],
-  "hooks": [
-    "Detect Magic currently yields no aura — but this may change with restoration or reactivation.",
-    "Hidden mithral thread and faded sigils suggest it was made with intent beyond decoration.",
-    "Might be tied to a greater dwarven mystery or relic network — possibly a partial map or schematic."
-  ],
-  "notableQuotes": [
-    "Wasn't just dirty — it was hiding." – Bezza, after cleaning the rug
-  ]
-},
+  "locationFound": "Area 3"
+}
 
-	  {
-        name: "Echo Gem",
-        type: "Wondrous, Consumable",
-        level: 2,
-        effect: "Records a whispered phrase (6 sec) and replays it once per day. Currently stores... flatulence.",
-        craftDC: 14
-      },
-      {
-        name: "Moonstone Pendant",
-        type: "Worn, Magical",
-        level: 2,
-        effect: "Glows near undead; +1 vs mental/fear saves 1/day; reveals 1 spirit question if used in shrine (1/week).",
-        craftDC: 15
-      },
-      {
-        name: "Whispering Ring",
-        type: "Worn, Magical",
-        level: 3,
-        effect: "Cast Message at will; Calm Emotions 1/day (DC 16); faint background whispers when inactive.",
-        craftDC: 16
-      },
-      {
-        name: "Copperleaf Journal",
-        type: "Unique Lore Item (non-magical)",
-        level: "—",
-        effect: "Grants –2 DC to Religion/Diplomacy checks vs Serelith if referenced; contains failed soul-retort ritual notes.",
-        craftDC: "—"
-      },
-      {
-        name: "Catalytic Core Shard",
-        type: "Alchemical Reagent",
-        level: 3,
-        effect: "+1 item bonus to Crafting acid/fire bombs; valuable alchemical component (worth 25 gp).",
-        craftDC: 15
-      },
-      {
-        name: "Intact Alchemical Heart",
-        type: "Consumable, Alchemical Reagent",
-        level: 4,
-        effect: "If salvaged properly, functions once as a Lesser Elemental Gem – Fire; worth 50 gp.",
-        craftDC: 15
-      },
-      {
-        name: "Branna’s Bakefire Biscuits",
-        type: "Consumable, Alchemical, Food",
-        level: 1,
-        effect: "+1 to saves vs fatigue & fear for 1 hour; bonus to Endurance if eaten at breakfast; Crit = 1d8 healing",
-        craftDC: 15
-      },
-	  {
-    "name": "Riverwarden's Aegis",
-    "type": "Worn, Magical (Abjuration)",
-    "level": 2,
-    "effect": "While worn, +1 bonus on saves vs. effects from corrupted Redwater/creatures influenced by its blight. Once per day, if opened, emits a clear chime (30ft radius) granting +1 bonus on next save vs. minor negative condition (fear, sickened, temp penalties) for 1 min. Corrupted creatures may be staggered (Will DC 14 negates). Potential for greater cleansing effects if awakened.",
-    "craftDC": "—"
-  },
-  {
-    "name": "Dried Moonpetal",
-    "type": "Consumable, Herb (Non-magical)",
-    "level": 1,
-    "effect": "Can be brewed into tea. Grants +1 bonus on Will saves vs. fear effects for 1 hour. (Value: 5 sp per bundle)",
-    "craftDC": 14
-  },
-  {
-    "name": "Clockwork Bird with Shifting Plumage",
-    "type": "Wondrous, Magical",
-    "level": 2,
-    "effect": "When wound (Thievery DC 10), it chirps and brass feathers shift colors for 1 minute. During this time, creatures within 10 ft suffering a minor negative condition (+1 bonus on next save to overcome that condition). (Value: 40-60 gp)",
-    "craftDC": 14
-  }
     ];
 
-    const tableBody = document.getElementById('item-table-body');
 
-    itemData.forEach(item => {
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td><strong>${item.name}</strong></td>
-        <td>${item.type}</td>
-        <td>${item.level}</td>
-        <td>${item.effect}</td>
-        <td>${item.craftDC}</td>
-      `;
-      tableBody.appendChild(row);
-    });
+    const tableBody = document.getElementById('item-table-body');
+    const filter = document.getElementById('filter');
+    const search = document.getElementById('search');
+
+    function renderTable(items) {
+      tableBody.innerHTML = '';
+      items.forEach((item, index) => {
+        const row = document.createElement('tr');
+        row.classList.add('expandable');
+        row.onclick = () => {
+          const next = row.nextElementSibling;
+          if (next && next.classList.contains('details')) {
+            next.style.display = next.style.display === 'table-row' ? 'none' : 'table-row';
+          }
+        };
+
+        row.innerHTML = `
+          <td><strong class="item-name">${item.name}</strong></td>
+          <td>${item.type}</td>
+          <td>${item.level ?? '—'}</td>
+          <td>${item.effect.split("\n")[0]}</td>
+          <td>${item.craftDC ?? '—'}</td>
+        `;
+
+        const detailRow = document.createElement('tr');
+        detailRow.className = 'details';
+        let extraDetails = '';
+        if (item.baseWeapon) extraDetails += `<div><span class='detail-label'>Base Weapon:</span> ${item.baseWeapon}</div>`;
+        if (item.damage) extraDetails += `<div><span class='detail-label'>Damage:</span> ${item.damage}</div>`;
+        if (item.attackBonus) extraDetails += `<div><span class='detail-label'>Attack Bonus:</span> ${item.attackBonus}</div>`;
+        if (item.group) extraDetails += `<div><span class='detail-label'>Weapon Group:</span> ${item.group}</div>`;
+        if (item.proficiency) extraDetails += `<div><span class='detail-label'>Proficiency:</span> ${item.proficiency}</div>`;
+        if (item.traits) extraDetails += `<div><span class='detail-label'>Traits:</span> ${item.traits.join(', ')}</div>`;
+        if (item.bulk) extraDetails += `<div><span class='detail-label'>Bulk:</span> ${item.bulk}</div>`;
+        if (item.usage) extraDetails += `<div><span class='detail-label'>Usage:</span> ${item.usage}</div>`;
+
+        detailRow.innerHTML = `<td colspan="5">${extraDetails}<br><br>${item.effect.replaceAll('\n', '<br>')}</td>`;
+
+        tableBody.appendChild(row);
+        tableBody.appendChild(detailRow);
+      });
+    }
+
+    function filterAndSearch() {
+      const type = filter.value.toLowerCase();
+      const term = search.value.toLowerCase();
+      const filtered = itemData.filter(item => {
+        return (!type || item.type.toLowerCase().includes(type)) &&
+               (!term || item.name.toLowerCase().includes(term));
+      });
+      renderTable(filtered);
+    }
+
+    function sortTable(columnIndex) {
+      const key = ['name', 'type', 'level', null, 'craftDC'][columnIndex];
+      if (!key) return;
+      itemData.sort((a, b) => {
+        if (a[key] == null) return 1;
+        if (b[key] == null) return -1;
+        return a[key] > b[key] ? 1 : -1;
+      });
+      filterAndSearch();
+    }
+
+    filter.addEventListener('change', filterAndSearch);
+    search.addEventListener('input', filterAndSearch);
+
+    renderTable(itemData);
   </script>
 </body>
 </html>
