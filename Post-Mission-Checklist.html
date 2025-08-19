@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Iron Meridian – Post‑Mission Checklist</title>
+<style>
+  :root{
+    --bg:#151515; --card:#1f1f1f; --ink:#f5f5f5; --muted:#b9b9b9;
+    --accent:#ffc107; --accent-soft:#ffe082; --ok:#35c759; --warn:#ff9f0a;
+    --border:#2e2e2e; --radius:14px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; background:linear-gradient(180deg,#131313,#1a1a1a 30%,#121212);
+    color:var(--ink); font:16px/1.5 "Segoe UI",Tahoma,Verdana,sans-serif;
+  }
+  header{
+    position:sticky; top:0; z-index:5;
+    backdrop-filter: blur(6px);
+    background:rgba(21,21,21,.7); border-bottom:1px solid var(--border);
+  }
+  .wrap{max-width:1000px; margin:0 auto; padding:16px}
+  h1{margin:.2rem 0 0; font-weight:700; letter-spacing:.3px}
+  .sub{color:var(--muted); font-size:.95rem}
+
+  /* controls */
+  .toolbar{
+    display:flex; flex-wrap:wrap; gap:.5rem; margin:.75rem 0 0;
+  }
+  button{
+    background:#252525; color:var(--ink); border:1px solid var(--border);
+    border-radius:10px; padding:.55rem .85rem; cursor:pointer;
+  }
+  button:hover{border-color:#3a3a3a; transform:translateY(-1px)}
+  button.primary{background:var(--accent); color:#2a1c00; border-color:#c28900}
+  button.ghost{background:transparent}
+  .spacer{flex:1}
+
+  main{padding:18px 16px 40px}
+  .grid{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:16px;
+  }
+  section.card{
+    background:var(--card); border:1px solid var(--border);
+    border-radius:var(--radius); padding:14px 14px 6px;
+    box-shadow:0 4px 20px rgba(0,0,0,.25);
+  }
+  .head{
+    display:flex; align-items:center; gap:.6rem; margin:2px 0 10px;
+  }
+  .head h2{font-size:1.05rem; margin:0}
+  .pill{
+    margin-left:auto; font-size:.8rem; color:#0f0; background:#0f0a;
+    padding:.15rem .5rem; border-radius:999px; border:1px solid #0f0;
+  }
+  .pill.warn{color:var(--warn); border-color:var(--warn); background:#ff9f0a11}
+  .list{display:grid; gap:.35rem}
+  label.cb{
+    display:flex; gap:.6rem; align-items:flex-start; padding:.4rem .5rem;
+    border-radius:10px; border:1px solid transparent;
+  }
+  label.cb:hover{background:#2a2a2a}
+  input[type="checkbox"]{transform:translateY(2px)}
+  .muted{color:var(--muted); font-size:.92rem}
+  .foot{
+    display:flex; gap:.5rem; align-items:center; margin-top:10px; padding-top:8px;
+    border-top:1px dashed var(--border);
+  }
+  .foot .count{margin-left:auto; color:var(--muted); font-size:.9rem}
+  .kudos{
+    margin-top:18px; text-align:center; color:var(--muted); font-size:.9rem;
+  }
+  .kudos b{color:var(--accent)}
+  @media print{
+    header,.toolbar,.kudos{display:none !important}
+    body{background:#fff; color:#000}
+    section.card{break-inside:avoid; border-color:#ddd; box-shadow:none}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>Iron Meridian – Post‑Mission Checklist</h1>
+    <div class="sub">Tick items as you wrap. No saving. Print if you want a paper copy.</div>
+    <div class="toolbar">
+      <button class="primary" id="btn-all-done">Mark Everything Done</button>
+      <button class="ghost" id="btn-clear-all">Clear All</button>
+      <div class="spacer"></div>
+      <button id="btn-collapse">Collapse All</button>
+      <button id="btn-expand">Expand All</button>
+      <button onclick="window.print()">Print</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="grid" id="grid">
+    <!-- Reports & Records -->
+    <section class="card section" data-section="reports">
+      <div class="head">
+        <span aria-hidden="true">📜</span>
+        <h2>Reports & Records</h2>
+        <span class="pill warn" data-pill>0/3</span>
+      </div>
+      <div class="list">
+        <label class="cb"><input type="checkbox" /> Generate Mission Report HTML</label>
+        <label class="cb"><input type="checkbox" /> Update Mission Reports Main Page HTML</label>
+        <label class="cb"><input type="checkbox" /> Post Mission Report Discord Notice</label>
+      </div>
+      <div class="foot">
+        <button data-action="check-all">Check All</button>
+        <button data-action="clear-section">Clear</button>
+        <span class="count muted" data-count></span>
+      </div>
+    </section>
+
+    <!-- Loot & Inventory -->
+    <section class="card section" data-section="loot">
+      <div class="head">
+        <span aria-hidden="true">🧰</span>
+        <h2>Loot & Inventory</h2>
+        <span class="pill warn" data-pill>0/4</span>
+      </div>
+      <div class="list">
+        <label class="cb"><input type="checkbox" /> Update Custom Items HTML with any new custom items</label>
+        <label class="cb"><input type="checkbox" /> Process sales to Iron Reserve and any appraisals</label>
+        <label class="cb"><input type="checkbox" /> Update Iron Reserve HTML</label>
+        <label class="cb"><input type="checkbox" /> Post Iron Reserve Discord Notice</label>
+      </div>
+      <div class="foot">
+        <button data-action="check-all">Check All</button>
+        <button data-action="clear-section">Clear</button>
+        <span class="count muted" data-count></span>
+      </div>
+    </section>
+
+    <!-- Mission Board -->
+    <section class="card section" data-section="board">
+      <div class="head">
+        <span aria-hidden="true">🗺️</span>
+        <h2>Mission Board</h2>
+        <span class="pill warn" data-pill>0/4</span>
+      </div>
+      <div class="list">
+        <label class="cb"><input type="checkbox" /> Mark missions Completed or Expired</label>
+        <label class="cb"><input type="checkbox" /> Add or Generate new missions</label>
+        <label class="cb"><input type="checkbox" /> Update Mission Board HTML</label>
+        <label class="cb"><input type="checkbox" /> Post Mission Board Discord Notice</label>
+      </div>
+      <div class="foot">
+        <button data-action="check-all">Check All</button>
+        <button data-action="clear-section">Clear</button>
+        <span class="count muted" data-count></span>
+      </div>
+    </section>
+
+    <!-- Downtime -->
+    <section class="card section" data-section="downtime">
+      <div class="head">
+        <span aria-hidden="true">⏳</span>
+        <h2>Downtime</h2>
+        <span class="pill warn" data-pill>0/3</span>
+      </div>
+      <div class="list">
+        <label class="cb"><input type="checkbox" /> Decide Downtime allotment</label>
+        <label class="cb"><input type="checkbox" /> Post Downtime Discord Message</label>
+        <label class="cb"><input type="checkbox" /> Process Downtime requests</label>
+      </div>
+      <div class="foot">
+        <button data-action="check-all">Check All</button>
+        <button data-action="clear-section">Clear</button>
+        <span class="count muted" data-count></span>
+      </div>
+    </section>
+  </div>
+
+  <div class="kudos">
+    <span>“Ledger first. Loot second. <b>Turnips third</b>.” — Guildmaster Nil</span>
+  </div>
+</main>
+
+<script>
+(function(){
+  const sections = [...document.querySelectorAll('.section')];
+
+  function updateSection(section){
+    const boxes = [...section.querySelectorAll('input[type="checkbox"]')];
+    const done = boxes.filter(b=>b.checked).length;
+    const total = boxes.length;
+    const pill = section.querySelector('[data-pill]');
+    const count = section.querySelector('[data-count]');
+    pill.textContent = `${done}/${total}`;
+    pill.classList.toggle('warn', done<total);
+    pill.style.color = done===total ? 'var(--ok)' : 'var(--warn)';
+    pill.style.borderColor = done===total ? 'var(--ok)' : 'var(--warn)';
+    pill.style.background = done===total ? '#35c75914' : '#ff9f0a11';
+    count.textContent = done===total ? 'Section complete' : `${total-done} remaining`;
+  }
+
+  function updateAll(){ sections.forEach(updateSection); }
+  updateAll();
+
+  // checkbox listeners
+  sections.forEach(sec=>{
+    sec.addEventListener('change', e=>{
+      if(e.target.matches('input[type="checkbox"]')) updateSection(sec);
+    });
+    // buttons inside a section
+    sec.addEventListener('click', e=>{
+      const btn = e.target.closest('button[data-action]');
+      if(!btn) return;
+      const boxes = sec.querySelectorAll('input[type="checkbox"]');
+      if(btn.dataset.action==='check-all'){ boxes.forEach(b=>b.checked=true); }
+      if(btn.dataset.action==='clear-section'){ boxes.forEach(b=>b.checked=false); }
+      updateSection(sec);
+    });
+  });
+
+  // global controls
+  document.getElementById('btn-clear-all').addEventListener('click', ()=>{
+    sections.forEach(sec=>sec.querySelectorAll('input[type="checkbox"]').forEach(b=>b.checked=false));
+    updateAll();
+  });
+  document.getElementById('btn-all-done').addEventListener('click', ()=>{
+    sections.forEach(sec=>sec.querySelectorAll('input[type="checkbox"]').forEach(b=>b.checked=true));
+    updateAll();
+  });
+  document.getElementById('btn-collapse').addEventListener('click', ()=>{
+    document.querySelectorAll('.list,.foot').forEach(el=>el.style.display='none');
+  });
+  document.getElementById('btn-expand').addEventListener('click', ()=>{
+    document.querySelectorAll('.list,.foot').forEach(el=>el.style.display='grid');
+    document.querySelectorAll('.foot').forEach(el=>el.style.display='flex');
+  });
+})();
+</script>
+</body>
+</html>

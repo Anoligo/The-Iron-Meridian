@@ -273,7 +273,189 @@ Forged from petrified essence of a great Akata, this axe slumbered for millennia
     "Crafted by the eccentric diviner Gourmand Elvet, who claimed to 'taste the future through fermented fruit.'"
   ],
   "locationFound": "Area 3"
-}
+},
+{
+    "name": "Aural Dampener (Mk I)",
+    "type": "Worn Gadget (Wondrous)",
+    "level": 2,
+    "traits": ["Uncommon","Auditory","Mental","Invested"],
+    "effect": `🎧 Field jammer against psi-noise
+• While worn and invested: +1 circumstance bonus to Will saves vs. mental hazards and auditory psychic effects.
+• Action — Activate (1 action): Until the start of your next turn, you ignore penalties from sustained “hum”/echo hazards.
+Notes: Issued to Theta team (qty: 4). Reusable; requires 10 minutes to re-tune after heavy exposure.`,
+    "craftDC": 17,
+    "value": "15 gp",
+    "usage": "Worn (headset/earcuff)",
+    "bulk": "L"
+  },
+  {
+    "name": "Mind‑Shielding Amulet",
+    "type": "Worn, Magical (Abjuration)",
+    "level": 3,
+    "traits": ["Uncommon","Abjuration","Invested"],
+    "effect": `🛡️ Quiet‑mind charm
+• While invested: +1 item bonus to Will saves vs. mental effects.
+• 1/day — Mind Over Matter (free action): Gain Resistance 5 mental until start of your next turn.`,
+    "craftDC": 19,
+    "value": "55 gp",
+    "usage": "Worn (necklace)",
+    "bulk": "L"
+  },
+  {
+    "name": "Ethereal Capacitor",
+    "type": "Consumable, Wondrous (Techno‑Occult)",
+    "level": 3,
+    "traits": ["Uncommon","Occult","Magitech","Consumable"],
+    "effect": `⚡ Beacon breaker (one‑use)
+Interact to discharge within 10 ft of a psychic device, construct, or echo‑hazard. Attempt a counteract vs. mental/occult effect at +9:
+• Crit Success: Device shuts down 1 minute (or hazard disabled).
+• Success: Suppressed 1 round; targets linked to it take –2 circumstance to checks/DCs that round.
+• Failure: No effect. On a critical failure, you take 1d6 mental.`,
+    "craftDC": 20,
+    "value": "25 gp",
+    "usage": "Held; Interact (discharge)",
+    "bulk": "L"
+  },
+  {
+    "name": "Hylas’s Blade",
+    "type": "Weapon, Magical (+1 Striking Bastard Sword)",
+    "level": 4,
+    "traits": ["Magical","Versatile"],
+    "baseWeapon": "Bastard Sword",
+    "damage": "2d8 slashing (two‑hand d12)",
+    "attackBonus": "+1 item bonus (Striking rune)",
+    "group": "Sword",
+    "effect": `Austere, void‑etched greatblade once attuned to the Relay’s cadence. While the wielder is affected by a mental effect, their first Strike each round against the source gains +1 status to damage.`,
+    "craftDC": 19,
+    "value": "100 gp",
+    "usage": "1 or 2 hands",
+    "bulk": 2
+  },
+  {
+    "name": "Aetheric Clarity Brew",
+    "type": "Consumable, Alchemical (Elixir)",
+    "level": 2,
+    "traits": ["Alchemical","Consumable"],
+    "effect": `🧪 Drink to steady the signal
+For 1 minute: +1 circumstance bonus to Will saves and Occultism checks vs. psychic/aberrant effects.`,
+    "craftDC": 16,
+    "value": "15 gp",
+    "usage": "Drink",
+    "bulk": "—"
+  },
+  {
+    "name": "Cognitive Dampener",
+    "type": "Consumable, Alchemical (Toxin/Elixir)",
+    "level": 2,
+    "traits": ["Alchemical","Ingested"],
+    "effect": `⚠️ Mind‑muddling draught
+Fort DC 15 on ingest:
+• Fail: Stupefied 1 for 1 hour.
+• Crit Fail: Stupefied 2 for 10 minutes, then 1 for remainder.
+• Success: No effect.`,
+    "craftDC": 15,
+    "value": "5 gp",
+    "usage": "Drink",
+    "bulk": "—"
+  },
+  {
+    "name": "Vial of Unstable Chaos",
+    "type": "Consumable, Alchemical (Experimental)",
+    "level": 3,
+    "traits": ["Uncommon","Alchemical","Consumable","Chaotic"],
+    "effect": `🎲 Drink and roll 1d10:
+1–3: Take 2d6 mental & Stupefied 1 (1 round).
+4–6: Take 1d6 mental; gain one random arcane/occult cantrip for 10 minutes.
+7–9: Resistance 5 mental for 1 hour.
+10: Stabilizes — can be used once more for Resistance 5 effect.`,
+    "craftDC": 19,
+    "value": "20 gp",
+    "usage": "Drink",
+    "bulk": "—"
+  },
+  {
+    "name": "Concentrated Psychic Residue",
+    "type": "Consumable, Alchemical (Bomb)",
+    "level": 3,
+    "traits": ["Uncommon","Bomb","Mental","Thrown"],
+    "effect": `🧠 Throw (20 ft). On hit or in a 5‑ft burst: Will DC 15 or Stupefied 1 for 1 round (creatures already stupefied instead become off‑guard until end of their next turn).`,
+    "craftDC": 18,
+    "value": "18 gp",
+    "usage": "Held; thrown",
+    "bulk": "—"
+  },
+  {
+    "name": "Psionic Focus Amulet",
+    "type": "Worn, Magical (Occult)",
+    "level": 4,
+    "traits": ["Uncommon","Invested","Occult"],
+    "effect": `🧩 Echo‑tuned focus
+• While invested: You can sense active psychic effects within 20 ft (vague tingle).
+• 1/day — Mind Over Matter (free): Gain Resistance 5 mental for 1 round.`,
+    "craftDC": 20,
+    "value": "90 gp",
+    "usage": "Worn (pendant)",
+    "bulk": "L"
+  },
+  {
+    "name": "Echo‑Resonant Grenade",
+    "type": "Consumable, Alchemical (Sonic/Psi)",
+    "level": 3,
+    "traits": ["Uncommon","Bomb","Sonic","Mental"],
+    "effect": `💣 Detonate (Throw 20 ft): 10‑ft burst of anti‑harmonic noise.
+Creatures in burst: –1 status to Will saves vs. mental effects for 1 round.
+Active “echo” hazards in burst: suppressed 1 round.`,
+    "craftDC": 19,
+    "value": "12 gp",
+    "usage": "Thrown",
+    "bulk": "—"
+  },
+  {
+    "name": "Labyrinth’s Signet Ring",
+    "type": "Worn (Mundane)",
+    "level": 0,
+    "traits": ["Uncommon","Social"],
+    "effect": `Silver signet bearing the skeletal hand of the Ivory Labyrinth.
+• Grants +1 circumstance bonus to Deception checks to impersonate Labyrinth personnel (GM discretion; may provoke… consequences).`,
+    "craftDC": "—",
+    "value": "35 gp",
+    "usage": "Worn (ring)",
+    "bulk": "—"
+  },
+  {
+    "name": "Unstable Serum (Raw)",
+    "type": "Alchemical Reagent",
+    "level": 1,
+    "traits": ["Alchemical","Reagent"],
+    "effect": `Volatile psi‑reactive base. When used as reagents for crafting mental/occult alchemy, grants +1 item bonus to the Crafting check.`,
+    "craftDC": 14,
+    "value": "3 gp (per vial)",
+    "usage": "Crafting reagent",
+    "bulk": "—"
+  },
+  {
+    "name": "Ethereal Fluid (Refined)",
+    "type": "Alchemical Reagent",
+    "level": 1,
+    "traits": ["Alchemical","Reagent"],
+    "effect": `Shimmering phase‑tuned solvent. Counts as special material to meet occult component requirements; can substitute for a 5 gp reagent in eligible formulas.`,
+    "craftDC": 14,
+    "value": "5 gp (per vial)",
+    "usage": "Crafting reagent",
+    "bulk": "—"
+  },
+  {
+    "name": "Runes of Animation — Field Notebook",
+    "type": "Unique Lore Item (non‑magical)",
+    "level": "—",
+    "traits": ["Lore","Research"],
+    "effect": `Schematics and ritual notes on echo‑constructs.
+• Research aid: +1 item bonus to Crafting checks to Repair/Disable constructs and to Occultism checks to Identify construct‑related rituals (GM discretion).`,
+    "craftDC": "—",
+    "value": "25 gp (to the right buyer)",
+    "usage": "Reference",
+    "bulk": "L"
+  }
 
     ];
 
