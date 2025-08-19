@@ -179,139 +179,204 @@
 
 <script>
 /* ---------- mission data ---------- */
-const missionData=[
-{
-  name: "Guild Priority: Echo Containment",
-  types: ["Combat", "Crisis", "Psychic"],
-  rank: "Silver",
-  length: "Medium-Long",
-  reward: "1600g + Access to Psionic Archive Tier I",
-  status: "active",
-  location: "Ashminster Verge, Re-education Outpost Theta",
-  objective: "Disrupt Templar beacon and contain psychic outbreak.",
-  steps: [
-    "Infiltrate the perimeter of Outpost Theta",
-    "Disable or corrupt the Templar beacon",
-    "Extract any affected Guild members or civilians",
-    "Prevent the psychic broadcast from spreading beyond Ashminster"
-  ],
-  extra: "Templars have established a permanent 're-education' station in the district. Several Guild assets report memory fog, sudden compliance, or harmonic speech. Expect resistance. Expect echoes."
-},
-{
-  name: "Sinkhole Below Sable Row",
-  types: ["Salvage", "Hazard", "Aberration"],
-  rank: "Bronze",
-  length: "Medium",
-  reward: "300g + Free Potion Training",
-  status: "completed",
-  location: "Collapsed cellar beneath Sable Row, Tradecity Verge",
-  objective: "Descend the sinkhole, assess the cause, and retrieve any surviving cargo or citizens.",
-  steps: ["Secure perimeter", "Descend the breach", "Map the unstable chasm", "Neutralize the lurking anomaly"],
-  extra: "Two retrieval teams already sent. None returned. Locals report a faint chittering under the cobblestones at night."
-},
+const missionData = [
 
-{
-  name: "Guild Priority: Cluster Echo",
-  types: ["Investigation"],
-  rank: "Bronze",
-  length: "Medium",
-  reward: "1500g + Archive Access",
-  status: "expired",
-  location: "Ashminster Wilds, Site 3",
-  objective: "Investigate ruins of Subject Cluster #3.",
-  steps: ["Review notes", "Secure site", "Document anomalies", "Recover relics"],
-  extra: "Sigils may fire off enchantments.",
-  impact: "Mission collapsed into emergency containment. Psychic influence spread beyond Site 3. Future action required—pending crisis response mission."
-},
-{
-  name: "Ashes at Watchpost Nine",
-  types: ["Investigation", "Combat", "Demonic"],
-  rank: "Bronze",
-  length: "Medium",
-  reward: "600g + Blackened Sigil Fragment",
-  status: "active",
-  location: "Watchpost Nine, Outer Ridgeline",
-  objective: "Investigate the loss of contact with Watchpost Nine and secure the site.",
-  steps: ["Travel to site", "Survey the remains", "Identify source of incursion", "Prevent spread"],
-  extra: "Ash drifts upward. No birds sing. Something scorched the ward runes *from the inside.*"
-},
+  /* updated */
+  {
+    name: "Guild Priority: Echo Containment",
+    types: ["Combat", "Crisis", "Psychic"],
+    rank: "Silver",
+    length: "Medium-Long",
+    reward: "1600g + Access to Psionic Archive Tier I",
+    status: "completed",
+    location: "Ashminster Verge, Re-education Outpost Theta",
+    objective: "Disrupt Templar beacon and contain psychic outbreak.",
+    steps: [
+      "Infiltrate the perimeter of Outpost Theta",
+      "Disable or corrupt the Templar beacon",
+      "Extract any affected Guild members or civilians",
+      "Prevent the psychic broadcast from spreading beyond Ashminster"
+    ],
+    extra: "Templars established a 're-education' station. Psychic fog across the Verge diminished after the relay’s collapse."
+  },
 
-{
-  name: "Rot Beneath Rivermarket",
-  types: ["Combat", "Urban", "Infestation"],
-  rank: "Bronze",
-  length: "Medium",
-  reward: "100g + Guild Credit",
-  status: "active",
-  location: "Underbridge District, Rivermarket",
-  objective: "Purge the vermin nest causing structural collapse.",
-  steps: ["Secure entrance", "Explore tunnel network", "Eliminate broodmother", "Seal breach"],
-  extra: "Local cats have gone missing. One was returned... changed."
-},
-  {name:"Demon Portal Shutdown",types:["Combat","Exploration"],rank:"Gold",length:"Long",
-   reward:"4000g + Demon-Slaying Relic",status:"active",location:"Shadowlands Rift",
-   objective:"Disable a growing portal breach.",
-   steps:["Secure passage","Examine portal","Shut breach","Evacuate"],extra:"Do NOT poke it."},
+  /* keep */
+  {
+    name: "Ashes at Watchpost Nine",
+    types: ["Investigation", "Combat", "Demonic"],
+    rank: "Bronze",
+    length: "Medium",
+    reward: "600g + Blackened Sigil Fragment",
+    status: "active",
+    location: "Watchpost Nine, Outer Ridgeline",
+    objective: "Investigate the loss of contact with Watchpost Nine and secure the site.",
+    steps: ["Travel to site", "Survey the remains", "Identify source of incursion", "Prevent spread"],
+    extra: "Ash drifts upward. No birds sing. Ward runes appear scorched from the inside."
+  },
 
-  {name:"Eyes in the Shadows",types:["Stealth","Covert"],rank:"Silver",length:"Medium",
-   reward:"2000g + Faction Intel",status:"active",location:"Dismal Blades Hideout",
-   objective:"Gather intelligence undetected.",
-   steps:["Gain access","Collect info","Optionally sabotage","Exit cleanly"],extra:"Fake moustaches optional."},
+  /* updated status -> expired */
+  {
+    name: "Rot Beneath Rivermarket",
+    types: ["Combat", "Urban", "Infestation"],
+    rank: "Bronze",
+    length: "Medium",
+    reward: "100g + Guild Credit",
+    status: "expired",
+    location: "Underbridge District, Rivermarket",
+    objective: "Purge the vermin nest causing structural collapse.",
+    steps: ["Secure entrance", "Explore tunnel network", "Eliminate broodmother", "Seal breach"],
+    extra: "Local cats went missing. One returned... changed."
+  },
 
-  {name:"The Saltstone Descent",types:["Exploration","Combat","Puzzle"],rank:"Silver",length:"Medium-Long",
-   reward:"600g + Ancient Seals",status:"active",location:"Saltstone Catacombs",
-   objective:"Reach sealed dwarven archive.",steps:["Map tunnels","Bypass defences","Collect tablets","Return"],extra:"Avoid cave-ins."},
+  /* keep */
+  {
+    name: "Demon Portal Shutdown",
+    types: ["Combat", "Exploration"],
+    rank: "Gold",
+    length: "Long",
+    reward: "4000g + Demon-Slaying Relic",
+    status: "active",
+    location: "Shadowlands Rift",
+    objective: "Disable a growing portal breach.",
+    steps: ["Secure passage", "Examine portal", "Shut breach", "Evacuate"],
+    extra: "Do NOT poke it."
+  },
 
-  {name:"The Mirrorpool Pact",types:["Diplomacy","Investigation"],rank:"Silver",length:"Short-Medium",
-   reward:"450g + Renown",status:"active",location:"Mirrorpool Hamlet",
-   objective:"Mediate dispute with pond spirit.",steps:["Investigate","Interview locals","Resolve"],extra:"Spirits may appear as koi."},
-{
-  name: "Ashsmoke Recovery",
-  types: ["Exploration", "Salvage"],
-  rank: "Bronze",
-  length: "Short",
-  reward: "Resolved",
-  status: "expired",
-  location: "Outpost near Ashsmoke Trail",
-  objective: "Path became impassable after further collapse; salvage inaccessible.",
-  steps: [],
-  extra: "Fear of gravity confirmed."
-},
-{
-  name: "The Bellows Below Bristlebarrow",
-  types: ["Exploration", "Hazard", "Psychic"],
-  rank: "Bronze",
-  length: "Short-Medium",
-  reward: "150g + Tincture of Lucid Silence",
-  status: "active",
-  location: "Bristlebarrow Hamlet, Eastern Verge",
-  objective: "Determine the source of nightly tremors and persistent sleep disturbances.",
-  steps: [
-    "Interview afflicted townsfolk",
-    "Explore the sealed basements",
-    "Uncover the void-pocket beneath the well",
-    "Calm, banish, or seal the anomaly"
-  ],
-  extra: "No deaths. But no one has slept well in five nights. One child claims her doll now hums back when scolded."
-},
-{
-  name: "Whispers from the Chimera Vault",
-  types: ["Covert", "Investigation", "Rescue"],
-  rank: "Bronze",
-  length: "Medium",
-  reward: "250g + Favor from the Grey Chain",
-  status: "active",
-  location: "Substruct Level 2, Chimera Vault District",
-  objective: "Locate missing asset linked to psychic theft from the Templars.",
-  steps: [
-    "Contact local informant (use the password: 'Golden teeth, rusty smile')",
-    "Trace the missing courier’s path",
-    "Avoid Templar patrols and sigil triggers",
-    "Recover the courier or their mind... if possible"
-  ],
-  extra: "This job is unofficial. Officially, the Guild has no opinion on the Grey Chain. Or vault-breachers. Or 'unlicensed memory theft.'"
-}
+  /* updated status -> expired */
+  {
+    name: "Eyes in the Shadows",
+    types: ["Stealth", "Covert"],
+    rank: "Silver",
+    length: "Medium",
+    reward: "2000g + Faction Intel",
+    status: "expired",
+    location: "Dismal Blades Hideout",
+    objective: "Gather intelligence undetected.",
+    steps: ["Gain access", "Collect info", "Optionally sabotage", "Exit cleanly"],
+    extra: "Fake moustaches optional."
+  },
 
+  /* keep */
+  {
+    name: "The Saltstone Descent",
+    types: ["Exploration", "Combat", "Puzzle"],
+    rank: "Silver",
+    length: "Medium-Long",
+    reward: "600g + Ancient Seals",
+    status: "active",
+    location: "Saltstone Catacombs",
+    objective: "Reach sealed dwarven archive.",
+    steps: ["Map tunnels", "Bypass defences", "Collect tablets", "Return"],
+    extra: "Avoid cave-ins."
+  },
+
+  /* keep */
+  {
+    name: "The Mirrorpool Pact",
+    types: ["Diplomacy", "Investigation"],
+    rank: "Silver",
+    length: "Short-Medium",
+    reward: "450g + Renown",
+    status: "active",
+    location: "Mirrorpool Hamlet",
+    objective: "Mediate dispute with pond spirit.",
+    steps: ["Investigate", "Interview locals", "Resolve"],
+    extra: "Spirits may appear as koi."
+  },
+
+  /* keep */
+  {
+    name: "The Bellows Below Bristlebarrow",
+    types: ["Exploration", "Hazard", "Psychic"],
+    rank: "Bronze",
+    length: "Short-Medium",
+    reward: "150g + Tincture of Lucid Silence",
+    status: "active",
+    location: "Bristlebarrow Hamlet, Eastern Verge",
+    objective: "Determine the source of nightly tremors and persistent sleep disturbances.",
+    steps: [
+      "Interview afflicted townsfolk",
+      "Explore the sealed basements",
+      "Uncover the void-pocket beneath the well",
+      "Calm, banish, or seal the anomaly"
+    ],
+    extra: "No deaths reported. One child claims her doll hums back when scolded."
+  },
+
+  /* keep */
+  {
+    name: "Whispers from the Chimera Vault",
+    types: ["Covert", "Investigation", "Rescue"],
+    rank: "Bronze",
+    length: "Medium",
+    reward: "250g + Favor from the Grey Chain",
+    status: "active",
+    location: "Substruct Level 2, Chimera Vault District",
+    objective: "Locate missing asset linked to psychic theft from the Templars.",
+    steps: [
+      "Contact local informant (password: 'Golden teeth, rusty smile')",
+      "Trace the missing courier’s path",
+      "Avoid Templar patrols and sigil triggers",
+      "Recover the courier or their mind... if possible"
+    ],
+    extra: "Unofficial. The Guild has no opinion on the Grey Chain. Officially."
+  },
+
+  /* -------- new bronze missions -------- */
+
+  {
+    name: "Lanterns Over Gallowmere",
+    types: ["Investigation", "Urban", "Undead"],
+    rank: "Bronze",
+    length: "Short",
+    reward: "180g + Spirit-Lantern Charm",
+    status: "active",
+    location: "Gallowmere Row, Inner Verge",
+    objective: "Identify and quiet the ghost-lights stalking night markets.",
+    steps: [
+      "Interview stallkeepers after dusk",
+      "Track the lights’ pattern along rooftops",
+      "Dispel or anchor the bound spirits",
+      "Return confiscated funerary tokens"
+    ],
+    extra: "Lights whisper market prices in unison; buyers report losing hours staring at ‘the pretty glow’."
+  },
+
+  {
+    name: "Lockstep Procession",
+    types: ["Stealth", "Psychic", "Rescue"],
+    rank: "Bronze",
+    length: "Medium",
+    reward: "220g + Templar Cipher Scrap",
+    status: "active",
+    location: "Ashminster Verge, Processional Route Beta",
+    objective: "Disrupt a mobile ‘re-education’ parade and free conscripts.",
+    steps: [
+      "Shadow the procession without triggering the choir",
+      "Sabotage the metronome cart (no civilian casualties)",
+      "Extract the handlers’ key-sigils",
+      "Break the chant and scatter the escort"
+    ],
+    extra: "Marchers speak in perfect rhythm; stepping in time for too long risks joining."
+  },
+
+  {
+    name: "The Flintwitch Kiln",
+    types: ["Exploration", "Hazard", "Crafting"],
+    rank: "Bronze",
+    length: "Short-Medium",
+    reward: "200g + Fireglass Ingot",
+    status: "active",
+    location: "Old Brickworks, South Ashminster",
+    objective: "Stabilize a runaway kiln reacting with void-tainted reagents.",
+    steps: [
+      "Survey collapsed flues and ash tunnels",
+      "Quench or divert the backdraft spiral",
+      "Recover sealed crates of reagents",
+      "Negotiate with the kiln’s ‘resident’ ember-spirit"
+    ],
+    extra: "Air shimmers with heat mirages that speak; soot forms sigils that rearrange when unobserved."
+  }
 ];
 
 
