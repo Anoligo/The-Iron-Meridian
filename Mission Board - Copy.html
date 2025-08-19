@@ -7,109 +7,144 @@
 
 <style>
   :root{
-    --bg-dark:#1c1c1c; --bg-card:#2a2a2a; --text-light:#f5f5f5;
-    --accent:#ffc107; --border-dark:#333; --radius:8px;
+    --bg-dark:#1c1c1c;
+    --bg-card:#2a2a2a;
+    --text-light:#f5f5f5;
+    --accent:#ffc107;
+    --border-dark:#333;
+    --radius:8px;
     /* rank colours */
-    --bronze:#cd7f32; --silver:#c0c0c0; --gold:#ffd700;
+    --bronze:#cd7f32;
+    --silver:#c0c0c0;
+    --gold:#ffd700;
     /* status colours */
     --completed-bg:#243b24;  --completed-border:#3f7f3f;
     --expired-bg:#3b2424;    --expired-border:#7f3f3f;
-    --active-bg:#2a2a2a;     --active-border:#444;
-    --pill-bg:#111; --pill-text:#fff;
   }
-  *{box-sizing:border-box;margin:0;padding:0;}
-  body{font-family:'Segoe UI',Tahoma,Verdana,sans-serif;background:var(--bg-dark);color:var(--text-light);padding:20px;}
 
-  /* NAV (unchanged) */
-  .site-header{display:flex;align-items:center;gap:.75rem;background:#1f1f1f;border-bottom:2px solid #444;margin:-20px -20px 1.5rem;padding:.75rem 1rem;position:relative;}
+  /* ---------- base ---------- */
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:'Segoe UI',Tahoma,Verdana,sans-serif;
+    background:var(--bg-dark);color:var(--text-light);
+    padding:20px;                      /* keeps original spacing */
+  }
+
+  /* ========== NAVIGATION (shared) ========== */
+  .site-header{
+    display:flex;align-items:center;gap:.75rem;
+    background:#1f1f1f;border-bottom:2px solid #444;
+    margin:-20px -20px 1.5rem;         /* offset body padding */
+    padding:.75rem 1rem;position:relative;
+  }
   .logo{font-weight:700;color:var(--accent);font-size:1.1rem;}
-  .nav-toggle{display:none;}
-  .hamburger{font-size:1.4rem;color:#fff;cursor:pointer;margin-left:auto;user-select:none;display:block;}
-  .site-nav{display:none;flex-direction:column;gap:.75rem;position:absolute;left:0;right:0;top:100%;background:#1f1f1f;border-top:2px solid #444;padding:1rem;}
+
+  .nav-toggle{display:none;}           /* hidden checkbox */
+  .hamburger{
+    font-size:1.4rem;color:#fff;cursor:pointer;
+    margin-left:auto;user-select:none;display:block;
+  }
+  .site-nav{
+    display:none;flex-direction:column;gap:.75rem;
+    position:absolute;left:0;right:0;top:100%;
+    background:#1f1f1f;border-top:2px solid #444;padding:1rem;
+  }
   .site-nav a{color:#fff;text-decoration:none;font-weight:600;white-space:nowrap;}
   .site-nav a:hover{color:var(--accent);}
+  /* show menu when checked */
   .nav-toggle:checked + .hamburger + .site-nav{display:flex;}
+
+  /* desktop layout */
   @media(min-width:620px){
     body{padding:24px;}
     .site-header{margin:-24px -24px 1.75rem;padding:1rem 1.25rem;}
     .hamburger{display:none;}
-    .site-nav{display:flex !important;position:static;flex-direction:row;gap:1.25rem;margin-left:auto;background:transparent;border:none;padding:0;}
+    .site-nav{
+      display:flex !important;position:static;
+      flex-direction:row;gap:1.25rem;margin-left:auto;
+      background:transparent;border:none;padding:0;
+    }
   }
 
-  h1{text-align:center;color:var(--accent);margin-bottom:.5rem;font-size:clamp(1.6rem,5vw,2.2rem);}
+  /* ---------- headings ---------- */
+  h1{text-align:center;color:var(--accent);margin-bottom:1rem;
+      font-size:clamp(1.6rem,5vw,2.2rem);}
 
-  /* small legend */
-  .legend{display:flex;gap:.75rem;justify-content:center;font-size:.9rem;opacity:.9;margin-bottom:1rem;}
-  .legend .dot{display:inline-block;width:.65rem;height:.65rem;border-radius:50%;margin-right:.35rem;vertical-align:baseline;}
-  .legend .l-active  .dot{background:var(--active-border);}
-  .legend .l-complete .dot{background:var(--completed-border);}
-  .legend .l-expired  .dot{background:var(--expired-border);}
-
-  /* filters */
-  .filter-bar{display:flex;flex-wrap:wrap;gap:.75rem;justify-content:center;margin-bottom:1.25rem;}
-  .filter-bar input,.filter-bar select{background:var(--bg-card);color:var(--text-light);border:1px solid var(--border-dark);padding:.5rem .75rem;border-radius:var(--radius);min-width:140px;}
+  /* ---------- filters ---------- */
+  .filter-bar{display:flex;flex-wrap:wrap;gap:.75rem;justify-content:center;margin-bottom:1.5rem;}
+  .filter-bar input,.filter-bar select{
+    background:var(--bg-card);color:var(--text-light);
+    border:1px solid var(--border-dark);padding:.5rem .75rem;
+    border-radius:var(--radius);min-width:140px;
+  }
   .filter-bar input::placeholder{color:#aaa;}
 
-  /* grid */
+  /* ---------- grid ---------- */
   .mission-container{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;}
 
-  /* card */
-  .mission{position:relative;background:var(--active-bg);border:1px solid var(--active-border);
-           border-radius:var(--radius);padding:1rem;display:flex;flex-direction:column;gap:.5rem;transition:transform .2s;}
+  /* ---------- card ---------- */
+  .mission{background:var(--bg-card);border:1px solid var(--border-dark);
+           border-radius:var(--radius);padding:1rem;display:flex;
+           flex-direction:column;gap:.5rem;transition:transform .2s;}
   .mission:hover{transform:translateY(-4px);}
   .mission.completed{background:var(--completed-bg);border-color:var(--completed-border);}
-  .mission.expired  {background:var(--expired-bg);border-color:var(--expired-border);opacity:.9;}
+  .mission.expired  {background:var(--expired-bg);border-color:var(--expired-border);opacity:.85;}
 
-  .mission-header{display:flex;flex-direction:column;gap:.35rem;line-height:1.35;}
-  .mission-name{font-weight:700;color:var(--accent);}
-  .mission.completed .mission-name{color:#baffba;}
-  .mission.expired   .mission-name{color:#ffb3b3;}
+  .mission-header{display:flex;flex-direction:column;gap:.15rem;line-height:1.35;}
+  .mission-name{font-weight:600;color:var(--accent);}
+  .mission.completed .mission-name{color:#8cff8c;}
+  .mission.expired   .mission-name{color:#ff8c8c;}
 
   .mission-meta{font-size:.85rem;color:#ddd;display:flex;flex-wrap:wrap;gap:.5rem;}
   .tag{background:#444;padding:.15rem .5rem;border-radius:9999px;font-size:.7rem;}
 
-  /* rank */
+  /* ---------- rank shield ---------- */
   .rank-icon{width:1em;height:1em;vertical-align:-2px;margin-right:.25rem;fill:currentColor;}
-  .bronze{color:var(--bronze);} .silver{color:var(--silver);} .gold{color:var(--gold);}
+  .bronze{color:var(--bronze);}
+  .silver{color:var(--silver);}
+  .gold  {color:var(--gold);}
 
-  /* status pill + ribbon */
-  .status-pill{align-self:flex-start;display:inline-flex;align-items:center;gap:.35rem;
-    background:var(--pill-bg);color:var(--pill-text);border:1px solid #555;padding:.2rem .5rem;border-radius:9999px;
-    font-size:.72rem;font-weight:700;letter-spacing:.02em}
-  .status-pill[title]{cursor:help;}
-  .mission.completed .status-pill{background:#163116;border-color:var(--completed-border);}
-  .mission.expired  .status-pill{background:#311616;border-color:var(--expired-border);}
-  .pill-ico{font-size:.85rem;line-height:1;}
-
-  .ribbon{
-    position:absolute;top:.6rem;right:-.55rem;background:#00000099;color:#fff;
-    padding:.25rem .75rem;transform:rotate(8deg);font-size:.7rem;border:1px solid #666;border-radius:4px;
-  }
-  .mission.completed .ribbon{background:#1c4a1cdd;border-color:#3f7f3f;}
-  .mission.expired  .ribbon{background:#4a1c1cdd;border-color:#7f3f3f;}
-
-  /* details */
+  /* ---------- details toggle ---------- */
   .details{display:none;flex-direction:column;gap:.5rem;font-size:.9rem;margin-top:.25rem;}
   .mission.open .details{display:flex;}
   .toggle-btn{
-    align-self:flex-start;padding:.25rem .65rem;border:1px solid var(--border-dark);border-radius:var(--radius);
-    background:var(--accent);color:var(--bg-dark);font-size:.75rem;font-weight:700;cursor:pointer;user-select:none;transition:filter .2s;
+    align-self:flex-start;padding:.25rem .65rem;border:1px solid var(--border-dark);
+    border-radius:var(--radius);background:var(--accent);color:var(--bg-dark);
+    font-size:.75rem;font-weight:600;cursor:pointer;user-select:none;
+    transition:filter .2s;
   }
-  .toggle-btn:focus{outline:2px solid #fff2;outline-offset:2px;}
-  .toggle-btn:hover{filter:brightness(1.08);}
-  .details ol{list-style-position:inside;padding:0;margin:0;}
+  .toggle-btn:hover{filter:brightness(1.1);}
 
-  @media(max-width:480px){.mission-container{grid-template-columns:1fr;}}
+  /* keep numbered steps inside card */
+.details ol{
+  list-style-position: inside;   /* numbers counted inside padding */
+  padding-left: 0;               /* no extra indent */
+  margin-left: 0;                /* align with text */
+}
+
+
+  /* ---------- small screens ---------- */
+  @media(max-width:480px){
+    .mission-container{grid-template-columns:1fr;}
+  }
 </style>
 </head>
 
 <body>
 <!-- hidden SVG for rank shield -->
-<svg style="display:none;" xmlns="http://www.w3.org/2000/svg"><symbol id="shield" viewBox="0 0 24 24"><path d="M12 2l7 4v6c0 5-3.8 9.6-7 10-3.2-.4-7-5-7-10V6l7-4z"/></symbol></svg>
+<svg style="display:none;" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="shield" viewBox="0 0 24 24">
+    <path d="M12 2l7 4v6c0 5-3.8 9.6-7 10-3.2-.4-7-5-7-10V6l7-4z"/>
+  </symbol>
+</svg>
 
+<!-- ========== HEADER & NAVIGATION ========== -->
 <header class="site-header">
   <div class="logo">Iron Meridian</div>
-  <input type="checkbox" id="nav-toggle" class="nav-toggle"><label for="nav-toggle" class="hamburger">&#9776;</label>
+
+  <input type="checkbox" id="nav-toggle" class="nav-toggle">
+  <label for="nav-toggle" class="hamburger">&#9776;</label>
+
   <nav class="site-nav">
     <a href="Mercenary Guild Overview.html">🏰 Overview</a>
     <a href="Mission Board.html">📜 Mission Board</a>
@@ -121,23 +156,18 @@
 </header>
 
 <h1>The Iron Meridian – Mission Board</h1>
-<div class="legend" aria-hidden="true">
-  <span class="l-active"><span class="dot"></span>Active</span>
-  <span class="l-complete"><span class="dot"></span>Completed</span>
-  <span class="l-expired"><span class="dot"></span>Expired</span>
-</div>
 
 <!-- filters -->
-<div class="filter-bar" role="region" aria-label="Mission filters">
-  <input type="text" id="searchInput" placeholder="Search by name…" aria-label="Search by name">
-  <select id="rankFilter" aria-label="Filter by rank">
-    <option value="">All Ranks</option><option>Bronze</option><option>Silver</option><option>Gold</option>
+<div class="filter-bar">
+  <input type="text" id="searchInput" placeholder="Search by name…">
+  <select id="rankFilter">
+    <option value="">All Ranks</option>
+    <option value="Bronze">Bronze</option>
+    <option value="Silver">Silver</option>
+    <option value="Gold">Gold</option>
   </select>
-  <select id="typeFilter" aria-label="Filter by type"><option value="">All Types</option></select>
-  <select id="statusFilter" aria-label="Filter by status">
-    <option value="">All Status</option><option value="active">Active</option><option value="completed">Completed</option><option value="expired">Expired</option>
-  </select>
-  <select id="sortSelect" aria-label="Sort missions">
+  <select id="typeFilter"><option value="">All Types</option></select>
+  <select id="sortSelect">
     <option value="rank">Sort: Rank</option>
     <option value="name">Sort: Name</option>
     <option value="length">Sort: Length</option>
@@ -145,7 +175,7 @@
   </select>
 </div>
 
-<div id="missionContainer" class="mission-container" aria-live="polite"></div>
+<div id="missionContainer" class="mission-container"></div>
 
 <script>
 /* ---------- mission data ---------- */
@@ -316,46 +346,10 @@ const missionData = [
       "Calm, banish, or seal the anomaly"
     ],
     extra: "No deaths reported. One child claims her doll hums back when scolded."
-  },
-  
-  /* Expired Missions */
-  {
-  name: "Rot Beneath Rivermarket",
-  types: ["Combat", "Urban", "Infestation"],
-  rank: "Bronze",
-  length: "Medium",
-  reward: "100g + Guild Credit",
-  status: "expired",
-  location: "Underbridge District, Rivermarket",
-  objective: "Purge the vermin nest causing structural collapse.",
-  steps: [
-    "Secure entrance",
-    "Explore tunnel network",
-    "Eliminate broodmother",
-    "Seal breach"
-  ],
-  extra: "Local cats went missing. One returned... changed."
-},
-
-{
-  name: "Eyes in the Shadows",
-  types: ["Stealth", "Covert"],
-  rank: "Silver",
-  length: "Medium",
-  reward: "2000g + Faction Intel",
-  status: "expired",
-  location: "Dismal Blades Hideout",
-  objective: "Gather intelligence undetected.",
-  steps: [
-    "Gain access",
-    "Collect info",
-    "Optionally sabotage",
-    "Exit cleanly"
-  ],
-  extra: "Fake moustaches optional."
-}
+  }
 
 ];
+
 
 
 /* ---------- helpers ---------- */
@@ -370,42 +364,25 @@ const typeSel=document.getElementById('typeFilter');
   const o=document.createElement('option');o.value=t;o.textContent=t;typeSel.appendChild(o);
 });
 
-/* wire up */
-['searchInput','rankFilter','typeFilter','statusFilter','sortSelect'].forEach(id=>document.getElementById(id).addEventListener('input',render));
+/* render */
+['searchInput','rankFilter','typeFilter','sortSelect'].forEach(id=>document.getElementById(id).addEventListener('input',render));
 render();
-
-function statusPill(status){
-  const map={
-    active:{ico:'⌛', label:'Active'},
-    completed:{ico:'✓', label:'Completed'},
-    expired:{ico:'✖', label:'Expired'}
-  };
-  const s=map[status]||map.active;
-  return `<span class="status-pill" title="${s.label}"><span class="pill-ico">${s.ico}</span>${s.label}</span>`;
-}
-
-function ribbon(status){
-  if(status==='completed') return `<div class="ribbon">COMPLETED</div>`;
-  if(status==='expired')   return `<div class="ribbon">EXPIRED</div>`;
-  return '';
-}
 
 function render(){
   const q=document.getElementById('searchInput').value.toLowerCase();
   const rankSel=document.getElementById('rankFilter').value;
   const typeSel=document.getElementById('typeFilter').value;
-  const statSel=document.getElementById('statusFilter').value;
   const sortSel=document.getElementById('sortSelect').value;
 
   const filtered=missionData.filter(m=>
-    m.name.toLowerCase().includes(q) &&
-    (!rankSel||m.rank===rankSel) &&
-    (!typeSel||m.types.includes(typeSel)) &&
-    (!statSel||m.status===statSel)
+    m.name.toLowerCase().includes(q)&&
+    (!rankSel||m.rank===rankSel)&&
+    (!typeSel||m.types.includes(typeSel))
   );
 
   filtered.sort((a,b)=>{
-    const s=statusOrder[a.status]-statusOrder[b.status]; if(s!==0) return s;
+    const s=statusOrder[a.status]-statusOrder[b.status];
+    if(s!==0)return s;
     switch(sortSel){
       case'rank':return rankOrder[a.rank]-rankOrder[b.rank];
       case'length':return parseLength(a.length)-parseLength(b.length);
@@ -420,38 +397,29 @@ function render(){
     const card=document.createElement('div');
     card.className=`mission ${m.status}`;
     card.innerHTML=`
-      ${ribbon(m.status)}
       <div class="mission-header">
         <div class="mission-name ${m.rank.toLowerCase()}">
           <svg class="rank-icon ${m.rank.toLowerCase()}"><use href="#shield"/></svg>
           ${m.name}
         </div>
         <div class="mission-meta">
-          ${statusPill(m.status)}
           ${m.types.map(t=>`<span class="tag">${t}</span>`).join('')}
           <span class="tag">Rank: ${m.rank}</span>
           <span class="tag">${m.length}</span>
           <span class="tag">${m.reward}</span>
         </div>
       </div>
-      <button class="toggle-btn" aria-expanded="false">Show details</button>
-      <div class="details" hidden>
+      <button class="toggle-btn">Show details</button>
+      <div class="details">
         <p><strong>Location:</strong> ${m.location}</p>
         <p><strong>Objective:</strong> ${m.objective}</p>
-        ${m.steps?.length?`<ol>${m.steps.map(s=>`<li>${s}</li>`).join('')}</ol>`:''}
+        ${m.steps.length?`<ol>${m.steps.map(s=>`<li>${s}</li>`).join('')}</ol>`:''}
         ${m.extra?`<p><em>${m.extra}</em></p>`:''}
       </div>`;
-
-    const btn=card.querySelector('.toggle-btn');
-    const panel=card.querySelector('.details');
-    btn.addEventListener('click',()=>{
-      const open=panel.hasAttribute('hidden');
-      panel.toggleAttribute('hidden');
-      card.classList.toggle('open',open);
-      btn.setAttribute('aria-expanded',open?'true':'false');
-      btn.textContent=open?'Hide details':'Show details';
+    card.querySelector('.toggle-btn').addEventListener('click',e=>{
+      card.classList.toggle('open');
+      e.target.textContent=card.classList.contains('open')?'Hide details':'Show details';
     });
-
     container.appendChild(card);
   });
 }
