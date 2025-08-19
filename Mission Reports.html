@@ -20,7 +20,7 @@
   body{
     font-family:"Segoe UI",Tahoma,Verdana,sans-serif;
     background:var(--bg-dark);color:var(--text);
-    padding:16px;                 /* mobile default */
+    padding:16px;
   }
 
   /* ========== NAVIGATION (shared) ========== */
@@ -32,7 +32,7 @@
   }
   .logo{font-weight:700;color:var(--accent);font-size:1.1rem;white-space:nowrap;}
 
-  .nav-toggle{display:none;}            /* hidden checkbox */
+  .nav-toggle{display:none;}
   .hamburger{
     font-size:1.4rem;color:#fff;cursor:pointer;
     margin-left:auto;user-select:none;display:block;
@@ -45,10 +45,8 @@
   }
   .site-nav a{color:#fff;text-decoration:none;font-weight:600;white-space:nowrap;}
   .site-nav a:hover{color:var(--accent);}
-  /* toggle */
   .nav-toggle:checked + .hamburger + .site-nav{display:flex;}
 
-  /* desktop view */
   @media(min-width:620px){
     body{padding:24px;}
     .site-header{margin:-24px -24px 1.75rem;padding:1rem 1.25rem;}
@@ -91,7 +89,6 @@
   }
   .report-link:hover{background:#444;}
 
-  /* grid on larger screens */
   @media(min-width:620px){
     .reports{grid-template-columns:repeat(auto-fill,minmax(300px,1fr));}
   }
@@ -123,28 +120,53 @@
 
   <article class="report">
     <h2>There's Goblins in My Turnips!</h2>
-    <p>A daring team tackles a goblin infestation… and sets a few turnips (and goblins) on fire in the process. Includes surprise pies, thrown leshy, and a goblin king blinded mid-speech.</p>
+    <p>A daring team tackles a goblin infestation… and sets a few turnips (and goblins) on fire in the process.
+       Expect surprise pies, a hurled leshy, agricultural arson, and a goblin king blinded mid‑speech by
+       tactical starch application. Collateral damage: spicy.</p>
     <a href="mission-reports/Theres-Goblins-in-My-Turnips-Report.html" class="report-link">📜 Read Full Report</a>
   </article>
 
   <article class="report">
     <h2>The Affliction of the Redwater</h2>
-    <p>A corrupted river, suspicious stones, and a sorrowful siren. The team braved crimson slimes, musical mind-control and an overenthusiastic scroll-reader to cleanse Redwater Lake.</p>
+    <p>A corrupted river, suspicious stones, and a sorrowful siren. The team braved crimson slimes, musical
+       mind‑control, and an overenthusiastic scroll‑reader to cleanse Redwater Lake. Results: curse disrupted,
+       currents calmed, locals advised not to drink anything that hums back.</p>
     <a href="mission-reports/The-Affliction-of-the-Redwater-Report.html" class="report-link">📜 Read Full Report</a>
   </article>
 
   <article class="report">
     <h2>Emberdeep Catacombs</h2>
-    <p>A quake reveals a forgotten crypt beneath a dwarven tavern. Highlights: rat diplomacy gone wrong, constellation puzzles, and a soul-transfer ritual involving a bat familiar.</p>
+    <p>A quake opens a forgotten crypt beneath a dwarven tavern. Highlights include rat diplomacy gone wrong,
+       constellation‑locked doors, and a soul‑shuffle ritual involving a very brave bat familiar. Exit status:
+       relics secured, spirits soothed, bartender now charges extra for “seismic seating.”</p>
     <a href="mission-reports/Emberdeep-Catacombs-Report.html" class="report-link">📜 Read Full Report</a>
   </article>
 
-  <!-- placeholder -->
   <article class="report">
-    <h2>New Reports Coming Soon…</h2>
-    <p>More heroics (and shenanigans) will be recorded here as missions are completed!</p>
+    <h2>Shrine of the Hollow Watcher</h2>
+    <p>Where echoes don’t just linger—they judge. The party walked the knife‑edge between combat and conversion
+       amid temporal drift, undead philosophy, and an offer of peace that felt like a cage. Aftermath: minds
+       intact (mostly), shrine quieted, choices still echoing.</p>
+    <a href="mission-reports/Shrine-of-the-Hollow-Watcher.html" class="report-link">📜 Read Full Report</a>
+  </article>
+
+  <article class="report">
+    <h2>Sinkhole Below Sable Row</h2>
+    <p>What began as salvage became stranger: acid‑scarred cellars, slick sewers, fallen Guilders, and an Akata
+       nesting atop a void‑touched greataxe that should not have been there. Outcome: anomaly neutralized, cargo
+       recovered, questions multiplied.</p>
+    <a href="mission-reports/Sinkhole-Below-Sable-Row.html" class="report-link">📜 Read Full Report</a>
+  </article>
+
+  <article class="report">
+    <h2>Echo Containment (Outpost Theta)</h2>
+    <p>Operation Iron Veil strike on an Ivory Labyrinth beacon. Mnemosyne Relay neutralized, prisoners freed,
+       High Templar Hylas captured. Victory claimed—at the cost of Tink‑Tonk the Cogsmith, whose last instructions
+       guided the team to shatter the crystal core. We remember, we rebuild.</p>
+    <a href="mission-reports/Echo-Containment-Report.html" class="report-link">📜 Read Full Report</a>
   </article>
 
 </div>
+
 </body>
 </html>
