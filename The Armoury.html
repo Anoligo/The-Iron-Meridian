@@ -52,6 +52,75 @@
   .npc-image img{width:140px;max-width:100%;border-radius:var(--radius);border:2px solid #444;}
   .npc-content{flex:1;}
 
+/* ---------- memorial cards ---------- */
+.npc.memorial{
+  position:relative;
+  border-color:#5b4a2e;
+  border-left:6px solid #b08a3c;
+  background:
+    radial-gradient(120% 140% at 0% 0%, #2a2a2a 40%, #262018 100%),
+    var(--bg-card);
+  box-shadow:0 0 0 1px rgba(176,138,60,.2) inset, 0 6px 20px rgba(0,0,0,.35);
+}
+
+/* subtle grayscale with warm memory tint */
+.npc.memorial .npc-image img{
+  filter:grayscale(.85) sepia(.15) contrast(1.05);
+  border-color:#5b4a2e;
+}
+
+/* cog + candle header accent */
+.npc.memorial h2{
+  color:#ffd18a;
+  text-shadow:0 0 6px rgba(255,209,138,.25);
+}
+
+/* soft divider line for list */
+.npc.memorial ul{border-top:1px dashed rgba(176,138,60,.35);padding-top:.65rem;}
+
+/* corner ribbon */
+.npc.memorial::before{
+  content:"In Memoriam";
+  position:absolute; top:10px; right:-36px;
+  transform:rotate(45deg);
+  background:linear-gradient(90deg,#735a2a,#b08a3c);
+  color:#1b1b1b; font-weight:700; letter-spacing:.5px;
+  padding:.25rem 2.25rem; border:1px solid #c8a35a;
+  box-shadow:0 2px 10px rgba(0,0,0,.35);
+}
+
+/* candle icon chip */
+.memorial .badge-candle{
+  display:inline-flex; align-items:center; gap:.4rem;
+  background:rgba(176,138,60,.12);
+  border:1px solid rgba(176,138,60,.35);
+  color:#ffd18a; font-weight:600; font-size:.9rem;
+  padding:.25rem .5rem; border-radius:999px;
+}
+
+/* gentle candle flicker (respects reduced motion) */
+@keyframes ir-candle-flicker{
+  0%,100%{opacity:.9; filter:drop-shadow(0 0 2px #ffd18a);}
+  50%{opacity:1; filter:drop-shadow(0 0 6px #ffd18a);}
+}
+.badge-candle i{display:inline-block; animation:ir-candle-flicker 2.6s ease-in-out infinite;}
+@media (prefers-reduced-motion:reduce){
+  .badge-candle i{animation:none;}
+}
+
+/* memorial note box */
+.memorial-note{
+  background:linear-gradient(180deg, rgba(255,209,138,.08), rgba(0,0,0,.0));
+  border:1px solid rgba(176,138,60,.35);
+  border-left:5px solid #b08a3c;
+  border-radius:var(--radius);
+  padding:.9rem; margin:.75rem 0 0;
+  color:#eedfca;
+}
+.memorial-note strong{color:#ffd18a;}
+.memorial-note em{color:#ffe1a8;}
+
+
   /* ---------- section box ---------- */
   .section{background:var(--bg-card);border:1px solid #444;border-left:5px solid var(--accent);border-radius:var(--radius);padding:1rem;margin:2rem 0 1.5rem;}
 
@@ -139,12 +208,16 @@
   </div>
 </div>
 
-<div class="npc">
+<div class="npc memorial">
   <div class="npc-image"><img src="images/tink-tonk.png" alt="Tink-Tonk the Cogsmith"></div>
   <div class="npc-content">
-    <h2>Tink-Tonk the Cogsmith</h2>
-    <p>Small, loud, brilliant engineer. May replace limbs with something “fun.”</p>
-    <ul><li><strong>Sells:</strong> Gadgets & tools</li><li><strong>Services:</strong> Device repairs, custom mods</li><li><strong>Training:</strong> Basic engineering (with disclaimers)</li></ul>
+    <h2>⚙️ Tink-Tonk the Cogsmith (Fallen)</h2>
+    <p>Once a small, loud, brilliant engineer who believed every limb could be improved with “something fun.” Tink-Tonk gave his life in service to the Guild, tinkering until the very end. His spirit rattles on in every over-engineered hinge and suspiciously humming contraption left in the workshops.</p>
+    <ul>
+      <li><strong>Legacy:</strong> Gadgets & tools still circulate in the Armoury</li>
+      <li><strong>Remembered For:</strong> Device repairs, custom mods, and questionable disclaimers</li>
+      <li><strong>Guild Note:</strong> Members say you can still hear a faint <em>“clank-whirr-oops”</em> in the halls when something explodes unexpectedly.</li>
+    </ul>
   </div>
 </div>
 
