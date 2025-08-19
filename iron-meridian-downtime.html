@@ -10,106 +10,86 @@
     --bg-dark:#1c1c1c;
     --bg-card:#2a2a2a;
     --text:#f5f5f5;
+    --muted:#cfcfcf;
     --accent:#ffc107;
     --accent-light:#ffd966;
     --radius:8px;
   }
 
-  /* ---------- base ---------- */
   *{box-sizing:border-box;margin:0;padding:0;}
   body{
     font-family:"Segoe UI",Tahoma,Verdana,sans-serif;
     background:var(--bg-dark);color:var(--text);
-    padding:16px 16px 32px;           /* bottom extra for mobile nav drop */
+    padding:16px 16px 32px;
   }
 
-  /* ==========  NAVIGATION  ============================================= */
+  /* header / nav */
   .site-header{
     display:flex;align-items:center;gap:.75rem;
     background:#1f1f1f;border-bottom:2px solid #444;
     margin:-16px -16px 1.5rem;
     padding:.75rem 1rem;position:relative;
   }
-  .logo{
-    font-weight:700;color:var(--accent);
-    font-size:1.1rem;white-space:nowrap;
-  }
-  /* hamburger (hidden on wide screens) */
-  .hamburger{
-    font-size:1.4rem;color:#fff;cursor:pointer;
-    margin-left:auto;user-select:none;
-    display:block;
-  }
-  .nav-toggle{display:none;}          /* hidden checkbox */
-  /* nav links */
+  .logo{font-weight:700;color:var(--accent);font-size:1.1rem;white-space:nowrap;}
+  .hamburger{font-size:1.4rem;color:#fff;cursor:pointer;margin-left:auto;user-select:none;display:block;}
+  .nav-toggle{display:none;}
   .site-nav{
-    display:none;                     /* mobile default */
-    flex-direction:column;gap:.75rem;
+    display:none;flex-direction:column;gap:.75rem;
     position:absolute;left:0;right:0;top:100%;
-    background:#1f1f1f;border-top:2px solid #444;
-    padding:1rem;
+    background:#1f1f1f;border-top:2px solid #444;padding:1rem;
   }
-  .site-nav a{
-    color:#fff;text-decoration:none;font-weight:600;
-    white-space:nowrap;
-  }
+  .site-nav a{color:#fff;text-decoration:none;font-weight:600;white-space:nowrap;}
   .site-nav a:hover{color:var(--accent);}
-
-  /* show menu when checkbox checked */
   .nav-toggle:checked + .hamburger + .site-nav{display:flex;}
-
-  /* ---------- larger screens ---------- */
   @media(min-width:620px){
     body{padding:24px;}
     .site-header{margin:-24px -24px 2rem;padding:1rem 1.25rem;}
-    .hamburger{display:none;}                         /* hide icon */
-    .site-nav{
-      display:flex !important;position:static;
-      flex-direction:row;gap:1.25rem;
-      background:transparent;border:none;margin-left:auto;
-    }
+    .hamburger{display:none;}
+    .site-nav{display:flex !important;position:static;flex-direction:row;gap:1.25rem;background:transparent;border:none;margin-left:auto;}
   }
 
-  /* ---------- page heading ---------- */
-  h1{
-    text-align:center;color:var(--accent);
-    font-size:clamp(1.4rem,5vw,2rem);
-    margin-bottom:.5em;
-  }
-  h2{
-    color:var(--accent-light);
-    font-size:clamp(1.1rem,4vw,1.4rem);
-    margin-bottom:.25em;
-  }
+  /* headings / layout */
+  h1{text-align:center;color:var(--accent);font-size:clamp(1.4rem,5vw,2rem);margin-bottom:.35em;}
+  h2{color:var(--accent-light);font-size:clamp(1.1rem,4vw,1.35rem);margin-bottom:.35em;}
+  p{line-height:1.6;margin-bottom:.75em;text-align:center;color:var(--muted);}
+  .sub{font-size:.95rem;color:#ddd;}
 
-  p{line-height:1.6;margin-bottom:1em;text-align:center;}
-  ul{line-height:1.6;padding-left:1.2em;margin-bottom:0;}
-
-  /* ---------- activity cards ---------- */
-  .activities{
-    display:grid;grid-template-columns:1fr;gap:1rem;
-  }
-  .activity{
-    background:var(--bg-card);
+  .banner{
+    background:linear-gradient(90deg,#2a2a2a 0%,#333 100%);
     border-left:5px solid var(--accent);
+    border-radius:var(--radius);
+    padding:.9rem 1rem;margin-bottom:1rem;
+  }
+  .badges{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin:.35rem 0 .75rem;}
+  .badge{
+    border:1px solid #555;border-radius:999px;padding:.2rem .6rem;
+    font-size:.85rem;color:#eee;background:#252525;
+  }
+
+  .activities{display:grid;grid-template-columns:1fr;gap:1rem;}
+  .activity{
+    background:var(--bg-card);border-left:5px solid var(--accent);
     padding:1em;border-radius:var(--radius);
   }
+  .activity ul{line-height:1.6;padding-left:1.2em;margin:0;}
+  .note{font-size:.9rem;color:#dcdcdc;margin-top:.5rem;}
 
-  @media(min-width:600px){
-    .activities{grid-template-columns:repeat(auto-fill,minmax(280px,1fr));}
+  @media(min-width:700px){
+    .activities{grid-template-columns:repeat(2,minmax(280px,1fr));}
   }
+
+  .footer-note{margin-top:1.25rem;font-size:.95rem;color:#e9e9e9;}
+  .mono{font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;}
+  .hr{height:1px;background:#444;margin:1rem 0;}
 </style>
 </head>
 
 <body>
-  <!-- ========== HEADER & NAV ========== -->
+  <!-- HEADER & NAV -->
   <header class="site-header">
     <div class="logo">Iron Meridian</div>
-
-    <!-- nav toggle (hamburger uses label) -->
     <input type="checkbox" id="nav-toggle" class="nav-toggle">
     <label for="nav-toggle" class="hamburger">&#9776;</label>
-
     <nav class="site-nav">
       <a href="Mercenary Guild Overview.html">🏰 Overview</a>
       <a href="Mission Board.html">📜 Mission Board</a>
@@ -120,71 +100,107 @@
     </nav>
   </header>
 
-  <!-- ========== PAGE CONTENT ========== -->
+  <!-- PAGE CONTENT -->
   <h1>📘 Iron Meridian – Downtime Activity Guide</h1>
-  <p><em>Choose what your character does between missions!</em></p>
+  <p><em>Choose what your character does between missions. Keep it fun, useful, and preferably non‑explosive.</em></p>
 
+  <!-- Quick Start & House Rules (evergreen) -->
+  <div class="banner">
+    <h2>⏱️ Quick Start & House Rules</h2>
+    <div class="badges">
+      <span class="badge">Post in <span class="mono">#downtime</span> using the template</span>
+      <span class="badge">Spend more days? Roll twice per check → take best</span>
+      <span class="badge">Batch craft up to 4 identical items in 4 days</span>
+      <span class="badge">Single craft often 2 days (1 day on crit)</span>
+      <span class="badge">GM may award small 1‑week boons for great scenes</span>
+    </div>
+    <p class="sub">Template:</p>
+    <p class="mono">[Downtime Request]<br>
+    Character: …<br>Activity: …<br>Location: …<br>Time Spent: …<br>Skill Used: …<br>Notes: …</p>
+  </div>
+
+  <!-- Suggested Activities -->
   <div class="activities">
+
     <div class="activity">
       <h2>🎓 Train a Skill / Feat</h2>
       <ul>
-        <li><strong>Use:</strong> 1 week per skill rank or feat</li>
-        <li><strong>Benefit:</strong> Improve a skill, learn a new language or Lore</li>
-        <li><strong>Requires:</strong> Access to a trainer and gold (ask the DM)</li>
+        <li><strong>Time:</strong> Usually 1 week per rank/feat (or as announced)</li>
+        <li><strong>Roll:</strong> Relevant skill; trainer or study can add +1–+2</li>
+        <li><strong>Perks:</strong> New proficiencies, languages, or Lore</li>
+      </ul>
+      <div class="note">Bonding with a familiar/companion can use <em>Arcana/Occultism/Nature</em> depending on method.</div>
+    </div>
+
+    <div class="activity">
+      <h2>🧪 Crafting (Potions, Gear, Oddities)</h2>
+      <ul>
+        <li><strong>Time:</strong> Batch of up to 4 identical items = 4 days • Single item = 2 days (1 day on crit)</li>
+        <li><strong>Roll:</strong> Crafting / Alchemical Crafting vs item DC (pay 50% materials)</li>
+        <li><strong>House Boons:</strong> Extra days → 2 rolls per check, keep best • Some crits can yield +1 bonus item</li>
+      </ul>
+      <div class="note">Example: Invisibility Potion (Lvl 4) DC 18, cost 5 gp; strong rolls may speed things up.</div>
+    </div>
+
+    <div class="activity">
+      <h2>📖 Research & Rituals</h2>
+      <ul>
+        <li><strong>Roll:</strong> Arcana, Occultism, Religion, Society, or Lore</li>
+        <li><strong>Use:</strong> Identify curses, decode relics, design or perform rituals, dig up hooks</li>
+        <li><strong>Outcomes:</strong> Clues, boons, or quest leads (e.g., soul‑communion successes granting weekly buffs)</li>
       </ul>
     </div>
 
     <div class="activity">
-      <h2>🪙 Earn Income</h2>
+      <h2>🛠️ The Cage (Armoury) & Iron Reserve</h2>
       <ul>
-        <li><strong>Use:</strong> Roll a relevant skill (Crafting, Performance, Lore, etc.)</li>
-        <li><strong>Benefit:</strong> Gain gold based on roll and level</li>
+        <li><strong>Roll:</strong> Diplomacy (haggle), Crafting (repairs), Society (contacts)</li>
+        <li><strong>Use:</strong> Appraisals, orders, stock work, gear swaps, paying tabs (Branna smiles when you do)</li>
+        <li><strong>Note:</strong> Ask before touching anything that hums, glows, or judges you.</li>
       </ul>
     </div>
 
     <div class="activity">
-      <h2>🔧 Crafting</h2>
+      <h2>🩺 Clinics, Blessings & Hex‑Breaking</h2>
       <ul>
-        <li><strong>Use:</strong> Crafting check vs. item DC (4 day minimum)</li>
-        <li><strong>Benefit:</strong> Make gear cheaper than buying it</li>
-        <li><strong>Requires:</strong> Crafting skill, materials, tools, recipe</li>
+        <li><strong>Roll:</strong> Medicine (treat wounds), Religion (blessings), Occultism (remove hex / counteract)</li>
+        <li><strong>Use:</strong> Earn small coin, favors, or local goodwill</li>
+        <li><strong>Perk:</strong> Exceptional service can grant tokens (free lodging, +1 to first social check in that town)</li>
       </ul>
     </div>
 
     <div class="activity">
-      <h2>📖 Research</h2>
+      <h2>🤝 Social & Team Training (2‑Day Pack)</h2>
       <ul>
-        <li><strong>Use:</strong> Arcana, Occultism, Religion, Society, or Lore</li>
-        <li><strong>Benefit:</strong> Learn info, hints, or side quest leads</li>
+        <li><strong>Day 1:</strong> Welcome tour + tavern bonding → <strong>+1 Diplomacy with guildmates (1 week)</strong></li>
+        <li><strong>Day 2:</strong> Yard drills with Yari → <strong>+1 to first attack next mission</strong></li>
+      </ul>
+      <div class="note">Yes, stories count as training if they end with “and that’s why we check for traps.”</div>
+    </div>
+
+    <div class="activity">
+      <h2>🕵️ Quiet Work (Sneak, Scout, Schmooze)</h2>
+      <ul>
+        <li><strong>Roll:</strong> Stealth, Thievery, Deception, Society</li>
+        <li><strong>Use:</strong> Favors, rumors, or “alternative solutions”</li>
+        <li><strong>Warning:</strong> Complications can spawn side‑quests. You’ve been warned (again).</li>
       </ul>
     </div>
 
     <div class="activity">
-      <h2>🛍️ Trade / Haggle</h2>
+      <h2>🦇 Bonds & Oddities</h2>
       <ul>
-        <li><strong>Use:</strong> Diplomacy, Deception, or Intimidation</li>
-        <li><strong>Benefit:</strong> Trade gear, get discounts, unlock secret stock</li>
+        <li><strong>Familiar/Companion Bonding:</strong> Arcana/Occultism/Nature → obedience boosts, tricks, quirky boons</li>
+        <li><strong>Strange Items:</strong> Ask Solen to identify before it hatches/explodes/judges you</li>
+        <li><strong>House Boon:</strong> Great bond scenes can grant 1‑week minor bonuses</li>
       </ul>
+      <div class="note">If your chicken lays a glowing egg, that’s a feature, not a bug.</div>
     </div>
 
-    <div class="activity">
-      <h2>🤫 Sneaky Stuff</h2>
-      <ul>
-        <li><strong>Use:</strong> Stealth, Thievery, Deception, Society, etc.</li>
-        <li><strong>Benefit:</strong> Gain favours, info, or “alternative solutions”</li>
-        <li><strong>Note:</strong> Might lead to new complications</li>
-      </ul>
-    </div>
-
-    <div class="activity">
-      <h2>❤️ Personal Projects / Role-play</h2>
-      <ul>
-        <li><strong>Use:</strong> Any skill or story-based idea</li>
-        <li><strong>Benefit:</strong> Progress goals, unlock new plot, earn rep or gifts</li>
-      </ul>
-    </div>
   </div>
 
-  <p style="margin-top:2em;"><em>Need help? Just ask the GM — we'll figure it out together!</em></p>
+  <div class="hr"></div>
+
+  <p class="footer-note"><em>Not seeing your idea listed? Pitch it! If it’s cool and doesn’t implode the tavern, we’ll figure it out.</em></p>
 </body>
 </html>
