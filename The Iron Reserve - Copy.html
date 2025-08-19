@@ -9,112 +9,115 @@
   :root{
     --bg-dark:#1c1c1c;
     --bg-card:#2a2a2a;
-    --bg-rented:#2c1c34;
+    --bg-rented:#2c1c34;          /* rented highlight */
     --border-rented:#6f3f8c;
     --text:#f5f5f5;
     --accent:#ffc107;
     --border-dark:#333;
-    --radius:10px;
-
-    /* type colours */
-    --t-Consumable:#2f855a;   /* green */
-    --t-Alchemical:#2b6cb0;   /* blue */
-    --t-Scroll:#805ad5;       /* purple */
-    --t-Formula:#b7791f;      /* amber */
-    --t-Rune:#d53f8c;         /* pink */
-    --t-Weapon:#c53030;       /* red */
-    --t-Armour:#3182ce;       /* cyan/blue */
-    --t-Shield:#4299e1;       /* light blue */
-    --t-Wondrous:#b83280;     /* magenta */
-    --t-Trinket:#718096;      /* gray */
-    --t-Attachment:#6b46c1;   /* indigo */
-    --t-Default:#555;         /* fallback */
+    --radius:8px;
   }
 
+  /* ------- base ------- */
   *{box-sizing:border-box;margin:0;padding:0;}
   body{
     font-family:'Segoe UI',Tahoma,Verdana,sans-serif;
     background:var(--bg-dark);color:var(--text);padding:20px;
   }
 
-  /* header/nav */
+  /* ========== NAVIGATION (shared) ========== */
   .site-header{
     display:flex;align-items:center;gap:.75rem;
     background:#1f1f1f;border-bottom:2px solid #444;
     margin:-20px -20px 1.5rem;padding:.75rem 1rem;position:relative;
   }
   .logo{font-weight:700;color:var(--accent);font-size:1.1rem;}
+
   .nav-toggle{display:none;}
-  .hamburger{font-size:1.4rem;color:#fff;cursor:pointer;margin-left:auto;user-select:none;display:block;}
-  .site-nav{display:none;flex-direction:column;gap:.75rem;position:absolute;left:0;right:0;top:100%;
-    background:#1f1f1f;border-top:2px solid #444;padding:1rem;}
+  .hamburger{
+    font-size:1.4rem;color:#fff;cursor:pointer;margin-left:auto;
+    user-select:none;display:block;
+  }
+  .site-nav{
+    display:none;flex-direction:column;gap:.75rem;
+    position:absolute;left:0;right:0;top:100%;
+    background:#1f1f1f;border-top:2px solid #444;padding:1rem;
+  }
   .site-nav a{color:#fff;text-decoration:none;font-weight:600;}
   .site-nav a:hover{color:var(--accent);}
   .nav-toggle:checked + .hamburger + .site-nav{display:flex;}
+
   @media(min-width:620px){
     body{padding:24px;}
     .site-header{margin:-24px -24px 1.75rem;padding:1rem 1.25rem;}
     .hamburger{display:none;}
-    .site-nav{display:flex !important;position:static;flex-direction:row;gap:1.25rem;margin-left:auto;background:transparent;border:none;padding:0;}
+    .site-nav{
+      display:flex !important;position:static;
+      flex-direction:row;gap:1.25rem;margin-left:auto;
+      background:transparent;border:none;padding:0;
+    }
   }
 
-  /* heading */
-  h1{text-align:center;color:var(--accent);font-size:clamp(1.5rem,5vw,2.2rem);margin-bottom:1rem;}
+  /* ------- heading + intro ------- */
+  h1{
+    text-align:center;color:var(--accent);
+    font-size:clamp(1.5rem,5vw,2.2rem);margin-bottom:1rem;
+  }
   p{line-height:1.6;margin-bottom:1.25rem;text-align:center;}
 
-  /* filters */
-  .filter-bar{display:flex;flex-wrap:wrap;gap:.75rem;justify-content:center;margin-bottom:1.5rem;}
+  /* ------- filters ------- */
+  .filter-bar{
+    display:flex;flex-wrap:wrap;gap:.75rem;justify-content:center;margin-bottom:1.5rem;
+  }
   .filter-bar input,.filter-bar select{
-    background:var(--bg-card);color:var(--text);border:1px solid var(--border-dark);
+    background:var(--bg-card);color:var(--text);
+    border:1px solid var(--border-dark);
     padding:.5rem .75rem;border-radius:var(--radius);min-width:140px;
   }
   .filter-bar input::placeholder{color:#aaa;}
 
-  /* grid */
-  .item-container{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;}
+  /* ------- grid ------- */
+  .item-container{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;
+  }
 
-  /* card */
+  /* ------- card ------- */
   .item{
     background:var(--bg-card);border:1px solid var(--border-dark);
-    border-radius:var(--radius);padding:1rem;display:flex;flex-direction:column;gap:.6rem;
-    transition:transform .2s, box-shadow .2s;
+    border-radius:var(--radius);padding:1rem;display:flex;flex-direction:column;
+    gap:.5rem;transition:transform .2s;
   }
-  .item:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,0,0,.25);}
+  .item:hover{transform:translateY(-4px);}
   .item.rented{background:var(--bg-rented);border-color:var(--border-rented);}
-  .item.vault{box-shadow:0 0 0 2px #ffd166 inset, 0 0 24px rgba(255,209,102,.25);}
-  .item-header{display:flex;align-items:center;gap:.5rem;}
-  .item-icon{font-size:1.1rem;}
-  .item-name{font-weight:700;color:var(--accent);font-size:1.05rem;flex:1;}
-  .tag-row{display:flex;flex-wrap:wrap;gap:.5rem;font-size:.78rem;}
+  .item-name{font-weight:600;color:var(--accent);font-size:1.05rem;}
+  .tags{display:flex;flex-wrap:wrap;gap:.5rem;font-size:.75rem;}
   .tag{
-    background:#444;padding:.18rem .6rem;border-radius:9999px;white-space:nowrap;border:1px solid rgba(255,255,255,.06);
+    background:#444;padding:.15rem .55rem;border-radius:9999px;white-space:nowrap;
   }
-  .tag.type{font-weight:700;}
   .qty{font-weight:700;}
-  .price{font-weight:700;}
-  .vault-pill{background:#4a2; color:#111; font-weight:800; letter-spacing:.3px;}
 
-  .details{display:none;flex-direction:column;gap:.45rem;font-size:.92rem;}
+  .details{display:none;flex-direction:column;gap:.45rem;font-size:.9rem;}
   .item.open .details{display:flex;}
-  .toggle-btn{
-    align-self:flex-start;padding:.25rem .65rem;font-size:.78rem;font-weight:700;
-    border:1px solid var(--border-dark);border-radius:var(--radius);
-    background:var(--accent);color:#111;cursor:pointer;user-select:none;transition:filter .2s;
-  }
-  .toggle-btn:hover{filter:brightness(1.06);}
 
-  /* legend */
-  .legend{max-width:980px;margin:0 auto 1rem;display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;opacity:.9}
-  .legend .tag{opacity:.9}
+  .toggle-btn{
+    align-self:flex-start;padding:.25rem .6rem;font-size:.75rem;font-weight:600;
+    border:1px solid var(--border-dark);border-radius:var(--radius);
+    background:var(--accent);color:var(--bg-dark);cursor:pointer;
+    user-select:none;transition:filter .2s;
+  }
+  .toggle-btn:hover{filter:brightness(1.1);}
+
   @media(max-width:480px){.item-container{grid-template-columns:1fr;}}
 </style>
 </head>
 
 <body>
+<!-- ===== header nav ===== -->
 <header class="site-header">
   <div class="logo">Iron Meridian</div>
+
   <input type="checkbox" id="nav-toggle" class="nav-toggle">
   <label for="nav-toggle" class="hamburger">&#9776;</label>
+
   <nav class="site-nav">
     <a href="Mercenary Guild Overview.html">🏰 Overview</a>
     <a href="Mission Board.html">📜 Mission Board</a>
@@ -126,10 +129,7 @@
 </header>
 
 <h1>🏺 The Iron Reserve</h1>
-<p>Browse guild-owned gear available for purchase or rental. Rented items are highlighted. Vault items are rare, expensive, and mildly judgmental.</p>
-
-<!-- quick legend -->
-<div class="legend" id="legend"></div>
+<p>Browse guild-owned gear available for purchase or rental. Rented items are highlighted.</p>
 
 <!-- filters -->
 <div class="filter-bar">
@@ -139,10 +139,10 @@
     <option value="name">Sort: Name</option>
     <option value="price">Sort: Price</option>
     <option value="quantity">Sort: Quantity</option>
-    <option value="type">Sort: Type</option>
   </select>
 </div>
 
+<!-- item grid -->
 <div id="itemContainer" class="item-container"></div>
 
 <script>
@@ -594,50 +594,16 @@ const items = [
 ];
 
 
-/* ---------- config: icons & colours by type ---------- */
-const TYPE_META = {
-  "Consumable": { icon:"🧪", color:"var(--t-Consumable)" },
-  "Alchemical": { icon:"⚗️", color:"var(--t-Alchemical)" },
-  "Scroll":     { icon:"📜", color:"var(--t-Scroll)" },
-  "Formula":    { icon:"📘", color:"var(--t-Formula)" },
-  "Rune":       { icon:"🔶", color:"var(--t-Rune)" },
-  "Weapon":     { icon:"⚔️", color:"var(--t-Weapon)" },
-  "Armour":     { icon:"🛡️", color:"var(--t-Armour)" },
-  "Shield":     { icon:"🛡️", color:"var(--t-Shield)" },
-  "Wondrous":   { icon:"✨", color:"var(--t-Wondrous)" },
-  "Trinket":    { icon:"🎴", color:"var(--t-Trinket)" },
-  "Attachment": { icon:"🧷", color:"var(--t-Attachment)" }
-};
-const DEFAULT_META = { icon:"📦", color:"var(--t-Default)" };
-
-/* vault threshold (gp) */
-const VAULT_THRESHOLD = 1000;
 
 /* ---------- helpers ---------- */
-function goldValue(str){
-  const m=/([0-9]+)\s*gp/i.exec(str||"");
-  return m?+m[1]:0;
-}
-function rentPrice(item){
-  if(item.consumable) return '—';
-  return Math.ceil(goldValue(item.price)*0.2)+' gp';
-}
+function goldValue(str){const m=/([0-9]+) gp/i.exec(str);return m?+m[1]:0;}
+function rentPrice(item){if(item.consumable)return '-';return Math.ceil(goldValue(item.price)*0.2)+' gp';}
 const rented = it => it.rented && it.rented!=='No';
 
-/* populate type filter + legend */
+/* populate type filter */
 const typeSel=document.getElementById('typeFilter');
-const types=[...new Set(items.map(i=>i.type))].sort();
-types.forEach(t=>{
+[...new Set(items.map(i=>i.type))].sort().forEach(t=>{
   const o=document.createElement('option');o.value=t;o.textContent=t;typeSel.appendChild(o);
-});
-const legend=document.getElementById('legend');
-[...types].forEach(t=>{
-  const meta = TYPE_META[t]||DEFAULT_META;
-  const pill=document.createElement('span');
-  pill.className='tag';
-  pill.style.background=meta.color;
-  pill.textContent=`${meta.icon} ${t}`;
-  legend.appendChild(pill);
 });
 
 /* render list */
@@ -645,52 +611,36 @@ const legend=document.getElementById('legend');
 render();
 
 function render(){
-  const q=(document.getElementById('searchInput').value||"").toLowerCase();
+  const q=document.getElementById('searchInput').value.toLowerCase();
   const type=typeSel.value;
   const sort=document.getElementById('sortSelect').value;
 
-  const list=items.filter(i=>{
-    const match = (i.name||"").toLowerCase().includes(q) || (i.description||"").toLowerCase().includes(q);
-    const typeOk = !type || i.type===type;
-    return match && typeOk;
-  }).sort((a,b)=>{
-    if(sort==='price')    return goldValue(a.price)-goldValue(b.price);
-    if(sort==='quantity') return (b.quantity||0)-(a.quantity||0);
-    if(sort==='type')     return (a.type||'').localeCompare(b.type||'');
-    return (a.name||'').localeCompare(b.name||'');
+  const list=items.filter(i=>
+    i.name.toLowerCase().includes(q)&&(!type||i.type===type)
+  ).sort((a,b)=>{
+    if(sort==='price')   return goldValue(a.price)-goldValue(b.price);
+    if(sort==='quantity')return (b.quantity||0)-(a.quantity||0);
+    return a.name.localeCompare(b.name);
   });
 
   const cont=document.getElementById('itemContainer');
   cont.innerHTML='';
   list.forEach(i=>{
-    const meta = TYPE_META[i.type]||DEFAULT_META;
-    const isVault = goldValue(i.price) >= VAULT_THRESHOLD;
-
     const card=document.createElement('div');
-    card.className='item'+(rented(i)?' rented':'')+(isVault?' vault':'');
-
+    card.className='item'+(rented(i)?' rented':'');
     card.innerHTML=`
-      <div class="item-header">
-        <div class="item-icon" title="${i.type}">${meta.icon}</div>
-        <div class="item-name">${i.name}</div>
-      </div>
-
-      <div class="tag-row">
-        <span class="tag type" style="background:${meta.color}">${i.type}</span>
-        <span class="tag price">Buy: ${i.price}</span>
+      <div class="item-name">${i.name}</div>
+      <div class="tags">
+        <span class="tag">${i.type}</span>
+        <span class="tag">Buy: ${i.price}</span>
         <span class="tag">Rent: ${rentPrice(i)}</span>
-        <span class="tag qty">Qty: ${i.quantity??'—'}</span>
-        ${isVault ? `<span class="tag vault-pill">🏛️ Vault</span>` : ``}
-        ${rented(i) ? `<span class="tag">Rented</span>` : ``}
+        <span class="tag qty">Qty: ${i.quantity||'—'}</span>
       </div>
-
       <button class="toggle-btn">Details</button>
       <div class="details">
-        <p>${i.description||''}</p>
-        <p><strong>Currently Rented:</strong> ${i.rented||'No'}</p>
-      </div>
-    `;
-
+        <p>${i.description}</p>
+        <p><strong>Currently Rented:</strong> ${i.rented}</p>
+      </div>`;
     card.querySelector('.toggle-btn').addEventListener('click',e=>{
       card.classList.toggle('open');
       e.target.textContent=card.classList.contains('open')?'Hide':'Details';
