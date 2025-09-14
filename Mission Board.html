@@ -150,230 +150,328 @@
 <script>
 /* ---------- mission data ---------- */
 const missionData = [
-
-  /* Silver & above focus */
-
   {
-    name: "Guild Priority: Echo Containment",
-    types: ["Combat", "Crisis", "Psychic"],
-    rank: "Silver",
-    length: "Medium-Long",
-    reward: "1600g + Access to Psionic Archive Tier I",
-    status: "completed",
-    location: "Ashminster Verge, Re-education Outpost Theta",
-    objective: "Disrupt Templar beacon and contain psychic outbreak.",
-    steps: [
+    "name": "Guild Priority: Echo Containment",
+    "types": ["Combat", "Crisis", "Psychic"],
+    "rank": "Silver",
+    "length": "Medium-Long",
+    "reward": "1600g + Access to Psionic Archive Tier I",
+    "status": "completed",
+    "location": "Ashminster Verge, Re-education Outpost Theta",
+    "objective": "Disrupt Templar beacon and contain psychic outbreak.",
+    "steps": [
       "Infiltrate the perimeter of Outpost Theta",
       "Disable or corrupt the Templar beacon",
       "Extract any affected Guild members or civilians",
       "Prevent the psychic broadcast from spreading beyond Ashminster"
     ],
-    extra: "Templars established a 're-education' station. Psychic fog across the Verge diminished after the relay’s collapse."
+    "extra": "Templars established a 're-education' station. Psychic fog across the Verge diminished after the relay’s collapse."
   },
-
   {
-    name: "The Saltstone Descent",
-    types: ["Exploration", "Combat", "Puzzle"],
-    rank: "Silver",
-    length: "Medium-Long",
-    reward: "600g + Ancient Seals",
-    status: "active",
-    location: "Saltstone Catacombs",
-    objective: "Reach sealed dwarven archive.",
-    steps: ["Map tunnels", "Bypass defences", "Collect tablets", "Return"],
-    extra: "Avoid cave-ins."
+    "name": "The Saltstone Descent",
+    "types": ["Exploration", "Combat", "Puzzle"],
+    "rank": "Silver",
+    "length": "Medium-Long",
+    "reward": "600g + Ancient Seals",
+    "status": "completed",
+    "location": "Saltstone Catacombs",
+    "objective": "Reach sealed dwarven archive.",
+    "steps": [
+      "Map tunnels",
+      "Bypass defences",
+      "Collect tablets",
+      "Return"
+    ],
+    "extra": "Another squad recovered the dwarven tablets before the collapse."
   },
-
   {
-    name: "The Mirrorpool Pact",
-    types: ["Diplomacy", "Investigation"],
-    rank: "Silver",
-    length: "Short-Medium",
-    reward: "450g + Renown",
-    status: "active",
-    location: "Mirrorpool Hamlet",
-    objective: "Mediate dispute with pond spirit.",
-    steps: ["Investigate", "Interview locals", "Resolve"],
-    extra: "Spirits may appear as koi."
+    "name": "The Mirrorpool Pact",
+    "types": ["Diplomacy", "Investigation"],
+    "rank": "Silver",
+    "length": "Short-Medium",
+    "reward": "450g + Renown",
+    "status": "active",
+    "location": "Mirrorpool Hamlet",
+    "objective": "Mediate dispute with pond spirit.",
+    "steps": [
+      "Investigate",
+      "Interview locals",
+      "Resolve"
+    ],
+    "extra": "Spirits may appear as koi."
   },
-
   {
-    name: "Whispers from the Chimera Vault",
-    types: ["Covert", "Investigation", "Rescue"],
-    rank: "Silver",
-    length: "Medium",
-    reward: "1200g + Favor from the Grey Chain",
-    status: "active",
-    location: "Substruct Level 2, Chimera Vault District",
-    objective: "Locate missing asset linked to psychic theft from the Templars.",
-    steps: [
+    "name": "Whispers from the Chimera Vault",
+    "types": ["Covert", "Investigation", "Rescue"],
+    "rank": "Silver",
+    "length": "Medium",
+    "reward": "1200g + Favor from the Grey Chain",
+    "status": "active",
+    "location": "Substruct Level 2, Chimera Vault District",
+    "objective": "Locate missing asset linked to psychic theft from the Templars.",
+    "steps": [
       "Contact local informant (password: 'Golden teeth, rusty smile')",
       "Trace the missing courier’s path",
       "Avoid Templar patrols and sigil triggers",
       "Recover the courier or their mind... if possible"
     ],
-    extra: "Unofficial. The Guild has no opinion on the Grey Chain. Officially."
+    "extra": "Unofficial. The Guild has no opinion on the Grey Chain. Officially."
   },
-
-  /* new silver missions */
-
   {
-    name: "Shards of the Mnemosyne Relay",
-    types: ["Exploration", "Psychic", "Hazard"],
-    rank: "Silver",
-    length: "Medium",
-    reward: "900g + Psychic Resonance Crystal",
-    status: "active",
-    location: "Ruins near Verge-Delta",
-    objective: "Recover and stabilize fragments of the destroyed beacon.",
-    steps: [
+    "name": "Shards of the Mnemosyne Relay",
+    "types": ["Exploration", "Psychic", "Hazard"],
+    "rank": "Silver",
+    "length": "Medium",
+    "reward": "900g + Psychic Resonance Crystal",
+    "status": "active",
+    "location": "Ruins near Verge-Delta",
+    "objective": "Recover and stabilize fragments of the destroyed beacon.",
+    "steps": [
       "Navigate fractured echo-fields",
       "Ward against residual psychic backlash",
       "Secure fragments for study",
       "Escape before Templar scavengers arrive"
     ],
-    extra: "Voices repeat your own words half a second late—sometimes in a different tone."
+    "extra": "Voices repeat your own words half a second late—sometimes in a different tone."
   },
-
   {
-    name: "The Argent Masquerade",
-    types: ["Social", "Covert", "Investigation"],
-    rank: "Silver",
-    length: "Short-Medium",
-    reward: "1000g + Political Leverage",
-    status: "active",
-    location: "Ashminster Highcourt",
-    objective: "Unmask a Labyrinth agent hidden among nobles during a gala.",
-    steps: [
-      "Gain entry under assumed roles",
-      "Collect whispers & masks",
-      "Identify the agent before midnight toast",
-      "Extract them (quietly or otherwise)"
+    "name": "The Argent Masquerade",
+    "types": ["investigation", "social", "infiltration"],
+    "rank": "Silver",
+    "length": "Short–Medium",
+    "reward": "1,000 gp plus political leverage",
+    "status": "completed",
+    "location": "Ashminster Highcourt",
+    "objective": "Identify the Ivory Labyrinth agent at the masquerade ball and recover the Heart of the Highcourt.",
+    "steps": [
+      "Infiltrate the masquerade under disguise",
+      "Gather clues and identify the true culprit",
+      "Investigate the tainted Cask 17 and neutralize the poison plot",
+      "Apprehend the agent and secure the Heart of the Highcourt"
     ],
-    extra: "Masks whisper subtle compliments that aren’t always meant for the wearer."
+    "extra": "Agent captured alive; artifact secured and returned to Iron Meridian."
   },
-
   {
-    name: "Hollow Echoes of Brambleholt",
-    types: ["Exploration", "Combat", "Mystery"],
-    rank: "Silver",
-    length: "Long",
-    reward: "1800g + Whisperwood Relic",
-    status: "active",
-    location: "Brambleholt Forest",
-    objective: "Investigate sudden void-song resonance and stop corruption spread.",
-    steps: [
+    "name": "Hollow Echoes of Brambleholt",
+    "types": ["Exploration", "Combat", "Mystery"],
+    "rank": "Silver",
+    "length": "Long",
+    "reward": "1800g + Whisperwood Relic",
+    "status": "active",
+    "location": "Brambleholt Forest",
+    "objective": "Investigate sudden void-song resonance and stop corruption spread.",
+    "steps": [
       "Survey warped woodland paths",
       "Break the resonance nodes",
       "Confront corrupted dryad guardians",
       "Cleanse or collapse the grove"
     ],
-    extra: "Travelers report humming thorns that pierce without blood."
+    "extra": "Travelers report humming thorns that pierce without blood."
   },
+{
+  name: "Demon Portal Shutdown",
+  types: ["Combat", "Exploration"],
+  rank: "Gold",
+  length: "Long",
+  reward: "—",
+  status: "expired",
+  location: "Shadowlands Rift",
+  objective: "Disable a growing portal breach.",
+  steps: [
+    "Secure passage",
+    "Examine portal",
+    "Shut breach",
+    "Evacuate"
+  ],
+  extra: "Attempted closure failed. The rift surged; perimeter wards collapsed.",
+  impact: "Two allied squads lost contact; ash-snow and infernal spoor now drift up to 10 miles. Villages report night-howls and heat-shimmer ‘footprints’. A greater fiend’s mark detected on shattered pylons. Situation escalated."
+},
+{
+  name: "Guild Priority: Iron Veil — Rift Severance",
+  types: ["Combat", "Crisis", "Siege", "Ritual"],
+  rank: "Gold",
+  length: "Long",
+  reward: "4800g + Riftbreaker Boon (choose one: Demon-Slaying Rune, Abyssal Null-Seal, or Ward-Pylon Schematic)",
+  status: "active",
+  location: "Shadowlands Rift, Primary Caldera",
+  objective: "Retake the caldera, slay the Rift Warden, and sever the portal with a chained counter-ritual.",
+  steps: [
+    "Establish forward redoubt; deploy three ward-pylons (north/east/west)",
+    "Seize the keystone obelisk from infernal hands",
+    "Defeat the Rift Warden and its guard (hellknots, ash-mages, carrion drakes)",
+    "Perform the Iron Veil counter-ritual (requires three synchronized roles)",
+    "Hold the line through the backlash; evacuate survivors; collapse remaining tears"
+  ],
+  extra: "Backwash hazards: blood-hail, time-stutter, and ‘gravity the wrong way’. Templar scavenger teams sighted on outer rim—likely hunting fragments.",
+  impact: "Success permanently lowers ambient corruption in the Verge; failure advances the incursion toward trade routes within a fortnight."
+},
 
-  /* Gold mission stays */
+
   {
-    name: "Demon Portal Shutdown",
-    types: ["Combat", "Exploration"],
-    rank: "Gold",
-    length: "Long",
-    reward: "4000g + Demon-Slaying Relic",
-    status: "active",
-    location: "Shadowlands Rift",
-    objective: "Disable a growing portal breach.",
-    steps: ["Secure passage", "Examine portal", "Shut breach", "Evacuate"],
-    extra: "Do NOT poke it."
+    "name": "Ashes at Watchpost Nine",
+    "types": ["Investigation", "Combat", "Demonic"],
+    "rank": "Bronze",
+    "length": "Medium",
+    "reward": "600g + Blackened Sigil Fragment",
+    "status": "active",
+    "location": "Watchpost Nine, Outer Ridgeline",
+    "objective": "Investigate the loss of contact with Watchpost Nine and secure the site.",
+    "steps": [
+      "Travel to site",
+      "Survey the remains",
+      "Identify source of incursion",
+      "Prevent spread"
+    ],
+    "extra": "Ash drifts upward. No birds sing. Ward runes appear scorched from the inside."
   },
-
-  /* limited bronze for flavour */
-
   {
-    name: "Ashes at Watchpost Nine",
-    types: ["Investigation", "Combat", "Demonic"],
-    rank: "Bronze",
-    length: "Medium",
-    reward: "600g + Blackened Sigil Fragment",
-    status: "active",
-    location: "Watchpost Nine, Outer Ridgeline",
-    objective: "Investigate the loss of contact with Watchpost Nine and secure the site.",
-    steps: ["Travel to site", "Survey the remains", "Identify source of incursion", "Prevent spread"],
-    extra: "Ash drifts upward. No birds sing. Ward runes appear scorched from the inside."
-  },
-
-  {
-    name: "The Bellows Below Bristlebarrow",
-    types: ["Exploration", "Hazard", "Psychic"],
-    rank: "Bronze",
-    length: "Short-Medium",
-    reward: "150g + Tincture of Lucid Silence",
-    status: "active",
-    location: "Bristlebarrow Hamlet, Eastern Verge",
-    objective: "Determine the source of nightly tremors and persistent sleep disturbances.",
-    steps: [
+    "name": "The Bellows Below Bristlebarrow",
+    "types": ["Exploration", "Hazard", "Psychic"],
+    "rank": "Bronze",
+    "length": "Short–Medium",
+    "reward": "150g + Tincture of Lucid Silence",
+    "status": "expired",
+    "location": "Bristlebarrow Hamlet, Eastern Verge",
+    "objective": "Determine the source of nightly tremors and persistent sleep disturbances.",
+    "steps": [
       "Interview afflicted townsfolk",
       "Explore the sealed basements",
       "Uncover the void-pocket beneath the well",
       "Calm, banish, or seal the anomaly"
     ],
-    extra: "No deaths reported. One child claims her doll hums back when scolded."
+    "extra": "The anomaly subsided on its own; townsfolk report peaceful dreams once more."
   },
-  
-  /* Expired Missions */
   {
-  name: "Rot Beneath Rivermarket",
-  types: ["Combat", "Urban", "Infestation"],
-  rank: "Bronze",
-  length: "Medium",
-  reward: "100g + Guild Credit",
-  status: "expired",
-  location: "Underbridge District, Rivermarket",
-  objective: "Purge the vermin nest causing structural collapse.",
-  steps: [
-    "Secure entrance",
-    "Explore tunnel network",
-    "Eliminate broodmother",
-    "Seal breach"
-  ],
-  extra: "Local cats went missing. One returned... changed."
-},
-
-{
-  name: "Eyes in the Shadows",
-  types: ["Stealth", "Covert"],
-  rank: "Silver",
-  length: "Medium",
-  reward: "2000g + Faction Intel",
-  status: "expired",
-  location: "Dismal Blades Hideout",
-  objective: "Gather intelligence undetected.",
-  steps: [
-    "Gain access",
-    "Collect info",
-    "Optionally sabotage",
-    "Exit cleanly"
-  ],
-  extra: "Fake moustaches optional."
-}
-
-];
+    "name": "Rot Beneath Rivermarket",
+    "types": ["Combat", "Urban", "Infestation"],
+    "rank": "Bronze",
+    "length": "Medium",
+    "reward": "100g + Guild Credit",
+    "status": "expired",
+    "location": "Underbridge District, Rivermarket",
+    "objective": "Purge the vermin nest causing structural collapse.",
+    "steps": [
+      "Secure entrance",
+      "Explore tunnel network",
+      "Eliminate broodmother",
+      "Seal breach"
+    ],
+    "extra": "Local cats went missing. One returned... changed."
+  },
+  {
+    "name": "Eyes in the Shadows",
+    "types": ["Stealth", "Covert"],
+    "rank": "Silver",
+    "length": "Medium",
+    "reward": "2000g + Faction Intel",
+    "status": "expired",
+    "location": "Dismal Blades Hideout",
+    "objective": "Gather intelligence undetected.",
+    "steps": [
+      "Gain access",
+      "Collect info",
+      "Optionally sabotage",
+      "Exit cleanly"
+    ],
+    "extra": "Fake moustaches optional."
+  },
+  {
+    "name": "Supply Run to Emberhold",
+    "types": ["escort", "delivery"],
+    "rank": "Bronze",
+    "length": "Short",
+    "reward": "150 gp",
+    "status": "available",
+    "location": "Emberhold",
+    "objective": "Escort a caravan of supplies through bandit‑infested roads to the dwarven enclave of Emberhold.",
+    "steps": [
+      "Collect the supplies and meet the caravan leader",
+      "Travel through bandit territory while defending the wagons",
+      "Deliver the goods safely to Emberhold"
+    ],
+    "extra": "The dwarven enclave offers a bonus for timely delivery."
+  },
+  {
+    "name": "Whispers in the Weald",
+    "types": ["investigation", "exploration"],
+    "rank": "Silver",
+    "length": "Medium",
+    "reward": "800 gp and fae trinkets",
+    "status": "available",
+    "location": "The Whispering Weald",
+    "objective": "Uncover the source of unsettling whispers driving nearby villagers mad.",
+    "steps": [
+      "Enter the Whispering Weald and listen for the whispers",
+      "Investigate the cause of the voices and gather information from fey inhabitants",
+      "Bargain with or confront the entity responsible",
+      "Restore peace to the forest"
+    ],
+    "extra": "Beware of making deals without proper offerings."
+  },
+  {
+    "name": "Lost in the Sable Moors",
+    "types": ["rescue", "exploration"],
+    "rank": "Bronze",
+    "length": "Short–Medium",
+    "reward": "200 gp plus salvage rights",
+    "status": "available",
+    "location": "Sable Moors",
+    "objective": "Find and rescue a missing merchant caravan lost in the fog‑laden moors.",
+    "steps": [
+      "Follow the caravan's trail into the moor",
+      "Survive environmental hazards and creatures",
+      "Locate survivors and recover their goods",
+      "Escort them back to civilization"
+    ],
+    "extra": "Reward includes salvage rights to any unclaimed goods."
+  },
+  {
+    "name": "Clockwork Conundrum at Gearford",
+    "types": ["combat", "investigation"],
+    "rank": "Gold",
+    "length": "Long",
+    "reward": "1,500 gp and mechanical secrets",
+    "status": "available",
+    "location": "Gearford Foundry",
+    "objective": "Stop runaway clockwork automata rampaging through a dwarven foundry.",
+    "steps": [
+      "Enter Gearford and secure the perimeter",
+      "Navigate the hazardous foundry floor",
+      "Disable the rogue clockwork automata",
+      "Discover who sabotaged the machines and bring them to justice"
+    ],
+    "extra": "The foundry's master offers rare schematics for success."
+  }
+]
 
 
 /* ---------- helpers ---------- */
-const rankOrder={Bronze:1,Silver:2,Gold:3};
-const statusOrder={active:0,completed:1,expired:2};
-function parseLength(l){return["Short","Short-Medium","Medium","Medium-Long","Long"].indexOf(l.split(' ')[0]);}
-function rewardVal(r){const m=/([0-9]+)g/i.exec(r);return m?+m[1]:0;}
+const rankOrder = { Bronze: 1, Silver: 2, Gold: 3 };
+const statusOrder = { active: 0, completed: 1, expired: 2, available: 0 }; // <- include available
 
-/* populate type filter */
-const typeSel=document.getElementById('typeFilter');
-[...new Set(missionData.flatMap(m=>m.types))].sort().forEach(t=>{
-  const o=document.createElement('option');o.value=t;o.textContent=t;typeSel.appendChild(o);
-});
+const statusWeight = s => (s in statusOrder ? statusOrder[s] : 0);
+const rankWeight   = r => (r in rankOrder ? rankOrder[r] : 99);
 
-/* wire up */
-['searchInput','rankFilter','typeFilter','statusFilter','sortSelect'].forEach(id=>document.getElementById(id).addEventListener('input',render));
-render();
+function parseLength(l){
+  // handles "Short–Medium" (en dash) and "Short-Medium"
+  const first = (l||'').split(/[ –-]/)[0]; 
+  return ["Short","Short","Medium","Medium","Long"].indexOf(first) ?? 0;
+}
+function rewardVal(r){
+  // handles "1600g", "1,000 gp", "600 g"
+  const m = /([\d,]+)\s*g?p?/i.exec(r||"");
+  return m ? +m[1].replace(/,/g,'') : 0;
+}
 
+/* populate type filter (case-normalized) */
+const typeSel = document.getElementById('typeFilter');
+[...new Set(missionData.flatMap(m => (m.types||[]).map(t=>String(t).trim())))]
+  .sort((a,b)=>a.localeCompare(b))
+  .forEach(t=>{
+    const o=document.createElement('option');
+    o.value=t; o.textContent=t; typeSel.appendChild(o);
+  });
+  
 function statusPill(status){
   const map={
     active:{ico:'⌛', label:'Active'},
@@ -382,66 +480,72 @@ function statusPill(status){
   };
   const s=map[status]||map.active;
   return `<span class="status-pill" title="${s.label}"><span class="pill-ico">${s.ico}</span>${s.label}</span>`;
-}
-
+} 
 function ribbon(status){
-  if(status==='completed') return `<div class="ribbon">COMPLETED</div>`;
-  if(status==='expired')   return `<div class="ribbon">EXPIRED</div>`;
+  if(status === 'completed') return `<div class="ribbon">COMPLETED</div>`;
+  if(status === 'expired')   return `<div class="ribbon">EXPIRED</div>`;
   return '';
 }
 
-function render(){
-  const q=document.getElementById('searchInput').value.toLowerCase();
-  const rankSel=document.getElementById('rankFilter').value;
-  const typeSel=document.getElementById('typeFilter').value;
-  const statSel=document.getElementById('statusFilter').value;
-  const sortSel=document.getElementById('sortSelect').value;
+/* wire up */
+['searchInput','rankFilter','typeFilter','statusFilter','sortSelect']
+  .forEach(id=>document.getElementById(id).addEventListener('input',render));
+render();
 
-  const filtered=missionData.filter(m=>
-    m.name.toLowerCase().includes(q) &&
-    (!rankSel||m.rank===rankSel) &&
-    (!typeSel||m.types.includes(typeSel)) &&
-    (!statSel||m.status===statSel)
+function render(){
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const rankSel = document.getElementById('rankFilter').value;
+  const typeSelVal = document.getElementById('typeFilter').value;
+  const statSel = document.getElementById('statusFilter').value;
+  const sortSel = document.getElementById('sortSelect').value;
+
+  const filtered = missionData.filter(m =>
+    (m.name||'').toLowerCase().includes(q) &&
+    (!rankSel || m.rank === rankSel) &&
+    (!typeSelVal || (m.types||[]).map(String).includes(typeSelVal)) &&
+    (!statSel || m.status === statSel)
   );
 
   filtered.sort((a,b)=>{
-    const s=statusOrder[a.status]-statusOrder[b.status]; if(s!==0) return s;
-    switch(sortSel){
-      case'rank':return rankOrder[a.rank]-rankOrder[b.rank];
-      case'length':return parseLength(a.length)-parseLength(b.length);
-      case'reward':return rewardVal(b.reward)-rewardVal(a.reward);
-      default:return a.name.localeCompare(b.name);
+    // Always group by status first (with safe weights)
+    const sw = statusWeight(a.status) - statusWeight(b.status);
+    if (sw !== 0) return sw;
+
+    switch (sortSel){
+      case 'rank':   return rankWeight(a.rank) - rankWeight(b.rank) || a.name.localeCompare(b.name);
+      case 'length': return parseLength(a.length) - parseLength(b.length) || a.name.localeCompare(b.name);
+      case 'reward': return rewardVal(b.reward) - rewardVal(a.reward) || a.name.localeCompare(b.name);
+      default:       return a.name.localeCompare(b.name);
     }
   });
 
-  const container=document.getElementById('missionContainer');
-  container.innerHTML='';
+  const container = document.getElementById('missionContainer');
+  container.innerHTML = '';
   filtered.forEach(m=>{
     const card=document.createElement('div');
-    card.className=`mission ${m.status}`;
+    card.className=`mission ${m.status||'active'}`;
     card.innerHTML=`
       ${ribbon(m.status)}
       <div class="mission-header">
-        <div class="mission-name ${m.rank.toLowerCase()}">
-          <svg class="rank-icon ${m.rank.toLowerCase()}"><use href="#shield"/></svg>
+        <div class="mission-name ${String(m.rank||'').toLowerCase()}">
+          <svg class="rank-icon ${String(m.rank||'').toLowerCase()}"><use href="#shield"/></svg>
           ${m.name}
         </div>
         <div class="mission-meta">
-          ${statusPill(m.status)}
-          ${m.types.map(t=>`<span class="tag">${t}</span>`).join('')}
-          <span class="tag">Rank: ${m.rank}</span>
-          <span class="tag">${m.length}</span>
-          <span class="tag">${m.reward}</span>
+          ${statusPill(m.status||'active')}
+          ${(m.types||[]).map(t=>`<span class="tag">${t}</span>`).join('')}
+          <span class="tag">Rank: ${m.rank||'—'}</span>
+          <span class="tag">${m.length||'—'}</span>
+          <span class="tag">${m.reward||'—'}</span>
         </div>
       </div>
       <button class="toggle-btn" aria-expanded="false">Show details</button>
       <div class="details" hidden>
-        <p><strong>Location:</strong> ${m.location}</p>
-        <p><strong>Objective:</strong> ${m.objective}</p>
+        <p><strong>Location:</strong> ${m.location||'—'}</p>
+        <p><strong>Objective:</strong> ${m.objective||'—'}</p>
         ${m.steps?.length?`<ol>${m.steps.map(s=>`<li>${s}</li>`).join('')}</ol>`:''}
         ${m.extra?`<p><em>${m.extra}</em></p>`:''}
       </div>`;
-
     const btn=card.querySelector('.toggle-btn');
     const panel=card.querySelector('.details');
     btn.addEventListener('click',()=>{
@@ -451,7 +555,6 @@ function render(){
       btn.setAttribute('aria-expanded',open?'true':'false');
       btn.textContent=open?'Hide details':'Show details';
     });
-
     container.appendChild(card);
   });
 }
