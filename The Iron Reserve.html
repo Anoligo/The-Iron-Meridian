@@ -148,7 +148,6 @@
 <script>
 /* ---------- unified data (updated) ---------- */
 const items = [
-  /* --- Core consumables (restocked & curated) --- */
   {
     "name": "Smokestick (Lesser)",
     "type": "Alchemical",
@@ -165,7 +164,7 @@ const items = [
     "price": "3 gp",
     "consumable": true,
     "rented": "No",
-    "quantity": 10
+    "quantity": 7
   },
   {
     "name": "Tanglefoot Bag (Lesser)",
@@ -174,7 +173,7 @@ const items = [
     "price": "3 gp",
     "consumable": true,
     "rented": "No",
-    "quantity": 8
+    "quantity": 6
   },
   {
     "name": "Bottled Lightning (Lesser)",
@@ -201,7 +200,7 @@ const items = [
     "price": "12 gp",
     "consumable": true,
     "rented": "No",
-    "quantity": 3
+    "quantity": 6
   },
   {
     "name": "Potion of Healing (Minor)",
@@ -210,7 +209,7 @@ const items = [
     "price": "4 gp",
     "consumable": true,
     "rented": "No",
-    "quantity": 10
+    "quantity": 8
   },
   {
     "name": "Potion of Healing (Lesser)",
@@ -219,7 +218,7 @@ const items = [
     "price": "12 gp",
     "consumable": true,
     "rented": "No",
-    "quantity": 0
+    "quantity": 6
   },
   {
     "name": "Potion of Antidote (Lesser)",
@@ -246,19 +245,8 @@ const items = [
     "price": "3 gp",
     "consumable": true,
     "rented": "No",
-    "quantity": 0
+    "quantity": 6
   },
-  {
-    "name": "Feather Token (Tree)",
-    "type": "Consumable",
-    "description": "Instant sturdy tree; great cover or battlefield control.",
-    "price": "30 gp",
-    "consumable": true,
-    "rented": "No",
-    "quantity": 1
-  },
-
-  /* --- Scroll rack (1st–5th level) --- */
   {
     "name": "Scroll of Magic Missile (1st)",
     "type": "Scroll",
@@ -276,15 +264,6 @@ const items = [
     "consumable": true,
     "rented": "No",
     "quantity": 6
-  },
-  {
-    "name": "Scroll of Fear (1st)",
-    "type": "Scroll",
-    "description": "Frighten foes; Will save.",
-    "price": "4 gp",
-    "consumable": true,
-    "rented": "No",
-    "quantity": 4
   },
   {
     "name": "Scroll of Invisibility (2nd)",
@@ -367,22 +346,11 @@ const items = [
     "rented": "No",
     "quantity": 1
   },
-
-  /* --- Fun/affordable items --- */
   {
     "name": "Whistle of Echoing Steps",
     "type": "Trinket",
     "description": "Once/day, create illusory departing footsteps (DC 14 Will disbelief).",
     "price": "20 gp",
-    "consumable": false,
-    "rented": "No",
-    "quantity": 1
-  },
-  {
-    "name": "Amberglow Pauldrons",
-    "type": "Armour",
-    "description": "+1 item bonus vs fire; 1/day absorb 5 fire dmg as a reaction.",
-    "price": "75 gp",
     "consumable": false,
     "rented": "No",
     "quantity": 1
@@ -414,8 +382,6 @@ const items = [
     "rented": "No",
     "quantity": 1
   },
-
-  /* --- Crafting formulas --- */
   {
     "name": "Formula: Alchemist’s Fire (Lesser)",
     "type": "Formula",
@@ -461,8 +427,6 @@ const items = [
     "rented": "No",
     "quantity": 0
   },
-
-  /* --- Fundamental & property runes --- */
   {
     "name": "Weapon Potency Rune (+1)",
     "type": "Rune",
@@ -508,8 +472,6 @@ const items = [
     "rented": "No",
     "quantity": 1
   },
-
-  /* --- High-tier Vault Stock --- */
   {
     "name": "Blade of Shattered Stars",
     "type": "Weapon",
@@ -556,15 +518,6 @@ const items = [
     "quantity": 1
   },
   {
-    "name": "Gloves of Warpsteel",
-    "type": "Wondrous",
-    "description": "1/day reaction: redirect a melee attack to another creature within reach.",
-    "price": "1800 gp",
-    "consumable": false,
-    "rented": "No",
-    "quantity": 1
-  },
-  {
     "name": "Stormcall Javelin",
     "type": "Weapon",
     "description": "Thrown weapon; on hit calls lightning (4d12, 20-ft burst, DC 23 Reflex). Reforms after 1 min.",
@@ -574,24 +527,78 @@ const items = [
     "quantity": 1
   },
   {
-    "name": "Mask of Many Faces",
-    "type": "Wondrous",
-    "description": "At will: Disguise Self (heightened 3rd); 1/day: Alter Self.",
-    "price": "1000 gp",
+  "name": "Gauntlets of the Shattered Sky",
+  "type": "Wondrous",
+  "description": "Heavy azure-steel gauntlets crackling with storm energy. Wielder gains resistance 5 to electricity and can hurl a 30-ft lightning bolt once per day (4d12, DC 23 Reflex). On crit melee hit, chain lightning arcs to a second target for 1d6.",
+  "price": "1800 gp",
+  "consumable": false,
+  "rented": "No",
+  "quantity": 1
+  },
+  {
+  "name": "Mirror of Twin Fates",
+  "type": "Wondrous",
+  "description": "A polished obsidian hand-mirror. Once per day, after rolling a failed saving throw, the bearer may reflect their fate: reroll with a +2 circumstance bonus. On use, the mirror briefly shows an alternate version of the bearer who did not survive.",
+  "price": "3000 gp",
+  "consumable": false,
+  "rented": "No",
+  "quantity": 1
+  },
+  {
+    "name": "Masquerade Sleep Draught",
+    "type": "Alchemical Poison",
+    "description": "Ingested poison that renders a target unconscious if they fail a DC 18 Fortitude save.",
+    "price": "50 gp",
+    "consumable": true,
+    "rented": "No",
+    "quantity": 5
+  },
+  {
+    "name": "Moderate Healing Potion",
+    "type": "Potion",
+    "description": "Restores 3d8+10 Hit Points when consumed.",
+    "price": "50 gp",
+    "consumable": true,
+    "rented": "No",
+    "quantity": 4
+  },
+  {
+    "name": "Minor Invisibility Potion",
+    "type": "Potion",
+    "description": "Grants invisibility for up to 5 minutes or until you take an action.",
+    "price": "70 gp",
+    "consumable": true,
+    "rented": "No",
+    "quantity": 3
+  },
+  {
+    "name": "Scroll of Dispel Magic",
+    "type": "Scroll",
+    "description": "Cast the Dispel Magic spell (counteract level 3).",
+    "price": "55 gp",
+    "consumable": true,
+    "rented": "No",
+    "quantity": 2
+  },
+  {
+    "name": "Cloak of the Bat",
+    "type": "Wondrous Item",
+    "description": "Allows the wearer to glide and grants darkvision; transform into a bat once per day.",
+    "price": "300 gp",
     "consumable": false,
     "rented": "No",
     "quantity": 1
   },
   {
-    "name": "Cloak of the Dreaming Tide",
-    "type": "Wondrous",
-    "description": "Water breathing; +2 saves vs sleep/charm; 1/day cast Sleep heightened to 4th.",
-    "price": "2200 gp",
+    "name": "Cloak of Shadows",
+    "type": "Wondrous Item",
+    "description": "Grants the wearer a +1 item bonus to Stealth checks and lets them cast darkness once per day.",
+    "price": "250 gp",
     "consumable": false,
     "rented": "No",
     "quantity": 1
   }
-];
+]
 
 
 /* ---------- config: icons & colours by type ---------- */
