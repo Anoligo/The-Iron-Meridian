@@ -13,6 +13,7 @@
     --accent:#ffc107;
     --accent-light:#ffd966;
     --radius:8px;
+    --border-dark:#444;
   }
 
   /* ---------- base ---------- */
@@ -31,22 +32,16 @@
     padding:.75rem 1rem;position:relative;
   }
   .logo{font-weight:700;color:var(--accent);font-size:1.1rem;white-space:nowrap;}
-
   .nav-toggle{display:none;}
-  .hamburger{
-    font-size:1.4rem;color:#fff;cursor:pointer;
-    margin-left:auto;user-select:none;display:block;
-  }
+  .hamburger{font-size:1.4rem;color:#fff;cursor:pointer;margin-left:auto;user-select:none;display:block;}
   .site-nav{
     display:none;flex-direction:column;gap:.75rem;
     position:absolute;left:0;right:0;top:100%;
-    background:#1f1f1f;border-top:2px solid #444;
-    padding:1rem;
+    background:#1f1f1f;border-top:2px solid #444;padding:1rem;
   }
   .site-nav a{color:#fff;text-decoration:none;font-weight:600;white-space:nowrap;}
   .site-nav a:hover{color:var(--accent);}
   .nav-toggle:checked + .hamburger + .site-nav{display:flex;}
-
   @media(min-width:620px){
     body{padding:24px;}
     .site-header{margin:-24px -24px 1.75rem;padding:1rem 1.25rem;}
@@ -71,6 +66,18 @@
   }
   p{line-height:1.6;margin-bottom:1em;}
 
+  /* ---------- filters ---------- */
+  .filter-bar{
+    display:flex;flex-wrap:wrap;gap:.75rem;justify-content:center;
+    margin:0 auto 1rem;max-width:980px;
+  }
+  .filter-bar input,.filter-bar select{
+    background:var(--bg-card);color:var(--text);
+    border:1px solid var(--border-dark);padding:.5rem .75rem;
+    border-radius:var(--radius);min-width:160px;
+  }
+  .filter-bar input::placeholder{color:#bbb;}
+
   /* ---------- report cards ---------- */
   .reports{
     display:grid;grid-template-columns:1fr;gap:1.25rem;
@@ -79,7 +86,14 @@
     background:var(--bg-card);
     border-left:5px solid var(--accent);
     padding:1.25rem;border-radius:var(--radius);
-    display:flex;flex-direction:column;
+    display:flex;flex-direction:column;gap:.35rem;
+  }
+  .report-meta{
+    font-size:.9rem;color:#ddd;display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:.25rem;
+  }
+  .pill{
+    background:#3a3a3a;border:1px solid #555;
+    padding:.15rem .5rem;border-radius:9999px;font-size:.72rem;
   }
   .report-link{
     align-self:flex-start;padding:.55em 1.2em;
@@ -115,62 +129,107 @@
 
 <h1>🛡️ Iron Meridian Mission Reports 📜</h1>
 
-<!-- reports grid -->
-<div class="reports">
-
-  <article class="report">
-    <h2>There's Goblins in My Turnips!</h2>
-    <p>A daring team tackles a goblin infestation… and sets a few turnips (and goblins) on fire in the process.
-       Expect surprise pies, a hurled leshy, agricultural arson, and a goblin king blinded mid‑speech by
-       tactical starch application. Collateral damage: spicy.</p>
-    <a href="mission-reports/Theres-Goblins-in-My-Turnips-Report.html" class="report-link">📜 Read Full Report</a>
-  </article>
-
-  <article class="report">
-    <h2>The Affliction of the Redwater</h2>
-    <p>A corrupted river, suspicious stones, and a sorrowful siren. The team braved crimson slimes, musical
-       mind‑control, and an overenthusiastic scroll‑reader to cleanse Redwater Lake. Results: curse disrupted,
-       currents calmed, locals advised not to drink anything that hums back.</p>
-    <a href="mission-reports/The-Affliction-of-the-Redwater-Report.html" class="report-link">📜 Read Full Report</a>
-  </article>
-
-  <article class="report">
-    <h2>Emberdeep Catacombs</h2>
-    <p>A quake opens a forgotten crypt beneath a dwarven tavern. Highlights include rat diplomacy gone wrong,
-       constellation‑locked doors, and a soul‑shuffle ritual involving a very brave bat familiar. Exit status:
-       relics secured, spirits soothed, bartender now charges extra for “seismic seating.”</p>
-    <a href="mission-reports/Emberdeep-Catacombs-Report.html" class="report-link">📜 Read Full Report</a>
-  </article>
-
-  <article class="report">
-    <h2>Shrine of the Hollow Watcher</h2>
-    <p>Where echoes don’t just linger—they judge. The party walked the knife‑edge between combat and conversion
-       amid temporal drift, undead philosophy, and an offer of peace that felt like a cage. Aftermath: minds
-       intact (mostly), shrine quieted, choices still echoing.</p>
-    <a href="mission-reports/Shrine-of-the-Hollow-Watcher.html" class="report-link">📜 Read Full Report</a>
-  </article>
-
-  <article class="report">
-    <h2>Sinkhole Below Sable Row</h2>
-    <p>What began as salvage became stranger: acid‑scarred cellars, slick sewers, fallen Guilders, and an Akata
-       nesting atop a void‑touched greataxe that should not have been there. Outcome: anomaly neutralized, cargo
-       recovered, questions multiplied.</p>
-    <a href="mission-reports/Sinkhole-Below-Sable-Row.html" class="report-link">📜 Read Full Report</a>
-  </article>
-
-  <article class="report">
-    <h2>Echo Containment (Outpost Theta)</h2>
-    <p>Operation Iron Veil strike on an Ivory Labyrinth beacon. Mnemosyne Relay neutralized, prisoners freed,
-       High Templar Hylas captured. Victory claimed—at the cost of Tink‑Tonk the Cogsmith, whose last instructions
-       guided the team to shatter the crystal core. We remember, we rebuild.</p>
-    <a href="mission-reports/Echo-Containment-Report.html" class="report-link">📜 Read Full Report</a>
-  </article>
-<article class="report">
-  <h2>The Argent Masquerade</h2>
-  <p>A Silver‑rank investigation at Ashminster Highcourt turns deadly when a social infiltration unearths an agent of the Ivory Labyrinth and a stolen artifact. The squad exposes the true villain, wrests control of a mind‑controlling device and secures the Heart of the Highcourt.</p>
-  <a href="mission-reports/the-argent-masquerade-report.html" class="report-link">📜 Read Full Report</a>
-</article>
+<!-- filters -->
+<div class="filter-bar" role="region" aria-label="Report filters">
+  <input type="text" id="searchInput" placeholder="Search report titles…" aria-label="Search reports">
+  <select id="squadFilter" aria-label="Filter by squad">
+    <option value="">All Squads</option>
+  </select>
 </div>
 
+<!-- reports grid -->
+<div id="reports" class="reports" aria-live="polite"></div>
+
+<script>
+/* ---------- reports data (add new entries here) ---------- */
+const reportData = [
+  {
+    name: "There's Goblins in My Turnips!",
+    squad: "The Leg Ends",
+    blurb: "A daring team tackles a goblin infestation… and sets a few turnips (and goblins) on fire in the process. Includes surprise pies, thrown leshy, and a goblin king blinded mid-speech.",
+    href: "mission-reports/Theres-Goblins-in-My-Turnips-Report.html"
+  },
+  {
+    name: "The Affliction of the Redwater",
+    squad: "The Leg Ends",
+    blurb: "A corrupted river, suspicious stones, and a sorrowful siren. The team braved crimson slimes, musical mind-control, and an overenthusiastic scroll-reader to cleanse Redwater Lake.",
+    href: "mission-reports/The-Affliction-of-the-Redwater-Report.html"
+  },
+  {
+    name: "Emberdeep Catacombs",
+    squad: "The Leg Ends",
+    blurb: "A quake reveals a forgotten crypt beneath a dwarven tavern. Highlights: rat diplomacy gone wrong, constellation puzzles, and a soul-transfer ritual involving a bat familiar.",
+    href: "mission-reports/Emberdeep-Catacombs-Report.html"
+  },
+  {
+    name: "Shrine of the Hollow Watcher",
+    squad: "The Leg Ends",
+    blurb: "Where echoes don’t just linger—they judge. A party walked the knife-edge between combat and conversion amid temporal drift, undead philosophy, and an offer of peace that felt like a cage.",
+    href: "mission-reports/Shrine-of-the-Hollow-Watcher.html"
+  },
+  {
+    name: "Sinkhole Below Sable Row",
+    squad: "The Leg Ends",
+    blurb: "What began as salvage became something stranger: acid-scarred cellars, sewer skirmishes, fallen Guilders, and an Akata nesting atop a void-touched greataxe that should not have been there.",
+    href: "mission-reports/Sinkhole-Below-Sable-Row.html"
+  },
+  {
+    name: "Echo Containment (Outpost Theta)",
+    squad: "The Leg Ends",
+    blurb: "Operation Iron Veil strike on an Ivory Labyrinth beacon. Mnemosyne Relay neutralized, prisoners freed, High Templar Hylas captured. Victory claimed—at the cost of Tink-Tonk the Cogsmith.",
+    href: "mission-reports/Echo-Containment-Report.html"
+  },
+  {
+    name: "The Argent Masquerade",
+    squad: "The Leg Ends",
+    blurb: "A Silver-rank infiltration at Ashminster Highcourt unmasks an Ivory Labyrinth agent and secures the Heart of the Highcourt amid poison plots and invisible templars.",
+    href: "mission-reports/the-argent-masquerade-report.html"
+  },
+  {
+    name: "The Saltstone Descent",
+    squad: "The Ashen Blades",
+    blurb: "Descent through salt-fogged catacombs to reach a dwarven archive. Puzzles solved, salt-ghouls scattered, rival squad parleyed, and the vault collapsed behind them—maps and seals recovered.",
+    href: "mission-reports/The-Ashen-Blades-Saltstone-Descent.html" /* update if your file uses a different name */
+  }
+];
+
+/* ---------- populate squad filter ---------- */
+const squadSel = document.getElementById('squadFilter');
+[...new Set(reportData.map(r => r.squad))].sort((a,b)=>a.localeCompare(b)).forEach(s => {
+  const o = document.createElement('option');
+  o.value = s; o.textContent = s;
+  squadSel.appendChild(o);
+});
+
+/* ---------- render ---------- */
+['searchInput','squadFilter'].forEach(id => document.getElementById(id).addEventListener('input', render));
+render();
+
+function render(){
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const squad = document.getElementById('squadFilter').value;
+
+  const filtered = reportData.filter(r =>
+    r.name.toLowerCase().includes(q) &&
+    (!squad || r.squad === squad)
+  ).sort((a,b)=>a.name.localeCompare(b.name));
+
+  const wrap = document.getElementById('reports');
+  wrap.innerHTML = '';
+  filtered.forEach(r => {
+    const card = document.createElement('article');
+    card.className = 'report';
+    card.innerHTML = `
+      <h2>${r.name}</h2>
+      <div class="report-meta">
+        <span class="pill">Squad: ${r.squad}</span>
+      </div>
+      <p>${r.blurb}</p>
+      <a href="${r.href}" class="report-link">📜 Read Full Report</a>
+    `;
+    wrap.appendChild(card);
+  });
+}
+</script>
 </body>
 </html>
