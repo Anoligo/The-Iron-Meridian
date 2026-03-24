@@ -151,38 +151,22 @@
 /* ---------- mission data ---------- */
 const missionData = [
   {
-    "name": "Guild Priority: Echo Containment",
-    "types": ["Combat", "Crisis", "Psychic"],
+    "name": "Whispers from the Chimera Vault",
+    "types": ["Covert", "Investigation", "Rescue"],
     "rank": "Silver",
-    "length": "Medium-Long",
-    "reward": "1600g + Access to Psionic Archive Tier I",
+    "length": "Medium",
+    "reward": "1200g + Favor from the Grey Chain",
     "status": "completed",
-    "location": "Ashminster Verge, Re-education Outpost Theta",
-    "objective": "Disrupt Templar beacon and contain psychic outbreak.",
+    "location": "Substruct Level 2, Chimera Vault District",
+    "objective": "Locate missing asset and recover chimera serum.",
     "steps": [
-      "Infiltrate the perimeter of Outpost Theta",
-      "Disable or corrupt the Templar beacon",
-      "Extract any affected Guild members or civilians",
-      "Prevent the psychic broadcast from spreading beyond Ashminster"
+      "Breach vault entrance",
+      "Locate Lyra Shardfoot",
+      "Secure serum",
+      "Neutralize rogue operator Thorn"
     ],
-    "extra": "Templars established a 're-education' station. Psychic fog across the Verge diminished after the relay’s collapse."
-  },
-  {
-    "name": "The Saltstone Descent",
-    "types": ["Exploration", "Combat", "Puzzle"],
-    "rank": "Silver",
-    "length": "Medium-Long",
-    "reward": "600g + Ancient Seals",
-    "status": "completed",
-    "location": "Saltstone Catacombs",
-    "objective": "Reach sealed dwarven archive.",
-    "steps": [
-      "Map tunnels",
-      "Bypass defences",
-      "Collect tablets",
-      "Return"
-    ],
-    "extra": "Another squad recovered the dwarven tablets before the collapse."
+    "extra": "Lyra recovered alive. Thorn eliminated by his own creation.",
+    "squad": "The Leg Ends"
   },
   {
     "name": "The Mirrorpool Pact",
@@ -193,29 +177,8 @@ const missionData = [
     "status": "active",
     "location": "Mirrorpool Hamlet",
     "objective": "Mediate dispute with pond spirit.",
-    "steps": [
-      "Investigate",
-      "Interview locals",
-      "Resolve"
-    ],
-    "extra": "Spirits may appear as koi."
-  },
-  {
-    "name": "Whispers from the Chimera Vault",
-    "types": ["Covert", "Investigation", "Rescue"],
-    "rank": "Silver",
-    "length": "Medium",
-    "reward": "1200g + Favor from the Grey Chain",
-    "status": "active",
-    "location": "Substruct Level 2, Chimera Vault District",
-    "objective": "Locate missing asset linked to psychic theft from the Templars.",
-    "steps": [
-      "Contact local informant (password: 'Golden teeth, rusty smile')",
-      "Trace the missing courier’s path",
-      "Avoid Templar patrols and sigil triggers",
-      "Recover the courier or their mind... if possible"
-    ],
-    "extra": "Unofficial. The Guild has no opinion on the Grey Chain. Officially."
+    "steps": ["Investigate", "Interview locals", "Resolve"],
+    "extra": "The spirit grows impatient. Fish now speak in overlapping voices."
   },
   {
     "name": "Shards of the Mnemosyne Relay",
@@ -225,107 +188,50 @@ const missionData = [
     "reward": "900g + Psychic Resonance Crystal",
     "status": "active",
     "location": "Ruins near Verge-Delta",
-    "objective": "Recover and stabilize fragments of the destroyed beacon.",
+    "objective": "Recover beacon fragments before Templars reclaim them.",
     "steps": [
-      "Navigate fractured echo-fields",
-      "Ward against residual psychic backlash",
-      "Secure fragments for study",
-      "Escape before Templar scavengers arrive"
+      "Navigate echo-fields",
+      "Secure fragments",
+      "Avoid psychic feedback",
+      "Extract before enemy arrival"
     ],
-    "extra": "Voices repeat your own words half a second late—sometimes in a different tone."
+    "extra": "The Rust Rats attempted recovery—left behind tools, blood, and something still whispering."
   },
   {
-    "name": "The Argent Masquerade",
-    "types": ["investigation", "social", "infiltration"],
+    "name": "The Infernal Spire",
+    "types": ["Combat", "Crisis", "Ritual", "Exploration"],
     "rank": "Silver",
-    "length": "Short–Medium",
-    "reward": "1,000 gp plus political leverage",
-    "status": "completed",
-    "location": "Ashminster Highcourt",
-    "objective": "Identify the Ivory Labyrinth agent at the masquerade ball and recover the Heart of the Highcourt.",
-    "steps": [
-      "Infiltrate the masquerade under disguise",
-      "Gather clues and identify the true culprit",
-      "Investigate the tainted Cask 17 and neutralize the poison plot",
-      "Apprehend the agent and secure the Heart of the Highcourt"
-    ],
-    "extra": "Agent captured alive; artifact secured and returned to Iron Meridian."
-  },
-  {
-    "name": "Hollow Echoes of Brambleholt",
-    "types": ["Exploration", "Combat", "Mystery"],
-    "rank": "Silver",
-    "length": "Long",
-    "reward": "1800g + Whisperwood Relic",
+    "length": "Medium-Long",
+    "reward": "1400g + Riftbreaker Kit",
     "status": "active",
-    "location": "Brambleholt Forest",
-    "objective": "Investigate sudden void-song resonance and stop corruption spread.",
+    "location": "Shadowlands Rift, Inner Caldera",
+    "objective": "Sever anchor stones feeding rift growth.",
     "steps": [
-      "Survey warped woodland paths",
-      "Break the resonance nodes",
-      "Confront corrupted dryad guardians",
-      "Cleanse or collapse the grove"
+      "Secure entry point",
+      "Locate anchors",
+      "Destroy or disrupt them",
+      "Escape collapse"
     ],
-    "extra": "Travelers report humming thorns that pierce without blood."
+    "extra": "The Gilded Geese attempted a ‘distraction.’ The spire is now louder."
   },
   {
-  name: "The Infernal Spire",
-  types: ["Combat", "Crisis", "Ritual", "Exploration"],
-  rank: "Silver",
-  length: "Medium-Long",
-  reward: "1400g + Riftbreaker Kit (one-use ward-pylon charge)",
-  status: "active",
-  location: "Shadowlands Rift, Inner Caldera",
-  objective: "Descend the nascent spire, sever its anchor stones, and halt the pulse feeding lesser breaches.",
-  steps: [
-    "Establish a foothold at the caldera rim",
-    "Locate and map the three anchor stones",
-    "Defeat the Spire Warden and its ash-bound sentries",
-    "Sever the anchors via counter-sigils or controlled demolition",
-    "Escape before the collapse shockwave sweeps the caldera"
-  ],
-  extra: "Backwash hazards: blood-hail, time-stutter pockets, and climbing heat mirages. Templar scavengers observed harvesting shard fragments.",
-  impact: "Success damps regional rift activity for several weeks; failure strengthens satellite breaches along trade routes and risks a full Warden manifestation."
-},
-{
-  name: "Demon Portal Shutdown",
-  types: ["Combat", "Exploration"],
-  rank: "Gold",
-  length: "Long",
-  reward: "—",
-  status: "expired",
-  location: "Shadowlands Rift",
-  objective: "Disable a growing portal breach.",
-  steps: [
-    "Secure passage",
-    "Examine portal",
-    "Shut breach",
-    "Evacuate"
-  ],
-  extra: "Attempted closure failed. The rift surged; perimeter wards collapsed.",
-  impact: "Two allied squads lost contact; ash-snow and infernal spoor now drift up to 10 miles. Villages report night-howls and heat-shimmer ‘footprints’. A greater fiend’s mark detected on shattered pylons. Situation escalated."
-},
-{
-  name: "Guild Priority: Iron Veil — Rift Severance",
-  types: ["Combat", "Crisis", "Siege", "Ritual"],
-  rank: "Gold",
-  length: "Long",
-  reward: "4800g + Riftbreaker Boon (choose one: Demon-Slaying Rune, Abyssal Null-Seal, or Ward-Pylon Schematic)",
-  status: "active",
-  location: "Shadowlands Rift, Primary Caldera",
-  objective: "Retake the caldera, slay the Rift Warden, and sever the portal with a chained counter-ritual.",
-  steps: [
-    "Establish forward redoubt; deploy three ward-pylons (north/east/west)",
-    "Seize the keystone obelisk from infernal hands",
-    "Defeat the Rift Warden and its guard (hellknots, ash-mages, carrion drakes)",
-    "Perform the Iron Veil counter-ritual (requires three synchronized roles)",
-    "Hold the line through the backlash; evacuate survivors; collapse remaining tears"
-  ],
-  extra: "Backwash hazards: blood-hail, time-stutter, and ‘gravity the wrong way’. Templar scavenger teams sighted on outer rim—likely hunting fragments.",
-  impact: "Success permanently lowers ambient corruption in the Verge; failure advances the incursion toward trade routes within a fortnight."
-},
-
-
+    "name": "Guild Priority: Iron Veil — Rift Severance",
+    "types": ["Combat", "Crisis", "Siege", "Ritual"],
+    "rank": "Gold",
+    "length": "Long",
+    "reward": "4800g + Riftbreaker Boon",
+    "status": "active",
+    "location": "Shadowlands Rift, Primary Caldera",
+    "objective": "Destroy the Rift Warden and collapse the portal.",
+    "steps": [
+      "Deploy ward pylons",
+      "Seize keystone obelisk",
+      "Defeat Rift Warden",
+      "Complete counter-ritual",
+      "Survive backlash"
+    ],
+    "extra": "The Stone Vultures secured a foothold. They are not asking for help. That is concerning."
+  },
   {
     "name": "Ashes at Watchpost Nine",
     "types": ["Investigation", "Combat", "Demonic"],
@@ -333,137 +239,120 @@ const missionData = [
     "length": "Medium",
     "reward": "600g + Blackened Sigil Fragment",
     "status": "active",
-    "location": "Watchpost Nine, Outer Ridgeline",
-    "objective": "Investigate the loss of contact with Watchpost Nine and secure the site.",
+    "location": "Watchpost Nine",
+    "objective": "Investigate destroyed watchpost.",
     "steps": [
-      "Travel to site",
-      "Survey the remains",
-      "Identify source of incursion",
-      "Prevent spread"
+      "Survey site",
+      "Identify threat",
+      "Contain spread"
     ],
-    "extra": "Ash drifts upward. No birds sing. Ward runes appear scorched from the inside."
-  },
-  {
-    "name": "The Bellows Below Bristlebarrow",
-    "types": ["Exploration", "Hazard", "Psychic"],
-    "rank": "Bronze",
-    "length": "Short–Medium",
-    "reward": "150g + Tincture of Lucid Silence",
-    "status": "expired",
-    "location": "Bristlebarrow Hamlet, Eastern Verge",
-    "objective": "Determine the source of nightly tremors and persistent sleep disturbances.",
-    "steps": [
-      "Interview afflicted townsfolk",
-      "Explore the sealed basements",
-      "Uncover the void-pocket beneath the well",
-      "Calm, banish, or seal the anomaly"
-    ],
-    "extra": "The anomaly subsided on its own; townsfolk report peaceful dreams once more."
-  },
-  {
-    "name": "Rot Beneath Rivermarket",
-    "types": ["Combat", "Urban", "Infestation"],
-    "rank": "Bronze",
-    "length": "Medium",
-    "reward": "100g + Guild Credit",
-    "status": "expired",
-    "location": "Underbridge District, Rivermarket",
-    "objective": "Purge the vermin nest causing structural collapse.",
-    "steps": [
-      "Secure entrance",
-      "Explore tunnel network",
-      "Eliminate broodmother",
-      "Seal breach"
-    ],
-    "extra": "Local cats went missing. One returned... changed."
-  },
-  {
-    "name": "Eyes in the Shadows",
-    "types": ["Stealth", "Covert"],
-    "rank": "Silver",
-    "length": "Medium",
-    "reward": "2000g + Faction Intel",
-    "status": "expired",
-    "location": "Dismal Blades Hideout",
-    "objective": "Gather intelligence undetected.",
-    "steps": [
-      "Gain access",
-      "Collect info",
-      "Optionally sabotage",
-      "Exit cleanly"
-    ],
-    "extra": "Fake moustaches optional."
-  },
-  {
-    "name": "Supply Run to Emberhold",
-    "types": ["escort", "delivery"],
-    "rank": "Bronze",
-    "length": "Short",
-    "reward": "150 gp",
-    "status": "available",
-    "location": "Emberhold",
-    "objective": "Escort a caravan of supplies through bandit‑infested roads to the dwarven enclave of Emberhold.",
-    "steps": [
-      "Collect the supplies and meet the caravan leader",
-      "Travel through bandit territory while defending the wagons",
-      "Deliver the goods safely to Emberhold"
-    ],
-    "extra": "The dwarven enclave offers a bonus for timely delivery."
+    "extra": "No survivors found. Something is wearing their armour."
   },
   {
     "name": "Whispers in the Weald",
-    "types": ["investigation", "exploration"],
+    "types": ["Investigation", "Exploration"],
     "rank": "Silver",
     "length": "Medium",
-    "reward": "800 gp and fae trinkets",
-    "status": "available",
+    "reward": "800g + Fae Trinkets",
+    "status": "active",
     "location": "The Whispering Weald",
-    "objective": "Uncover the source of unsettling whispers driving nearby villagers mad.",
+    "objective": "Stop madness-inducing whispers.",
     "steps": [
-      "Enter the Whispering Weald and listen for the whispers",
-      "Investigate the cause of the voices and gather information from fey inhabitants",
-      "Bargain with or confront the entity responsible",
-      "Restore peace to the forest"
+      "Trace voice origin",
+      "Negotiate or confront entity",
+      "Restore balance"
     ],
-    "extra": "Beware of making deals without proper offerings."
+    "extra": "The voices have started using names they shouldn’t know."
   },
   {
-    "name": "Lost in the Sable Moors",
-    "types": ["rescue", "exploration"],
+    "name": "The Broken Caravan of Emberfall",
+    "types": ["Rescue", "Combat"],
     "rank": "Bronze",
-    "length": "Short–Medium",
-    "reward": "200 gp plus salvage rights",
-    "status": "available",
-    "location": "Sable Moors",
-    "objective": "Find and rescue a missing merchant caravan lost in the fog‑laden moors.",
+    "length": "Short",
+    "reward": "250g + Salvage Rights",
+    "status": "active",
+    "location": "Emberfall Road",
+    "objective": "Recover survivors and cargo.",
     "steps": [
-      "Follow the caravan's trail into the moor",
-      "Survive environmental hazards and creatures",
-      "Locate survivors and recover their goods",
-      "Escort them back to civilization"
+      "Locate caravan",
+      "Eliminate attackers",
+      "Escort survivors"
     ],
-    "extra": "Reward includes salvage rights to any unclaimed goods."
+    "extra": "Tracks suggest the attackers walked on two legs… then four… then many."
   },
   {
-    "name": "Clockwork Conundrum at Gearford",
-    "types": ["combat", "investigation"],
+    "name": "The Lanterns That Watch Back",
+    "types": ["Horror", "Exploration", "Investigation"],
+    "rank": "Silver",
+    "length": "Medium",
+    "reward": "950g + Everburn Lantern (Bound)",
+    "status": "active",
+    "location": "Gravepath Road, North Verge",
+    "objective": "Investigate reports of lanterns appearing along the roadside that seem to follow travelers.",
+    "steps": [
+      "Track the origin of the lanterns",
+      "Survive nocturnal manifestations",
+      "Identify the entity binding the lights",
+      "Dispel or destroy the source"
+    ],
+    "extra": "Witnesses claim the lanterns now hang where people used to stand. Some still whisper."
+  },
+  {
+    "name": "The Skin That Isn’t Yours",
+    "types": ["Horror", "Social", "Investigation"],
+    "rank": "Silver",
+    "length": "Short-Medium",
+    "reward": "800g + Mask of Unsettled Flesh",
+    "status": "active",
+    "location": "Lowmarket District, Ashminster",
+    "objective": "Investigate citizens reporting that loved ones ‘feel wrong’ despite looking identical.",
+    "steps": [
+      "Interview affected families",
+      "Identify replaced individuals",
+      "Track the mimic-entity network",
+      "Stop further replacements"
+    ],
+    "extra": "No one remembers when the first replacement happened. That includes the replacements."
+  },
+  {
+    "name": "The Thing in the Fourth Reflection",
+    "types": ["Horror", "Arcane", "Puzzle"],
+    "rank": "Silver",
+    "length": "Medium",
+    "reward": "1000g + Mirrorbound Shard",
+    "status": "active",
+    "location": "Abandoned Glassworks, Verge Edge",
+    "objective": "Investigate reports of reflections acting independently of their owners.",
+    "steps": [
+      "Explore glassworks ruins",
+      "Observe reflection anomalies",
+      "Identify the ‘fourth reflection’ phenomenon",
+      "Contain or destroy the entity"
+    ],
+    "extra": "It only appears when there are three reflections already. The fourth is not yours."
+  },
+  {
+    "name": "A Thread Pulled from Nowhere",
+    "types": ["Investigation", "Conspiracy", "Multi-Layered", "Social"],
     "rank": "Gold",
     "length": "Long",
-    "reward": "1,500 gp and mechanical secrets",
-    "status": "available",
-    "location": "Gearford Foundry",
-    "objective": "Stop runaway clockwork automata rampaging through a dwarven foundry.",
+    "reward": "3500g + Unknown (Variable Outcome)",
+    "status": "active",
+    "location": "Multiple (Ashminster, Verge, Unknown)",
+    "objective": "Investigate a pattern of seemingly unrelated events tied to a missing sequence in Guild records.",
     "steps": [
-      "Enter Gearford and secure the perimeter",
-      "Navigate the hazardous foundry floor",
-      "Disable the rogue clockwork automata",
-      "Discover who sabotaged the machines and bring them to justice"
+      "Cross-reference altered mission logs",
+      "Track inconsistencies in witness accounts",
+      "Identify repeating names, symbols, or absences",
+      "Follow the ‘missing thread’ across multiple locations",
+      "Determine whether the cause is temporal, psychic, or deliberate manipulation",
+      "Confront or uncover the entity or organization responsible"
     ],
-    "extra": "The foundry's master offers rare schematics for success."
+    "extra": "Every squad that begins this investigation reports missing time. One report lists a squad that does not exist… yet bears your names.",
+    "impact": "Resolution may rewrite known events, alter faction standings, or reveal a hidden power influencing the Guild itself."
   }
 ]
-
-
+  
 /* ---------- helpers ---------- */
 const rankOrder = { Bronze: 1, Silver: 2, Gold: 3 };
 const statusOrder = { active: 0, completed: 1, expired: 2, available: 0 }; // <- include available
