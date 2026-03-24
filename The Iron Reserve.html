@@ -155,61 +155,79 @@ const items = [
     "price": "3 gp",
     "consumable": true,
     "rented": "No",
+    "quantity": 6
+  },
+  {
+    "name": "Alchemist's Fire (Moderate)",
+    "type": "Alchemical",
+    "description": "Bomb that sets things ablaze with a more respectable degree of enthusiasm.",
+    "price": "10 gp",
+    "consumable": true,
+    "rented": "No",
     "quantity": 8
   },
   {
-    "name": "Alchemist's Fire (Lesser)",
+    "name": "Tanglefoot Bag (Moderate)",
     "type": "Alchemical",
-    "description": "Bomb that sets things ablaze.",
-    "price": "3 gp",
-    "consumable": true,
-    "rented": "No",
-    "quantity": 7
-  },
-  {
-    "name": "Tanglefoot Bag (Lesser)",
-    "type": "Alchemical",
-    "description": "Glue enemies to the floor.",
-    "price": "3 gp",
+    "description": "Glue enemies to the floor with improved adhesive spite.",
+    "price": "10 gp",
     "consumable": true,
     "rented": "No",
     "quantity": 6
   },
   {
-    "name": "Bottled Lightning (Lesser)",
+    "name": "Bottled Lightning (Moderate)",
     "type": "Alchemical",
-    "description": "On hit: electricity splash; target becomes flat-footed until end of your next turn.",
-    "price": "3 gp",
+    "description": "On hit: electricity splash; target becomes off-guard until end of your next turn.",
+    "price": "10 gp",
+    "consumable": true,
+    "rented": "No",
+    "quantity": 8
+  },
+  {
+    "name": "Frost Vial (Moderate)",
+    "type": "Alchemical",
+    "description": "On hit: cold damage and reduced Speed for 1 round.",
+    "price": "10 gp",
     "consumable": true,
     "rented": "No",
     "quantity": 6
   },
   {
-    "name": "Frost Vial (Lesser)",
+    "name": "Thunderstone (Moderate)",
     "type": "Alchemical",
-    "description": "On hit: cold damage and –10 ft Speed for 1 round.",
-    "price": "3 gp",
+    "description": "Explodes with a concussive boom; useful for deafening foes and announcing poor decisions.",
+    "price": "9 gp",
     "consumable": true,
     "rented": "No",
     "quantity": 6
+  },
+  {
+    "name": "Acid Flask (Moderate)",
+    "type": "Alchemical",
+    "description": "A reliable bottle of corrosion for when subtlety has already failed.",
+    "price": "10 gp",
+    "consumable": true,
+    "rented": "No",
+    "quantity": 6
+  },
+  {
+    "name": "Cheetah’s Elixir (Lesser)",
+    "type": "Consumable",
+    "description": "Gain a brief burst of speed. Excellent for escapes, charges, and dramatic overconfidence.",
+    "price": "12 gp",
+    "consumable": true,
+    "rented": "No",
+    "quantity": 5
   },
   {
     "name": "Potion of Spider Climb (Lesser)",
     "type": "Consumable",
-    "description": "Climb on walls/ceilings for 1 minute.",
+    "description": "Climb on walls and ceilings for 1 minute.",
     "price": "12 gp",
     "consumable": true,
     "rented": "No",
-    "quantity": 6
-  },
-  {
-    "name": "Potion of Healing (Minor)",
-    "type": "Consumable",
-    "description": "Restores 1d8 HP.",
-    "price": "4 gp",
-    "consumable": true,
-    "rented": "No",
-    "quantity": 8
+    "quantity": 5
   },
   {
     "name": "Potion of Healing (Lesser)",
@@ -218,16 +236,34 @@ const items = [
     "price": "12 gp",
     "consumable": true,
     "rented": "No",
-    "quantity": 4
+    "quantity": 8
+  },
+  {
+    "name": "Potion of Healing (Moderate)",
+    "type": "Potion",
+    "description": "Restores 3d8+10 HP.",
+    "price": "50 gp",
+    "consumable": true,
+    "rented": "No",
+    "quantity": 6
+  },
+  {
+    "name": "Elixir of Life (Lesser)",
+    "type": "Consumable",
+    "description": "Restores HP and grants a bonus against disease and poison.",
+    "price": "12 gp",
+    "consumable": true,
+    "rented": "No",
+    "quantity": 6
   },
   {
     "name": "Potion of Antidote (Lesser)",
     "type": "Consumable",
-    "description": "+2 item bonus vs poison for 6 h.",
+    "description": "+2 item bonus vs poison for 6 hours.",
     "price": "3 gp",
     "consumable": true,
     "rented": "No",
-    "quantity": 6
+    "quantity": 8
   },
   {
     "name": "Antiplague (Lesser)",
@@ -236,30 +272,66 @@ const items = [
     "price": "3 gp",
     "consumable": true,
     "rented": "No",
-    "quantity": 6
+    "quantity": 8
   },
   {
-    "name": "Elixir of Life (Minor)",
+    "name": "Minor Invisibility Potion",
+    "type": "Potion",
+    "description": "Grants invisibility for up to 5 minutes or until you take a hostile action.",
+    "price": "70 gp",
+    "consumable": true,
+    "rented": "No",
+    "quantity": 5
+  },
+  {
+    "name": "Darkvision Elixir",
     "type": "Consumable",
-    "description": "Restores 1d6 HP; +1 to saves vs disease/poison for 10 min.",
-    "price": "3 gp",
+    "description": "Gain darkvision for 1 hour. For when the torch gives away the ambush.",
+    "price": "12 gp",
     "consumable": true,
     "rented": "No",
-    "quantity": 6
+    "quantity": 5
   },
   {
-    "name": "Scroll of Magic Missile (1st)",
-    "type": "Scroll",
-    "description": "Force darts that auto-hit.",
-    "price": "4 gp",
+    "name": "Bravo’s Brew",
+    "type": "Consumable",
+    "description": "A confidence-boosting alchemical tonic granting a bonus against fear.",
+    "price": "15 gp",
     "consumable": true,
     "rented": "No",
-    "quantity": 6
+    "quantity": 4
+  },
+  {
+    "name": "Masquerade Sleep Draught",
+    "type": "Alchemical Poison",
+    "description": "Ingested poison that renders a target unconscious if they fail a DC 18 Fortitude save.",
+    "price": "50 gp",
+    "consumable": true,
+    "rented": "No",
+    "quantity": 4
+  },
+  {
+    "name": "Aetheric Clarity Brew",
+    "type": "Potion",
+    "description": "A mind-sharpening tonic granting a brief bonus to Will saves and occult focus.",
+    "price": "15 gp",
+    "consumable": true,
+    "rented": "No",
+    "quantity": 4
+  },
+  {
+    "name": "Cognitive Dampener",
+    "type": "Potion",
+    "description": "Dubious black fluid that dulls thought. Sold for controlled field use and very bad ideas.",
+    "price": "8 gp",
+    "consumable": true,
+    "rented": "No",
+    "quantity": 3
   },
   {
     "name": "Scroll of Heal (1st)",
     "type": "Scroll",
-    "description": "Burst/2-action/1-action healing options.",
+    "description": "Burst, touch, or single-target healing options.",
     "price": "4 gp",
     "consumable": true,
     "rented": "No",
@@ -272,16 +344,16 @@ const items = [
     "price": "12 gp",
     "consumable": true,
     "rented": "No",
-    "quantity": 3
+    "quantity": 5
   },
   {
     "name": "Scroll of Knock (2nd)",
     "type": "Scroll",
-    "description": "Open locks and stuck doors.",
+    "description": "Open locks and stubborn doors.",
     "price": "12 gp",
     "consumable": true,
     "rented": "No",
-    "quantity": 3
+    "quantity": 4
   },
   {
     "name": "Scroll of Mirror Image (2nd)",
@@ -290,58 +362,67 @@ const items = [
     "price": "12 gp",
     "consumable": true,
     "rented": "No",
-    "quantity": 3
+    "quantity": 4
   },
   {
     "name": "Scroll of Restoration (2nd)",
     "type": "Scroll",
-    "description": "Reduce clumsy/enfeebled/stupefied 1; remove minor conditions.",
+    "description": "Reduce clumsy, enfeebled, or stupefied and clear lesser afflictions.",
     "price": "12 gp",
     "consumable": true,
     "rented": "No",
-    "quantity": 2
+    "quantity": 4
   },
   {
     "name": "Scroll of Fireball (3rd)",
     "type": "Scroll",
-    "description": "A fiery explosion dealing 6d6 fire damage in 20-ft burst.",
-    "price": "12 gp",
+    "description": "A fiery explosion dealing 6d6 fire damage in a 20-ft burst.",
+    "price": "30 gp",
     "consumable": true,
     "rented": "No",
-    "quantity": 2
+    "quantity": 4
   },
   {
     "name": "Scroll of Haste (3rd)",
     "type": "Scroll",
-    "description": "Grants extra actions to a creature.",
-    "price": "14 gp",
+    "description": "Grants extra speed and action economy to a creature.",
+    "price": "35 gp",
+    "consumable": true,
+    "rented": "No",
+    "quantity": 4
+  },
+  {
+    "name": "Scroll of Dispel Magic (3rd)",
+    "type": "Scroll",
+    "description": "Counteract troublesome magic before it becomes someone else’s problem.",
+    "price": "55 gp",
+    "consumable": true,
+    "rented": "No",
+    "quantity": 4
+  },
+  {
+    "name": "Scroll of Heroism (3rd)",
+    "type": "Scroll",
+    "description": "Temporarily bolster a creature with magical courage and competence.",
+    "price": "40 gp",
+    "consumable": true,
+    "rented": "No",
+    "quantity": 3
+  },
+  {
+    "name": "Scroll of Dimension Door (4th)",
+    "type": "Scroll",
+    "description": "Instantly transport yourself and an ally across the battlefield or out of one.",
+    "price": "70 gp",
     "consumable": true,
     "rented": "No",
     "quantity": 2
   },
   {
-    "name": "Scroll of Dimension Door (4th)",
-    "type": "Scroll",
-    "description": "Instantly transport yourself and up to 1 ally.",
-    "price": "30 gp",
-    "consumable": true,
-    "rented": "No",
-    "quantity": 1
-  },
-  {
     "name": "Scroll of Wall of Stone (5th)",
     "type": "Scroll",
-    "description": "Conjure a solid wall of stone.",
-    "price": "75 gp",
-    "consumable": true,
-    "rented": "No",
-    "quantity": 1
-  },
-  {
-    "name": "Scroll of Teleport (5th)",
-    "type": "Scroll",
-    "description": "Transport yourself and allies across great distances.",
-    "price": "90 gp",
+    "description": "Conjure a solid wall of stone. Great for defense, sieges, and dramatic exits.",
+    "price": "150 gp",
     "consumable": true,
     "rented": "No",
     "quantity": 1
@@ -356,10 +437,28 @@ const items = [
     "quantity": 1
   },
   {
-    "name": "Bracers of Armor +1",
-    "type": "Armour",
-    "description": "For light/robed adventurers needing a little AC.",
-    "price": "160 gp",
+    "name": "Pocket Chapel of Mild Regret",
+    "type": "Trinket",
+    "description": "A fold-out tin shrine that grants a +1 circumstance bonus to one prayerful Recall Knowledge or Religion check per day.",
+    "price": "35 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 1
+  },
+  {
+    "name": "Clockroach in a Brass Cage",
+    "type": "Trinket",
+    "description": "A tiny clockwork insect that clicks faster near hidden doors or mechanisms. Not always correctly, but enthusiastically.",
+    "price": "45 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 1
+  },
+  {
+    "name": "Whisperglass Monocle",
+    "type": "Wondrous",
+    "description": "Once/day, hear the last few spoken words in a room as faint psychic residue. Useful, creepy, both.",
+    "price": "180 gp",
     "consumable": false,
     "rented": "No",
     "quantity": 1
@@ -367,8 +466,35 @@ const items = [
   {
     "name": "Boots of Bounding",
     "type": "Wondrous",
-    "description": "+5 ft status Speed; +1 item bonus to Athletics (high/long jumps).",
+    "description": "+5 ft status Speed; +1 item bonus to Athletics checks involving jumps.",
     "price": "110 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 1
+  },
+  {
+    "name": "Cloak of the Bat",
+    "type": "Wondrous Item",
+    "description": "Allows the wearer to glide, grants darkvision, and transform into a bat once per day.",
+    "price": "300 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 1
+  },
+  {
+    "name": "Cloak of Shadows",
+    "type": "Wondrous Item",
+    "description": "Grants a +1 item bonus to Stealth checks and lets the wearer cast darkness once per day.",
+    "price": "250 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 1
+  },
+  {
+    "name": "Bracers of Armor +1",
+    "type": "Armour",
+    "description": "For lightly-armored or robe-clad adventurers needing a little more AC and a little less dying.",
+    "price": "160 gp",
     "consumable": false,
     "rented": "No",
     "quantity": 1
@@ -376,56 +502,29 @@ const items = [
   {
     "name": "Flametongue Dagger",
     "type": "Weapon",
-    "description": "+1 dagger; ignite 1 minute/day for +1d4 fire.",
+    "description": "+1 dagger; ignite for 1 minute/day for +1d4 fire damage.",
     "price": "200 gp",
     "consumable": false,
     "rented": "No",
     "quantity": 1
   },
   {
-    "name": "Formula: Alchemist’s Fire (Lesser)",
-    "type": "Formula",
-    "description": "Crafting formula for Lesser Alchemist’s Fire.",
-    "price": "1 gp",
+    "name": "Goggles of Night",
+    "type": "Wondrous",
+    "description": "Gain darkvision or improve it if you already have it. Very popular. For obvious reasons.",
+    "price": "300 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 1
+  },
+  {
+    "name": "Handwraps of Mighty Blows +1",
+    "type": "Weapon",
+    "description": "+1 potency for unarmed attacks. For monks, brawlers, and anyone who insists fists are a lifestyle.",
+    "price": "35 gp",
     "consumable": false,
     "rented": "No",
     "quantity": 2
-  },
-  {
-    "name": "Formula: Tanglefoot Bag (Lesser)",
-    "type": "Formula",
-    "description": "Crafting formula for Lesser Tanglefoot Bag.",
-    "price": "1 gp",
-    "consumable": false,
-    "rented": "No",
-    "quantity": 1
-  },
-  {
-    "name": "Formula: Bottled Lightning (Lesser)",
-    "type": "Formula",
-    "description": "Crafting formula for Lesser Bottled Lightning.",
-    "price": "1 gp",
-    "consumable": false,
-    "rented": "No",
-    "quantity": 1
-  },
-  {
-    "name": "Formula: Frost Vial (Lesser)",
-    "type": "Formula",
-    "description": "Crafting formula for Lesser Frost Vial.",
-    "price": "1 gp",
-    "consumable": false,
-    "rented": "No",
-    "quantity": 1
-  },
-  {
-    "name": "Formula: Oil of Magic Weapon (2nd-level spell)",
-    "type": "Formula",
-    "description": "Oil that imbues a weapon with a brief +1 striking effect.",
-    "price": "2 gp",
-    "consumable": false,
-    "rented": "No",
-    "quantity": 0
   },
   {
     "name": "Weapon Potency Rune (+1)",
@@ -434,7 +533,7 @@ const items = [
     "price": "35 gp",
     "consumable": false,
     "rented": "No",
-    "quantity": 2
+    "quantity": 4
   },
   {
     "name": "Striking Rune",
@@ -443,13 +542,22 @@ const items = [
     "price": "65 gp",
     "consumable": false,
     "rented": "No",
-    "quantity": 2
+    "quantity": 4
   },
   {
     "name": "Armor Potency Rune (+1)",
     "type": "Rune",
     "description": "+1 item bonus to AC.",
     "price": "160 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 3
+  },
+  {
+    "name": "Resilient Rune",
+    "type": "Rune",
+    "description": "+1 item bonus to saving throws when etched onto armor.",
+    "price": "340 gp",
     "consumable": false,
     "rented": "No",
     "quantity": 2
@@ -461,7 +569,7 @@ const items = [
     "price": "75 gp",
     "consumable": false,
     "rented": "No",
-    "quantity": 1
+    "quantity": 2
   },
   {
     "name": "Returning Rune",
@@ -470,12 +578,103 @@ const items = [
     "price": "55 gp",
     "consumable": false,
     "rented": "No",
+    "quantity": 2
+  },
+  {
+    "name": "Formula: Alchemist’s Fire (Moderate)",
+    "type": "Formula",
+    "description": "Crafting formula for Moderate Alchemist’s Fire.",
+    "price": "3 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 1
+  },
+  {
+    "name": "Formula: Bottled Lightning (Moderate)",
+    "type": "Formula",
+    "description": "Crafting formula for Moderate Bottled Lightning.",
+    "price": "3 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 1
+  },
+  {
+    "name": "Formula: Frost Vial (Moderate)",
+    "type": "Formula",
+    "description": "Crafting formula for Moderate Frost Vial.",
+    "price": "3 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 1
+  },
+
+  {
+    "name": "Stormcall Javelin",
+    "type": "Weapon",
+    "description": "Thrown weapon; on hit calls lightning in a burst. Reforms after 1 minute.",
+    "price": "1200 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 1
+  },
+  {
+    "name": "Gauntlets of the Shattered Sky",
+    "type": "Wondrous",
+    "description": "Heavy azure-steel gauntlets crackling with storm energy. Resist electricity and unleash a daily lightning bolt.",
+    "price": "1800 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 1
+  },
+  {
+    "name": "Mirror of Twin Fates",
+    "type": "Wondrous",
+    "description": "Once/day, reroll a failed save with a bonus. The mirror shows the version of you who failed harder.",
+    "price": "3000 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 1
+  },
+  {
+    "name": "Mask of Many Faces",
+    "type": "Wondrous",
+    "description": "At will: Disguise Self; 1/day: Alter Self. For spies, actors, and dramatic cowards.",
+    "price": "1000 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 1
+  },
+  {
+    "name": "Cloak of the Dreaming Tide",
+    "type": "Wondrous",
+    "description": "Water breathing; bonus vs sleep and charm; 1/day cast a heightened Sleep.",
+    "price": "2200 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 1
+  },
+  {
+    "name": "Lantern of Silent Stars",
+    "type": "Wondrous",
+    "description": "A silver lantern lit with pale starlight. Suppresses lesser divination nearby and grants a daily glimpse of likely fortune.",
+    "price": "2200 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 1
+  },
+  {
+    "name": "Vestment of the Whispering Veil",
+    "type": "Wondrous",
+    "description": "Dark silk robes that blur the wearer’s outline. Bonus to Stealth and mental defense; once/day briefly become half-ethereal.",
+    "price": "4200 gp",
+    "consumable": false,
+    "rented": "No",
     "quantity": 1
   },
   {
     "name": "Blade of Shattered Stars",
     "type": "Weapon",
-    "description": "+2 greater striking longsword; on crit deals 2d6 force in a 10-ft burst.",
+    "description": "+2 greater striking longsword; on crit deals force damage in a burst.",
     "price": "5000 gp",
     "consumable": false,
     "rented": "No",
@@ -484,17 +683,17 @@ const items = [
   {
     "name": "Crown of Whispered Truths",
     "type": "Wondrous",
-    "description": "Once/day ask a single question and receive a cryptic true answer (divination).",
+    "description": "Once/day ask a single question and receive a cryptic true answer.",
     "price": "3500 gp",
     "consumable": false,
     "rented": "No",
     "quantity": 1
   },
   {
-    "name": "Mantle of the Phoenix",
-    "type": "Armour",
-    "description": "+2 resilient armor; once/week resurrects wearer at half HP on death with 20-ft fire burst (6d6, DC 25).",
-    "price": "8000 gp",
+    "name": "Oathbinder’s Circlet",
+    "type": "Wondrous",
+    "description": "Platinum circlet of binding promises. Strengthens negotiations and can enforce a magical pact once per week.",
+    "price": "5000 gp",
     "consumable": false,
     "rented": "No",
     "quantity": 1
@@ -502,8 +701,17 @@ const items = [
   {
     "name": "Ring of Planar Steps",
     "type": "Wondrous",
-    "description": "3/day cast Dimension Door; 1/month shift to Ethereal Plane for 1 min.",
+    "description": "Multiple daily short teleports; rare shift to the Ethereal Plane.",
     "price": "6500 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 1
+  },
+  {
+    "name": "Mantle of the Phoenix",
+    "type": "Armour",
+    "description": "+2 resilient armor; once/week resurrects wearer in a burst of fire.",
+    "price": "8000 gp",
     "consumable": false,
     "rented": "No",
     "quantity": 1
@@ -511,89 +719,8 @@ const items = [
   {
     "name": "Staff of the Void Spiral",
     "type": "Wondrous",
-    "description": "Legendary staff; grants heightened fear, confusion, phantasmal killer. Recharge via soul gems.",
+    "description": "Legendary staff steeped in fear and mind-breaking magic. Recharge via soul gems and questionable ethics.",
     "price": "10000 gp",
-    "consumable": false,
-    "rented": "No",
-    "quantity": 1
-  },
-  {
-    "name": "Stormcall Javelin",
-    "type": "Weapon",
-    "description": "Thrown weapon; on hit calls lightning (4d12, 20-ft burst, DC 23 Reflex). Reforms after 1 min.",
-    "price": "1200 gp",
-    "consumable": false,
-    "rented": "No",
-    "quantity": 1
-  },
-  {
-  "name": "Gauntlets of the Shattered Sky",
-  "type": "Wondrous",
-  "description": "Heavy azure-steel gauntlets crackling with storm energy. Wielder gains resistance 5 to electricity and can hurl a 30-ft lightning bolt once per day (4d12, DC 23 Reflex). On crit melee hit, chain lightning arcs to a second target for 1d6.",
-  "price": "1800 gp",
-  "consumable": false,
-  "rented": "No",
-  "quantity": 1
-  },
-  {
-  "name": "Mirror of Twin Fates",
-  "type": "Wondrous",
-  "description": "A polished obsidian hand-mirror. Once per day, after rolling a failed saving throw, the bearer may reflect their fate: reroll with a +2 circumstance bonus. On use, the mirror briefly shows an alternate version of the bearer who did not survive.",
-  "price": "3000 gp",
-  "consumable": false,
-  "rented": "No",
-  "quantity": 1
-  },
-  {
-    "name": "Masquerade Sleep Draught",
-    "type": "Alchemical Poison",
-    "description": "Ingested poison that renders a target unconscious if they fail a DC 18 Fortitude save.",
-    "price": "50 gp",
-    "consumable": true,
-    "rented": "No",
-    "quantity": 4
-  },
-  {
-    "name": "Moderate Healing Potion",
-    "type": "Potion",
-    "description": "Restores 3d8+10 Hit Points when consumed.",
-    "price": "50 gp",
-    "consumable": true,
-    "rented": "No",
-    "quantity": 0
-  },
-  {
-    "name": "Minor Invisibility Potion",
-    "type": "Potion",
-    "description": "Grants invisibility for up to 5 minutes or until you take an action.",
-    "price": "70 gp",
-    "consumable": true,
-    "rented": "No",
-    "quantity": 3
-  },
-  {
-    "name": "Scroll of Dispel Magic",
-    "type": "Scroll",
-    "description": "Cast the Dispel Magic spell (counteract level 3).",
-    "price": "55 gp",
-    "consumable": true,
-    "rented": "No",
-    "quantity": 2
-  },
-  {
-    "name": "Cloak of the Bat",
-    "type": "Wondrous Item",
-    "description": "Allows the wearer to glide and grants darkvision; transform into a bat once per day.",
-    "price": "300 gp",
-    "consumable": false,
-    "rented": "No",
-    "quantity": 1
-  },
-  {
-    "name": "Cloak of Shadows",
-    "type": "Wondrous Item",
-    "description": "Grants the wearer a +1 item bonus to Stealth checks and lets them cast darkness once per day.",
-    "price": "250 gp",
     "consumable": false,
     "rented": "No",
     "quantity": 1
