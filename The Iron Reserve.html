@@ -1,119 +1,273 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
 <title>The Iron Reserve – Guild Inventory</title>
-
 <style>
   :root{
     --bg-dark:#1c1c1c;
     --bg-card:#2a2a2a;
+    --bg-card-2:#242424;
     --bg-rented:#2c1c34;
     --border-rented:#6f3f8c;
     --text:#f5f5f5;
+    --muted:#c6c6c6;
     --accent:#ffc107;
+    --accent-2:#ffe28a;
     --border-dark:#333;
-    --radius:10px;
+    --radius:12px;
+    --shadow:0 10px 24px rgba(0,0,0,.25);
 
-    /* type colours */
-    --t-Consumable:#2f855a;   /* green */
-    --t-Alchemical:#2b6cb0;   /* blue */
-    --t-Scroll:#805ad5;       /* purple */
-    --t-Formula:#b7791f;      /* amber */
-    --t-Rune:#d53f8c;         /* pink */
-    --t-Weapon:#c53030;       /* red */
-    --t-Armour:#3182ce;       /* cyan/blue */
-    --t-Shield:#4299e1;       /* light blue */
-    --t-Wondrous:#b83280;     /* magenta */
-    --t-Trinket:#718096;      /* gray */
-    --t-Attachment:#6b46c1;   /* indigo */
-    --t-Default:#555;         /* fallback */
+    --t-Consumable:#2f855a;
+    --t-Alchemical:#2b6cb0;
+    --t-Potion:#0f766e;
+    --t-Scroll:#805ad5;
+    --t-Formula:#b7791f;
+    --t-Rune:#d53f8c;
+    --t-Weapon:#c53030;
+    --t-Armour:#3182ce;
+    --t-Shield:#4299e1;
+    --t-Wondrous:#b83280;
+    --t-Trinket:#718096;
+    --t-Attachment:#6b46c1;
+    --t-Poison:#7c2d12;
+    --t-Default:#555;
+    --tier-Regular:#555;
+    --tier-Vault:#c69c1d;
   }
 
-  *{box-sizing:border-box;margin:0;padding:0;}
+  *{box-sizing:border-box;margin:0;padding:0}
   body{
     font-family:'Segoe UI',Tahoma,Verdana,sans-serif;
-    background:var(--bg-dark);color:var(--text);padding:20px;
+    background:var(--bg-dark);
+    color:var(--text);
+    padding:20px;
   }
 
-  /* header/nav */
   .site-header{
     display:flex;align-items:center;gap:.75rem;
     background:#1f1f1f;border-bottom:2px solid #444;
     margin:-20px -20px 1.5rem;padding:.75rem 1rem;position:relative;
   }
-  .logo{font-weight:700;color:var(--accent);font-size:1.1rem;}
-  .nav-toggle{display:none;}
-  .hamburger{font-size:1.4rem;color:#fff;cursor:pointer;margin-left:auto;user-select:none;display:block;}
-  .site-nav{display:none;flex-direction:column;gap:.75rem;position:absolute;left:0;right:0;top:100%;
-    background:#1f1f1f;border-top:2px solid #444;padding:1rem;}
-  .site-nav a{color:#fff;text-decoration:none;font-weight:600;}
-  .site-nav a:hover{color:var(--accent);}
-  .nav-toggle:checked + .hamburger + .site-nav{display:flex;}
+  .logo{font-weight:700;color:var(--accent);font-size:1.1rem}
+  .nav-toggle{display:none}
+  .hamburger{font-size:1.4rem;color:#fff;cursor:pointer;margin-left:auto;user-select:none;display:block}
+  .site-nav{
+    display:none;flex-direction:column;gap:.75rem;position:absolute;left:0;right:0;top:100%;
+    background:#1f1f1f;border-top:2px solid #444;padding:1rem;
+  }
+  .site-nav a{color:#fff;text-decoration:none;font-weight:600}
+  .site-nav a:hover{color:var(--accent)}
+  .nav-toggle:checked + .hamburger + .site-nav{display:flex}
+
   @media(min-width:620px){
-    body{padding:24px;}
-    .site-header{margin:-24px -24px 1.75rem;padding:1rem 1.25rem;}
-    .hamburger{display:none;}
-    .site-nav{display:flex !important;position:static;flex-direction:row;gap:1.25rem;margin-left:auto;background:transparent;border:none;padding:0;}
+    body{padding:24px}
+    .site-header{margin:-24px -24px 1.75rem;padding:1rem 1.25rem}
+    .hamburger{display:none}
+    .site-nav{
+      display:flex !important;position:static;flex-direction:row;gap:1.25rem;margin-left:auto;background:transparent;border:none;padding:0
+    }
   }
 
-  /* heading */
-  h1{text-align:center;color:var(--accent);font-size:clamp(1.5rem,5vw,2.2rem);margin-bottom:1rem;}
-  p{line-height:1.6;margin-bottom:1.25rem;text-align:center;}
+  h1{
+    text-align:center;color:var(--accent);font-size:clamp(1.6rem,5vw,2.35rem);
+    margin-bottom:.6rem;
+  }
+  .intro{
+    line-height:1.65;
+    margin:0 auto 1.35rem;
+    text-align:center;
+    max-width:1000px;
+    color:var(--muted);
+  }
+  .intro strong{color:var(--accent-2)}
 
-  /* filters */
-  .filter-bar{display:flex;flex-wrap:wrap;gap:.75rem;justify-content:center;margin-bottom:1.5rem;}
+  .note-box{
+    max-width:1000px;
+    margin:0 auto 1.25rem;
+    padding:.85rem 1rem;
+    border:1px solid #4b4b4b;
+    border-radius:var(--radius);
+    background:#222;
+    color:#ddd;
+    font-size:.92rem;
+    line-height:1.55;
+  }
+  .note-box b{color:var(--accent-2)}
+
+  .legend{
+    max-width:1100px;
+    margin:0 auto 1rem;
+    display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;opacity:.95;
+  }
+  .legend .tag{opacity:.95}
+
+  .filter-bar{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:.75rem;
+    justify-content:center;
+    margin:0 auto 1.4rem;
+    max-width:1100px;
+  }
   .filter-bar input,.filter-bar select{
-    background:var(--bg-card);color:var(--text);border:1px solid var(--border-dark);
-    padding:.5rem .75rem;border-radius:var(--radius);min-width:140px;
+    background:var(--bg-card);
+    color:var(--text);
+    border:1px solid var(--border-dark);
+    padding:.65rem .8rem;
+    border-radius:var(--radius);
+    min-width:140px;
   }
-  .filter-bar input::placeholder{color:#aaa;}
+  .filter-bar input::placeholder{color:#aaa}
 
-  /* grid */
-  .item-container{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;}
+  .results-bar{
+    max-width:1100px;
+    margin:0 auto 1rem;
+    display:flex;
+    justify-content:space-between;
+    gap:1rem;
+    align-items:center;
+    color:#cfcfcf;
+    font-size:.92rem;
+  }
 
-  /* card */
+  .item-container{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+    gap:1rem;
+    max-width:1100px;
+    margin:0 auto;
+  }
+
   .item{
-    background:var(--bg-card);border:1px solid var(--border-dark);
-    border-radius:var(--radius);padding:1rem;display:flex;flex-direction:column;gap:.6rem;
-    transition:transform .2s, box-shadow .2s;
+    background:var(--bg-card);
+    border:1px solid var(--border-dark);
+    border-radius:var(--radius);
+    padding:1rem;
+    display:flex;
+    flex-direction:column;
+    gap:.75rem;
+    transition:transform .2s, box-shadow .2s, border-color .2s;
+    box-shadow:0 0 0 rgba(0,0,0,0);
   }
-  .item:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,0,0,.25);}
-  .item.rented{background:var(--bg-rented);border-color:var(--border-rented);}
-  .item.vault{box-shadow:0 0 0 2px #ffd166 inset, 0 0 24px rgba(255,209,102,.25);}
-  .item-header{display:flex;align-items:center;gap:.5rem;}
-  .item-icon{font-size:1.1rem;}
-  .item-name{font-weight:700;color:var(--accent);font-size:1.05rem;flex:1;}
-  .tag-row{display:flex;flex-wrap:wrap;gap:.5rem;font-size:.78rem;}
+  .item:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+  .item.rented{background:var(--bg-rented);border-color:var(--border-rented)}
+  .item.vault{
+    box-shadow:0 0 0 2px rgba(255,209,102,.45) inset,0 0 24px rgba(255,209,102,.16);
+    border-color:#8d6d10;
+  }
+
+  .item-header{display:flex;align-items:flex-start;gap:.7rem}
+  .item-icon{
+    font-size:1.22rem;
+    width:1.8rem;height:1.8rem;display:grid;place-items:center;
+    background:#1f1f1f;border-radius:10px;flex:0 0 auto;
+  }
+  .item-title-wrap{flex:1;min-width:0}
+  .item-name{
+    font-weight:700;color:var(--accent);
+    font-size:1.08rem;line-height:1.3;
+  }
+  .item-subtitle{
+    color:#cfcfcf;
+    margin-top:.18rem;
+    font-size:.84rem;
+  }
+
+  .tag-row{display:flex;flex-wrap:wrap;gap:.45rem;font-size:.78rem}
   .tag{
-    background:#444;padding:.18rem .6rem;border-radius:9999px;white-space:nowrap;border:1px solid rgba(255,255,255,.06);
+    background:#444;
+    padding:.2rem .6rem;
+    border-radius:9999px;
+    white-space:nowrap;
+    border:1px solid rgba(255,255,255,.06);
   }
-  .tag.type{font-weight:700;}
-  .qty{font-weight:700;}
-  .price{font-weight:700;}
-  .vault-pill{background:#4a2; color:#111; font-weight:800; letter-spacing:.3px;}
+  .tag.type{font-weight:700}
+  .tag.tier{font-weight:800}
+  .qty,.price{font-weight:700}
+  .vault-pill{background:#c69c1d;color:#151515;font-weight:800}
+  .rented-pill{background:#653a78}
+  .muted{color:#cfcfcf}
 
-  .details{display:none;flex-direction:column;gap:.45rem;font-size:.92rem;}
-  .item.open .details{display:flex;}
+  .summary{
+    color:#e7e7e7;
+    line-height:1.55;
+    font-size:.94rem;
+  }
+
   .toggle-btn{
-    align-self:flex-start;padding:.25rem .65rem;font-size:.78rem;font-weight:700;
-    border:1px solid var(--border-dark);border-radius:var(--radius);
-    background:var(--accent);color:#111;cursor:pointer;user-select:none;transition:filter .2s;
+    align-self:flex-start;
+    padding:.38rem .75rem;
+    font-size:.8rem;
+    font-weight:700;
+    border:1px solid var(--border-dark);
+    border-radius:var(--radius);
+    background:var(--accent);
+    color:#111;
+    cursor:pointer;
+    user-select:none;
+    transition:filter .2s;
   }
-  .toggle-btn:hover{filter:brightness(1.06);}
+  .toggle-btn:hover{filter:brightness(1.06)}
 
-  /* legend */
-  .legend{max-width:980px;margin:0 auto 1rem;display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;opacity:.9}
-  .legend .tag{opacity:.9}
-  @media(max-width:480px){.item-container{grid-template-columns:1fr;}}
+  .details{display:none;flex-direction:column;gap:.8rem}
+  .item.open .details{display:flex}
+
+  .panel{
+    background:var(--bg-card-2);
+    border:1px solid rgba(255,255,255,.06);
+    border-radius:10px;
+    padding:.75rem;
+  }
+  .panel h3{
+    font-size:.88rem;
+    color:var(--accent-2);
+    margin-bottom:.5rem;
+    letter-spacing:.2px;
+  }
+
+  .kv{
+    display:grid;
+    grid-template-columns:minmax(110px,140px) 1fr;
+    gap:.32rem .65rem;
+    font-size:.9rem;
+    line-height:1.45;
+  }
+  .kv .k{color:#c9c9c9;font-weight:700}
+  .kv .v{color:#f3f3f3}
+  .inline-list{display:flex;flex-wrap:wrap;gap:.35rem}
+  .mini-tag{
+    display:inline-block;
+    padding:.16rem .45rem;
+    border-radius:999px;
+    background:#383838;
+    border:1px solid rgba(255,255,255,.05);
+    font-size:.76rem;
+    color:#ececec;
+  }
+
+  .empty-state{
+    max-width:900px;
+    margin:1rem auto;
+    text-align:center;
+    color:#ccc;
+    padding:2rem;
+    border:1px dashed #555;
+    border-radius:var(--radius);
+    background:#222;
+  }
+
+  @media(max-width:480px){
+    .item-container{grid-template-columns:1fr}
+    .kv{grid-template-columns:1fr}
+  }
 </style>
 </head>
-
 <body>
 <header class="site-header">
   <div class="logo">Iron Meridian</div>
-  <input type="checkbox" id="nav-toggle" class="nav-toggle">
+  <input type="checkbox" id="nav-toggle" class="nav-toggle" />
   <label for="nav-toggle" class="hamburger">&#9776;</label>
   <nav class="site-nav">
     <a href="Mercenary Guild Overview.html">🏰 Overview</a>
@@ -126,612 +280,1016 @@
 </header>
 
 <h1>🏺 The Iron Reserve</h1>
-<p>Browse guild-owned gear available for purchase or rental. Rented items are highlighted. Vault items are rare, expensive, and mildly judgmental.</p>
+<p class="intro">
+  Browse guild-owned gear available for purchase or rental. <strong>Vault</strong> is now its own stock tier rather than a price trick,
+  and item cards can display usage details, weapon traits, armour categories, runes, and custom effects.
+</p>
 
-<!-- quick legend -->
 <div class="legend" id="legend"></div>
 
-<!-- filters -->
 <div class="filter-bar">
-  <input type="text" id="searchInput" placeholder="Search items…">
+  <input type="text" id="searchInput" placeholder="Search items, traits, effects…" />
   <select id="typeFilter"><option value="">All Types</option></select>
+  <select id="classFilter"><option value="">All Categories</option></select>
+  <select id="tierFilter">
+    <option value="">All Stock Tiers</option>
+    <option value="Regular">Regular</option>
+    <option value="Vault">Vault</option>
+  </select>
   <select id="sortSelect">
     <option value="name">Sort: Name</option>
     <option value="price">Sort: Price</option>
     <option value="quantity">Sort: Quantity</option>
     <option value="type">Sort: Type</option>
+    <option value="tier">Sort: Stock Tier</option>
   </select>
+</div>
+
+<div class="results-bar">
+  <div id="resultsCount">0 items</div>
+  <div>Rental shown only where the item is non-consumable.</div>
 </div>
 
 <div id="itemContainer" class="item-container"></div>
 
 <script>
-/* ---------- unified data (updated) ---------- */
+/*
+  Updated schema notes:
+  - stockTier replaces the old price-threshold vault logic
+  - itemClass gives users the category they actually care about, e.g. Martial weapon / Worn item / Spell scroll
+  - statBlock stores item-facing rules text
+  - weapon cards intentionally avoid one fake universal “to hit” value
+*/
+
 const items = [
   {
-    "name": "Smokestick (Lesser)",
-    "type": "Alchemical",
-    "description": "Creates a 10-ft square of smoke for cover for 1 minute.",
+    "name": "Dagger",
+    "type": "Weapon",
+    "stockTier": "Regular",
+    "itemClass": "Weapon",
+    "description": "A basic, reliable knife. Cheap, concealable, and very popular among people with plans.",
+    "price": "2 sp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 4,
+    "level": 0,
+    "traits": ["Agile", "Finesse", "Thrown 10 ft", "Versatile S"],
+    "statBlock": {
+      "proficiency": "Simple",
+      "category": "Simple weapon",
+      "weaponType": "Melee",
+      "group": "Knife",
+      "hands": "1 hand",
+      "bulk": "L",
+      "baseDamage": "1d4 piercing",
+      "critical": "Normal",
+      "notes": "Good for backups, rogues, and optimistic last stands."
+    }
+  },
+  {
+    "name": "Spear",
+    "type": "Weapon",
+    "stockTier": "Regular",
+    "itemClass": "Weapon",
+    "description": "The classic answer to many classic problems.",
+    "price": "1 sp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 3,
+    "level": 0,
+    "traits": ["Thrown 20 ft"],
+    "statBlock": {
+      "proficiency": "Simple",
+      "category": "Simple weapon",
+      "weaponType": "Melee",
+      "group": "Spear",
+      "hands": "1 hand",
+      "bulk": "1",
+      "baseDamage": "1d6 piercing",
+      "critical": "Normal"
+    }
+  },
+  {
+    "name": "Mace",
+    "type": "Weapon",
+    "stockTier": "Regular",
+    "itemClass": "Weapon",
+    "description": "A sensible cudgel for cracking armor, bone, and overconfidence.",
+    "price": "1 sp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 2,
+    "level": 0,
+    "traits": ["Shove"],
+    "statBlock": {
+      "proficiency": "Simple",
+      "category": "Simple weapon",
+      "weaponType": "Melee",
+      "group": "Club",
+      "hands": "1 hand",
+      "bulk": "1",
+      "baseDamage": "1d6 bludgeoning",
+      "critical": "Normal"
+    }
+  },
+  {
+    "name": "Shortsword",
+    "type": "Weapon",
+    "stockTier": "Regular",
+    "itemClass": "Weapon",
+    "description": "A nimble blade for people who prefer precision to theatrics.",
+    "price": "9 sp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 3,
+    "level": 0,
+    "traits": ["Agile", "Finesse", "Versatile S"],
+    "statBlock": {
+      "proficiency": "Martial",
+      "category": "Martial weapon",
+      "weaponType": "Melee",
+      "group": "Sword",
+      "hands": "1 hand",
+      "bulk": "L",
+      "baseDamage": "1d6 piercing",
+      "critical": "Normal"
+    }
+  },
+  {
+    "name": "Rapier",
+    "type": "Weapon",
+    "stockTier": "Regular",
+    "itemClass": "Weapon",
+    "description": "A duelist’s favorite. Elegant, accurate, and slightly judgmental.",
+    "price": "2 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 2,
+    "level": 0,
+    "traits": ["Deadly d8", "Disarm", "Finesse"],
+    "statBlock": {
+      "proficiency": "Martial",
+      "category": "Martial weapon",
+      "weaponType": "Melee",
+      "group": "Sword",
+      "hands": "1 hand",
+      "bulk": "1",
+      "baseDamage": "1d6 piercing",
+      "critical": "Deadly d8"
+    }
+  },
+  {
+    "name": "Longsword",
+    "type": "Weapon",
+    "stockTier": "Regular",
+    "itemClass": "Weapon",
+    "description": "Dependable steel for dependable violence.",
+    "price": "1 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 3,
+    "level": 0,
+    "traits": ["Versatile P"],
+    "statBlock": {
+      "proficiency": "Martial",
+      "category": "Martial weapon",
+      "weaponType": "Melee",
+      "group": "Sword",
+      "hands": "1 hand",
+      "bulk": "1",
+      "baseDamage": "1d8 slashing",
+      "critical": "Normal"
+    }
+  },
+  {
+    "name": "Battleaxe",
+    "type": "Weapon",
+    "stockTier": "Regular",
+    "itemClass": "Weapon",
+    "description": "A practical axe with excellent opinions about doors and goblins.",
+    "price": "1 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 2,
+    "level": 0,
+    "traits": ["Sweep"],
+    "statBlock": {
+      "proficiency": "Martial",
+      "category": "Martial weapon",
+      "weaponType": "Melee",
+      "group": "Axe",
+      "hands": "1 hand",
+      "bulk": "1",
+      "baseDamage": "1d8 slashing",
+      "critical": "Normal"
+    }
+  },
+  {
+    "name": "Warhammer",
+    "type": "Weapon",
+    "stockTier": "Regular",
+    "itemClass": "Weapon",
+    "description": "For negotiation by percussion.",
+    "price": "1 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 2,
+    "level": 0,
+    "traits": ["Shove"],
+    "statBlock": {
+      "proficiency": "Martial",
+      "category": "Martial weapon",
+      "weaponType": "Melee",
+      "group": "Hammer",
+      "hands": "1 hand",
+      "bulk": "1",
+      "baseDamage": "1d8 bludgeoning",
+      "critical": "Normal"
+    }
+  },
+  {
+    "name": "Shortbow",
+    "type": "Weapon",
+    "stockTier": "Regular",
+    "itemClass": "Weapon",
+    "description": "Cheap, common, and excellent at beginning fights from a respectful distance.",
     "price": "3 gp",
-    "consumable": true,
+    "consumable": false,
     "rented": "No",
-    "quantity": 6
+    "quantity": 2,
+    "level": 0,
+    "traits": [],
+    "statBlock": {
+      "proficiency": "Martial",
+      "category": "Martial weapon",
+      "weaponType": "Ranged",
+      "group": "Bow",
+      "hands": "1+ hands",
+      "bulk": "1",
+      "range": "60 feet",
+      "reload": "0",
+      "baseDamage": "1d6 piercing",
+      "critical": "Normal"
+    }
   },
   {
-    "name": "Alchemist's Fire (Moderate)",
-    "type": "Alchemical",
-    "description": "Bomb that sets things ablaze with a more respectable degree of enthusiasm.",
-    "price": "10 gp",
-    "consumable": true,
+    "name": "Longbow",
+    "type": "Weapon",
+    "stockTier": "Regular",
+    "itemClass": "Weapon",
+    "description": "A longer argument with sharper punctuation.",
+    "price": "6 gp",
+    "consumable": false,
     "rented": "No",
-    "quantity": 8
+    "quantity": 2,
+    "level": 0,
+    "traits": ["Deadly d10", "Volley 30 ft"],
+    "statBlock": {
+      "proficiency": "Martial",
+      "category": "Martial weapon",
+      "weaponType": "Ranged",
+      "group": "Bow",
+      "hands": "1+ hands",
+      "bulk": "2",
+      "range": "100 feet",
+      "reload": "0",
+      "baseDamage": "1d8 piercing",
+      "critical": "Deadly d10"
+    }
   },
   {
-    "name": "Tanglefoot Bag (Moderate)",
-    "type": "Alchemical",
-    "description": "Glue enemies to the floor with improved adhesive spite.",
-    "price": "10 gp",
-    "consumable": true,
-    "rented": "No",
-    "quantity": 6
-  },
-  {
-    "name": "Bottled Lightning (Moderate)",
-    "type": "Alchemical",
-    "description": "On hit: electricity splash; target becomes off-guard until end of your next turn.",
-    "price": "10 gp",
-    "consumable": true,
-    "rented": "No",
-    "quantity": 8
-  },
-  {
-    "name": "Frost Vial (Moderate)",
-    "type": "Alchemical",
-    "description": "On hit: cold damage and reduced Speed for 1 round.",
-    "price": "10 gp",
-    "consumable": true,
-    "rented": "No",
-    "quantity": 6
-  },
-  {
-    "name": "Thunderstone (Moderate)",
-    "type": "Alchemical",
-    "description": "Explodes with a concussive boom; useful for deafening foes and announcing poor decisions.",
-    "price": "9 gp",
-    "consumable": true,
-    "rented": "No",
-    "quantity": 6
-  },
-  {
-    "name": "Acid Flask (Moderate)",
-    "type": "Alchemical",
-    "description": "A reliable bottle of corrosion for when subtlety has already failed.",
-    "price": "10 gp",
-    "consumable": true,
-    "rented": "No",
-    "quantity": 6
-  },
-  {
-    "name": "Cheetah’s Elixir (Lesser)",
-    "type": "Consumable",
-    "description": "Gain a brief burst of speed. Excellent for escapes, charges, and dramatic overconfidence.",
-    "price": "12 gp",
-    "consumable": true,
-    "rented": "No",
-    "quantity": 5
-  },
-  {
-    "name": "Potion of Spider Climb (Lesser)",
-    "type": "Consumable",
-    "description": "Climb on walls and ceilings for 1 minute.",
-    "price": "12 gp",
-    "consumable": true,
-    "rented": "No",
-    "quantity": 5
-  },
-  {
-    "name": "Potion of Healing (Lesser)",
-    "type": "Consumable",
-    "description": "Restores 2d8+5 HP.",
-    "price": "12 gp",
-    "consumable": true,
-    "rented": "No",
-    "quantity": 8
-  },
-  {
-    "name": "Potion of Healing (Moderate)",
-    "type": "Potion",
-    "description": "Restores 3d8+10 HP.",
-    "price": "50 gp",
-    "consumable": true,
-    "rented": "No",
-    "quantity": 6
-  },
-  {
-    "name": "Elixir of Life (Lesser)",
-    "type": "Consumable",
-    "description": "Restores HP and grants a bonus against disease and poison.",
-    "price": "12 gp",
-    "consumable": true,
-    "rented": "No",
-    "quantity": 6
-  },
-  {
-    "name": "Potion of Antidote (Lesser)",
-    "type": "Consumable",
-    "description": "+2 item bonus vs poison for 6 hours.",
+    "name": "Hand Crossbow",
+    "type": "Weapon",
+    "stockTier": "Regular",
+    "itemClass": "Weapon",
+    "description": "Compact ranged menace for rogues, scoundrels, and rogues pretending not to be scoundrels.",
     "price": "3 gp",
-    "consumable": true,
-    "rented": "No",
-    "quantity": 8
-  },
-  {
-    "name": "Antiplague (Lesser)",
-    "type": "Consumable",
-    "description": "+2 item bonus to Fortitude saves vs disease for 24 hours.",
-    "price": "3 gp",
-    "consumable": true,
-    "rented": "No",
-    "quantity": 8
-  },
-  {
-    "name": "Minor Invisibility Potion",
-    "type": "Potion",
-    "description": "Grants invisibility for up to 5 minutes or until you take a hostile action.",
-    "price": "70 gp",
-    "consumable": true,
-    "rented": "No",
-    "quantity": 5
-  },
-  {
-    "name": "Darkvision Elixir",
-    "type": "Consumable",
-    "description": "Gain darkvision for 1 hour. For when the torch gives away the ambush.",
-    "price": "12 gp",
-    "consumable": true,
-    "rented": "No",
-    "quantity": 5
-  },
-  {
-    "name": "Bravo’s Brew",
-    "type": "Consumable",
-    "description": "A confidence-boosting alchemical tonic granting a bonus against fear.",
-    "price": "15 gp",
-    "consumable": true,
-    "rented": "No",
-    "quantity": 4
-  },
-  {
-    "name": "Masquerade Sleep Draught",
-    "type": "Alchemical Poison",
-    "description": "Ingested poison that renders a target unconscious if they fail a DC 18 Fortitude save.",
-    "price": "50 gp",
-    "consumable": true,
-    "rented": "No",
-    "quantity": 4
-  },
-  {
-    "name": "Aetheric Clarity Brew",
-    "type": "Potion",
-    "description": "A mind-sharpening tonic granting a brief bonus to Will saves and occult focus.",
-    "price": "15 gp",
-    "consumable": true,
-    "rented": "No",
-    "quantity": 4
-  },
-  {
-    "name": "Cognitive Dampener",
-    "type": "Potion",
-    "description": "Dubious black fluid that dulls thought. Sold for controlled field use and very bad ideas.",
-    "price": "8 gp",
-    "consumable": true,
-    "rented": "No",
-    "quantity": 3
-  },
-  {
-    "name": "Scroll of Heal (1st)",
-    "type": "Scroll",
-    "description": "Burst, touch, or single-target healing options.",
-    "price": "4 gp",
-    "consumable": true,
-    "rented": "No",
-    "quantity": 6
-  },
-  {
-    "name": "Scroll of Invisibility (2nd)",
-    "type": "Scroll",
-    "description": "Turn a creature invisible for a short time.",
-    "price": "12 gp",
-    "consumable": true,
-    "rented": "No",
-    "quantity": 5
-  },
-  {
-    "name": "Scroll of Knock (2nd)",
-    "type": "Scroll",
-    "description": "Open locks and stubborn doors.",
-    "price": "12 gp",
-    "consumable": true,
-    "rented": "No",
-    "quantity": 4
-  },
-  {
-    "name": "Scroll of Mirror Image (2nd)",
-    "type": "Scroll",
-    "description": "Illusory duplicates for defense.",
-    "price": "12 gp",
-    "consumable": true,
-    "rented": "No",
-    "quantity": 4
-  },
-  {
-    "name": "Scroll of Restoration (2nd)",
-    "type": "Scroll",
-    "description": "Reduce clumsy, enfeebled, or stupefied and clear lesser afflictions.",
-    "price": "12 gp",
-    "consumable": true,
-    "rented": "No",
-    "quantity": 4
-  },
-  {
-    "name": "Scroll of Fireball (3rd)",
-    "type": "Scroll",
-    "description": "A fiery explosion dealing 6d6 fire damage in a 20-ft burst.",
-    "price": "30 gp",
-    "consumable": true,
-    "rented": "No",
-    "quantity": 4
-  },
-  {
-    "name": "Scroll of Haste (3rd)",
-    "type": "Scroll",
-    "description": "Grants extra speed and action economy to a creature.",
-    "price": "35 gp",
-    "consumable": true,
-    "rented": "No",
-    "quantity": 4
-  },
-  {
-    "name": "Scroll of Dispel Magic (3rd)",
-    "type": "Scroll",
-    "description": "Counteract troublesome magic before it becomes someone else’s problem.",
-    "price": "55 gp",
-    "consumable": true,
-    "rented": "No",
-    "quantity": 4
-  },
-  {
-    "name": "Scroll of Heroism (3rd)",
-    "type": "Scroll",
-    "description": "Temporarily bolster a creature with magical courage and competence.",
-    "price": "40 gp",
-    "consumable": true,
-    "rented": "No",
-    "quantity": 3
-  },
-  {
-    "name": "Scroll of Dimension Door (4th)",
-    "type": "Scroll",
-    "description": "Instantly transport yourself and an ally across the battlefield or out of one.",
-    "price": "70 gp",
-    "consumable": true,
-    "rented": "No",
-    "quantity": 2
-  },
-  {
-    "name": "Scroll of Wall of Stone (5th)",
-    "type": "Scroll",
-    "description": "Conjure a solid wall of stone. Great for defense, sieges, and dramatic exits.",
-    "price": "150 gp",
-    "consumable": true,
-    "rented": "No",
-    "quantity": 1
-  },
-  {
-    "name": "Whistle of Echoing Steps",
-    "type": "Trinket",
-    "description": "Once/day, create illusory departing footsteps (DC 14 Will disbelief).",
-    "price": "20 gp",
     "consumable": false,
     "rented": "No",
-    "quantity": 1
+    "quantity": 2,
+    "level": 0,
+    "traits": [],
+    "statBlock": {
+      "proficiency": "Simple",
+      "category": "Simple weapon",
+      "weaponType": "Ranged",
+      "group": "Bow",
+      "hands": "1 hand",
+      "bulk": "1",
+      "range": "60 feet",
+      "reload": "1",
+      "baseDamage": "1d6 piercing",
+      "critical": "Normal"
+    }
   },
   {
-    "name": "Pocket Chapel of Mild Regret",
-    "type": "Trinket",
-    "description": "A fold-out tin shrine that grants a +1 circumstance bonus to one prayerful Recall Knowledge or Religion check per day.",
-    "price": "35 gp",
-    "consumable": false,
-    "rented": "No",
-    "quantity": 1
-  },
-  {
-    "name": "Clockroach in a Brass Cage",
-    "type": "Trinket",
-    "description": "A tiny clockwork insect that clicks faster near hidden doors or mechanisms. Not always correctly, but enthusiastically.",
-    "price": "45 gp",
-    "consumable": false,
-    "rented": "No",
-    "quantity": 1
-  },
-  {
-    "name": "Whisperglass Monocle",
-    "type": "Wondrous",
-    "description": "Once/day, hear the last few spoken words in a room as faint psychic residue. Useful, creepy, both.",
-    "price": "180 gp",
-    "consumable": false,
-    "rented": "No",
-    "quantity": 1
-  },
-  {
-    "name": "Boots of Bounding",
-    "type": "Wondrous",
-    "description": "+5 ft status Speed; +1 item bonus to Athletics checks involving jumps.",
-    "price": "110 gp",
-    "consumable": false,
-    "rented": "No",
-    "quantity": 1
-  },
-  {
-    "name": "Cloak of the Bat",
-    "type": "Wondrous Item",
-    "description": "Allows the wearer to glide, grants darkvision, and transform into a bat once per day.",
-    "price": "300 gp",
-    "consumable": false,
-    "rented": "No",
-    "quantity": 1
-  },
-  {
-    "name": "Cloak of Shadows",
-    "type": "Wondrous Item",
-    "description": "Grants a +1 item bonus to Stealth checks and lets the wearer cast darkness once per day.",
-    "price": "250 gp",
-    "consumable": false,
-    "rented": "No",
-    "quantity": 1
-  },
-  {
-    "name": "Bracers of Armor +1",
+    "name": "Leather Armor",
     "type": "Armour",
-    "description": "For lightly-armored or robe-clad adventurers needing a little more AC and a little less dying.",
-    "price": "160 gp",
+    "stockTier": "Regular",
+    "itemClass": "Armor",
+    "description": "Reliable light protection for sensible adventurers and optimistic thieves.",
+    "price": "2 gp",
     "consumable": false,
     "rented": "No",
-    "quantity": 1
+    "quantity": 2,
+    "level": 0,
+    "traits": [],
+    "statBlock": {
+      "proficiency": "Light",
+      "category": "Light armor",
+      "armorType": "Light",
+      "group": "Leather",
+      "bulk": "1",
+      "acBonus": "+1",
+      "dexCap": "+4",
+      "checkPenalty": "0",
+      "speedPenalty": "0 feet",
+      "strength": "10"
+    }
+  },
+  {
+    "name": "Studded Leather Armor",
+    "type": "Armour",
+    "stockTier": "Regular",
+    "itemClass": "Armor",
+    "description": "Light armor with a little more bite and a little less subtlety.",
+    "price": "3 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 2,
+    "level": 0,
+    "traits": [],
+    "statBlock": {
+      "proficiency": "Light",
+      "category": "Light armor",
+      "armorType": "Light",
+      "group": "Composite",
+      "bulk": "1",
+      "acBonus": "+2",
+      "dexCap": "+3",
+      "checkPenalty": "-1",
+      "speedPenalty": "0 feet",
+      "strength": "12"
+    }
+  },
+  {
+    "name": "Chain Shirt",
+    "type": "Armour",
+    "stockTier": "Regular",
+    "itemClass": "Armor",
+    "description": "Flexible medium armor for people who want options and some metal between themselves and regret.",
+    "price": "5 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 2,
+    "level": 0,
+    "traits": ["Noisy"],
+    "statBlock": {
+      "proficiency": "Medium",
+      "category": "Medium armor",
+      "armorType": "Medium",
+      "group": "Chain",
+      "bulk": "1",
+      "acBonus": "+2",
+      "dexCap": "+3",
+      "checkPenalty": "-1",
+      "speedPenalty": "0 feet",
+      "strength": "12"
+    }
+  },
+  {
+    "name": "Scale Mail",
+    "type": "Armour",
+    "stockTier": "Regular",
+    "itemClass": "Armor",
+    "description": "Solid medium protection with a healthy respect for clanking.",
+    "price": "4 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 1,
+    "level": 0,
+    "traits": ["Flexible", "Noisy"],
+    "statBlock": {
+      "proficiency": "Medium",
+      "category": "Medium armor",
+      "armorType": "Medium",
+      "group": "Composite",
+      "bulk": "2",
+      "acBonus": "+3",
+      "dexCap": "+2",
+      "checkPenalty": "-2",
+      "speedPenalty": "-5 feet",
+      "strength": "14"
+    }
+  },
+  {
+    "name": "Breastplate",
+    "type": "Armour",
+    "stockTier": "Regular",
+    "itemClass": "Armor",
+    "description": "A sturdy compromise between mobility and not dying.",
+    "price": "8 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 1,
+    "level": 0,
+    "traits": [],
+    "statBlock": {
+      "proficiency": "Medium",
+      "category": "Medium armor",
+      "armorType": "Medium",
+      "group": "Plate",
+      "bulk": "2",
+      "acBonus": "+4",
+      "dexCap": "+1",
+      "checkPenalty": "-2",
+      "speedPenalty": "-5 feet",
+      "strength": "16"
+    }
+  },
+  {
+    "name": "Half Plate",
+    "type": "Armour",
+    "stockTier": "Regular",
+    "itemClass": "Armor",
+    "description": "Heavy protection for those who believe discretion is a rumor.",
+    "price": "18 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 1,
+    "level": 0,
+    "traits": ["Bulwark"],
+    "statBlock": {
+      "proficiency": "Heavy",
+      "category": "Heavy armor",
+      "armorType": "Heavy",
+      "group": "Plate",
+      "bulk": "3",
+      "acBonus": "+5",
+      "dexCap": "+1",
+      "checkPenalty": "-3",
+      "speedPenalty": "-10 feet",
+      "strength": "16"
+    }
+  },
+  {
+    "name": "Steel Shield",
+    "type": "Shield",
+    "stockTier": "Regular",
+    "itemClass": "Shield",
+    "description": "A proper shield for proper blocking.",
+    "price": "2 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 3,
+    "level": 0,
+    "traits": [],
+    "statBlock": {
+      "proficiency": "Shield",
+      "category": "Shield",
+      "hands": "1 hand",
+      "bulk": "1",
+      "acBonus": "+2",
+      "hardness": "5",
+      "hp": "20",
+      "bt": "10"
+    }
+  },
+  {
+    "name": "+1 Striking Dagger",
+    "type": "Weapon",
+    "stockTier": "Regular",
+    "itemClass": "Magic Weapon",
+    "description": "A ready-etched dagger for adventurers who want the stabbing solved in advance.",
+    "price": "100 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 1,
+    "level": 4,
+    "traits": ["Agile", "Finesse", "Magical", "Thrown 10 ft", "Versatile S"],
+    "statBlock": {
+      "proficiency": "Simple",
+      "category": "Simple weapon",
+      "weaponType": "Melee",
+      "group": "Knife",
+      "hands": "1 hand",
+      "bulk": "L",
+      "baseDamage": "2d4 piercing",
+      "runes": "+1 potency, striking",
+      "critical": "Normal"
+    }
+  },
+  {
+    "name": "+1 Striking Longsword",
+    "type": "Weapon",
+    "stockTier": "Regular",
+    "itemClass": "Magic Weapon",
+    "description": "A dependable enchanted longsword with no philosophical baggage beyond the usual.",
+    "price": "100 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 1,
+    "level": 4,
+    "traits": ["Magical", "Versatile P"],
+    "statBlock": {
+      "proficiency": "Martial",
+      "category": "Martial weapon",
+      "weaponType": "Melee",
+      "group": "Sword",
+      "hands": "1 hand",
+      "bulk": "1",
+      "baseDamage": "2d8 slashing",
+      "runes": "+1 potency, striking",
+      "critical": "Normal"
+    }
   },
   {
     "name": "Flametongue Dagger",
     "type": "Weapon",
-    "description": "+1 dagger; ignite for 1 minute/day for +1d4 fire damage.",
-    "price": "200 gp",
+    "stockTier": "Regular",
+    "itemClass": "Specific Magic Weapon",
+    "description": "A light blade that can be ignited for extra fire damage. Small, mean, and dramatically overqualified.",
+    "price": "500 gp",
     "consumable": false,
     "rented": "No",
-    "quantity": 1
+    "quantity": 1,
+    "level": 8,
+    "traits": ["Agile", "Finesse", "Magical", "Thrown 10 ft", "Versatile S", "Fire"],
+    "statBlock": {
+      "proficiency": "Simple",
+      "category": "Simple weapon",
+      "weaponType": "Melee",
+      "group": "Knife",
+      "hands": "1 hand",
+      "bulk": "L",
+      "baseDamage": "1d4 piercing",
+      "runes": "+1 potency, striking",
+      "critical": "Normal",
+      "special": "Activate once per day to ignite the blade for 1 minute; Strikes deal an additional 1d6 fire damage.",
+      "notes": "Still a dagger for proficiency purposes. It is magical, not a loophole."
+    }
+  },
+  {
+    "name": "Boots of Bounding",
+    "type": "Wondrous",
+    "stockTier": "Regular",
+    "itemClass": "Worn Item",
+    "description": "Boots that encourage excellent leaps and poor restraint.",
+    "price": "340 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 1,
+    "level": 7,
+    "traits": ["Magical", "Transmutation", "Worn"],
+    "statBlock": {
+      "usage": "Worn shoes",
+      "bulk": "L",
+      "effect": "+5-foot item bonus to Speed; +2 item bonus to Athletics checks to High Jump and Long Jump; Leap farther than normal."
+    }
   },
   {
     "name": "Goggles of Night",
     "type": "Wondrous",
-    "description": "Gain darkvision or improve it if you already have it. Very popular. For obvious reasons.",
+    "stockTier": "Regular",
+    "itemClass": "Worn Item",
+    "description": "A practical answer to dungeons being rude about lighting.",
     "price": "300 gp",
     "consumable": false,
     "rented": "No",
-    "quantity": 1
+    "quantity": 1,
+    "level": 8,
+    "traits": ["Divination", "Magical", "Worn"],
+    "statBlock": {
+      "usage": "Worn goggles",
+      "effect": "Gain darkvision or improve existing darkvision."
+    }
+  },
+  {
+    "name": "Bracers of Armor +1",
+    "type": "Wondrous",
+    "stockTier": "Regular",
+    "itemClass": "Worn Item",
+    "description": "A magical defense item for characters not wearing armor.",
+    "price": "450 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 1,
+    "level": 8,
+    "traits": ["Abjuration", "Magical", "Worn"],
+    "statBlock": {
+      "usage": "Worn bracers",
+      "category": "Worn defensive item",
+      "effect": "+1 item bonus to AC and saving throws; maximum Dexterity modifier +5."
+    }
   },
   {
     "name": "Handwraps of Mighty Blows +1",
     "type": "Weapon",
-    "description": "+1 potency for unarmed attacks. For monks, brawlers, and anyone who insists fists are a lifestyle.",
+    "stockTier": "Regular",
+    "itemClass": "Unarmed Upgrade",
+    "description": "Magical handwraps that improve unarmed Strikes.",
     "price": "35 gp",
     "consumable": false,
     "rented": "No",
-    "quantity": 2
+    "quantity": 2,
+    "level": 2,
+    "traits": ["Magical", "Worn"],
+    "statBlock": {
+      "usage": "Worn handwraps",
+      "category": "Unarmed attack enhancement",
+      "runes": "+1 potency",
+      "effect": "Applies potency benefits to your unarmed attacks.",
+      "notes": "Still uses the wearer’s own unarmed proficiency and damage profile."
+    }
   },
   {
     "name": "Weapon Potency Rune (+1)",
     "type": "Rune",
-    "description": "+1 item bonus to attack rolls.",
+    "stockTier": "Regular",
+    "itemClass": "Fundamental Weapon Rune",
+    "description": "Magical enhancement that makes a weapon strike truer.",
     "price": "35 gp",
     "consumable": false,
     "rented": "No",
-    "quantity": 4
+    "quantity": 5,
+    "level": 2,
+    "traits": ["Evocation", "Magical", "Rune"],
+    "statBlock": {
+      "usage": "Etched onto a weapon",
+      "effect": "+1 item bonus to attack rolls and 1 property rune slot."
+    }
+  },
+  {
+    "name": "Weapon Potency Rune (+2)",
+    "type": "Rune",
+    "stockTier": "Regular",
+    "itemClass": "Fundamental Weapon Rune",
+    "description": "A stronger potency rune for weapons that have graduated from polite violence.",
+    "price": "935 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 1,
+    "level": 10,
+    "traits": ["Evocation", "Magical", "Rune"],
+    "statBlock": {
+      "usage": "Etched onto a weapon",
+      "effect": "+2 item bonus to attack rolls and 2 property rune slots."
+    }
   },
   {
     "name": "Striking Rune",
     "type": "Rune",
-    "description": "Increase weapon damage dice to 2.",
+    "stockTier": "Regular",
+    "itemClass": "Fundamental Weapon Rune",
+    "description": "Adds one extra weapon damage die.",
     "price": "65 gp",
     "consumable": false,
     "rented": "No",
-    "quantity": 4
+    "quantity": 4,
+    "level": 4,
+    "traits": ["Magical", "Rune"],
+    "statBlock": {
+      "usage": "Etched onto a weapon",
+      "effect": "Increases the weapon to 2 damage dice total."
+    }
+  },
+  {
+    "name": "Greater Striking Rune",
+    "type": "Rune",
+    "stockTier": "Regular",
+    "itemClass": "Fundamental Weapon Rune",
+    "description": "For when two damage dice are no longer enough to express yourself.",
+    "price": "1065 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 1,
+    "level": 12,
+    "traits": ["Magical", "Rune"],
+    "statBlock": {
+      "usage": "Etched onto a weapon",
+      "effect": "Increases the weapon to 3 damage dice total."
+    }
   },
   {
     "name": "Armor Potency Rune (+1)",
     "type": "Rune",
-    "description": "+1 item bonus to AC.",
+    "stockTier": "Regular",
+    "itemClass": "Fundamental Armor Rune",
+    "description": "Magical warding that improves a suit of armor.",
     "price": "160 gp",
     "consumable": false,
     "rented": "No",
-    "quantity": 3
+    "quantity": 3,
+    "level": 5,
+    "traits": ["Abjuration", "Magical", "Rune"],
+    "statBlock": {
+      "usage": "Etched onto armor",
+      "effect": "+1 item bonus to AC and 1 property rune slot."
+    }
   },
   {
     "name": "Resilient Rune",
     "type": "Rune",
-    "description": "+1 item bonus to saving throws when etched onto armor.",
+    "stockTier": "Regular",
+    "itemClass": "Fundamental Armor Rune",
+    "description": "Defensive rune that helps you survive things your GM finds funny.",
     "price": "340 gp",
     "consumable": false,
     "rented": "No",
-    "quantity": 2
+    "quantity": 2,
+    "level": 8,
+    "traits": ["Abjuration", "Magical", "Rune"],
+    "statBlock": {
+      "usage": "Etched onto armor",
+      "effect": "+1 item bonus to saving throws."
+    }
   },
   {
     "name": "Ghost Touch Rune",
     "type": "Rune",
-    "description": "Weapon strikes affect incorporeal creatures normally.",
+    "stockTier": "Regular",
+    "itemClass": "Weapon Property Rune",
+    "description": "Useful when the problem is incorporeal and rude.",
     "price": "75 gp",
     "consumable": false,
     "rented": "No",
-    "quantity": 2
+    "quantity": 2,
+    "level": 4,
+    "traits": ["Magical", "Rune"],
+    "statBlock": {
+      "usage": "Etched onto a weapon",
+      "effect": "Weapon affects incorporeal creatures normally."
+    }
   },
   {
     "name": "Returning Rune",
     "type": "Rune",
-    "description": "Thrown weapon returns to your hand.",
+    "stockTier": "Regular",
+    "itemClass": "Weapon Property Rune",
+    "description": "For throwers who dislike walking.",
     "price": "55 gp",
     "consumable": false,
     "rented": "No",
-    "quantity": 2
+    "quantity": 2,
+    "level": 3,
+    "traits": ["Magical", "Rune"],
+    "statBlock": {
+      "usage": "Etched onto a thrown weapon",
+      "effect": "Thrown weapon returns to your hand."
+    }
   },
-  {
-    "name": "Formula: Alchemist’s Fire (Moderate)",
-    "type": "Formula",
-    "description": "Crafting formula for Moderate Alchemist’s Fire.",
-    "price": "3 gp",
-    "consumable": false,
-    "rented": "No",
-    "quantity": 1
-  },
-  {
-    "name": "Formula: Bottled Lightning (Moderate)",
-    "type": "Formula",
-    "description": "Crafting formula for Moderate Bottled Lightning.",
-    "price": "3 gp",
-    "consumable": false,
-    "rented": "No",
-    "quantity": 1
-  },
-  {
-    "name": "Formula: Frost Vial (Moderate)",
-    "type": "Formula",
-    "description": "Crafting formula for Moderate Frost Vial.",
-    "price": "3 gp",
-    "consumable": false,
-    "rented": "No",
-    "quantity": 1
-  },
-
   {
     "name": "Stormcall Javelin",
     "type": "Weapon",
-    "description": "Thrown weapon; on hit calls lightning in a burst. Reforms after 1 minute.",
-    "price": "1200 gp",
+    "stockTier": "Vault",
+    "itemClass": "Specific Magic Weapon",
+    "description": "A storm-bound war javelin that crackles before it kills. Definitely not simple. Definitely angry.",
+    "price": "1400 gp",
     "consumable": false,
     "rented": "No",
-    "quantity": 1
-  },
-  {
-    "name": "Gauntlets of the Shattered Sky",
-    "type": "Wondrous",
-    "description": "Heavy azure-steel gauntlets crackling with storm energy. Resist electricity and unleash a daily lightning bolt.",
-    "price": "1800 gp",
-    "consumable": false,
-    "rented": "No",
-    "quantity": 1
-  },
-  {
-    "name": "Mirror of Twin Fates",
-    "type": "Wondrous",
-    "description": "Once/day, reroll a failed save with a bonus. The mirror shows the version of you who failed harder.",
-    "price": "3000 gp",
-    "consumable": false,
-    "rented": "No",
-    "quantity": 1
+    "quantity": 1,
+    "level": 11,
+    "traits": ["Electricity", "Magical", "Thrown 30 ft"],
+    "statBlock": {
+      "proficiency": "Advanced",
+      "category": "Advanced weapon",
+      "weaponType": "Melee / Thrown",
+      "group": "Spear",
+      "hands": "1 hand",
+      "bulk": "1",
+      "baseDamage": "2d6 piercing",
+      "runes": "+2 potency, striking",
+      "critical": "Normal",
+      "special": "Strikes deal an additional 1d6 electricity damage. On a critical hit, lightning arcs to one other creature within 10 feet of the target for 2d6 electricity damage (basic Reflex save against the wielder’s class DC or spell DC, whichever is higher). Once per day, hurl the javelin to cast a 4th-rank lightning bolt from the point of impact. The weapon returns to your hand at the end of the turn."
+    }
   },
   {
     "name": "Mask of Many Faces",
     "type": "Wondrous",
-    "description": "At will: Disguise Self; 1/day: Alter Self. For spies, actors, and dramatic cowards.",
+    "stockTier": "Vault",
+    "itemClass": "Worn Item",
+    "description": "An identity problem in wearable form.",
     "price": "1000 gp",
     "consumable": false,
     "rented": "No",
-    "quantity": 1
+    "quantity": 1,
+    "level": 10,
+    "traits": ["Illusion", "Magical", "Worn"],
+    "statBlock": {
+      "usage": "Worn mask",
+      "effect": "Cast disguise magic at will; once per day assume a more complete alternate identity with stronger illusory magic."
+    }
+  },
+  {
+    "name": "Gauntlets of the Shattered Sky",
+    "type": "Wondrous",
+    "stockTier": "Vault",
+    "itemClass": "Worn Item",
+    "description": "Azure-steel gauntlets humming with contained storm violence.",
+    "price": "1800 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 1,
+    "level": 11,
+    "traits": ["Electricity", "Magical", "Worn"],
+    "statBlock": {
+      "usage": "Worn gauntlets",
+      "effect": "Gain electricity resistance 5. Once per day cast lightning bolt. Unarmed Strikes made with the gauntlets deal an additional 1 electricity damage."
+    }
+  },
+  {
+    "name": "Mirror of Twin Fates",
+    "type": "Wondrous",
+    "stockTier": "Vault",
+    "itemClass": "Held Item",
+    "description": "A mirror that shows the version of you with worse luck. Very reassuring, in a sinister way.",
+    "price": "3000 gp",
+    "consumable": false,
+    "rented": "No",
+    "quantity": 1,
+    "level": 13,
+    "traits": ["Divination", "Magical"],
+    "statBlock": {
+      "usage": "Held in 2 hands",
+      "frequency": "Once per day",
+      "effect": "When you fail a saving throw, you can reroll it and take the better result, gaining a +2 status bonus on the reroll."
+    }
   },
   {
     "name": "Cloak of the Dreaming Tide",
     "type": "Wondrous",
-    "description": "Water breathing; bonus vs sleep and charm; 1/day cast a heightened Sleep.",
+    "stockTier": "Vault",
+    "itemClass": "Worn Item",
+    "description": "A sea-haunted cloak with sleepy undertones and expensive intent.",
     "price": "2200 gp",
     "consumable": false,
     "rented": "No",
-    "quantity": 1
+    "quantity": 1,
+    "level": 12,
+    "traits": ["Magical", "Mental", "Water", "Worn"],
+    "statBlock": {
+      "usage": "Worn cloak",
+      "effect": "Gain water breathing and a +2 item bonus to saves against sleep and mental effects. Once per day cast a heightened sleep-themed enchantment or lull up to 4 creatures in a 30-foot emanation (Will save)."
+    }
   },
   {
     "name": "Lantern of Silent Stars",
     "type": "Wondrous",
-    "description": "A silver lantern lit with pale starlight. Suppresses lesser divination nearby and grants a daily glimpse of likely fortune.",
+    "stockTier": "Vault",
+    "itemClass": "Held Item",
+    "description": "A silver lantern lit by quiet starlight and costly secrets.",
     "price": "2200 gp",
     "consumable": false,
     "rented": "No",
-    "quantity": 1
+    "quantity": 1,
+    "level": 12,
+    "traits": ["Divination", "Light", "Magical"],
+    "statBlock": {
+      "usage": "Held in 1 hand",
+      "effect": "Emits calm silver light, suppresses lesser invisibility and illusion concealment in its bright light, and once per day grants a brief omen that gives a +2 status bonus to one initiative roll, save, or Recall Knowledge check."
+    }
   },
   {
     "name": "Vestment of the Whispering Veil",
     "type": "Wondrous",
-    "description": "Dark silk robes that blur the wearer’s outline. Bonus to Stealth and mental defense; once/day briefly become half-ethereal.",
+    "stockTier": "Vault",
+    "itemClass": "Worn Item",
+    "description": "Robes that blur the wearer’s outline and relationship with solidity.",
     "price": "4200 gp",
     "consumable": false,
     "rented": "No",
-    "quantity": 1
+    "quantity": 1,
+    "level": 15,
+    "traits": ["Illusion", "Magical", "Worn"],
+    "statBlock": {
+      "usage": "Worn robes",
+      "effect": "Gain a +2 item bonus to Stealth and Will saves against mental effects. Once per day become concealed for 1 minute; as a single action during that duration, phase partly out of reality until the start of your next turn, gaining resistance 10 to physical damage except force."
+    }
   },
   {
     "name": "Blade of Shattered Stars",
     "type": "Weapon",
-    "description": "+2 greater striking longsword; on crit deals force damage in a burst.",
-    "price": "5000 gp",
+    "stockTier": "Vault",
+    "itemClass": "Specific Magic Weapon",
+    "description": "A star-forged one-handed blade that answers violence with collapsing constellations.",
+    "price": "10000 gp",
     "consumable": false,
     "rented": "No",
-    "quantity": 1
+    "quantity": 1,
+    "level": 16,
+    "traits": ["Magical", "Force", "Versatile P"],
+    "statBlock": {
+      "proficiency": "Advanced",
+      "category": "Advanced weapon",
+      "weaponType": "Melee",
+      "group": "Sword",
+      "hands": "1 hand",
+      "bulk": "1",
+      "baseDamage": "3d8 slashing",
+      "runes": "+3 potency, greater striking",
+      "critical": "Normal plus starburst",
+      "special": "On a critical hit, the target and each enemy within 10 feet take 2d6 force damage. Once per day, cast a 6th-rank force barrage or unleash a 30-foot line of stellar force dealing 8d6 force damage (basic Reflex save)."
+    }
   },
   {
     "name": "Crown of Whispered Truths",
     "type": "Wondrous",
-    "description": "Once/day ask a single question and receive a cryptic true answer.",
+    "stockTier": "Vault",
+    "itemClass": "Worn Item",
+    "description": "A crown for careful questions and dangerous answers.",
     "price": "3500 gp",
     "consumable": false,
     "rented": "No",
-    "quantity": 1
+    "quantity": 1,
+    "level": 14,
+    "traits": ["Divination", "Magical", "Worn"],
+    "statBlock": {
+      "usage": "Worn crown",
+      "frequency": "Once per day",
+      "effect": "Ask a single question and receive a cryptic but truthful answer; also grants a +2 item bonus to Diplomacy checks to Make an Impression during formal conversation."
+    }
   },
   {
     "name": "Oathbinder’s Circlet",
     "type": "Wondrous",
-    "description": "Platinum circlet of binding promises. Strengthens negotiations and can enforce a magical pact once per week.",
+    "stockTier": "Vault",
+    "itemClass": "Worn Item",
+    "description": "For elegant promises and legally alarming vows.",
     "price": "5000 gp",
     "consumable": false,
     "rented": "No",
-    "quantity": 1
+    "quantity": 1,
+    "level": 16,
+    "traits": ["Enchantment", "Magical", "Worn"],
+    "statBlock": {
+      "usage": "Worn circlet",
+      "effect": "Gain a +2 item bonus to Diplomacy in negotiations. Once per week, seal a willing spoken pact; any creature who knowingly breaks it becomes stupefied 2 and enfeebled 2 for 24 hours unless they critically succeed at a Will save."
+    }
   },
   {
     "name": "Ring of Planar Steps",
     "type": "Wondrous",
-    "description": "Multiple daily short teleports; rare shift to the Ethereal Plane.",
+    "stockTier": "Vault",
+    "itemClass": "Worn Item",
+    "description": "A ring for people who insist distance is optional.",
     "price": "6500 gp",
     "consumable": false,
     "rented": "No",
-    "quantity": 1
+    "quantity": 1,
+    "level": 17,
+    "traits": ["Magical", "Teleportation", "Worn"],
+    "statBlock": {
+      "usage": "Worn ring",
+      "effect": "Teleport up to 30 feet three times per day as a single action. Once per day cast dimension door. Once per week cast plane shift for yourself and willing companions."
+    }
   },
   {
     "name": "Mantle of the Phoenix",
     "type": "Armour",
-    "description": "+2 resilient armor; once/week resurrects wearer in a burst of fire.",
+    "stockTier": "Vault",
+    "itemClass": "Specific Magic Armor",
+    "description": "A blazing mantle of protection with strong opinions on mortality.",
     "price": "8000 gp",
     "consumable": false,
     "rented": "No",
-    "quantity": 1
+    "quantity": 1,
+    "level": 18,
+    "traits": ["Fire", "Magical", "Worn"],
+    "statBlock": {
+      "proficiency": "Medium",
+      "category": "Specific magic armor",
+      "armorType": "Medium",
+      "baseArmor": "Breastplate",
+      "runes": "+3 potency, greater resilient",
+      "effect": "Gain fire resistance 10. Once per week, if reduced to 0 HP, erupt in fire, remain at 1 HP instead, and deal 6d6 fire damage in a 20-foot emanation (basic Reflex save)."
+    }
   },
   {
     "name": "Staff of the Void Spiral",
     "type": "Wondrous",
-    "description": "Legendary staff steeped in fear and mind-breaking magic. Recharge via soul gems and questionable ethics.",
+    "stockTier": "Vault",
+    "itemClass": "Staff",
+    "description": "A legendary staff steeped in fear, void, and deeply questionable ethics.",
     "price": "10000 gp",
     "consumable": false,
     "rented": "No",
-    "quantity": 1
+    "quantity": 1,
+    "level": 19,
+    "traits": ["Magical", "Mental", "Staff"],
+    "statBlock": {
+      "usage": "Held in 2 hands",
+      "category": "Staff",
+      "effect": "Functions as a high-tier occult staff focused on fear, mental debilitation, darkness, and void-flavored magic. Also grants a +2 item bonus to Intimidation while invested.",
+      "notes": "Keep the spell list in the item page or separate data block if your site supports expandable details."
+    }
   }
-]
+];
 
-
-/* ---------- config: icons & colours by type ---------- */
 const TYPE_META = {
   "Consumable": { icon:"🧪", color:"var(--t-Consumable)" },
   "Alchemical": { icon:"⚗️", color:"var(--t-Alchemical)" },
+  "Potion":     { icon:"🧴", color:"var(--t-Potion)" },
+  "Poison":     { icon:"☠️", color:"var(--t-Poison)" },
   "Scroll":     { icon:"📜", color:"var(--t-Scroll)" },
   "Formula":    { icon:"📘", color:"var(--t-Formula)" },
   "Rune":       { icon:"🔶", color:"var(--t-Rune)" },
@@ -744,91 +1302,149 @@ const TYPE_META = {
 };
 const DEFAULT_META = { icon:"📦", color:"var(--t-Default)" };
 
-/* vault threshold (gp) */
-const VAULT_THRESHOLD = 1000;
+function priceToGp(str){
+  if(!str) return 0;
+  const s = String(str).trim().toLowerCase();
 
-/* ---------- helpers ---------- */
-function goldValue(str){
-  const m=/([0-9]+)\s*gp/i.exec(str||"");
-  return m?+m[1]:0;
+  const gp = /([\d.]+)\s*gp/.exec(s);
+  if (gp) return Number(gp[1]);
+
+  const sp = /([\d.]+)\s*sp/.exec(s);
+  if (sp) return Number(sp[1]) / 10;
+
+  const cp = /([\d.]+)\s*cp/.exec(s);
+  if (cp) return Number(cp[1]) / 100;
+
+  return 0;
 }
+
+function formatGpValue(value){
+  if (value <= 0) return "—";
+  if (value < 0.1) return `${Math.round(value * 100)} cp`;
+  if (value < 1) return `${Math.round(value * 10)} sp`;
+  return `${(Math.round(value * 100) / 100).toString().replace(/\.00$/, "")} gp`;
+}
+
 function rentPrice(item){
-  if(item.consumable) return '—';
-  return Math.ceil(goldValue(item.price)*0.2)+' gp';
+  if(item.consumable) return "—";
+  return formatGpValue(Math.ceil(priceToGp(item.price) * 0.2 * 100) / 100);
 }
-const rented = it => it.rented && it.rented!=='No';
+function rented(it){ return !!(it.rented && it.rented !== "No"); }
+function tierValue(item){ return (item.stockTier || "Regular") === "Vault" ? 1 : 0; }
+function searchHaystack(item){ const sb=item.statBlock||{}; return [item.name,item.type,item.stockTier,item.itemClass,item.description,item.price,item.level,item.rented,...(item.traits||[]),...Object.values(sb)].join(" ").toLowerCase(); }
+function safe(text){ return (text ?? "").toString().replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;"); }
+function traitBadges(arr=[]){ if(!arr.length) return `<span class="muted">—</span>`; return `<div class="inline-list">${arr.map(t=>`<span class="mini-tag">${safe(t)}</span>`).join("")}</div>`; }
+function statRows(obj){
+  const order=[
+    "proficiency",
+    "category",
+    "weaponType",
+    "armorType",
+    "baseArmor",
+    "group",
+    "hands",
+    "usage",
+    "bulk",
+    "level",
+    "range",
+    "reload",
+    "acBonus",
+    "dexCap",
+    "checkPenalty",
+    "speedPenalty",
+    "strength",
+    "hardness",
+    "hp",
+    "bt",
+    "baseDamage",
+    "damage",
+    "damageDice",
+    "runes",
+    "traits",
+    "activate",
+    "frequency",
+    "duration",
+    "healing",
+    "save",
+    "resistances",
+    "critical",
+    "spell",
+    "traditions",
+    "area",
+    "effect",
+    "special",
+    "notes"
+  ];
+  const seen=new Set(); const rows=[]; order.forEach(key=>{ if(obj[key]){ seen.add(key); rows.push(`<div class="k">${labelize(key)}</div><div class="v">${safe(obj[key])}</div>`); } }); Object.keys(obj).forEach(key=>{ if(!seen.has(key) && obj[key]) rows.push(`<div class="k">${labelize(key)}</div><div class="v">${safe(obj[key])}</div>`); }); return rows.length ? rows.join("") : `<div class="k">Details</div><div class="v">No extended stat block entered yet.</div>`; }
+function labelize(key){ return key.replace(/([A-Z])/g," $1").replace(/^./, c => c.toUpperCase()); }
 
-/* populate type filter + legend */
-const typeSel=document.getElementById('typeFilter');
-const types=[...new Set(items.map(i=>i.type))].sort();
-types.forEach(t=>{
-  const o=document.createElement('option');o.value=t;o.textContent=t;typeSel.appendChild(o);
-});
-const legend=document.getElementById('legend');
-[...types].forEach(t=>{
-  const meta = TYPE_META[t]||DEFAULT_META;
-  const pill=document.createElement('span');
-  pill.className='tag';
-  pill.style.background=meta.color;
-  pill.textContent=`${meta.icon} ${t}`;
-  legend.appendChild(pill);
-});
-
-/* render list */
-['searchInput','typeFilter','sortSelect'].forEach(id=>document.getElementById(id).addEventListener('input',render));
+const typeSel=document.getElementById("typeFilter");
+const classSel=document.getElementById("classFilter");
+const tierSel=document.getElementById("tierFilter");
+const types=[...new Set(items.map(i=>i.type).filter(Boolean))].sort();
+types.forEach(t=>{ const o=document.createElement("option"); o.value=t; o.textContent=t; typeSel.appendChild(o); });
+const classes=[...new Set(items.map(i=>i.itemClass).filter(Boolean))].sort();
+classes.forEach(c=>{ const o=document.createElement("option"); o.value=c; o.textContent=c; classSel.appendChild(o); });
+const legend=document.getElementById("legend");
+types.forEach(t=>{ const meta=TYPE_META[t]||DEFAULT_META; const pill=document.createElement("span"); pill.className="tag"; pill.style.background=meta.color; pill.textContent=`${meta.icon} ${t}`; legend.appendChild(pill); });
+["Regular","Vault"].forEach(t=>{ const pill=document.createElement("span"); pill.className="tag tier"; pill.style.background=t==="Vault" ? "var(--tier-Vault)" : "var(--tier-Regular)"; pill.style.color=t==="Vault" ? "#171717" : "#fff"; pill.textContent=t==="Vault" ? "🏛️ Vault Tier" : "📦 Regular Tier"; legend.appendChild(pill); });
+["searchInput","typeFilter","classFilter","tierFilter","sortSelect"].forEach(id=>{ document.getElementById(id).addEventListener("input",render); document.getElementById(id).addEventListener("change",render); });
 render();
 
 function render(){
-  const q=(document.getElementById('searchInput').value||"").toLowerCase();
-  const type=typeSel.value;
-  const sort=document.getElementById('sortSelect').value;
-
-  const list=items.filter(i=>{
-    const match = (i.name||"").toLowerCase().includes(q) || (i.description||"").toLowerCase().includes(q);
-    const typeOk = !type || i.type===type;
-    return match && typeOk;
-  }).sort((a,b)=>{
-    if(sort==='price')    return goldValue(a.price)-goldValue(b.price);
-    if(sort==='quantity') return (b.quantity||0)-(a.quantity||0);
-    if(sort==='type')     return (a.type||'').localeCompare(b.type||'');
-    return (a.name||'').localeCompare(b.name||'');
-  });
-
-  const cont=document.getElementById('itemContainer');
-  cont.innerHTML='';
+  const q=(document.getElementById("searchInput").value||"").trim().toLowerCase();
+  const type=typeSel.value, klass=classSel.value, tier=tierSel.value, sort=document.getElementById("sortSelect").value;
+  const list=items.filter(i=>{ const hay=searchHaystack(i); return (!q||hay.includes(q)) && (!type||i.type===type) && (!klass||i.itemClass===klass) && (!tier||(i.stockTier||"Regular")===tier); }).sort((a,b)=>{ if(sort==="price") return priceToGp(a.price)-priceToGp(b.price);; if(sort==="quantity") return (b.quantity||0)-(a.quantity||0); if(sort==="type") return (a.type||"").localeCompare(b.type||""); if(sort==="tier") return tierValue(b)-tierValue(a) || (a.name||"").localeCompare(b.name||""); return (a.name||"").localeCompare(b.name||""); });
+  document.getElementById("resultsCount").textContent=`${list.length} item${list.length===1?"":"s"}`;
+  const cont=document.getElementById("itemContainer"); cont.innerHTML="";
+  if(!list.length){ cont.innerHTML=`<div class="empty-state">No items matched those filters. The shelves remain judgmental.</div>`; return; }
   list.forEach(i=>{
-    const meta = TYPE_META[i.type]||DEFAULT_META;
-    const isVault = goldValue(i.price) >= VAULT_THRESHOLD;
-
-    const card=document.createElement('div');
-    card.className='item'+(rented(i)?' rented':'')+(isVault?' vault':'');
-
+    const meta=TYPE_META[i.type]||DEFAULT_META;
+    const isVault=(i.stockTier||"Regular")==="Vault";
+    const sb=i.statBlock||{};
+    const subtitleBits=[i.itemClass, i.level !== undefined ? `Item ${i.level}` : null].filter(Boolean);
+    const card=document.createElement("div");
+    card.className="item"+(rented(i)?" rented":"")+(isVault?" vault":"");
     card.innerHTML=`
       <div class="item-header">
-        <div class="item-icon" title="${i.type}">${meta.icon}</div>
-        <div class="item-name">${i.name}</div>
+        <div class="item-icon" title="${safe(i.type)}">${meta.icon}</div>
+        <div class="item-title-wrap">
+          <div class="item-name">${safe(i.name)}</div>
+          <div class="item-subtitle">${safe(subtitleBits.join(" • ")) || "Guild stock item"}</div>
+        </div>
       </div>
-
       <div class="tag-row">
-        <span class="tag type" style="background:${meta.color}">${i.type}</span>
-        <span class="tag price">Buy: ${i.price}</span>
-        <span class="tag">Rent: ${rentPrice(i)}</span>
-        <span class="tag qty">Qty: ${i.quantity??'—'}</span>
-        ${isVault ? `<span class="tag vault-pill">🏛️ Vault</span>` : ``}
-        ${rented(i) ? `<span class="tag">Rented</span>` : ``}
+        <span class="tag type" style="background:${meta.color}">${safe(i.type)}</span>
+        <span class="tag tier ${isVault ? 'vault-pill' : ''}">${isVault ? '🏛️ Vault' : '📦 Regular'}</span>
+        ${i.itemClass ? `<span class="tag">${safe(i.itemClass)}</span>` : ``}
+        <span class="tag price">Buy: ${safe(i.price || "—")}</span>
+        <span class="tag">Rent: ${safe(rentPrice(i))}</span>
+        <span class="tag qty">Qty: ${safe(i.quantity ?? "—")}</span>
+        ${rented(i) ? `<span class="tag rented-pill">Rented</span>` : ``}
       </div>
-
+      <div class="summary">${safe(i.description || "")}</div>
       <button class="toggle-btn">Details</button>
       <div class="details">
-        <p>${i.description||''}</p>
-        <p><strong>Currently Rented:</strong> ${i.rented||'No'}</p>
-      </div>
-    `;
-
-    card.querySelector('.toggle-btn').addEventListener('click',e=>{
-      card.classList.toggle('open');
-      e.target.textContent=card.classList.contains('open')?'Hide':'Details';
-    });
+        <div class="panel">
+          <h3>Item Overview</h3>
+          <div class="kv">
+            <div class="k">Type</div><div class="v">${safe(i.type || "—")}</div>
+            <div class="k">Category</div><div class="v">${safe(i.itemClass || "—")}</div>
+            <div class="k">Stock Tier</div><div class="v">${safe(i.stockTier || "Regular")}</div>
+            <div class="k">Currently Rented</div><div class="v">${safe(i.rented || "No")}</div>
+            <div class="k">Quantity</div><div class="v">${safe(i.quantity ?? "—")}</div>
+          </div>
+        </div>
+        <div class="panel">
+          <h3>Traits & Keywords</h3>
+          ${traitBadges(i.traits || [])}
+        </div>
+        <div class="panel">
+          <h3>Stat Block</h3>
+          <div class="kv">${statRows(sb)}</div>
+        </div>
+      </div>`;
+    card.querySelector(".toggle-btn").addEventListener("click",e=>{ card.classList.toggle("open"); e.target.textContent=card.classList.contains("open")?"Hide":"Details"; });
     cont.appendChild(card);
   });
 }
