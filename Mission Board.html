@@ -20,7 +20,7 @@
   *{box-sizing:border-box;margin:0;padding:0;}
   body{font-family:'Segoe UI',Tahoma,Verdana,sans-serif;background:var(--bg-dark);color:var(--text-light);padding:20px;}
 
-  /* NAV (unchanged) */
+  /* NAV */
   .site-header{display:flex;align-items:center;gap:.75rem;background:#1f1f1f;border-bottom:2px solid #444;margin:-20px -20px 1.5rem;padding:.75rem 1rem;position:relative;}
   .logo{font-weight:700;color:var(--accent);font-size:1.1rem;}
   .nav-toggle{display:none;}
@@ -37,9 +37,10 @@
   }
 
   h1{text-align:center;color:var(--accent);margin-bottom:.5rem;font-size:clamp(1.6rem,5vw,2.2rem);}
+  .subtitle{text-align:center;color:#ccc;max-width:900px;margin:0 auto 1rem auto;font-size:.95rem;line-height:1.45;}
 
   /* small legend */
-  .legend{display:flex;gap:.75rem;justify-content:center;font-size:.9rem;opacity:.9;margin-bottom:1rem;}
+  .legend{display:flex;gap:.75rem;justify-content:center;font-size:.9rem;opacity:.9;margin-bottom:1rem;flex-wrap:wrap;}
   .legend .dot{display:inline-block;width:.65rem;height:.65rem;border-radius:50%;margin-right:.35rem;vertical-align:baseline;}
   .legend .l-active  .dot{background:var(--active-border);}
   .legend .l-complete .dot{background:var(--completed-border);}
@@ -98,6 +99,7 @@
   .toggle-btn:focus{outline:2px solid #fff2;outline-offset:2px;}
   .toggle-btn:hover{filter:brightness(1.08);}
   .details ol{list-style-position:inside;padding:0;margin:0;}
+  .details p{line-height:1.45;}
 
   @media(max-width:480px){.mission-container{grid-template-columns:1fr;}}
 </style>
@@ -105,7 +107,9 @@
 
 <body>
 <!-- hidden SVG for rank shield -->
-<svg style="display:none;" xmlns="http://www.w3.org/2000/svg"><symbol id="shield" viewBox="0 0 24 24"><path d="M12 2l7 4v6c0 5-3.8 9.6-7 10-3.2-.4-7-5-7-10V6l7-4z"/></symbol></svg>
+<svg style="display:none;" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="shield" viewBox="0 0 24 24"><path d="M12 2l7 4v6c0 5-3.8 9.6-7 10-3.2-.4-7-5-7-10V6l7-4z"/></symbol>
+</svg>
 
 <header class="site-header">
   <div class="logo">Iron Meridian</div>
@@ -121,6 +125,10 @@
 </header>
 
 <h1>The Iron Meridian – Mission Board</h1>
+<p class="subtitle">
+  Guild Rank reflects prestige, access, and how badly things may explode. Recommended Level reflects the sort of mess you are expected to survive.
+</p>
+
 <div class="legend" aria-hidden="true">
   <span class="l-active"><span class="dot"></span>Active</span>
   <span class="l-complete"><span class="dot"></span>Completed</span>
@@ -131,14 +139,26 @@
 <div class="filter-bar" role="region" aria-label="Mission filters">
   <input type="text" id="searchInput" placeholder="Search by name…" aria-label="Search by name">
   <select id="rankFilter" aria-label="Filter by rank">
-    <option value="">All Ranks</option><option>Bronze</option><option>Silver</option><option>Gold</option>
+    <option value="">All Ranks</option>
+    <option>Bronze</option>
+    <option>Silver</option>
+    <option>Gold</option>
   </select>
-  <select id="typeFilter" aria-label="Filter by type"><option value="">All Types</option></select>
+  <select id="levelFilter" aria-label="Filter by recommended level">
+    <option value="">All Levels</option>
+  </select>
+  <select id="typeFilter" aria-label="Filter by type">
+    <option value="">All Types</option>
+  </select>
   <select id="statusFilter" aria-label="Filter by status">
-    <option value="">All Status</option><option value="active">Active</option><option value="completed">Completed</option><option value="expired">Expired</option>
+    <option value="">All Status</option>
+    <option value="active">Active</option>
+    <option value="completed">Completed</option>
+    <option value="expired">Expired</option>
   </select>
   <select id="sortSelect" aria-label="Sort missions">
     <option value="rank">Sort: Rank</option>
+    <option value="level">Sort: Recommended Level</option>
     <option value="name">Sort: Name</option>
     <option value="length">Sort: Length</option>
     <option value="reward">Sort: Reward</option>
@@ -151,196 +171,220 @@
 /* ---------- mission data ---------- */
 const missionData = [
   {
-    "name": "Whispers from the Chimera Vault",
-    "types": ["Covert", "Investigation", "Rescue"],
-    "rank": "Silver",
-    "length": "Medium",
-    "reward": "1200g + Favor from the Grey Chain",
-    "status": "completed",
-    "location": "Substruct Level 2, Chimera Vault District",
-    "objective": "Locate missing asset and recover chimera serum.",
-    "steps": [
+    name: "Whispers from the Chimera Vault",
+    types: ["Covert", "Investigation", "Rescue"],
+    rank: "Silver",
+    recommendedLevel: 5,
+    threat: "Moderate",
+    length: "Medium",
+    reward: "1450g + Favor from the Grey Chain + Chimera Research Notes",
+    status: "completed",
+    location: "Substruct Level 2, Chimera Vault District",
+    objective: "Locate missing asset and recover chimera serum.",
+    steps: [
       "Breach vault entrance",
       "Locate Lyra Shardfoot",
       "Secure serum",
       "Neutralize rogue operator Thorn"
     ],
-    "extra": "Lyra recovered alive. Thorn eliminated by his own creation.",
-    "squad": "The Leg Ends"
+    extra: "Lyra recovered alive. Thorn eliminated by his own creation.",
+    squad: "The Leg Ends"
   },
   {
-    "name": "The Mirrorpool Pact",
-    "types": ["Diplomacy", "Investigation"],
-    "rank": "Silver",
-    "length": "Short-Medium",
-    "reward": "450g + Renown",
-    "status": "active",
-    "location": "Mirrorpool Hamlet",
-    "objective": "Mediate dispute with pond spirit.",
-    "steps": ["Investigate", "Interview locals", "Resolve"],
-    "extra": "The spirit grows impatient. Fish now speak in overlapping voices."
+    name: "The Mirrorpool Pact",
+    types: ["Diplomacy", "Investigation"],
+    rank: "Silver",
+    recommendedLevel: 5,
+    threat: "Moderate",
+    length: "Short-Medium",
+    reward: "950g + Renown + Spirit-Blessed Charm",
+    status: "active",
+    location: "Mirrorpool Hamlet",
+    objective: "Mediate dispute with pond spirit.",
+    steps: ["Investigate", "Interview locals", "Resolve"],
+    extra: "The spirit grows impatient. Fish now speak in overlapping voices."
   },
   {
-    "name": "Shards of the Mnemosyne Relay",
-    "types": ["Exploration", "Psychic", "Hazard"],
-    "rank": "Silver",
-    "length": "Medium",
-    "reward": "900g + Psychic Resonance Crystal",
-    "status": "active",
-    "location": "Ruins near Verge-Delta",
-    "objective": "Recover beacon fragments before Templars reclaim them.",
-    "steps": [
+    name: "Shards of the Mnemosyne Relay",
+    types: ["Exploration", "Psychic", "Hazard"],
+    rank: "Silver",
+    recommendedLevel: 5,
+    threat: "Moderate",
+    length: "Medium",
+    reward: "1300g + Psychic Resonance Crystal",
+    status: "active",
+    location: "Ruins near Verge-Delta",
+    objective: "Recover beacon fragments before Templars reclaim them.",
+    steps: [
       "Navigate echo-fields",
       "Secure fragments",
       "Avoid psychic feedback",
       "Extract before enemy arrival"
     ],
-    "extra": "The Rust Rats attempted recovery—left behind tools, blood, and something still whispering."
+    extra: "The Rust Rats attempted recovery. They left behind tools, blood, and something still whispering."
   },
   {
-    "name": "The Infernal Spire",
-    "types": ["Combat", "Crisis", "Ritual", "Exploration"],
-    "rank": "Silver",
-    "length": "Medium-Long",
-    "reward": "1400g + Riftbreaker Kit",
-    "status": "active",
-    "location": "Shadowlands Rift, Inner Caldera",
-    "objective": "Sever anchor stones feeding rift growth.",
-    "steps": [
+    name: "The Infernal Spire",
+    types: ["Combat", "Crisis", "Ritual", "Exploration"],
+    rank: "Silver",
+    recommendedLevel: 6,
+    threat: "Severe",
+    length: "Medium-Long",
+    reward: "1850g + Riftbreaker Kit + Hazard Pay",
+    status: "active",
+    location: "Shadowlands Rift, Inner Caldera",
+    objective: "Sever anchor stones feeding rift growth.",
+    steps: [
       "Secure entry point",
       "Locate anchors",
       "Destroy or disrupt them",
       "Escape collapse"
     ],
-    "extra": "The Gilded Geese attempted a ‘distraction.’ The spire is now louder."
+    extra: "The Gilded Geese attempted a ‘distraction.’ The spire is now louder."
   },
   {
-    "name": "Guild Priority: Iron Veil — Rift Severance",
-    "types": ["Combat", "Crisis", "Siege", "Ritual"],
-    "rank": "Gold",
-    "length": "Long",
-    "reward": "4800g + Riftbreaker Boon",
-    "status": "active",
-    "location": "Shadowlands Rift, Primary Caldera",
-    "objective": "Destroy the Rift Warden and collapse the portal.",
-    "steps": [
+    name: "Guild Priority: Iron Veil — Rift Severance",
+    types: ["Combat", "Crisis", "Siege", "Ritual"],
+    rank: "Gold",
+    recommendedLevel: 9,
+    threat: "Extreme",
+    length: "Long",
+    reward: "5200g + Riftbreaker Boon + Priority Claim on Recovered Relics",
+    status: "active",
+    location: "Shadowlands Rift, Primary Caldera",
+    objective: "Destroy the Rift Warden and collapse the portal.",
+    steps: [
       "Deploy ward pylons",
       "Seize keystone obelisk",
       "Defeat Rift Warden",
       "Complete counter-ritual",
       "Survive backlash"
     ],
-    "extra": "The Stone Vultures secured a foothold. They are not asking for help. That is concerning."
+    extra: "The Stone Vultures secured a foothold. They are not asking for help. That is concerning."
   },
   {
-    "name": "Ashes at Watchpost Nine",
-    "types": ["Investigation", "Combat", "Demonic"],
-    "rank": "Bronze",
-    "length": "Medium",
-    "reward": "600g + Blackened Sigil Fragment",
-    "status": "active",
-    "location": "Watchpost Nine",
-    "objective": "Investigate destroyed watchpost.",
-    "steps": [
+    name: "Ashes at Watchpost Nine",
+    types: ["Investigation", "Combat", "Demonic"],
+    rank: "Bronze",
+    recommendedLevel: 3,
+    threat: "Moderate",
+    length: "Medium",
+    reward: "500g + Blackened Sigil Fragment",
+    status: "active",
+    location: "Watchpost Nine",
+    objective: "Investigate destroyed watchpost.",
+    steps: [
       "Survey site",
       "Identify threat",
       "Contain spread"
     ],
-    "extra": "No survivors found. Something is wearing their armour."
+    extra: "No survivors found. Something is wearing their armour."
   },
   {
-    "name": "Whispers in the Weald",
-    "types": ["Investigation", "Exploration"],
-    "rank": "Silver",
-    "length": "Medium",
-    "reward": "800g + Fae Trinkets",
-    "status": "active",
-    "location": "The Whispering Weald",
-    "objective": "Stop madness-inducing whispers.",
-    "steps": [
+    name: "Whispers in the Weald",
+    types: ["Investigation", "Exploration"],
+    rank: "Silver",
+    recommendedLevel: 5,
+    threat: "Moderate",
+    length: "Medium",
+    reward: "1200g + Fae Trinkets + Woodland Favor",
+    status: "active",
+    location: "The Whispering Weald",
+    objective: "Stop madness-inducing whispers.",
+    steps: [
       "Trace voice origin",
       "Negotiate or confront entity",
       "Restore balance"
     ],
-    "extra": "The voices have started using names they shouldn’t know."
+    extra: "The voices have started using names they shouldn’t know."
   },
   {
-    "name": "The Broken Caravan of Emberfall",
-    "types": ["Rescue", "Combat"],
-    "rank": "Bronze",
-    "length": "Short",
-    "reward": "250g + Salvage Rights",
-    "status": "active",
-    "location": "Emberfall Road",
-    "objective": "Recover survivors and cargo.",
-    "steps": [
+    name: "The Broken Caravan of Emberfall",
+    types: ["Rescue", "Combat"],
+    rank: "Bronze",
+    recommendedLevel: 2,
+    threat: "Low-Moderate",
+    length: "Short",
+    reward: "220g + Salvage Rights",
+    status: "active",
+    location: "Emberfall Road",
+    objective: "Recover survivors and cargo.",
+    steps: [
       "Locate caravan",
       "Eliminate attackers",
       "Escort survivors"
     ],
-    "extra": "Tracks suggest the attackers walked on two legs… then four… then many."
+    extra: "Tracks suggest the attackers walked on two legs… then four… then many."
   },
   {
-    "name": "The Lanterns That Watch Back",
-    "types": ["Horror", "Exploration", "Investigation"],
-    "rank": "Silver",
-    "length": "Medium",
-    "reward": "950g + Everburn Lantern (Bound)",
-    "status": "active",
-    "location": "Gravepath Road, North Verge",
-    "objective": "Investigate reports of lanterns appearing along the roadside that seem to follow travelers.",
-    "steps": [
+    name: "The Lanterns That Watch Back",
+    types: ["Horror", "Exploration", "Investigation"],
+    rank: "Silver",
+    recommendedLevel: 5,
+    threat: "Moderate",
+    length: "Medium",
+    reward: "1400g + Everburn Lantern (Bound)",
+    status: "active",
+    location: "Gravepath Road, North Verge",
+    objective: "Investigate reports of lanterns appearing along the roadside that seem to follow travelers.",
+    steps: [
       "Track the origin of the lanterns",
       "Survive nocturnal manifestations",
       "Identify the entity binding the lights",
       "Dispel or destroy the source"
     ],
-    "extra": "Witnesses claim the lanterns now hang where people used to stand. Some still whisper."
+    extra: "Witnesses claim the lanterns now hang where people used to stand. Some still whisper."
   },
   {
-    "name": "The Skin That Isn’t Yours",
-    "types": ["Horror", "Social", "Investigation"],
-    "rank": "Silver",
-    "length": "Short-Medium",
-    "reward": "800g + Mask of Unsettled Flesh",
-    "status": "active",
-    "location": "Lowmarket District, Ashminster",
-    "objective": "Investigate citizens reporting that loved ones ‘feel wrong’ despite looking identical.",
-    "steps": [
+    name: "The Skin That Isn’t Yours",
+    types: ["Horror", "Social", "Investigation"],
+    rank: "Silver",
+    recommendedLevel: 5,
+    threat: "Moderate",
+    length: "Short-Medium",
+    reward: "1150g + Mask of Unsettled Flesh",
+    status: "active",
+    location: "Lowmarket District, Ashminster",
+    objective: "Investigate citizens reporting that loved ones ‘feel wrong’ despite looking identical.",
+    steps: [
       "Interview affected families",
       "Identify replaced individuals",
       "Track the mimic-entity network",
       "Stop further replacements"
     ],
-    "extra": "No one remembers when the first replacement happened. That includes the replacements."
+    extra: "No one remembers when the first replacement happened. That includes the replacements."
   },
   {
-    "name": "The Thing in the Fourth Reflection",
-    "types": ["Horror", "Arcane", "Puzzle"],
-    "rank": "Silver",
-    "length": "Medium",
-    "reward": "1000g + Mirrorbound Shard",
-    "status": "active",
-    "location": "Abandoned Glassworks, Verge Edge",
-    "objective": "Investigate reports of reflections acting independently of their owners.",
-    "steps": [
+    name: "The Thing in the Fourth Reflection",
+    types: ["Horror", "Arcane", "Puzzle"],
+    rank: "Silver",
+    recommendedLevel: 5,
+    threat: "Moderate-Severe",
+    length: "Medium",
+    reward: "1500g + Mirrorbound Shard",
+    status: "active",
+    location: "Abandoned Glassworks, Verge Edge",
+    objective: "Investigate reports of reflections acting independently of their owners.",
+    steps: [
       "Explore glassworks ruins",
       "Observe reflection anomalies",
       "Identify the ‘fourth reflection’ phenomenon",
       "Contain or destroy the entity"
     ],
-    "extra": "It only appears when there are three reflections already. The fourth is not yours."
+    extra: "It only appears when there are three reflections already. The fourth is not yours."
   },
   {
-    "name": "A Thread Pulled from Nowhere",
-    "types": ["Investigation", "Conspiracy", "Multi-Layered", "Social"],
-    "rank": "Gold",
-    "length": "Long",
-    "reward": "3500g + Unknown (Variable Outcome)",
-    "status": "active",
-    "location": "Multiple (Ashminster, Verge, Unknown)",
-    "objective": "Investigate a pattern of seemingly unrelated events tied to a missing sequence in Guild records.",
-    "steps": [
+    name: "A Thread Pulled from Nowhere",
+    types: ["Investigation", "Conspiracy", "Multi-Layered", "Social"],
+    rank: "Gold",
+    recommendedLevel: 8,
+    threat: "Severe",
+    length: "Long",
+    reward: "3900g + Unknown (Variable Outcome) + Major Faction Leverage",
+    status: "active",
+    location: "Multiple (Ashminster, Verge, Unknown)",
+    objective: "Investigate a pattern of seemingly unrelated events tied to a missing sequence in Guild records.",
+    steps: [
       "Cross-reference altered mission logs",
       "Track inconsistencies in witness accounts",
       "Identify repeating names, symbols, or absences",
@@ -348,47 +392,174 @@ const missionData = [
       "Determine whether the cause is temporal, psychic, or deliberate manipulation",
       "Confront or uncover the entity or organization responsible"
     ],
-    "extra": "Every squad that begins this investigation reports missing time. One report lists a squad that does not exist… yet bears your names.",
-    "impact": "Resolution may rewrite known events, alter faction standings, or reveal a hidden power influencing the Guild itself."
+    extra: "Every squad that begins this investigation reports missing time. One report lists a squad that does not exist… yet bears your names.",
+    impact: "Resolution may rewrite known events, alter faction standings, or reveal a hidden power influencing the Guild itself."
+  },
+
+  /* Additional missions focused around current party level */
+  {
+    name: "Teeth in the Floodgate",
+    types: ["Combat", "Hazard", "Rescue"],
+    rank: "Silver",
+    recommendedLevel: 5,
+    threat: "Moderate",
+    length: "Medium",
+    reward: "1250g + Flood-Salvaged Cache + Civic Favor",
+    status: "active",
+    location: "South Verge Floodworks",
+    objective: "Clear a jammed floodgate overrun by warped river predators before the lower district drowns in very embarrassing fashion.",
+    steps: [
+      "Reach the jammed gatehouse",
+      "Neutralize creatures nesting in the sluice channels",
+      "Repair or manually release the gate",
+      "Evacuate trapped workers"
+    ],
+    extra: "Several workers insist the water bit them first."
+  },
+  {
+    name: "The Choir Below Saint Vale",
+    types: ["Horror", "Investigation", "Underground"],
+    rank: "Silver",
+    recommendedLevel: 5,
+    threat: "Moderate-Severe",
+    length: "Medium",
+    reward: "1350g + Consecrated Bell Fragment + Church Goodwill",
+    status: "active",
+    location: "Crypt tunnels beneath Saint Vale",
+    objective: "Investigate reports of hymns rising from sealed burial passages and stop whatever has learned the words.",
+    steps: [
+      "Enter the old crypt route",
+      "Trace the source of the singing",
+      "Protect the ward-stones",
+      "Silence the choir below"
+    ],
+    extra: "The dead are not supposed to harmonize. When they do, paperwork follows."
+  },
+  {
+    name: "Cargo for the Hollow Mile",
+    types: ["Escort", "Combat", "Roadside"],
+    rank: "Silver",
+    recommendedLevel: 5,
+    threat: "Moderate",
+    length: "Short-Medium",
+    reward: "1050g + Hazard Bonus + Pick of Surplus Supplies",
+    status: "active",
+    location: "The Hollow Mile",
+    objective: "Escort a badly needed supply wagon through a stretch of road known for ambushes, sinkholes, and one deeply unreasonable scarecrow.",
+    steps: [
+      "Meet the convoy at dawn",
+      "Defend the shipment from raiders",
+      "Handle environmental hazards",
+      "Deliver goods intact"
+    ],
+    extra: "The quartermaster swears the scarecrow was not there yesterday. The scarecrow swears otherwise."
+  },
+  {
+    name: "The Orchard of Glassfruit",
+    types: ["Exploration", "Alchemy", "Investigation"],
+    rank: "Silver",
+    recommendedLevel: 5,
+    threat: "Moderate",
+    length: "Short-Medium",
+    reward: "1100g + Distilled Glassfruit Elixirs",
+    status: "active",
+    location: "Old Veyran Orchard",
+    objective: "Recover intact samples from a blighted orchard where the fruit has become translucent, razor-edged, and mildly prophetic.",
+    steps: [
+      "Survey the orchard perimeter",
+      "Avoid contaminating spores and shardfall",
+      "Collect viable fruit samples",
+      "Determine the source of the mutation"
+    ],
+    extra: "Do not eat the fruit just because it tells you nice things."
+  },
+  {
+    name: "A Hound for the Vault Wardens",
+    types: ["Capture", "Combat", "Tracker"],
+    rank: "Silver",
+    recommendedLevel: 6,
+    threat: "Moderate-Severe",
+    length: "Medium",
+    reward: "1700g + Warden Requisition Voucher",
+    status: "active",
+    location: "Ashminster Sewer Sprawl",
+    objective: "Track and subdue an escaped chimera hound before it reaches the market tiers or adopts a family.",
+    steps: [
+      "Locate spoor through the sewer routes",
+      "Avoid territorial scavengers",
+      "Subdue the hound without destroying it",
+      "Deliver the creature to containment"
+    ],
+    extra: "It is allegedly ‘mostly stable.’ Historically, that phrase has caused trouble."
+  },
+  {
+    name: "A Debt in Ember Coins",
+    types: ["Social", "Crime", "Investigation"],
+    rank: "Bronze",
+    recommendedLevel: 4,
+    threat: "Low-Moderate",
+    length: "Short",
+    reward: "700g + Informant Contact",
+    status: "active",
+    location: "Cinder Row, Ashminster",
+    objective: "Recover a stolen guild tithe before a local gang launders it through three taverns and a wedding.",
+    steps: [
+      "Identify the thieves",
+      "Track the money trail",
+      "Retrieve the tithe",
+      "Avoid turning a debt collection into a district fire"
+    ],
+    extra: "There is always a wedding. No one knows why."
   }
-]
-  
+];
+
 /* ---------- helpers ---------- */
 const rankOrder = { Bronze: 1, Silver: 2, Gold: 3 };
-const statusOrder = { active: 0, completed: 1, expired: 2, available: 0 }; // <- include available
+const statusOrder = { active: 0, completed: 1, expired: 2, available: 0 };
 
 const statusWeight = s => (s in statusOrder ? statusOrder[s] : 0);
 const rankWeight   = r => (r in rankOrder ? rankOrder[r] : 99);
 
 function parseLength(l){
-  // handles "Short–Medium" (en dash) and "Short-Medium"
-  const first = (l||'').split(/[ –-]/)[0]; 
-  return ["Short","Short","Medium","Medium","Long"].indexOf(first) ?? 0;
+  const first = (l || '').split(/[ –-]/)[0];
+  const map = { "Short": 1, "Medium": 2, "Long": 3 };
+  return map[first] || 99;
 }
 function rewardVal(r){
-  // handles "1600g", "1,000 gp", "600 g"
-  const m = /([\d,]+)\s*g?p?/i.exec(r||"");
+  const m = /([\d,]+)\s*g?p?/i.exec(r || "");
   return m ? +m[1].replace(/,/g,'') : 0;
 }
+function levelWeight(l){
+  return Number(l) || 99;
+}
 
-/* populate type filter (case-normalized) */
+/* populate type filter */
 const typeSel = document.getElementById('typeFilter');
-[...new Set(missionData.flatMap(m => (m.types||[]).map(t=>String(t).trim())))]
+[...new Set(missionData.flatMap(m => (m.types || []).map(t => String(t).trim())))]
   .sort((a,b)=>a.localeCompare(b))
   .forEach(t=>{
     const o=document.createElement('option');
     o.value=t; o.textContent=t; typeSel.appendChild(o);
   });
-  
+
+/* populate level filter */
+const levelSel = document.getElementById('levelFilter');
+[...new Set(missionData.map(m => m.recommendedLevel).filter(v => v !== undefined && v !== null))]
+  .sort((a,b)=>a-b)
+  .forEach(lvl=>{
+    const o=document.createElement('option');
+    o.value=String(lvl); o.textContent=`Level ${lvl}`; levelSel.appendChild(o);
+  });
+
 function statusPill(status){
-  const map={
+  const map = {
     active:{ico:'⌛', label:'Active'},
     completed:{ico:'✓', label:'Completed'},
     expired:{ico:'✖', label:'Expired'}
   };
-  const s=map[status]||map.active;
+  const s = map[status] || map.active;
   return `<span class="status-pill" title="${s.label}"><span class="pill-ico">${s.ico}</span>${s.label}</span>`;
-} 
+}
 function ribbon(status){
   if(status === 'completed') return `<div class="ribbon">COMPLETED</div>`;
   if(status === 'expired')   return `<div class="ribbon">EXPIRED</div>`;
@@ -396,72 +567,91 @@ function ribbon(status){
 }
 
 /* wire up */
-['searchInput','rankFilter','typeFilter','statusFilter','sortSelect']
-  .forEach(id=>document.getElementById(id).addEventListener('input',render));
+['searchInput','rankFilter','levelFilter','typeFilter','statusFilter','sortSelect']
+  .forEach(id => document.getElementById(id).addEventListener('input', render));
+
 render();
 
 function render(){
   const q = document.getElementById('searchInput').value.toLowerCase();
   const rankSel = document.getElementById('rankFilter').value;
+  const levelSelVal = document.getElementById('levelFilter').value;
   const typeSelVal = document.getElementById('typeFilter').value;
   const statSel = document.getElementById('statusFilter').value;
   const sortSel = document.getElementById('sortSelect').value;
 
   const filtered = missionData.filter(m =>
-    (m.name||'').toLowerCase().includes(q) &&
+    (m.name || '').toLowerCase().includes(q) &&
     (!rankSel || m.rank === rankSel) &&
-    (!typeSelVal || (m.types||[]).map(String).includes(typeSelVal)) &&
+    (!levelSelVal || String(m.recommendedLevel) === levelSelVal) &&
+    (!typeSelVal || (m.types || []).map(String).includes(typeSelVal)) &&
     (!statSel || m.status === statSel)
   );
 
   filtered.sort((a,b)=>{
-    // Always group by status first (with safe weights)
     const sw = statusWeight(a.status) - statusWeight(b.status);
     if (sw !== 0) return sw;
 
     switch (sortSel){
-      case 'rank':   return rankWeight(a.rank) - rankWeight(b.rank) || a.name.localeCompare(b.name);
-      case 'length': return parseLength(a.length) - parseLength(b.length) || a.name.localeCompare(b.name);
-      case 'reward': return rewardVal(b.reward) - rewardVal(a.reward) || a.name.localeCompare(b.name);
-      default:       return a.name.localeCompare(b.name);
+      case 'rank':
+        return rankWeight(a.rank) - rankWeight(b.rank)
+          || levelWeight(a.recommendedLevel) - levelWeight(b.recommendedLevel)
+          || a.name.localeCompare(b.name);
+      case 'level':
+        return levelWeight(a.recommendedLevel) - levelWeight(b.recommendedLevel)
+          || rankWeight(a.rank) - rankWeight(b.rank)
+          || a.name.localeCompare(b.name);
+      case 'length':
+        return parseLength(a.length) - parseLength(b.length) || a.name.localeCompare(b.name);
+      case 'reward':
+        return rewardVal(b.reward) - rewardVal(a.reward) || a.name.localeCompare(b.name);
+      default:
+        return a.name.localeCompare(b.name);
     }
   });
 
   const container = document.getElementById('missionContainer');
   container.innerHTML = '';
+
   filtered.forEach(m=>{
     const card=document.createElement('div');
-    card.className=`mission ${m.status||'active'}`;
+    card.className=`mission ${m.status || 'active'}`;
     card.innerHTML=`
       ${ribbon(m.status)}
       <div class="mission-header">
-        <div class="mission-name ${String(m.rank||'').toLowerCase()}">
-          <svg class="rank-icon ${String(m.rank||'').toLowerCase()}"><use href="#shield"/></svg>
+        <div class="mission-name ${String(m.rank || '').toLowerCase()}">
+          <svg class="rank-icon ${String(m.rank || '').toLowerCase()}"><use href="#shield"/></svg>
           ${m.name}
         </div>
         <div class="mission-meta">
-          ${statusPill(m.status||'active')}
-          ${(m.types||[]).map(t=>`<span class="tag">${t}</span>`).join('')}
-          <span class="tag">Rank: ${m.rank||'—'}</span>
-          <span class="tag">${m.length||'—'}</span>
-          <span class="tag">${m.reward||'—'}</span>
+          ${statusPill(m.status || 'active')}
+          ${(m.types || []).map(t=>`<span class="tag">${t}</span>`).join('')}
+          <span class="tag">Rank: ${m.rank || '—'}</span>
+          <span class="tag">Level: ${m.recommendedLevel ?? '—'}</span>
+          <span class="tag">Threat: ${m.threat || '—'}</span>
+          <span class="tag">${m.length || '—'}</span>
+          <span class="tag">${m.reward || '—'}</span>
         </div>
       </div>
       <button class="toggle-btn" aria-expanded="false">Show details</button>
       <div class="details" hidden>
-        <p><strong>Location:</strong> ${m.location||'—'}</p>
-        <p><strong>Objective:</strong> ${m.objective||'—'}</p>
-        ${m.steps?.length?`<ol>${m.steps.map(s=>`<li>${s}</li>`).join('')}</ol>`:''}
-        ${m.extra?`<p><em>${m.extra}</em></p>`:''}
+        <p><strong>Location:</strong> ${m.location || '—'}</p>
+        <p><strong>Objective:</strong> ${m.objective || '—'}</p>
+        <p><strong>Guild Rank:</strong> ${m.rank || '—'} | <strong>Recommended Level:</strong> ${m.recommendedLevel ?? '—'} | <strong>Threat:</strong> ${m.threat || '—'}</p>
+        ${m.steps?.length ? `<ol>${m.steps.map(s=>`<li>${s}</li>`).join('')}</ol>` : ''}
+        ${m.extra ? `<p><em>${m.extra}</em></p>` : ''}
+        ${m.impact ? `<p><strong>Potential Impact:</strong> ${m.impact}</p>` : ''}
+        ${m.squad ? `<p><strong>Assigned Squad:</strong> ${m.squad}</p>` : ''}
       </div>`;
+
     const btn=card.querySelector('.toggle-btn');
     const panel=card.querySelector('.details');
     btn.addEventListener('click',()=>{
       const open=panel.hasAttribute('hidden');
       panel.toggleAttribute('hidden');
       card.classList.toggle('open',open);
-      btn.setAttribute('aria-expanded',open?'true':'false');
-      btn.textContent=open?'Hide details':'Show details';
+      btn.setAttribute('aria-expanded',open ? 'true' : 'false');
+      btn.textContent=open ? 'Hide details' : 'Show details';
     });
     container.appendChild(card);
   });
