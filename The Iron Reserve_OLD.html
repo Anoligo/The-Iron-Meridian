@@ -102,32 +102,6 @@
     display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;opacity:.95;
   }
   .legend .tag{opacity:.95}
-  .legend .tag.clickable{
-    cursor:pointer;
-    transition:transform .15s, box-shadow .15s, opacity .15s, outline-color .15s;
-    user-select:none;
-  }
-  .legend .tag.clickable:hover{
-    transform:translateY(-1px);
-    box-shadow:0 4px 14px rgba(0,0,0,.18);
-    opacity:1;
-  }
-  .legend .tag.active{
-    outline:2px solid rgba(255,255,255,.9);
-    outline-offset:1px;
-    box-shadow:0 0 0 2px rgba(0,0,0,.25) inset, 0 6px 16px rgba(0,0,0,.25);
-    opacity:1;
-  }
-  .legend-wrap{
-    max-width:1100px;
-    margin:0 auto 1rem;
-  }
-  .legend-title{
-    text-align:center;
-    color:var(--muted);
-    font-size:.9rem;
-    margin-bottom:.45rem;
-  }
 
   .filter-bar{
     display:grid;
@@ -137,22 +111,13 @@
     margin:0 auto 1.4rem;
     max-width:1100px;
   }
-  .filter-bar input,.filter-bar select,.filter-bar button,
-  .results-bar button{
+  .filter-bar input,.filter-bar select{
     background:var(--bg-card);
     color:var(--text);
     border:1px solid var(--border-dark);
     padding:.65rem .8rem;
     border-radius:var(--radius);
     min-width:140px;
-  }
-  .filter-bar button,.results-bar button{
-    cursor:pointer;
-    font-weight:600;
-  }
-  .filter-bar button:hover,.results-bar button:hover{
-    border-color:#555;
-    transform:translateY(-1px);
   }
   .filter-bar input::placeholder{color:#aaa}
 
@@ -165,27 +130,6 @@
     align-items:center;
     color:#cfcfcf;
     font-size:.92rem;
-    flex-wrap:wrap;
-  }
-  .results-meta{
-    display:flex;
-    flex-direction:column;
-    gap:.45rem;
-  }
-  .active-filters{
-    display:flex;
-    flex-wrap:wrap;
-    gap:.45rem;
-    min-height:1.8rem;
-  }
-  .active-filters:empty{display:none}
-  .active-chip{
-    background:#333;
-    border:1px solid #4a4a4a;
-    border-radius:9999px;
-    padding:.22rem .65rem;
-    font-size:.78rem;
-    color:#f0f0f0;
   }
 
   .item-container{
@@ -341,10 +285,7 @@
   and item cards can display usage details, weapon traits, armour categories, runes, and custom effects.
 </p>
 
-<div class="legend-wrap">
-  <div class="legend-title">Quick filters: click a pill to narrow the shelves at once.</div>
-  <div class="legend" id="legend"></div>
-</div>
+<div class="legend" id="legend"></div>
 
 <div class="filter-bar">
   <input type="text" id="searchInput" placeholder="Search items, traits, effects…" />
@@ -362,15 +303,11 @@
     <option value="type">Sort: Type</option>
     <option value="tier">Sort: Stock Tier</option>
   </select>
-  <button type="button" id="resetFilters">Clear Filters</button>
 </div>
 
 <div class="results-bar">
-  <div class="results-meta">
-    <div id="resultsCount">0 items</div>
-    <div id="activeFilters" class="active-filters"></div>
-  </div>
-  <div>Rental shown only where the item is non-consumable. Quick-filter pills sync with the dropdowns.</div>
+  <div id="resultsCount">0 items</div>
+  <div>Rental shown only where the item is non-consumable.</div>
 </div>
 
 <div id="itemContainer" class="item-container"></div>
@@ -2042,82 +1979,14 @@ types.forEach(t=>{ const o=document.createElement("option"); o.value=t; o.textCo
 const classes=[...new Set(items.map(i=>i.itemClass).filter(Boolean))].sort();
 classes.forEach(c=>{ const o=document.createElement("option"); o.value=c; o.textContent=c; classSel.appendChild(o); });
 const legend=document.getElementById("legend");
-const activeFiltersEl=document.getElementById("activeFilters");
-const resetBtn=document.getElementById("resetFilters");
-
-function makeLegendPill({label, bg, color, onClick, title, key, value}){
-  const pill=document.createElement("span");
-  pill.className="tag clickable";
-  pill.style.background=bg;
-  if(color) pill.style.color=color;
-  pill.textContent=label;
-  if(title) pill.title=title;
-  pill.dataset.filterKey=key;
-  pill.dataset.filterValue=value;
-  pill.addEventListener("click", onClick);
-  legend.appendChild(pill);
-  return pill;
-}
-
-types.forEach(t=>{
-  const meta=TYPE_META[t]||DEFAULT_META;
-  makeLegendPill({
-    label:`${meta.icon} ${t}`,
-    bg:meta.color,
-    key:"type",
-    value:t,
-    title:`Filter to ${t}`,
-    onClick:()=>{ typeSel.value = typeSel.value===t ? "" : t; render(); }
-  });
-});
-["Regular","Vault"].forEach(t=>{
-  makeLegendPill({
-    label:t==="Vault" ? "🏛️ Vault Tier" : "📦 Regular Tier",
-    bg:t==="Vault" ? "var(--tier-Vault)" : "var(--tier-Regular)",
-    color:t==="Vault" ? "#171717" : "#fff",
-    key:"tier",
-    value:t,
-    title:`Filter to ${t} stock`,
-    onClick:()=>{ tierSel.value = tierSel.value===t ? "" : t; render(); }
-  });
-});
+types.forEach(t=>{ const meta=TYPE_META[t]||DEFAULT_META; const pill=document.createElement("span"); pill.className="tag"; pill.style.background=meta.color; pill.textContent=`${meta.icon} ${t}`; legend.appendChild(pill); });
+["Regular","Vault"].forEach(t=>{ const pill=document.createElement("span"); pill.className="tag tier"; pill.style.background=t==="Vault" ? "var(--tier-Vault)" : "var(--tier-Regular)"; pill.style.color=t==="Vault" ? "#171717" : "#fff"; pill.textContent=t==="Vault" ? "🏛️ Vault Tier" : "📦 Regular Tier"; legend.appendChild(pill); });
 ["searchInput","typeFilter","classFilter","tierFilter","sortSelect"].forEach(id=>{ document.getElementById(id).addEventListener("input",render); document.getElementById(id).addEventListener("change",render); });
-resetBtn.addEventListener("click", resetFilters);
 render();
 
-function resetFilters(){
-  document.getElementById("searchInput").value="";
-  typeSel.value="";
-  classSel.value="";
-  tierSel.value="";
-  document.getElementById("sortSelect").value="name";
-  render();
-}
-
-function updateLegendState(){
-  legend.querySelectorAll(".tag.clickable").forEach(pill=>{
-    const active =
-      (pill.dataset.filterKey==="type" && typeSel.value===pill.dataset.filterValue) ||
-      (pill.dataset.filterKey==="tier" && tierSel.value===pill.dataset.filterValue);
-    pill.classList.toggle("active", active);
-  });
-}
-
-function updateActiveFilters(q, type, klass, tier){
-  const chips=[];
-  if(q) chips.push(`<span class="active-chip">Search: ${safe(q)}</span>`);
-  if(type) chips.push(`<span class="active-chip">Type: ${safe(type)}</span>`);
-  if(klass) chips.push(`<span class="active-chip">Category: ${safe(klass)}</span>`);
-  if(tier) chips.push(`<span class="active-chip">Tier: ${safe(tier)}</span>`);
-  activeFiltersEl.innerHTML = chips.join("");
-}
-
 function render(){
-  const rawSearch=(document.getElementById("searchInput").value||"").trim();
-  const q=rawSearch.toLowerCase();
+  const q=(document.getElementById("searchInput").value||"").trim().toLowerCase();
   const type=typeSel.value, klass=classSel.value, tier=tierSel.value, sort=document.getElementById("sortSelect").value;
-  updateLegendState();
-  updateActiveFilters(rawSearch, type, klass, tier);
   const list=items.filter(i=>{ const hay=searchHaystack(i); return (!q||hay.includes(q)) && (!type||i.type===type) && (!klass||i.itemClass===klass) && (!tier||(i.stockTier||"Regular")===tier); }).sort((a,b)=>{ if(sort==="price") return priceToGp(a.price)-priceToGp(b.price);; if(sort==="quantity") return (b.quantity||0)-(a.quantity||0); if(sort==="type") return (a.type||"").localeCompare(b.type||""); if(sort==="tier") return tierValue(b)-tierValue(a) || (a.name||"").localeCompare(b.name||""); return (a.name||"").localeCompare(b.name||""); });
   document.getElementById("resultsCount").textContent=`${list.length} item${list.length===1?"":"s"}`;
   const cont=document.getElementById("itemContainer"); cont.innerHTML="";
