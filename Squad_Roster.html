@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Squads of the Iron Meridian</title>
+<style>
+  :root{
+    --bg-dark:#1c1c1c;
+    --bg-card:#2a2a2a;
+    --bg-soft:#242424;
+    --text:#f5f5f5;
+    --muted:#cfcfcf;
+    --accent:#ffc107;
+    --accent-light:#ffd966;
+    --border:#444;
+    --bronze:#b97a56;
+    --silver:#c0c6d2;
+    --gold:#d7af37;
+    --green:#84d38a;
+    --radius:8px;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:"Segoe UI",Tahoma,Verdana,sans-serif;
+    background:var(--bg-dark);
+    color:var(--text);
+    padding:16px;
+    line-height:1.55;
+  }
+
+  .site-header{display:flex;align-items:center;gap:.75rem;background:#1f1f1f;border-bottom:2px solid var(--border);margin:-16px -16px 1.5rem;padding:.75rem 1rem;position:relative;}
+  .logo{font-weight:700;color:var(--accent);font-size:1.1rem;white-space:nowrap;}
+  .nav-toggle{display:none;}
+  .hamburger{font-size:1.4rem;color:#fff;cursor:pointer;margin-left:auto;user-select:none;display:block;}
+  .site-nav{display:none;flex-direction:column;gap:.75rem;position:absolute;left:0;right:0;top:100%;background:#1f1f1f;border-top:2px solid var(--border);padding:1rem;}
+  .site-nav a{color:#fff;text-decoration:none;font-weight:600;white-space:nowrap;}
+  .site-nav a:hover{color:var(--accent);}
+  .nav-toggle:checked + .hamburger + .site-nav{display:flex;}
+
+  @media(min-width:620px){
+    body{padding:24px;}
+    .site-header{margin:-24px -24px 1.75rem;padding:1rem 1.25rem;}
+    .hamburger{display:none;}
+    .site-nav{display:flex !important;position:static;flex-direction:row;gap:1.25rem;margin-left:auto;background:transparent;border:none;padding:0;}
+  }
+
+  h1{text-align:center;color:var(--accent);font-size:clamp(1.7rem,5vw,2.3rem);margin-bottom:.45em;}
+  h2{color:var(--accent-light);margin:.1em 0 .35em;font-size:clamp(1.15rem,4vw,1.45rem);}
+  h3{color:var(--accent-light);margin:0 0 .35em;}
+  p{margin-bottom:1em;}
+  ul{padding-left:1.2em;margin-bottom:1em;}
+
+  .intro{
+    text-align:center;
+    max-width:920px;
+    margin:0 auto 1.5rem;
+    color:var(--muted);
+  }
+
+  .summary-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+    gap:1rem;
+    margin:1rem 0 1.75rem;
+  }
+  .summary-card{
+    background:var(--bg-card);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:1rem;
+    text-align:center;
+  }
+  .summary-card .count{
+    font-size:1.9rem;
+    font-weight:700;
+    color:var(--accent);
+    line-height:1.1;
+  }
+  .summary-card .label{
+    color:var(--muted);
+    font-size:.95rem;
+    margin-top:.2rem;
+  }
+
+  .filters{
+    display:flex;
+    flex-wrap:wrap;
+    gap:.6rem;
+    justify-content:center;
+    margin:0 0 1.5rem;
+  }
+  .filter-btn{
+    background:var(--bg-soft);
+    color:var(--text);
+    border:1px solid var(--border);
+    border-radius:999px;
+    padding:.5rem .9rem;
+    cursor:pointer;
+    font-weight:600;
+  }
+  .filter-btn.active,
+  .filter-btn:hover{
+    border-color:var(--accent);
+    color:var(--accent-light);
+  }
+
+  .section{
+    background:var(--bg-card);
+    border:1px solid var(--border);
+    border-left:5px solid var(--accent);
+    border-radius:var(--radius);
+    padding:1rem;
+    margin:0 0 1.5rem;
+  }
+
+  .squad{
+    background:var(--bg-card);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:1rem;
+    margin-bottom:1.5rem;
+    display:flex;
+    gap:1.2rem;
+    align-items:flex-start;
+  }
+  .squad-image img{
+    width:170px;
+    max-width:100%;
+    border-radius:var(--radius);
+    border:2px solid var(--border);
+    display:block;
+    background:#202020;
+  }
+  .squad-content{flex:1;}
+
+  .pill-row{display:flex;flex-wrap:wrap;gap:.45rem;margin:.25rem 0 .8rem;}
+  .pill{
+    display:inline-block;
+    padding:.2rem .6rem;
+    border-radius:999px;
+    font-size:.82rem;
+    font-weight:700;
+    letter-spacing:.02em;
+    border:1px solid var(--border);
+    background:#222;
+  }
+  .pill.rank-bronze{border-color:rgba(185,122,86,.8);color:#efc0a3;}
+  .pill.rank-silver{border-color:rgba(192,198,210,.8);color:#edf1f9;}
+  .pill.rank-gold{border-color:rgba(215,175,55,.85);color:#ffe495;}
+  .pill.status-active{border-color:rgba(132,211,138,.85);color:#caffc8;}
+  .pill.rarity-common{color:#e3e3e3;}
+  .pill.rarity-uncommon{color:#bfe6ff;}
+  .pill.rarity-rare{color:#ffcbff;}
+  .pill.style{color:#ffdca1;}
+  .pill.guild{color:#ffe17b;}
+
+  .meta-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:.7rem;
+    margin:.8rem 0 1rem;
+  }
+  .meta-box{
+    background:#252525;
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:.7rem .8rem;
+  }
+  .meta-box strong{display:block;color:var(--accent-light);margin-bottom:.15rem;}
+
+  .quote{
+    border-left:4px solid var(--accent);
+    padding:.75rem .9rem;
+    background:#252525;
+    border-radius:0 var(--radius) var(--radius) 0;
+    margin:.8rem 0 1rem;
+  }
+  .rumors{
+    background:#252525;
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:.85rem 1rem;
+  }
+  .rumors h3{margin-bottom:.35rem;}
+
+  .empty-state{
+    display:none;
+    text-align:center;
+    color:var(--muted);
+    padding:1rem;
+  }
+
+  @media(max-width:720px){
+    body{padding:14px;}
+    .site-header{margin:-14px -14px 1.25rem;padding:.75rem 1rem;}
+    .squad{flex-direction:column;align-items:center;text-align:center;}
+    .squad-content{text-align:left;width:100%;}
+    .squad-image img{width:75%;max-width:220px;margin-bottom:.2rem;}
+    .pill-row{justify-content:center;}
+  }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="logo">Iron Meridian</div>
+  <input type="checkbox" id="nav-toggle" class="nav-toggle">
+  <label for="nav-toggle" class="hamburger">&#9776;</label>
+  <nav class="site-nav">
+    <a href="Mercenary Guild Overview.html">🏰 Overview</a>
+    <a href="Mission Board.html">📜 Mission Board</a>
+    <a href="Mission Reports.html">📝 Reports</a>
+    <a href="The Armoury.html">🛡️ The Armoury</a>
+    <a href="Squad_Roster.html">⚔️ Squads</a>
+    <a href="iron-meridian-downtime.html">⏳ Downtime</a>
+    <a href="The Iron Reserve.html">🏺 Reserve</a>
+  </nav>
+</header>
+
+<h1>Squads of the Iron Meridian</h1>
+<p class="intro">Not every contract is handed to a loose pile of hopeful mercenaries and a prayer. Some jobs go to established squads with reputations sharp enough to cut paper. These are the crews people whisper about in taverns, on battlements, and occasionally while hiding under tables.</p>
+
+<div class="filters" aria-label="Squad filters">
+  <button class="filter-btn active" data-filter="all">All Squads</button>
+  <button class="filter-btn" data-filter="gold">Gold</button>
+  <button class="filter-btn" data-filter="silver">Silver</button>
+  <button class="filter-btn" data-filter="bronze">Bronze</button>
+</div>
+
+<div id="squad-list">
+  <article class="squad" data-rank="gold">
+    <div class="squad-image"><img src="images/The Stone Vultures (Phone).png" alt="The Stone Vultures"></div>
+    <div class="squad-content">
+      <h2>The Stone Vultures</h2>
+      <div class="pill-row">
+        <span class="pill guild">Guild Squad</span>
+        <span class="pill style">Elite</span>
+        <span class="pill rank-gold">Gold Rank</span>
+        <span class="pill status-active">Active</span>
+      </div>
+      <p>A squad forged from mercenaries who saw too many campaigns, the Stone Vultures are called in when jobs are too dangerous or delicate for anyone else. They circle over enemies like carrion birds: patient, merciless, and certain.</p>
+      <div class="meta-grid">
+        <div class="meta-box"><strong>Members</strong>Captain Dregor Marr, Vesha the Silent, Garruk Stonehide, Lady Ilyra, Thorne of the Eastmarch</div>
+        <div class="meta-box"><strong>Notable Traits</strong>Cold, Efficient, Feared</div>
+        <div class="meta-box"><strong>Best Used For</strong>High-risk strikes, brutal clean-up, and jobs where subtlety arrives wearing steel boots</div>
+      </div>
+      <div class="quote"><strong>Guildmaster Nil says:</strong> “When the Vultures fly, someone’s already dead. They’re just waiting for the body to fall.”</div>
+      <div class="rumors">
+        <h3>🍻 Tavern Rumors</h3>
+        <ul>
+          <li>They never leave a body behind, for reasons best not asked.</li>
+          <li>Ilyra doesn’t just cast illusions. She collects memories.</li>
+          <li>They’ve turned down contracts before. Means they’re not desperate. Means they’re dangerous.</li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+  <article class="squad" data-rank="silver">
+    <div class="squad-image"><img src="images/The Ashen Blades-1 (Phone).png" alt="The Ashen Blades"></div>
+    <div class="squad-content">
+      <h2>The Ashen Blades</h2>
+      <div class="pill-row">
+        <span class="pill guild">Guild Squad</span>
+        <span class="pill style">Veteran</span>
+        <span class="pill rank-silver">Silver Rank</span>
+        <span class="pill status-active">Active</span>
+      </div>
+      <p>The Ashen Blades earned their name in the Harrowing, where they marched through fire and ruin. They’re professional, efficient, and terrifying in the field. Not known for mercy, but always for results.</p>
+      <div class="meta-grid">
+        <div class="meta-box"><strong>Members</strong>Ser Calvess, Tiora Emberborn, Korr Blacktusk, Silas Drowe</div>
+        <div class="meta-box"><strong>Notable Traits</strong>Ruthless, Battle-Hardened, Fire-Scarred</div>
+        <div class="meta-box"><strong>Best Used For</strong>Hard pushes, direct assaults, and anything improved by smoke, steel, or bad decisions made confidently</div>
+      </div>
+      <div class="quote"><strong>Guildmaster Nil says:</strong> “They burn bridges as easily as they burn their foes. Keep them pointed outward.”</div>
+      <div class="rumors">
+        <h3>🍻 Tavern Rumors</h3>
+        <ul>
+          <li>You can tell where they’ve been, just follow the smoke.</li>
+          <li>They don’t drink, they smolder.</li>
+          <li>Calvess is still haunted by the family he failed. That sword of his whispers.</li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+  <article class="squad" data-rank="bronze">
+    <div class="squad-image"><img src="images/The Gilded Geese (2) (Phone).png" alt="The Gilded Geese"></div>
+    <div class="squad-content">
+      <h2>The Gilded Geese</h2>
+      <div class="pill-row">
+        <span class="pill guild">Guild Squad</span>
+        <span class="pill style">Eccentric</span>
+        <span class="pill rank-bronze">Bronze Rank</span>
+        <span class="pill status-active">Active</span>
+      </div>
+      <p>The Gilded Geese are equal parts adventurers and spectacle. They strut, they boast, and somehow they keep surviving fights that should have killed them. Their symbol, a golden goose feather, is pinned to every cloak and usually sparkling with some minor glamour.</p>
+      <div class="meta-grid">
+        <div class="meta-box"><strong>Members</strong>Dame Ophelia Proudwing, Krixle Feathercap, Hark Dander, Fenno &amp; Jilli</div>
+        <div class="meta-box"><strong>Notable Traits</strong>Flashy, Lucky, Unpredictable</div>
+        <div class="meta-box"><strong>Best Used For</strong>Odd errands, social chaos, and missions where charm is either essential or deeply unhelpful</div>
+      </div>
+      <div class="quote"><strong>Guildmaster Nil says:</strong> “They’re ridiculous. They’re also still alive. Make of that what you will.”</div>
+      <div class="rumors">
+        <h3>🍻 Tavern Rumors</h3>
+        <ul>
+          <li>They once conned a noble into paying them twice for the same job.</li>
+          <li>Ophelia sings before battle. The enemy sometimes just walks away.</li>
+          <li>Lucky? Or cursed? Depends on who you ask.</li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+  <article class="squad" data-rank="bronze">
+    <div class="squad-image"><img src="images/The Rust Rats (Phone).png" alt="The Rust Rats"></div>
+    <div class="squad-content">
+      <h2>The Rust Rats</h2>
+      <div class="pill-row">
+        <span class="pill guild">Guild Squad</span>
+        <span class="pill style">Mercenary</span>
+        <span class="pill rank-bronze">Bronze Rank</span>
+        <span class="pill status-active">Active</span>
+      </div>
+      <p>The Rust Rats make a living off the scraps, both literally and figuratively. Known for fighting with whatever’s lying around, they turn junk into weapons and salvage into gold. Their missions often end with more scrap brought back than coin earned.</p>
+      <div class="meta-grid">
+        <div class="meta-box"><strong>Members</strong>Talla Quickfingers, Brusk Ironjaw, Pimmle Dottle, Ryn of the Rustfields</div>
+        <div class="meta-box"><strong>Notable Traits</strong>Scrappy, Improvised, Loyal</div>
+        <div class="meta-box"><strong>Best Used For</strong>Salvage runs, messy survival work, and anything involving broken walls, missing tools, or terrible odds</div>
+      </div>
+      <div class="quote"><strong>Guildmaster Nil says:</strong> “They may smell like an iron heap, but you’ll want them on your side when the walls come down.”</div>
+      <div class="rumors">
+        <h3>🍻 Tavern Rumors</h3>
+        <ul>
+          <li>They once held off a demon with a broken chair leg and a soup pot.</li>
+          <li>Never leave your tools unattended, they’ll find a better use for them.</li>
+          <li>They’re saving up to buy proper gear. Been saying that for two years.</li>
+        </ul>
+      </div>
+    </div>
+  </article>
+</div>
+
+<div id="empty-state" class="empty-state">No squads match that filter. Which is awkward, because the guild swears they exist.</div>
+
+<script>
+  const buttons = document.querySelectorAll('.filter-btn');
+  const squads = document.querySelectorAll('.squad');
+  const emptyState = document.getElementById('empty-state');
+
+  buttons.forEach(button => {
+    button.addEventListener('click', () => {
+      buttons.forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+      const filter = button.dataset.filter;
+      let visible = 0;
+
+      squads.forEach(card => {
+        const show = filter === 'all' || card.dataset.rank === filter;
+        card.style.display = show ? 'flex' : 'none';
+        if (show) visible += 1;
+      });
+
+      emptyState.style.display = visible ? 'none' : 'block';
+    });
+  });
+</script>
+</body>
+</html>
